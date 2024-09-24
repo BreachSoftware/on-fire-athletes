@@ -90,23 +90,23 @@ export default function Profile() {
 	const [ boughtCardList, setBoughtCardList ] = useState<SerializedTradingCard[]>([]);
 	const [ alreadyPopulatedTradedCards, setAlreadyPopulatedTradedCards ] = useState(false);
 
-	/**
-	 * Utility function to convert Blob to Base64
-	 * @param blob the image blob
-	 * @returns blob resolves to a base64string
-	 */
-	async function blobToBase64(blob: Blob) {
-		return new Promise((resolve, reject) => {
-			const reader = new FileReader();
-			reader.onload = () => {
-				return resolve(reader.result as string);
-			};
-			reader.onerror = (error) => {
-				return reject(error);
-			};
-			reader.readAsDataURL(blob);
-		});
-	};
+	// /**
+	//  * Utility function to convert Blob to Base64
+	//  * @param blob the image blob
+	//  * @returns blob resolves to a base64string
+	//  */
+	// async function blobToBase64(blob: Blob) {
+	// 	return new Promise((resolve, reject) => {
+	// 		const reader = new FileReader();
+	// 		reader.onload = () => {
+	// 			return resolve(reader.result as string);
+	// 		};
+	// 		reader.onerror = (error) => {
+	// 			return reject(error);
+	// 		};
+	// 		reader.readAsDataURL(blob);
+	// 	});
+	// };
 
 	// Fetch the user's profile information and cards on page load
 	useEffect(() => {
@@ -472,7 +472,6 @@ export default function Profile() {
 		setEditableInstagramLink(profileInfo?.instagramLink || "");
 		setEditableYoutubeLink(profileInfo?.youtubeLink || "");
 		setEditableSnapchatLink(profileInfo?.snapchatLink || "");
-		setCropperDisplay(false);
 		onClose();
 	}
 
