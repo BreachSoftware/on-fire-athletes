@@ -1,0 +1,8 @@
+{
+    "body": "{\"uuid\": \"3e1b4f12-ed22-4e76-bcc5-f091c7d6dfe3\", \"serialNumber\": 2, \"generatedBy\": \"17bd7249-1058-45f9-8f97-c1f1961dad81\"}",
+    "httpMethod": "POST",
+    "path": "/myFunction",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+}

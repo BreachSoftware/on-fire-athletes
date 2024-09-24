@@ -1,0 +1,9 @@
+{
+    "body": "{\"uuid\":\"18abdec4-50b5-473d-9f14-f974a1cee75c\", \"generatedBy\": \"17bd7249-1058-45f9-8f97-c1f1961dad81\", \"totalCreated\": 15}",
+    "httpMethod": "POST",
+    "path": "/myFunction",
+    "headers": {
+        "Content-Type": "application/json"
+      }
+}
+  

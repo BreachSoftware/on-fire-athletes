@@ -1,0 +1,8 @@
+{
+	"body": "{\"uuid\": \"639b2c80-7df0-4355-bfcc-7bc45c3db186\", \"card_uuid\": \"843f2670-323d-425d-b7a2-4176abf98053\"}",
+    "httpMethod": "GET",
+    "path": "/myFunction",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+}

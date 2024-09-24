@@ -1,0 +1,63 @@
+{
+  "version": "1",
+  "cognitoConfig": {
+    "identityPoolName": "gamechangers735547a3_identitypool_735547a3",
+    "allowUnauthenticatedIdentities": false,
+    "resourceNameTruncated": "gamech735547a3",
+    "userPoolName": "gamechangers735547a3_userpool_735547a3",
+    "autoVerifiedAttributes": [
+      "email"
+    ],
+    "mfaConfiguration": "OFF",
+    "mfaTypes": [
+      "SMS Text Message"
+    ],
+    "smsAuthenticationMessage": "Your OnFireAthletes authentication code is {####}",
+    "smsVerificationMessage": "Your OnFireAthletes verification code is {####}",
+    "emailVerificationSubject": "Your OnFireAthletes Verification Code",
+    "emailVerificationMessage": "<table id=\"u_content_text_10\" style=\"font-family: Arial, sans-serif; font-size: 18px; background: #12171E; padding: 20px 0;\" role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" border=\"0\"><tbody><tr><td><img border=\"0\" src=\"https://gamechangers-media-uploads.s3.amazonaws.com/resources/on-fire-athletes-full-logo.png\" alt=\"On Fire Athletes\" style=\"height: 75px; padding-left: 24px; padding-top: 30px;\"></td></tr><tr><td class=\"v-container-padding-padding\" style=\"overflow-wrap: break-word; word-break: break-word; padding: 10px 20px; font-family: Arial, sans-serif; font-size: 18px;\" align=\"left\"><table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" border=\"0\"><tr><td colspan=\"2\" style=\"vertical-align: top;\"><img border=\"0\" src=\"https://gamechangers-media-uploads.s3.amazonaws.com/resources/youre-on-fire-logo.png\" alt=\"You're On Fire\" style=\"width: 425px; height: 75px; padding-left: 15px; padding-top: 30px; padding-bottom: 15px;\"></td></tr><tr><td style=\"vertical-align: top; padding-right: 60px;\"><div style=\"color: white; background: #12171E; line-height: 140%; text-align: left; word-wrap: break-word;\"><p style=\"line-height: 200%; padding-left: 15px; font-size: 20px;\">Welcome to OnFireAthletes!</p><p style=\"line-height: 140%; padding: 15px; font-size: 20px;\">Please enter the code below to verify your account and complete the signup process!</p><p style=\"font-size: 36px; font-weight: bold; padding: 15px; color: #27CE01\">{####}</p><br><p style=\"line-height: 100%; padding-left: 15px; font-size: 20px;\">Thanks!</p><p style=\"line-height: 100%; margin-bottom: 75px; padding-left: 15px; font-size: 20px;\">The OnFireAthletes Team</p></div></td></tr></table></td></tr></tbody></table>",
+    "defaultPasswordPolicy": false,
+    "passwordPolicyMinLength": 8,
+    "passwordPolicyCharacters": [],
+    "requiredAttributes": [
+      "email"
+    ],
+    "aliasAttributes": [],
+    "userpoolClientGenerateSecret": false,
+    "userpoolClientRefreshTokenValidity": 30,
+    "userpoolClientWriteAttributes": [],
+    "userpoolClientReadAttributes": [],
+    "userpoolClientLambdaRole": "gamech735547a3_userpoolclient_lambda_role",
+    "userpoolClientSetAttributes": false,
+    "sharedId": "735547a3",
+    "resourceName": "gamechangers735547a3",
+    "authSelections": "identityPoolAndUserPool",
+    "useDefault": "manual",
+    "usernameAttributes": [
+      "email"
+    ],
+    "userPoolGroupList": [],
+    "serviceName": "Cognito",
+    "usernameCaseSensitive": false,
+    "useEnabledMfas": true,
+    "authRoleArn": {
+      "Fn::GetAtt": [
+        "AuthRole",
+        "Arn"
+      ]
+    },
+    "unauthRoleArn": {
+      "Fn::GetAtt": [
+        "UnauthRole",
+        "Arn"
+      ]
+    },
+    "breakCircularDependency": true,
+    "dependsOn": [],
+    "userPoolGroups": false,
+    "adminQueries": false,
+    "thirdPartyAuth": false,
+    "authProviders": [],
+    "hostedUI": false
+  }
+}

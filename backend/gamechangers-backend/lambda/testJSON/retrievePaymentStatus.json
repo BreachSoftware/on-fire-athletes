@@ -1,0 +1,8 @@
+{
+    "body": "{\"client\": \"pi_3PTrAbRxIHcXm1oj0Wq1hmqk\"}",
+    "httpMethod": "POST",
+    "path": "/retrievePaymentStatus",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+}

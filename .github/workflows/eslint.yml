@@ -1,0 +1,23 @@
+name: ESLint
+
+on:
+    push:
+        branches: [ "main" ]
+    pull_request:
+        branches:
+          - "**"
+
+jobs:
+    frontend:
+        name: Enforce linting
+        runs-on: self-hosted
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v2
+
+            - name: Install dependencies
+              run: npm i -f
+
+            - name: Lint with ESLint
+              run: npx eslint . --max-warnings=0

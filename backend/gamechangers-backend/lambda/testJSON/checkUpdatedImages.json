@@ -1,0 +1,12 @@
+{
+    "queryStringParameters": {
+      "authToken": "eyJraWQiOiJGa0owWk8raHVRWTJWN00xOStiYkhOUWRUWEI2Y2xpZVliYnNcL05IMk1RTT0iLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIwOTYwM2I3NC03ZDViLTRmOWItYWFkYy0wNDJlNzVkMDE1M2IiLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAudXMtZWFzdC0xLmFtYXpvbmF3cy5jb21cL3VzLWVhc3QtMV9zejFCSXhmbGoiLCJjbGllbnRfaWQiOiIyMDFqbjUxYmI0anQyc3VvaTFsYmNoaWNqNiIsIm9yaWdpbl9qdGkiOiIwNzliZjBkYS1kMDdjLTRmYzUtYjY1YS0wZTE3YzQyMWY0MGUiLCJldmVudF9pZCI6IjdkZjNkNmRlLWE2NTQtNDg5MC04NTJiLTdlMzgxMzc3NDVlOCIsInRva2VuX3VzZSI6ImFjY2VzcyIsInNjb3BlIjoiYXdzLmNvZ25pdG8uc2lnbmluLnVzZXIuYWRtaW4iLCJhdXRoX3RpbWUiOjE3MTI3NjUxNzcsImV4cCI6MTcxMjc2ODc3NywiaWF0IjoxNzEyNzY1MTc3LCJqdGkiOiI4ZjdkNGIwYS0yNzM2LTQxMTgtYjcyZi1iOTZiNWE0ZGE4NzgiLCJ1c2VybmFtZSI6IjA5NjAzYjc0LTdkNWItNGY5Yi1hYWRjLTA0MmU3NWQwMTUzYiJ9.WlD48GUHdMWdw2tkNUO5daU2ybjB8yOtdrxcUDMTrhIa2mcv2Tlwjvo-a1jGRw3nPSNUowBP7nF4Pn_q8gZ80Z2XMwzc9j2wT-rKVAU6v_6q4a5khaPJ7XyPqCzw4MFDiJQ3AhhBvGXLXcoEbAbONcQFIkt-Konmp0oIypmX8TlWr64Th-_GiKmR2xjEz5HI1QlygZbfBTZAi8vClb5TWkzVTQFWxU9-isbezHarLGZV0bvH5mISmp_R7xvVlpHvmZJua6wX6FHENWvQFlXmTZe-jg11rgO6hAtwTiRUq7iUKosWZUwyKnG8mHZNrLnaBm4iTCQ14HhWcewLdkXKdA", 
+      "lastChecked": "hello there",
+      "userId": "09603b74-7d5b-4f9b-aadc-042e75d0153b"
+    },
+    "httpMethod": "POST",
+    "path": "/myFunction",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+}

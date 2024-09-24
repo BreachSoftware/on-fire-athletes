@@ -1,0 +1,9 @@
+{
+    "body": "{\"uuid\":\"5e5cb1f7-3966-46f5-bcdb-5cad7ed680db\",\"email\":\"cfeldt1@lsu.edu\",\"facebookLink\":\"facebookLinkTest.com\"}",
+    "httpMethod": "POST",
+    "path": "/myFunction",
+    "headers": {
+        "Content-Type": "application/json"
+      }
+}
+  

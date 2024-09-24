@@ -1,0 +1,8 @@
+{
+    "body": "{\"userId\": \"9e53d2bb-12e1-46b1-89c7-458e3c10529d\", \"image\": \"image/Darrin Headshot cropped.jpg\", \"video\": \"video/darrin_test_new_again.mp4\"}",
+    "httpMethod": "POST",
+    "path": "/myFunction",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+}

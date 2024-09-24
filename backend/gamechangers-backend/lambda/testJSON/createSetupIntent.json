@@ -1,0 +1,8 @@
+{
+    "body": "{\"customerId\": \"cus_QZ9wvQsG1Ht47K\"}",
+    "httpMethod": "POST",
+    "path": "/myFunction",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+}

@@ -1,0 +1,11 @@
+{  
+    "queryStringParameters": {
+      "uuid": "3d1bcbc5-c807-4544-b7c9-521af3ba4642",
+      "generatedBy": "2fc5045b-92c1-4418-82db-7104690b82d4"	
+    },
+    "httpMethod": "GET",
+    "path": "/myFunction",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+}

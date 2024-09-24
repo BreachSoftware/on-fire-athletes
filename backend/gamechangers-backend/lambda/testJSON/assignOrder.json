@@ -1,0 +1,8 @@
+{
+    "body": "{\"uuid\": \"386785d0-4ae2-41fd-b15b-697273f86941\", \"card_uuid\": \"3e1b4f12-ed22-4e76-bcc5-f091c7d6dfe3\", \"card_generatedBy\": \"17bd7249-1058-45f9-8f97-c1f1961dad81\", \"user_id\": \"c2996cd4-f762-45fd-817d-5f99e184a211\"}",
+    "httpMethod": "POST",
+    "path": "/myFunction",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+}

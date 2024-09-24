@@ -1,0 +1,8 @@
+{
+    "body": "{\"cardUUID\" : \"7f9e1415-e026-4c63-9c27-a24cf5a1755f\", \"fromUUID\" : \"dbfb738e-0912-4259-b282-437844673e00\", \"generatedByUUID\" : \"dbfb738e-0912-4259-b282-437844673e9d\", \"toEmail\" : \"dlea@lsu.edu\",\"toUUID\" : \"dbfb738e-0912-4259-b282-437844673000\" }",
+    "httpMethod": "POST",
+    "path": "/myFunction",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+}

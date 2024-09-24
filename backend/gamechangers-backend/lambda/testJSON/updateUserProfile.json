@@ -1,0 +1,9 @@
+{
+    "body": "{\"uuid\":\"e9194565-29b7-408a-9970-ba3feb2a47e4\",\"email\":\"bdoyle125@gmail.com\",\"first_name\":\"Bryce\",\"last_name\":\"Doyle\",\"position\":\"Super Smash Bros: Ultimate\",\"team_hometown\":\"Baton Rouge Boyos\",\"xLink\":\"https://x.com/bdoyle125\",\"instagramLink\":\"https://www.instagram.com/bdoyle125/\",\"bio\":\"\"}",
+    "httpMethod": "POST",
+    "path": "/myFunction",
+    "headers": {
+        "Content-Type": "application/json"
+      }
+}
+  

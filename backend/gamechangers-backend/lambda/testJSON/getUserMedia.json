@@ -1,0 +1,12 @@
+{
+    "queryStringParameters": {
+      "authToken": "eyJraWQiOiJGa0owWk8raHVRWTJWN00xOStiYkhOUWRUWEI2Y2xpZVliYnNcL05IMk1RTT0iLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiI3YWQ0NWVjMS05Y2I0LTRhZTAtYjc5ZS05YTc3ZDllNWE2MTgiLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAudXMtZWFzdC0xLmFtYXpvbmF3cy5jb21cL3VzLWVhc3QtMV9zejFCSXhmbGoiLCJjbGllbnRfaWQiOiIyMDFqbjUxYmI0anQyc3VvaTFsYmNoaWNqNiIsIm9yaWdpbl9qdGkiOiJkMzBhMzJhYy1kM2JhLTQ0ZWUtYWRlZS1lODBjZjgxYTRjZDciLCJldmVudF9pZCI6IjA1ZjNhOTVlLTBlNjYtNDZmOS1hZThhLTEyOTYzMmQyNTZlNCIsInRva2VuX3VzZSI6ImFjY2VzcyIsInNjb3BlIjoiYXdzLmNvZ25pdG8uc2lnbmluLnVzZXIuYWRtaW4iLCJhdXRoX3RpbWUiOjE3MTMzMzA5NTYsImV4cCI6MTcxMzMzNDU1NiwiaWF0IjoxNzEzMzMwOTU2LCJqdGkiOiJmNTA3ZWFhMy04MDFhLTRiMzEtYjE0Ni03M2JjZGJiY2M2OTkiLCJ1c2VybmFtZSI6IjdhZDQ1ZWMxLTljYjQtNGFlMC1iNzllLTlhNzdkOWU1YTYxOCJ9.Lsf8VUJ4lrQsbvfKezNP2hhBrMhVfNdLA2VejlBbM_zIfM0CbjroNfQPk2GeLy6qeBe16uMD4FoGvGC6bMbl1_qhmmMto8phfXF0s8WXdQ5XU6doHf_vktkpS6FBh1wiO7wuMQu4tU-ymYXIYQmpZMEdWF_mVPTgY_CW9bsJh0epl6blMW7OvjnSabHqt-nV14wR8LsxhdSY1kHszGQqSv0YBqFDV3vZeJdtG2fwWJTDgxnInE3kEa9dcMZkuNx_T_ajWjfy-5_uz0ZrC9PZvfPGFVC_N-EuYK1fBqwKyokXfeP5Ug3wqYRIPF0gTDbz65GYntnZCJKUNJ7AB9zINw",
+      "mediaType": "image", 
+      "userId": "7ad45ec1-9cb4-4ae0-b79e-9a77d9e5a618"
+    },
+    "httpMethod": "POST",
+    "path": "/myFunction",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+}

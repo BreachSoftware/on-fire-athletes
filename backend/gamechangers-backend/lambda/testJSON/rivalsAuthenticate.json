@@ -1,0 +1,8 @@
+{
+    "body": "{\"email\": \"darrin@zenithsoftware.dev\", \"password\": \"*Test1234!\"}",
+    "httpMethod": "POST",
+    "path": "/myFunction",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+}

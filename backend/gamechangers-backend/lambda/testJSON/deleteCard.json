@@ -1,0 +1,8 @@
+{
+    "body": "{\"generatedBy\": \"12345\", \"uuid\": \"9e53d2bb-12e1-46b1-89c7-458e3c10529d\"}",
+    "httpMethod": "POST",
+    "path": "/myFunction",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+}

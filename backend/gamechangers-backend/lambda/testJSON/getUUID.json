@@ -1,0 +1,8 @@
+{
+    "body": "{\"email\": \"darrin@zenithsoftware.dev\"}",
+    "httpMethod": "POST",
+    "path": "/getUUID",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+}

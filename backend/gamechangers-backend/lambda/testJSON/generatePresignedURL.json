@@ -1,0 +1,8 @@
+{
+    "body": "{\"mediatype\": \"media\", \"filename\": \"test\", \"filetype\": \"image/jpeg\"}",
+    "httpMethod": "POST",
+    "path": "/myFunction",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+}

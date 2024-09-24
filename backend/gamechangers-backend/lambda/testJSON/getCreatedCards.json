@@ -1,0 +1,8 @@
+{
+    "body": "{\"generatedBy\": \"17bd7249-1058-45f9-8f97-c1f1961dad81\"}",
+    "httpMethod": "GET",
+    "path": "/getUsersCard",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+}

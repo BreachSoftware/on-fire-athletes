@@ -1,0 +1,293 @@
+service: gamechangers-backend
+frameworkVersion: '3'
+useDotenv: true
+
+custom:
+  serverless-offline:
+    binaryMediaTypes:
+      - '*/*'
+    httpPort: 4000
+    lambdaPort: 4001
+    endpoint: http://localhost:4001
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  stage: dev
+  versionFunctions: false
+  httpApi:
+    cors: true
+  environment:    
+    NEXT_PUBLIC_APP_ENV: ${param:NEXT_PUBLIC_APP_ENV, 'development'}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource:
+            - "arn:aws:dynamodb:us-east-1:*:table/Development-GamechangersCards"
+            - "arn:aws:dynamodb:us-east-1:*:table/Development-GamechangersUsers"
+            - "arn:aws:dynamodb:us-east-1:*:table/Development-GamechangersOrders"
+            - "arn:aws:dynamodb:us-east-1:*:table/Development-GamechangersSerialCards"
+            - "arn:aws:dynamodb:us-east-1:*:table/GamechangersCards"
+            - "arn:aws:dynamodb:us-east-1:*:table/GamechangersUsers"
+            - "arn:aws:dynamodb:us-east-1:*:table/GamechangersOrders"
+            - "arn:aws:dynamodb:us-east-1:*:table/GamechangersSerialCards"
+        - Effect: Allow
+          Action:
+            - s3:*
+            - "s3-object-lambda:*"
+          Resource: "arn:aws:s3:::gamechangers-media-uploads/*"
+        - Effect: Allow
+          Action:
+            - cognito-idp:AdminGet*
+            - cognito-idp:Get*
+          Resource: "arn:aws:cognito-idp:us-east-1:*:userpool/*"
+        - Effect: Allow
+          Action:
+            - ses:SendEmail
+          Resource: "arn:aws:ses:us-east-1:372797063233:identity/zenithsoftware.dev"
+
+functions:
+  resize:
+    handler: lambda/handlers/resizeImage.resizeImage
+    events:
+      - httpApi:
+          path: /sharpresize
+          method: post
+  tint:
+    handler: lambda/handlers/tintImage.tintImage
+    events:
+      - httpApi:
+          path: /sharptint
+          method: post
+  recolor:
+    handler: lambda/handlers/recolorImage.recolorImage
+    events:
+      - httpApi:
+          path: /sharprecolor
+          method: post
+  create:
+    handler: lambda/handlers/createCard.createCard
+    events:
+      - httpApi:
+          path: /createCard
+          method: post
+  createUser:
+    handler: lambda/handlers/createUser.createUser
+    events:
+      - httpApi:
+          path: /createUser
+          method: post
+
+  delete:
+    handler: lambda/handlers/deleteCard.deleteCard
+    events:
+      - httpApi:
+          path: /deleteCard
+          method: delete
+  get:
+    handler: lambda/handlers/getCard.getCard
+    events:
+      - httpApi:
+          path: /getCard
+          method: get
+  getAllCards:
+    handler: lambda/handlers/getAllCards.getAllCards
+    events:
+      - httpApi:
+          path: /getAllCards
+          method: get
+  generatePresignedURL:
+    handler: lambda/handlers/generatePresignedURL.generatePresignedURL
+    events:
+      - httpApi:
+          path: /media/generatePresignedURL
+          method: put
+  getUser:
+    handler: lambda/handlers/getUser.getUser
+    events:
+      - httpApi:
+          path: /getUser
+          method: get
+  getUUID:
+    handler: lambda/handlers/getUUID.getUUID
+    events:
+      - httpApi:
+          path: /getUUID
+          method: post
+  getToken:
+    handler: lambda/handlers/getToken.getToken
+    events:
+      - httpApi:
+          path: /getToken
+          method: get
+  getUsername:
+    handler: lambda/handlers/getUsername.getUsername
+    events:
+      - httpApi:
+          path: /users/username
+          method: get
+  getCreatedCards:
+    handler: lambda/handlers/getCreatedCards.getCreatedCards
+    events:
+      - httpApi:
+          path: /getCreatedCards
+          method: post
+  updateUserProfile:
+    handler: lambda/handlers/updateUserProfile.updateUserProfile
+    events:
+      - httpApi:
+          path: /users/updateUserProfile
+          method: post
+  renameMedia:
+    handler: lambda/handlers/renameMedia.renameMedia
+    events:
+      - httpApi:
+          path: /renameMedia
+          method: post
+  assignCard:
+    handler: lambda/handlers/assignCard.assignCard
+    events:
+      - httpApi:
+          path: /assignCard
+          method: post
+  reassignCard:
+    handler: lambda/handlers/reassignCard.reassignCard
+    events:
+      - httpApi:
+          path: /reassignCard
+          method: post
+  assignCardEmail:
+    handler: lambda/handlers/assignCardEmail.assignCardEmail
+    events:
+      - httpApi:
+          path: /assignCardEmail
+          method: post
+  addToCollectionEmail:
+    handler: lambda/handlers/addToCollectionEmail.addToCollectionEmail
+    events:
+      - httpApi:
+          path: /addToCollectionEmail
+          method: post
+  contactEmail:
+    handler: lambda/handlers/contactEmail.contactEmail
+    events:
+      - httpApi:
+          path: /contactEmail
+          method: post
+  createPaymentIntent:
+    handler: lambda/handlers/createPaymentIntent.createPaymentIntent
+    events:
+      - httpApi:
+          path: /createPaymentIntent
+          method: post
+  retrievePaymentStatus:
+    handler: lambda/handlers/retrievePaymentStatus.retrievePaymentStatus
+    events:
+      - httpApi:
+          path: /retrievePaymentStatus
+          method: post
+  updatePaymentStatus:
+    handler: lambda/handlers/updatePaymentStatus.updatePaymentStatus
+    events:
+      - httpApi:
+          path: /updatePaymentStatus
+          method: post
+  createSetupIntent:
+    handler: lambda/handlers/createSetupIntent.createSetupIntent
+    events:
+      - httpApi:
+          path: /createSetupIntent
+          method: post
+  retrievePaymentMethod: 
+    handler: lambda/handlers/retrievePaymentMethod.retrievePaymentMethod
+    events:
+      - httpApi:
+          path: /retrievePaymentMethod
+          method: post
+  createOrder:
+    handler: lambda/handlers/createOrder.createOrder
+    events:
+      - httpApi: 
+          path: /createOrder
+          method: post
+  getOrder:
+    handler: lambda/handlers/getOrder.getOrder
+    events:
+      - httpApi:
+          path: /getOrder
+          method: get
+  assignOrder:
+    handler: lambda/handlers/assignOrder.assignOrder
+    events:
+      - httpApi:
+          path: /assignOrder
+          method: post
+  createSerializedCard:
+    handler: lambda/handlers/createSerializedCard.createSerializedCard
+    events:
+      - httpApi:
+          path: /createSerializedCard
+          method: post
+  updateTotalCards:
+    handler: lambda/handlers/updateTotalCards.updateTotalCards
+    events:
+      - httpApi:
+          path: /updateTotalCards
+          method: post
+  updateCardPrice:
+    handler: lambda/handlers/updateCardPrice.updateCardPrice
+    events:
+      - httpApi:
+          path: /updateCardPrice
+          method: post
+  createCustomer:
+    handler: lambda/handlers/createCustomer.createCustomer
+    events:
+      - httpApi:
+          path: /createCustomer
+          method: post
+
+  ### RIVALS ENDPOINTS ###
+  rivalsAuthenticate:
+    handler: lambda/handlers/rivalsAuthenticate.rivalsAuthenticate
+    events:
+      - httpApi:
+          path: /authenticate
+          method: post
+  rivalsDisconnect:
+    handler: lambda/handlers/rivalsDisconnect.rivalsDisconnect
+    events:
+      - httpApi:
+          path: /users/disconnect
+          method: post
+  getUserMedia:
+    handler: lambda/handlers/getUserMedia.getUserMedia
+    events:
+      - httpApi:
+          path: /users/media
+          method: get
+  assignAvatar:
+    handler: lambda/handlers/assignAvatar.assignAvatar
+    events:
+      - httpApi:
+          path: /users/images
+          method: get
+  checkUpdatedImages:
+    handler: lambda/handlers/checkUpdatedImages.checkUpdatedImages
+    events:
+      - httpApi:
+          path: /users/images/updates
+          method: get
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-prune-plugin
+  - serverless-offline

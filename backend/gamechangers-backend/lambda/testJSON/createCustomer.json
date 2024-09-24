@@ -1,0 +1,8 @@
+{
+    "body": "{\"email\": \"bdoyle125@gmail.com\", \"name\": \"Bryce Doyle\"}",
+    "httpMethod": "POST",
+    "path": "/myFunction",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+}
