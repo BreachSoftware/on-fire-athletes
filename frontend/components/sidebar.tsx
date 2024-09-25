@@ -1,24 +1,28 @@
-import { VStack, IconButton, Divider, Link, Flex, Center, useDisclosure, Image } from "@chakra-ui/react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
 import {
-	faFacebookF,
-	faXTwitter,
-	faTiktok,
-	faSnapchat
-} from "@fortawesome/free-brands-svg-icons";
-import SideDrawer from "./sideDrawer";
-import SidebarDotsGreen from "../public/sidebar_dots_green.svg";
-import SidebarDots from "../public/sidebar_dots.svg";
-import { CloseIcon } from "@chakra-ui/icons";
+    VStack,
+    Icon,
+    IconButton,
+    Divider,
+    Link,
+    Flex,
+    Center,
+    useDisclosure,
+    Image,
+} from '@chakra-ui/react'
+
+import { FaFacebookF, FaXTwitter, FaTiktok, FaSnapchat } from 'react-icons/fa6'
+import SideDrawer from './sideDrawer'
+import SidebarDotsGreen from '../public/sidebar_dots_green.svg'
+import SidebarDots from '../public/sidebar_dots.svg'
+import { CloseIcon } from '@chakra-ui/icons'
 
 interface Props {
-	height?: string;
-	backgroundPresent?: boolean;
-	isMobile?: boolean;
-	backColor?: string;
-	isGridIconAltColor?: boolean;
-	onSubClose?: () => void;
+    height?: string
+    backgroundPresent?: boolean
+    isMobile?: boolean
+    backColor?: string
+    isGridIconAltColor?: boolean
+    onSubClose?: () => void
 }
 
 /**
@@ -34,93 +38,139 @@ interface Props {
  * @param {boolean} [props.isMobile=false] - Determines if the sidebar is being rendered on a mobile device.
  * @returns {JSX.Element} The sidebar component.
  */
-function Sidebar({ height = "100%", backgroundPresent = true, isMobile = false, backColor = "black", isGridIconAltColor = false, onSubClose }: Props) {
-	const defaultIconColor = "white"; // Default color for social media icons
-	const hoverIconColor = "green.100"; // Color on hover
-	const bgColor = backgroundPresent ? (backColor ?? "black") : "transparent";
-	const iconColor = backgroundPresent ? defaultIconColor : "white";
-	const socialIconHoverColor = backgroundPresent ? hoverIconColor : "white";
+function Sidebar({
+    height = '100%',
+    backgroundPresent = true,
+    isMobile = false,
+    backColor = 'black',
+    isGridIconAltColor = false,
+    onSubClose,
+}: Props) {
+    const defaultIconColor = 'white' // Default color for social media icons
+    const hoverIconColor = 'green.100' // Color on hover
+    const bgColor = backgroundPresent ? (backColor ?? 'black') : 'transparent'
+    const iconColor = backgroundPresent ? defaultIconColor : 'white'
+    const socialIconHoverColor = backgroundPresent ? hoverIconColor : 'white'
 
-	const iconSize = "12px"; // Smaller icon size
-	const socialMediaIconSpacing = 3; // Adjusted spacing for smaller icons
+    const iconSize = '12px' // Smaller icon size
+    const socialMediaIconSpacing = 3 // Adjusted spacing for smaller icons
 
-	// Hook to manage the open and close state of the side drawer
-	const { isOpen, onOpen, onClose } = useDisclosure();
+    // Hook to manage the open and close state of the side drawer
+    const { isOpen, onOpen, onClose } = useDisclosure()
 
-	return (
-		<VStack
-			w={isMobile ? "100px" : "140px"}
-			h={height}
-			p={4}
-			spacing={"32px"}
-			py="32px"
-			align="center"
-			bg={bgColor}
-			css={{
-				// Getting rid of default scrollbar. Should work on nearly every browser
-				"msOverflowStyle": "none",
-				"&::-webkit-scrollbar": { width: "0px" },
-			}}
-		>
-			<Center w="100%">
-				{onSubClose ? (
-					<IconButton
-						variant="ghost"
-						aria-label="Close menu"
-						icon={<CloseIcon />}
-						fontSize="24px"
-						isRound
-						color="white"
-						_active={{ color: "green.300" }}
-						_hover={{ md: { color: "green.300" } }}
-						_focus={{ boxShadow: "none" }}
-						onClick={onSubClose}
-					/>
-				) : (
-					<Flex onClick={onOpen}>
-						<Image
-							alt={"Open Drawer"}
-							width="43px"
-							height="43px"
-							src={isGridIconAltColor ? SidebarDots.src : SidebarDotsGreen.src}
-							cursor={"pointer"}
-						/>
-					</Flex>
-				)}
+    return (
+        <VStack
+            w={isMobile ? '100px' : '140px'}
+            h={height}
+            p={4}
+            spacing={'32px'}
+            py="32px"
+            align="center"
+            bg={bgColor}
+            css={{
+                // Getting rid of default scrollbar. Should work on nearly every browser
+                msOverflowStyle: 'none',
+                '&::-webkit-scrollbar': { width: '0px' },
+            }}
+        >
+            <Center w="100%">
+                {onSubClose ? (
+                    <IconButton
+                        variant="ghost"
+                        aria-label="Close menu"
+                        icon={<CloseIcon />}
+                        fontSize="24px"
+                        isRound
+                        color="white"
+                        _active={{ color: 'green.300' }}
+                        _hover={{ md: { color: 'green.300' } }}
+                        _focus={{ boxShadow: 'none' }}
+                        onClick={onSubClose}
+                    />
+                ) : (
+                    <Flex onClick={onOpen}>
+                        <Image
+                            alt={'Open Drawer'}
+                            width="43px"
+                            height="43px"
+                            src={
+                                isGridIconAltColor
+                                    ? SidebarDots.src
+                                    : SidebarDotsGreen.src
+                            }
+                            cursor={'pointer'}
+                        />
+                    </Flex>
+                )}
 
-				{/* The side drawer component */}
-				<SideDrawer isOpen={isOpen} onClose={onClose} placement={"right"} size={"xl"} isMobile={false} />
-			</Center>
+                {/* The side drawer component */}
+                <SideDrawer
+                    isOpen={isOpen}
+                    onClose={onClose}
+                    placement={'right'}
+                    size={'xl'}
+                    isMobile={false}
+                />
+            </Center>
 
-			<Divider orientation="vertical" borderColor={iconColor === "white" ? "whiteAlpha.900" : "white"} />
+            <Divider
+                orientation="vertical"
+                borderColor={iconColor === 'white' ? 'whiteAlpha.900' : 'white'}
+            />
 
-			<VStack spacing={socialMediaIconSpacing} w="100%" mt="auto">
-				{[
-					{ icon: faFacebookF, label: "Facebook", href: "https://facebook.com" },
-					{ icon: faXTwitter, label: "X", href: "https://x.com" },
-					{ icon: faTiktok, label: "TikTok", href: "https://tiktok.com" },
-					{ icon: faSnapchat, label: "Snapchat", href: "https://www.snapchat.com/" }
-				].map((social, index) => {
-					return (
-						<Center key={index}>
-							<Link href={social.href} isExternal>
-								<IconButton
-									variant="ghost"
-									aria-label={social.label}
-									icon={<FontAwesomeIcon icon={social.icon} style={{ width: "21px", height: "21px" }} />}
-									isRound
-									boxSize={iconSize}
-									color={iconColor}
-									_hover={{ md: { color: socialIconHoverColor } }}
-									_focus={{ outline: "none", boxShadow: "none", border: "none" }}
-								/>
-							</Link>
-						</Center>
-					);
-				})}
-			</VStack>
-		</VStack>
-	);
+            <VStack spacing={socialMediaIconSpacing} w="100%" mt="auto">
+                {[
+                    {
+                        icon: FaFacebookF,
+                        label: 'Facebook',
+                        href: 'https://facebook.com',
+                    },
+                    { icon: FaXTwitter, label: 'X', href: 'https://x.com' },
+                    {
+                        icon: FaTiktok,
+                        label: 'TikTok',
+                        href: 'https://tiktok.com',
+                    },
+                    {
+                        icon: FaSnapchat,
+                        label: 'Snapchat',
+                        href: 'https://www.snapchat.com/',
+                    },
+                ].map((social, index) => {
+                    return (
+                        <Center key={index}>
+                            <Link href={social.href} isExternal>
+                                <IconButton
+                                    variant="ghost"
+                                    aria-label={social.label}
+                                    icon={
+                                        <Icon
+                                            as={social.icon}
+                                            style={{
+                                                width: '21px',
+                                                height: '21px',
+                                            }}
+                                        />
+                                    }
+                                    isRound
+                                    boxSize={iconSize}
+                                    color={iconColor}
+                                    _hover={{
+                                        md: { color: socialIconHoverColor },
+                                    }}
+                                    _focus={{
+                                        outline: 'none',
+                                        boxShadow: 'none',
+                                        border: 'none',
+                                    }}
+                                />
+                            </Link>
+                        </Center>
+                    )
+                })}
+            </VStack>
+        </VStack>
+    )
 }
 
-export default Sidebar;
+export default Sidebar

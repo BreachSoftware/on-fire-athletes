@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Avatar, Button, Center, Flex, HStack, IconButton, Link, Skeleton, SkeletonCircle, Spacer, Text, Tooltip,
+import { Icon, Avatar, Button, Center, Flex, HStack, IconButton, Link, Skeleton, SkeletonCircle, Spacer, Text, Tooltip,
 	useDisclosure, useToast } from "@chakra-ui/react";
 import NavBar from "../navbar";
 import Sidebar from "@/components/sidebar";
@@ -9,9 +9,8 @@ import "@fontsource/barlow-condensed/500-italic.css"; // SemiBold Italic style
 import ProfileBioTab from "./components/profileBio";
 import ProfileAlbumTab from "./components/profileAlbumTab";
 import ProfileInformationButton from "./components/profileInformationButton";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFacebookF, faXTwitter, faInstagram, faYoutube, faTiktok, faSnapchat } from "@fortawesome/free-brands-svg-icons";
-import { faSquarePlus } from "@fortawesome/free-regular-svg-icons";
+import { FaFacebookF, FaXTwitter, FaInstagram, FaYoutube, FaTiktok, FaSnapchat } from "react-icons/fa6";
+import { FaPlusSquare } from 'react-icons/fa'
 import { useAuth } from "@/hooks/useAuth";
 import { getCard } from "../generate_card_asset/cardFunctions";
 import TradingCardInfo, { PaymentStatus } from "@/hooks/TradingCardInfo";
@@ -563,12 +562,12 @@ export default function Profile() {
 								>
 									<HStack spacing={socialMediaIconSpacing} m="2px 0px -8px 2px" mb={{ base: "-2px", md: "0px" }}>
 										{[
-											{ icon: faXTwitter, label: "Twitter", href: profileInfo?.xLink },
-											{ icon: faTiktok, label: "TikTok", href: profileInfo?.tiktokLink },
-											{ icon: faFacebookF, label: "Facebook", href: profileInfo?.facebookLink },
-											{ icon: faInstagram, label: "Instagram", href: profileInfo?.instagramLink },
-											{ icon: faYoutube, label: "YouTube", href: profileInfo?.youtubeLink },
-											{ icon: faSnapchat, label: "Snapchat", href: profileInfo?.snapchatLink },
+											{ icon: FaXTwitter, label: "Twitter", href: profileInfo?.xLink },
+											{ icon: FaTiktok, label: "TikTok", href: profileInfo?.tiktokLink },
+											{ icon: FaFacebookF, label: "Facebook", href: profileInfo?.facebookLink },
+											{ icon: FaInstagram, label: "Instagram", href: profileInfo?.instagramLink },
+											{ icon: FaYoutube, label: "YouTube", href: profileInfo?.youtubeLink },
+											{ icon: FaSnapchat, label: "Snapchat", href: profileInfo?.snapchatLink },
 										].map((social, index) => {
 											return (
 												// Only show the social media icon if the link is provided
@@ -578,7 +577,7 @@ export default function Profile() {
 														<IconButton
 															variant="ghost"
 															aria-label={social.label}
-															icon={<FontAwesomeIcon icon={social.icon} style={{ width: "18px", height: "18px" }} />}
+															icon={<Icon as={social.icon} style={{ width: "18px", height: "18px" }} />}
 															isRound
 															boxSize={iconSize}
 															color={iconColor}
@@ -594,7 +593,7 @@ export default function Profile() {
 													<IconButton
 														variant="ghost"
 														aria-label="Add Social Media"
-														icon={<FontAwesomeIcon icon={faSquarePlus} style={{ width: "18px", height: "18px" }} />}
+														icon={<Icon as={FaPlusSquare} style={{ width: "18px", height: "18px" }} />}
 														isRound
 														boxSize={iconSize}
 														color="green.100"
