@@ -1,14 +1,14 @@
-import { Box } from "@chakra-ui/layout";
-import SharedCarousel from "../shared/carousel";
-import InTheNewsArticle from "./article";
+import { Box } from '@chakra-ui/layout'
+import SharedCarousel from '../shared/carousel'
+import InTheNewsArticle from './article'
 
 interface Props {
     items: {
-        id: number;
-        imageUrl: string;
-        headline: string;
-        description: string;
-    }[];
+        id: number
+        imageUrl: string
+        headline: string
+        description: string
+    }[]
 }
 
 /**
@@ -18,19 +18,23 @@ interface Props {
  * @returns {JSX.Element} The rendered InTheNewsCarousel component.
  */
 export default function InTheNewsCarousel({ items }: Props) {
-	return (
-		<SharedCarousel containerOverrides={{
-			display: { base: "block", lg: "none" },
-			w: "100dvw",
-			px: "24px"
-		}} isLightMode>
-			{items.map((item) => {
-				return (
-					<Box key={item.id} px="32px">
-						<InTheNewsArticle item={item} />
-					</Box>
-				);
-			})}
-		</SharedCarousel>
-	);
+    return (
+        <SharedCarousel
+            containerOverrides={{
+                display: { base: 'block', lg: 'none' },
+                w: '100dvw',
+                px: '24px',
+            }}
+            isLightMode
+            arrowTopPosition="25%"
+        >
+            {items.map((item) => {
+                return (
+                    <Box key={item.id} px="36px">
+                        <InTheNewsArticle item={item} />
+                    </Box>
+                )
+            })}
+        </SharedCarousel>
+    )
 }

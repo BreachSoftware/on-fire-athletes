@@ -23,6 +23,7 @@ export default function TrendingNowCarousel({ cards }: Props) {
                 px: '12px',
             }}
             hideDots
+            arrowTopPosition="30%"
         >
             {cards.map((card, index) => {
                 return (

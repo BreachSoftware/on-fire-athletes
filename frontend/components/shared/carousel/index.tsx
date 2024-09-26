@@ -12,6 +12,7 @@ interface Props {
     children: ReactElement[]
     isLightMode?: boolean
     containerOverrides?: BoxProps
+    arrowTopPosition?: string
     hideDots?: boolean
 }
 
@@ -25,6 +26,7 @@ export default function SharedCarousel({
     containerOverrides,
     isLightMode,
     hideDots,
+    arrowTopPosition,
     children,
 }: Props) {
     const [selectedIndex, setSelectedIndex] = useState(0) // State to track the active slide
@@ -47,6 +49,7 @@ export default function SharedCarousel({
                     return (
                         <CarouselArrow
                             icon={<CarouselLeftIcon />}
+                            topPosition={arrowTopPosition}
                             isLightMode={isLightMode}
                             isPrev
                             onClick={onClick}
@@ -58,6 +61,7 @@ export default function SharedCarousel({
                     return (
                         <CarouselArrow
                             icon={<CarouselRightIcon />}
+                            topPosition={arrowTopPosition}
                             isLightMode={isLightMode}
                             onClick={onClick}
                             isDisabled={!hasNext}

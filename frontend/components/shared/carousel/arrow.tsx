@@ -3,6 +3,7 @@ import { IconButton } from '@chakra-ui/button'
 
 interface Props {
     icon: ReactElement
+    topPosition?: string
     isPrev?: boolean
     onClick: () => void
     isDisabled: boolean
@@ -20,6 +21,7 @@ interface Props {
  */
 export default function CarouselArrow({
     icon,
+    topPosition,
     isPrev,
     onClick,
     isDisabled,
@@ -49,7 +51,7 @@ export default function CarouselArrow({
             position="absolute"
             zIndex={2}
             left={isPrev ? 0 : undefined}
-            top={'55%'}
+            top={topPosition || '50%'}
             right={isPrev ? undefined : 0}
         />
     )

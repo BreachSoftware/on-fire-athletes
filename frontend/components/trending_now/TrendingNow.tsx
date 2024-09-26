@@ -1,18 +1,9 @@
-import {
-    Button,
-    Stack,
-    Center,
-    Heading,
-    VStack,
-    useToast,
-} from '@chakra-ui/react'
+import { Stack, Center, Heading, VStack, useToast } from '@chakra-ui/react'
 import { fetchAllCards } from '@/app/lockerroom/components/FetchAllCards'
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { BeatLoader } from 'react-spinners'
-import ChevronRightIcon from '../icons/chevron-right'
 import TrendingNowCarousel from './TrendingCarousel'
 import TrendingCard from './TrendingCard'
+import LightItUpCTAButton from '@/app/components/buttons/light-it-up-button'
 // import TrendingNowCarousel from "./TrendingCarousel";
 
 /**
@@ -22,10 +13,8 @@ import TrendingCard from './TrendingCard'
  */
 export default function TrendingNow() {
     // State variables to store the cards
-    const [cards, setCards] = useState([])
-    const [buttonClicked, setButtonClicked] = useState(false)
     const toast = useToast()
-    const router = useRouter()
+    const [cards, setCards] = useState([])
 
     useEffect(() => {
         fetchAllCards()
@@ -103,33 +92,14 @@ export default function TrendingNow() {
                     })}
                 </Stack>
                 <TrendingNowCarousel cards={cards} />
-                <Button
-                    _hover={{
-                        md: {
-                            backgroundColor: 'green.300',
-                            color: 'white',
-                            fontStyle: 'italic',
-                        },
-                    }}
-                    backgroundColor={'green.100'}
-                    letterSpacing={'2px'}
-                    width="233px"
-                    height="44px"
-                    color={'white'}
+                <LightItUpCTAButton
+                    color="white"
                     my={16}
-                    fontSize={14}
-                    textTransform={'uppercase'}
-                    fontFamily={'Barlow'}
-                    onClick={() => {
-                        setButtonClicked(true)
-                        router.push('/lockerroom')
-                    }}
-                    rightIcon={<ChevronRightIcon fontSize="lg" />}
-                    isLoading={buttonClicked}
-                    spinner={<BeatLoader size={8} color="white" />}
+                    textTransform="uppercase"
+                    link={'/lockerroom'}
                 >
-                    Start Collecting
-                </Button>
+                    View Locker Room
+                </LightItUpCTAButton>
             </Center>
         </>
     )

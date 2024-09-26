@@ -22,6 +22,7 @@ export default function LightItUpCarousel({ sections }: Props) {
                 w: '100dvw',
                 px: '24px',
             }}
+            arrowTopPosition="55%"
         >
             {sections.map((section, i) => {
                 return (

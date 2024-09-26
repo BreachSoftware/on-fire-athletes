@@ -440,10 +440,10 @@ export default function TrendingCard({
                                 <Text
                                     fontSize={18}
                                     fontFamily={'Barlow Semi Condensed'}
-                                    fontWeight={'bold'}
+                                    fontWeight={'medium'}
                                 >
                                     {card.price
-                                        ? `$${card.price}`
+                                        ? `$${card.price.toFixed(2)}`
                                         : 'TRADE ONLY'}
                                 </Text>
                                 {shouldShowButton && (
@@ -468,7 +468,11 @@ export default function TrendingCard({
                                 )}
                             </HStack>
                             <Divider borderColor="white" />
-                            <VStack align={'left'} gap={0} lineHeight={'20px'}>
+                            <VStack
+                                align="flex-start"
+                                gap={0}
+                                lineHeight={'20px'}
+                            >
                                 {/* Text component for the player's name */}
                                 <Text
                                     textTransform={'uppercase'}

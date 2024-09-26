@@ -24,13 +24,17 @@ interface InTheNewsProps {
  */
 export default function InTheNews(props: InTheNewsProps) {
     return (
-        <Box position="relative" minH="100dvh" h="fit-content">
+        <Box
+            position="relative"
+            minH={{ base: 'none', md: '100dvh' }}
+            h="fit-content"
+        >
             {props.showBackground && <BackgroundComponent />}
             <Flex
                 px={{ base: '24px', md: '64px', xl: '100px' }}
-                py={16}
+                py={{ base: 12, md: 16 }}
                 position="relative"
-                minH="100dvh"
+                minH={{ base: 'none', md: '100dvh' }}
                 h="fit-content"
                 flexDir={'column'}
                 justifyContent={'center'}
@@ -103,32 +107,6 @@ function BackgroundComponent() {
                 backgroundRepeat="no-repeat"
                 backgroundSize="cover"
                 backgroundPosition={'center top'}
-            />
-            <Box
-                position="absolute"
-                top={0}
-                left={0}
-                right={0}
-                bottom={0}
-                h="full"
-                w="full"
-                display={{ base: 'block', md: 'none' }}
-                backgroundImage="url('news-1.png')"
-                backgroundRepeat="no-repeat"
-                backgroundPosition="left top"
-            />
-            <Box
-                position="absolute"
-                top={0}
-                left={0}
-                right={0}
-                bottom={0}
-                h="full"
-                w="full"
-                display={{ base: 'block', md: 'none' }}
-                backgroundImage="url('news-2.png')"
-                backgroundRepeat="no-repeat"
-                backgroundPosition="bottom right"
             />
             <Box
                 position="absolute"
