@@ -10,7 +10,13 @@ import {
     Image,
 } from '@chakra-ui/react'
 
-import { FaFacebookF, FaXTwitter, FaTiktok, FaSnapchat } from 'react-icons/fa6'
+import {
+    FaFacebookF,
+    FaXTwitter,
+    FaTiktok,
+    FaSnapchat,
+    FaInstagram,
+} from 'react-icons/fa6'
 import SideDrawer from './sideDrawer'
 import SidebarDotsGreen from '../public/sidebar_dots_green.svg'
 import SidebarDots from '../public/sidebar_dots.svg'
@@ -135,6 +141,11 @@ function Sidebar({
                         icon: FaSnapchat,
                         label: 'Snapchat',
                         href: 'https://www.snapchat.com/',
+                    },
+                    {
+                        icon: FaInstagram,
+                        label: 'Instagram',
+                        href: '',
                     },
                 ].map((social, index) => {
                     return (

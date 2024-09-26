@@ -29,6 +29,7 @@ export default function CaptureCreateCustomize() {
                 flexDir="column"
                 maxW="1800px"
                 h="100%"
+                minH="100vh"
                 alignSelf="left"
                 justifyContent={{ base: 'space-between', md: 'center' }}
             >
