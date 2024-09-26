@@ -434,12 +434,12 @@ export default function NavBar({
 
     return (
         <ResponsiveBlock
-            zIndex={99}
             bgGradient={{
                 base: 'linear(to-b, #000, #000000fe)',
                 md: 'linear(to-b, rgba(0,0,0,1), rgba(0,0,0,0.6), rgba(0,0,0,0))',
             }}
             {...rest}
+            zIndex={100}
         >
             <Flex
                 pt={{ base: '20px', md: '32px' }}

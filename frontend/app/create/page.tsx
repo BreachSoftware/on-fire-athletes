@@ -36,101 +36,106 @@ export default function CreationOverview() {
 
     return (
         <>
-            <BackToCheckoutModal />
-            <CreateBackground />
-            <SideBarHamburger />
-            <Flex
-                direction="row-reverse"
-                w="full"
-                h={{ base: 'full', lg: '100dvh' }}
-                minH="100dvh"
-            >
-                <Box h="full" display={{ base: 'none', lg: 'inline' }}>
-                    <Sidebar height="100%" />
-                </Box>
-                <Flex w="full" flexDir="column" h="full">
-                    <NavBar
-                        noDivider
-                        bgGradient={{
-                            base: 'none',
-                            md: 'linear(to-b, rgba(0,0,0,1), rgba(0,0,0,0.6), rgba(0,0,0,0))',
-                        }}
-                    />
-                    <SharedStack
-                        flex={1}
-                        pt={{ base: '40px', lg: 'none' }}
-                        px={{ base: '24px', lg: '48px', '2xl': '72px' }}
-                        alignItems="center"
-                        direction={{ base: 'column', lg: 'row' }}
-                    >
+            <Box position="relative">
+                <BackToCheckoutModal />
+                <CreateBackground />
+                <Flex
+                    direction="row-reverse"
+                    w="full"
+                    h={{ base: 'full', lg: '100dvh' }}
+                    minH="100dvh"
+                >
+                    <Box h="full" display={{ base: 'none', lg: 'inline' }}>
+                        <Sidebar height="100%" />
+                    </Box>
+                    <Flex w="full" flexDir="column" h="full">
+                        <NavBar
+                            noDivider
+                            bgGradient={{
+                                base: 'none',
+                                md: 'linear(to-b, rgba(0,0,0,1), rgba(0,0,0,0.6), rgba(0,0,0,0))',
+                            }}
+                        />
                         <SharedStack
-                            w="full"
-                            spacing={8}
-                            pl={{ base: '12px', lg: '48px', '2xl': 32 }}
-                            pr={{ base: '12px', lg: '48px', '2xl': 32 }}
+                            flex={1}
+                            pt={{ base: '40px', lg: 'none' }}
+                            px={{ base: '24px', lg: '48px', '2xl': '72px' }}
+                            alignItems="center"
+                            direction={{ base: 'column', lg: 'row' }}
                         >
-                            <Flex
+                            <SharedStack
                                 w="full"
-                                flexDir={{ base: 'column', lg: 'row' }}
-                                alignItems={{
-                                    base: 'center',
-                                    lg: 'flex-end',
-                                }}
-                                gridGap={{ base: 8, lg: 0 }}
-                                justifyContent="space-between"
+                                spacing={8}
+                                pl={{ base: '12px', lg: '48px', '2xl': 32 }}
+                                pr={{ base: '12px', lg: '48px', '2xl': 32 }}
                             >
-                                <CreateYourCardText />
-                                <Box>
-                                    <StartCreatingButton />
+                                <Flex
+                                    w="full"
+                                    flexDir={{ base: 'column', lg: 'row' }}
+                                    alignItems={{
+                                        base: 'center',
+                                        lg: 'flex-end',
+                                    }}
+                                    gridGap={{ base: 8, lg: 0 }}
+                                    justifyContent="space-between"
+                                >
+                                    <CreateYourCardText />
+                                    <Box>
+                                        <StartCreatingButton />
+                                    </Box>
+                                </Flex>
+                                <Box
+                                    w="full"
+                                    display={{ base: 'none', lg: 'inline' }}
+                                >
+                                    <InfoCard steps={Steps} />
+                                </Box>
+                            </SharedStack>
+                            <Flex
+                                direction="column"
+                                align="center"
+                                px={{ base: '16px', lg: 0 }}
+                            >
+                                <Box
+                                    w={{
+                                        base: 'full',
+                                        md: '396px',
+                                        '2xl': '516px',
+                                    }}
+                                    h={{
+                                        base: '418px',
+                                        md: '512px',
+                                        '2xl': '672px',
+                                    }}
+                                >
+                                    <Image
+                                        src="step_one_template_cards/demario_a.png"
+                                        alt="Your Card"
+                                        objectFit="contain"
+                                        transform="rotate(12deg) scale(0.75)"
+                                    />
+                                </Box>
+                                <Box
+                                    mt={{ base: '16px', lg: '64px' }}
+                                    width="100%"
+                                >
+                                    <CardDropShadow />
                                 </Box>
                             </Flex>
                             <Box
                                 w="full"
-                                display={{ base: 'none', lg: 'inline' }}
+                                mt={{ base: '16px', xs: '64px' }}
+                                mb="16px"
+                                display={{ base: 'inline', lg: 'none' }}
                             >
                                 <InfoCard steps={Steps} />
                             </Box>
                         </SharedStack>
-                        <Flex
-                            direction="column"
-                            align="center"
-                            px={{ base: '16px', lg: 0 }}
-                        >
-                            <Box
-                                w={{
-                                    base: 'full',
-                                    md: '396px',
-                                    '2xl': '516px',
-                                }}
-                                h={{
-                                    base: '418px',
-                                    md: '512px',
-                                    '2xl': '672px',
-                                }}
-                            >
-                                <Image
-                                    src="step_one_template_cards/demario_a.png"
-                                    alt="Your Card"
-                                    objectFit="contain"
-                                    transform="rotate(12deg) scale(0.75)"
-                                />
-                            </Box>
-                            <Box mt={{ base: '16px', lg: '64px' }} width="100%">
-                                <CardDropShadow />
-                            </Box>
-                        </Flex>
-                        <Box
-                            w="full"
-                            mt={{ base: '16px', xs: '64px' }}
-                            mb="16px"
-                            display={{ base: 'inline', lg: 'none' }}
-                        >
-                            <InfoCard steps={Steps} />
-                        </Box>
-                    </SharedStack>
-                    <Footer />
+                        <Footer />
+                    </Flex>
                 </Flex>
-            </Flex>
+            </Box>
+            <SideBarHamburger />
         </>
     )
 }
