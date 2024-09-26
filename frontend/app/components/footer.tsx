@@ -15,6 +15,8 @@ export default function Footer() {
                 base: 'mobileFooterBackground.png',
                 md: 'desktopFooterBackground.png',
             }}
+            w="full"
+            zIndex={11}
         >
             <Flex
                 direction={{ base: 'column', md: 'row' }}
@@ -26,7 +28,6 @@ export default function Footer() {
                 fontSize="sm"
                 gap="25px"
                 borderWidth={0}
-                zIndex={11}
                 boxSizing="border-box"
                 pb={{ base: '48px', md: '48px' }}
                 pt={{ base: '64px', md: '48px' }}
