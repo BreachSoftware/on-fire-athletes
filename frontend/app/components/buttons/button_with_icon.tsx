@@ -1,10 +1,11 @@
 "use client";
 
-import { Button, Text, Spacer, Icon, Box, ButtonProps } from "@chakra-ui/react";
-import { FaChevronRight } from "react-icons/fa";
+import { Button, Text, Spacer, Icon, Box, ButtonProps, Image } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { BeatLoader } from "react-spinners";
 import { useState } from "react";
+
+import ChevronRightIcon from "../../../public/chevron-right.png";
 
 interface ButtonWithIconProps extends ButtonProps {
 	title: string;
@@ -19,27 +20,21 @@ interface ButtonWithIconProps extends ButtonProps {
  * @param link The destination to navigate to.
  * @returns The button with icon component.
  */
-export default function ButtonWithIcon({
-	title,
-	link,
-	color,
-	centerTextAndIcon = false,
-	...rest
-}: ButtonWithIconProps) {
+export default function ButtonWithIcon({ title, link, color, centerTextAndIcon = false, ...rest }: ButtonWithIconProps) {
 	const router = useRouter();
-	const [ buttonClicked, setButtonClicked ] = useState(false);
+	const [buttonClicked, setButtonClicked] = useState(false);
 
 	return (
 		<Button
 			variant={"infoButton"}
-			padding={{ md: "0px 30px" }}
+			padding={{ base: "24px", md: "0px 43px" }}
 			_hover={{
 				md: {
 					opacity: 0.8,
 					boxShadow: "0 0 5px rgba(0,0,0,0.3)",
 					fontStyle: "italic",
-					padding: "0px 40px"
-				}
+					padding: "0px 45px",
+				},
 			}}
 			transition="padding 0.3s ease-out, box-shadow 0.3s ease-out, background 0.3s ease-out"
 			letterSpacing="1.5px"
@@ -56,9 +51,9 @@ export default function ButtonWithIcon({
 			fontSize={{ md: "2xs", xl: "md" }}
 			{...rest} // Spread any other props onto the Button component
 		>
-			<Text>{title}</Text>
+			<Text mb={"-2px"}>{title}</Text>
 			{centerTextAndIcon ? <Box w="10px" /> : <Spacer />}
-			<Icon as={FaChevronRight} />
+			<Image src={ChevronRightIcon.src} />
 		</Button>
 	);
 }
