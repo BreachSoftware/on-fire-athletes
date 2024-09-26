@@ -30,15 +30,24 @@ export default function EasyStepsInfoSection(props: EasyStepInfoSectionProps) {
 					width={"100%"}
 					flexDirection={{ base: "column", md: "row" }}
 					justifyContent={"center"}
-					gap={"10px"}
+					gap={{ base: "38px", md: "8px" }}
 				>
+					<Divider
+						display={{ base: "block", md: "none" }}
+						w="100%"
+						orientation="horizontal"
+						height="100%"
+						borderBlockEnd="1px"
+						borderColor="white"
+						opacity={1}
+					/>
 					{props.steps.flatMap((step, index) => {
 						return [
 							<Step
 								key={index}
 								stepNumber={step.stepNumber}
 								stepDescription={step.stepDescription}
-								paddingX="25px"
+								paddingX="12px"
 							/>,
 							index !== props.steps.length - 1 && (
 								<Divider
