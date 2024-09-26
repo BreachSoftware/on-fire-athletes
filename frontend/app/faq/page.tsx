@@ -20,8 +20,6 @@ const categories = {
 // Styling Color Palette
 const leftHeaderColor = 'gray.400'
 const headerFont = 'Barlow Semi Condensed'
-const headerWeight = 'bold'
-const headerFontSize = { base: 13, md: 20 }
 const headerSpacing = 0.4
 
 const subHeaderFont = 'Barlow Semi Condensed'
