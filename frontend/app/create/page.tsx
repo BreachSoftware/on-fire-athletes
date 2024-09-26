@@ -1,158 +1,136 @@
+'use client'
 
-"use client";
-
-import { AspectRatio, Box, Flex, Image, Spacer, Stack, useBreakpointValue, VStack } from "@chakra-ui/react";
-import CardDropShadow from "@/components/create/CardDropShadow";
-import EasyStepsInfoSection from "@/components/create/easyStepsInfoSection";
-import InfoCard from "@/components/info_card/info_card";
-import CreateYourCardText from "@/components/create/CreateYourCardText";
-import NavBar from "../navbar";
-import Sidebar from "@/components/sidebar";
-import { BackToCheckoutModal } from "../components/BackToCheckoutModal";
-import ButtonWithIcon from "../components/buttons/button_with_icon";
-import Footer from "../components/footer";
+import { Flex, Image, Box } from '@chakra-ui/react'
+import CardDropShadow from '@/components/create/CardDropShadow'
+import InfoCard from './components/info-card'
+import CreateYourCardText from '@/components/create/CreateYourCardText'
+import NavBar from '../navbar'
+import Sidebar from '@/components/sidebar'
+import { BackToCheckoutModal } from '../components/BackToCheckoutModal'
+import Footer from '../components/footer'
+import CreateBackground from './components/background'
+import SharedStack from '@/components/shared/wrappers/shared-stack'
+import { InfoItemProps } from './components/info-card/item'
+import StartCreatingButton from './components/start-creating-button'
+import SideBarHamburger from '@/components/sidebarHamburger'
 
 /**
  * Main page for the creation process
  * @returns the creation overview page
  */
 export default function CreationOverview() {
+    const Steps: InfoItemProps[] = [
+        {
+            number: 1,
+            description: 'Create and customize your own card!',
+        },
+        {
+            number: 2,
+            description: 'Pick a digital and/or physical AR package!',
+        },
+        {
+            number: 3,
+            description: 'Showcase, Trade, & Sell your sports cards!',
+        },
+    ]
 
-	const EasySteps = [
-		{
-			stepNumber: 1,
-			stepDescription: "Create and customize your own card!"
-		},
-		{
-			stepNumber: 2,
-			stepDescription: "Pick a digital and/or physical AR package!"
-		},
-		{
-			stepNumber: 3,
-			stepDescription: "Showcase, Trade, & Sell your sports cards!"
-		},
-	];
-
-	const InfoSections = [
-		{
-			description: <EasyStepsInfoSection steps={EasySteps} />
-		}
-	];
-
-	const isMobile = useBreakpointValue(
-		{
-			base: true,
-			xl: false,
-		}
-	);
-
-	return (
-		<>
-			<BackToCheckoutModal />
-
-			{/* Background Flexbox */}
-			<Flex direction="column" position="absolute" top="0" left="0" zIndex={-10} h="100%">
-				{/* Top Background Image */}
-				<Flex
-					bgImage="young-athletes-card-array-bw.png"
-					bgPosition="center"
-					bgRepeat="no-repeat"
-					filter={"grayscale(0%)"}
-					bgSize="cover"
-					bgPos="60% 40%"
-					h="500px"
-					w="100vw"
-				>
-					<Flex
-						bgGradient="linear(#000C, #17760BC3, #058D05C3)"
-						h="100%"
-						w="100%"
-					/>
-				</Flex>
-				{/* Bottom Part of the Background */}
-				<Flex
-					bgGradient={"linear(180deg, gray.1200 0%, gray.1300 100%) 0% 0% no-repeat padding-box;"}
-					h="calc(100% - 500px)"
-					w="100vw"
-				/>
-			</Flex>
-
-			{/* Main Flexbox */}
-			<Flex direction="row-reverse">
-				{ !isMobile ? <Box position={"sticky"}><Sidebar height="100%" backgroundPresent /></Box> : null }
-				{/* Everything but the sidebar */}
-				<Flex direction="column" w="100%">
-					<NavBar noDivider/>
-					{/* Everything but the navbar (main page contents) */}
-					<Stack
-						direction={isMobile ? "column" : "row"}
-						w="100%"
-						h="100%"
-						align="center"
-						padding={"5%"}
-						gap={isMobile ? "3vh" : "0"}
-					>
-						{/* Create Your Sports Card + Overview */}
-						<VStack w={isMobile ? "100vw" : "45vw"} gap="4vh">
-							<Stack
-								direction={isMobile ? "column" : "row"}
-								align={isMobile ? "center" : "end"}
-								w="100%"
-							>
-								{/* Create Your Card Component */}
-								<CreateYourCardText />
-								<Spacer />
-								<ButtonWithIcon
-									title={"START CREATING"}
-									link={"/create/card_creation"}
-									width={"40%"}
-									minWidth={"250px"}
-									height={"50px"}
-									color={"green.100"}
-									letterSpacing={"2.25px"}
-									fontSize={{ base:"16px", md:"18px" }}
-								/>
-							</Stack>
-							{/* Desktop version of How OnFire Athletes works card */}
-							{ !isMobile && (
-								<Box w="100%" height="45vh">
-									<InfoCard infoSections={InfoSections} />
-								</Box>
-							)}
-						</VStack>
-						{/* Spacer between sections */}
-						<Box w="50px"/>
-						{/* Card image and shadow */}
-						<Flex
-							direction="column"
-							align="center"
-							maxW={isMobile ? "80vw" : "30vw"}
-							w={isMobile ? "60vw" : "100%"}
-						>
-							<AspectRatio ratio={1100 / 1653} width="70%">
-								<Image
-									src="step_one_template_cards/demario_a.png"
-									alt="Your Card"
-									objectFit="contain"
-									transform="rotate(12deg)"
-								/>
-							</AspectRatio>
-							<Box mt="10%" width="120%">
-								<CardDropShadow />
-							</Box>
-						</Flex>
-						{/* Bottom Content for Mobile, Info sections */}
-						{ isMobile && (
-							<Flex w="90%" py="20px">
-								<Box w="100%">
-									<InfoCard infoSections={InfoSections} />
-								</Box>
-							</Flex>
-						)}
-					</Stack>
-				</Flex>
-			</Flex>
-			<Footer />
-		</>
-	);
+    return (
+        <>
+            <BackToCheckoutModal />
+            <CreateBackground />
+            <SideBarHamburger />
+            <Flex
+                direction="row-reverse"
+                w="full"
+                h={{ base: 'full', lg: '100dvh' }}
+                minH="100dvh"
+            >
+                <Box h="full" display={{ base: 'none', lg: 'inline' }}>
+                    <Sidebar height="100%" />
+                </Box>
+                <Flex w="full" flexDir="column" h="full">
+                    <NavBar
+                        noDivider
+                        bgGradient={{
+                            base: 'none',
+                            md: 'linear(to-b, rgba(0,0,0,1), rgba(0,0,0,0.6), rgba(0,0,0,0))',
+                        }}
+                    />
+                    <SharedStack
+                        flex={1}
+                        pt={{ base: '40px', lg: 'none' }}
+                        px={{ base: '24px', lg: '48px', '2xl': '72px' }}
+                        alignItems="center"
+                        direction={{ base: 'column', lg: 'row' }}
+                    >
+                        <SharedStack
+                            w="full"
+                            spacing={8}
+                            pl={{ base: '12px', lg: '48px', '2xl': 32 }}
+                            pr={{ base: '12px', lg: '48px', '2xl': 32 }}
+                        >
+                            <Flex
+                                w="full"
+                                flexDir={{ base: 'column', lg: 'row' }}
+                                alignItems={{
+                                    base: 'center',
+                                    lg: 'flex-end',
+                                }}
+                                gridGap={{ base: 8, lg: 0 }}
+                                justifyContent="space-between"
+                            >
+                                <CreateYourCardText />
+                                <Box>
+                                    <StartCreatingButton />
+                                </Box>
+                            </Flex>
+                            <Box
+                                w="full"
+                                display={{ base: 'none', lg: 'inline' }}
+                            >
+                                <InfoCard steps={Steps} />
+                            </Box>
+                        </SharedStack>
+                        <Flex
+                            direction="column"
+                            align="center"
+                            px={{ base: '16px', lg: 0 }}
+                        >
+                            <Box
+                                w={{
+                                    base: 'full',
+                                    md: '396px',
+                                    '2xl': '516px',
+                                }}
+                                h={{
+                                    base: '418px',
+                                    md: '512px',
+                                    '2xl': '672px',
+                                }}
+                            >
+                                <Image
+                                    src="step_one_template_cards/demario_a.png"
+                                    alt="Your Card"
+                                    objectFit="contain"
+                                    transform="rotate(12deg) scale(0.75)"
+                                />
+                            </Box>
+                            <Box mt={{ base: '16px', lg: '64px' }} width="100%">
+                                <CardDropShadow />
+                            </Box>
+                        </Flex>
+                        <Box
+                            w="full"
+                            mt={{ base: '16px', xs: '64px' }}
+                            mb="16px"
+                            display={{ base: 'inline', lg: 'none' }}
+                        >
+                            <InfoCard steps={Steps} />
+                        </Box>
+                    </SharedStack>
+                    <Footer />
+                </Flex>
+            </Flex>
+        </>
+    )
 }

@@ -2,6 +2,7 @@
 /* eslint-disable quote-props */
 import {
     Box,
+    type BoxProps,
     Flex,
     Stack,
     Icon,
@@ -24,7 +25,7 @@ import { ConnectButton } from '@rainbow-me/rainbowkit'
 import ResponsiveBlock from '@/components/shared/wrappers/responsive-block'
 
 // Optional params
-interface NavBarProps {
+interface NavBarProps extends BoxProps {
     darkText?: boolean
     logoDropShadow?: boolean
     noDivider?: boolean
@@ -369,7 +370,12 @@ function DesktopNav(props: NavBarProps) {
  * Renders the navbar component.
  * @returns The navbar component.
  */
-export default function NavBar(props: NavBarProps) {
+export default function NavBar({
+    darkText,
+    logoDropShadow,
+    cryptoWalletConnected,
+    ...rest
+}: NavBarProps) {
     const { isOpen, onToggle } = useDisclosure()
     const [isMobile, setIsMobile] = useState(false)
 
@@ -433,6 +439,7 @@ export default function NavBar(props: NavBarProps) {
                 base: 'linear(to-b, #000, #000000fe)',
                 md: 'linear(to-b, rgba(0,0,0,1), rgba(0,0,0,0.6), rgba(0,0,0,0))',
             }}
+            {...rest}
         >
             <Flex
                 pt={{ base: '20px', md: '32px' }}
@@ -466,10 +473,10 @@ export default function NavBar(props: NavBarProps) {
                         width={'100%'}
                     >
                         <DesktopNav
-                            darkText={props.darkText}
-                            logoDropShadow={props.logoDropShadow}
+                            darkText={darkText}
+                            logoDropShadow={logoDropShadow}
                             hreffunc={calcHREF}
-                            cryptoWalletConnected={props.cryptoWalletConnected}
+                            cryptoWalletConnected={cryptoWalletConnected}
                         />
                     </Flex>
                 </Flex>

@@ -1849,9 +1849,9 @@
   resolved "https://registry.npmjs.org/@fontsource/chakra-petch/-/chakra-petch-5.1.0.tgz#c710088d1c0423526b17e7ff81fdb2ea08a80865"
   integrity sha512-xKSWOLEJyNOejn/ZQDyQwL+oz6cQXtoTaVCxjszEGUKZQnJMv9QpYj+dyPD/wEjbEbje6a0TergWsahQCclOIw==
 
-"@fontsource/roboto@^5.0.8":
+"@fontsource/roboto@^5.1.0":
   version "5.1.0"
-  resolved "https://registry.npmjs.org/@fontsource/roboto/-/roboto-5.1.0.tgz#00230737ec09c60ae877a5e33d067c0607fdd5ba"
+  resolved "https://registry.yarnpkg.com/@fontsource/roboto/-/roboto-5.1.0.tgz#00230737ec09c60ae877a5e33d067c0607fdd5ba"
   integrity sha512-cFRRC1s6RqPygeZ8Uw/acwVHqih8Czjt6Q0MwoUoDe9U3m4dH1HmNDRBZyqlMSFwgNAUKgFImncKdmDHyKpwdg==
 
 "@fontsource/water-brush@^5.0.18":
