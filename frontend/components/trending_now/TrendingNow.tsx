@@ -44,6 +44,7 @@ export default function TrendingNow() {
                 backgroundPosition={'center center'}
                 width="100%"
                 alignItems={'center'}
+                mb="-1px"
                 pt={32}
                 px={{ base: '24px', md: '64px', lg: '100px' }}
                 pb={{ base: 0, md: 12 }}
