@@ -112,7 +112,8 @@ export default function FAQPage() {
                                 gap={5}
                                 position="sticky"
                                 top={0}
-                                w={{ xl: '20%' }}
+                                w="fit-content"
+                                minW={{ xl: '20%' }}
                             >
                                 <Text
                                     color={'white'}
