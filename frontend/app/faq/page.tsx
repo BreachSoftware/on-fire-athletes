@@ -93,6 +93,7 @@ export default function FAQPage() {
                         mt="40px"
                         pb="40px"
                         h="full"
+                        __css={{ '::-webkit-scrollbar': { display: 'none' } }}
                     >
                         {/* Main FAQ content */}
                         <Flex
