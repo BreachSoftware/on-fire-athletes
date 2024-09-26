@@ -86,6 +86,7 @@ html,
 body {
     max-width: 100dvw;
     min-height: 100dvh;
+    font-display: auto;
 }
 
 body {
