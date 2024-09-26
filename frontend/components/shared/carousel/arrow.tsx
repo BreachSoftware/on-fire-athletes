@@ -1,12 +1,12 @@
-import { ReactElement } from "react";
-import { IconButton } from "@chakra-ui/button";
+import { ReactElement } from 'react'
+import { IconButton } from '@chakra-ui/button'
 
 interface Props {
-    icon: ReactElement;
-    isPrev?: boolean;
-    onClick: () => void;
+    icon: ReactElement
+    isPrev?: boolean
+    onClick: () => void
     isDisabled: boolean
-	isLightMode?: boolean;
+    isLightMode?: boolean
 }
 
 /**
@@ -18,31 +18,39 @@ interface Props {
  * @param isDisabled boolean - Whether the arrow is disabled
  * @returns {JSX.Element} The rendered arrow
  */
-export default function CarouselArrow({ icon, isPrev, onClick, isDisabled, isLightMode }: Props) {
-	return (
-		<IconButton
-			icon={icon}
-			aria-label={isPrev ? "Previous" : "Next"}
-			onClick={onClick}
-			size="sm"
-			color={isLightMode ? "black" : "white"}
-			variant="ghost"
-			_focus={{
-				bg: isLightMode ? "blackAlpha.50" : "whiteAlpha.50",
-			}}
-			_hover={{
-				bg: isLightMode ? "blackAlpha.200" : "whiteAlpha.200",
-			}}
-			_active={{
-				bg: "transparent",
-			}}
-			isDisabled={isDisabled}
-			position="absolute"
-			zIndex={2}
-			left={isPrev ? 0 : undefined}
-			top={0}
-			right={isPrev ? undefined : 0}
-			h="full"
-		/>
-	);
-};
+export default function CarouselArrow({
+    icon,
+    isPrev,
+    onClick,
+    isDisabled,
+    isLightMode,
+}: Props) {
+    return (
+        <IconButton
+            icon={icon}
+            aria-label={isPrev ? 'Previous' : 'Next'}
+            onClick={onClick}
+            size="sm"
+            color={isLightMode ? 'black' : 'white'}
+            h="fit-content"
+            py={2}
+            variant="ghost"
+            _focus={{
+                bg: isLightMode ? 'blackAlpha.50' : 'whiteAlpha.50',
+            }}
+            _hover={{
+                bg: isLightMode ? 'blackAlpha.200' : 'whiteAlpha.200',
+            }}
+            _active={{
+                bg: 'transparent',
+            }}
+            fontSize="22px"
+            isDisabled={isDisabled}
+            position="absolute"
+            zIndex={2}
+            left={isPrev ? 0 : undefined}
+            top={'55%'}
+            right={isPrev ? undefined : 0}
+        />
+    )
+}

@@ -1,11 +1,11 @@
-import { Box } from "@chakra-ui/layout";
-import SharedCarousel from "../shared/carousel";
-import TrendingCard from "./TrendingCard";
-import SerializedTradingCard from "@/hooks/SerializedTradingCard";
-import TradingCardInfo from "@/hooks/TradingCardInfo";
+import { Box } from '@chakra-ui/layout'
+import SharedCarousel from '../shared/carousel'
+import TrendingCard from './TrendingCard'
+import SerializedTradingCard from '@/hooks/SerializedTradingCard'
+import TradingCardInfo from '@/hooks/TradingCardInfo'
 
 interface Props {
-    cards: (TradingCardInfo | SerializedTradingCard)[];
+    cards: (TradingCardInfo | SerializedTradingCard)[]
 }
 
 /**
@@ -15,19 +15,25 @@ interface Props {
  * @returns {JSX.Element} The rendered TrendingNowCarousel component.
  */
 export default function TrendingNowCarousel({ cards }: Props) {
-	return (
-		<SharedCarousel containerOverrides={{
-			display: { base: "block", lg: "none" },
-			w: "100dvw",
-			px: "12px"
-		}} hideDots>
-			{cards.map((card, index) => {
-				return (
-					<Box key={index} px="0px">
-						<TrendingCard passedInCard={card} shouldShowButton={true} />
-					</Box>
-				);
-			})}
-		</SharedCarousel>
-	);
+    return (
+        <SharedCarousel
+            containerOverrides={{
+                display: { base: 'block', lg: 'none' },
+                w: '100dvw',
+                px: '12px',
+            }}
+            hideDots
+        >
+            {cards.map((card, index) => {
+                return (
+                    <Box key={index} px="36px">
+                        <TrendingCard
+                            passedInCard={card}
+                            shouldShowButton={true}
+                        />
+                    </Box>
+                )
+            })}
+        </SharedCarousel>
+    )
 }

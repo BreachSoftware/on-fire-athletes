@@ -1,14 +1,14 @@
 import {
     Box,
     Flex,
-    Icon,
-    Skeleton,
     IconButton,
     Text,
     VStack,
     Divider,
     Button,
+    Icon,
     HStack,
+    Center,
 } from '@chakra-ui/react'
 import LockerRoomBackground from '../../public/card_assets/locker-room-background.png'
 import TradingCardInfo from '@/hooks/TradingCardInfo'
@@ -79,7 +79,6 @@ export default function TrendingCard({
     passedInCard,
     slim,
     shouldShowButton = false,
-    isPageFlipping,
     overrideCardClick: onCardClick,
     trendingCardWidth,
     onProfilePage,
@@ -311,15 +310,22 @@ export default function TrendingCard({
      * @returns the trading card in the background
      */
     function tradingCardInBackground() {
-        // Just a side node that the width and the scale are kind of intertwined
-        const defaultWidth = 386
-        const defaultHeight = 386
-        const defaultScale = 0.58
+        // Tailored to get the proper scale for the card according to the XD file.
+        const defaultScale = 0.57
+        // Set the value to scale the card by, which is the number of pixels that the background ends up being.
+        const valueToScaleBy = windowAdjustedDefaultWidth
         return (
             <Box
                 boxShadow={'0 8px 0.75rem #0000004f'}
-                w={{ base: '100%', md: trendingCardWidth ?? defaultWidth }}
-                h={defaultHeight}
+                w={{
+                    base: '100%',
+                    lg: DYNAMIC_SIZING
+                        ? (trendingCardWidth ?? windowAdjustedDefaultWidth)
+                        : windowAdjustedDefaultWidth,
+                }}
+                maxW={windowAdjustedDefaultWidth}
+                // It is a square card, so the height is the same as the width
+                h={windowAdjustedDefaultWidth}
                 cursor="pointer"
                 transition={'background-color 0.5s ease-in-out'}
                 onClick={() => {
@@ -337,7 +343,7 @@ export default function TrendingCard({
                 alignItems="center"
                 backgroundColor={decideColor()}
                 backgroundImage={defaultBackground.src}
-                backgroundSize={'cover'}
+                backgroundSize={'auto 100%'}
                 backgroundPosition={'center'}
                 backgroundBlendMode={'multiply'}
                 // Clip the background image barely barely to fix a weird background color bug
@@ -345,34 +351,46 @@ export default function TrendingCard({
                     'polygon(0.01% 0.01%, 99.99% 0.01%, 99.99% 99.99%, 0.01% 99.99%)'
                 }
             >
-                <Box
-                    transform={`scale(${trendingCardWidth ? trendingCardWidth * (defaultScale / defaultWidth) : defaultScale})`}
-                    marginBottom={4}
+                <Center
+                    w="full"
+                    h="full"
+                    transform={`scale(${valueToScaleBy * (defaultScale / defaultTrendingCardWidth)})`}
                     mixBlendMode={'normal'}
                 >
                     {/* Image component for the trading card image */}
-                    <Skeleton
+                    {/* <Skeleton
+                        w="full"
+                        // h="full"
                         isLoaded={!isPageFlipping}
                         fadeDuration={1}
                         borderRadius={'12'}
-                    >
-                        <OnFireCard
-                            key={card.uuid}
-                            slim
-                            card={card}
-                            showButton={false}
-                            ref={onFireCardRef}
-                            shouldFlipOnClick
-                        />
-                    </Skeleton>
-                </Box>
+                    > */}
+                    <OnFireCard
+                        key={card.uuid}
+                        slim
+                        card={card}
+                        showButton={false}
+                        ref={onFireCardRef}
+                        shouldFlipOnClick
+                    />
+                    {/* </Skeleton> */}
+                </Center>
             </Box>
         )
     }
 
     return (
         <>
-            <VStack width={{ base: '100%', md: trendingCardWidth ?? 'auto' }}>
+            <VStack
+                width={{
+                    base: 'full',
+                    lg: trendingCardWidth
+                        ? DYNAMIC_SIZING
+                            ? trendingCardWidth
+                            : windowAdjustedDefaultWidth
+                        : 'auto',
+                }}
+            >
                 {onProfilePage ? (
                     <>
                         <Link
@@ -399,13 +417,13 @@ export default function TrendingCard({
                         align={'center'}
                         justifyContent={'space-between'}
                         w={{
-                            base: '100%',
-                            md: DYNAMIC_SIZING
+                            base: 'full',
+                            lg: DYNAMIC_SIZING
                                 ? (trendingCardWidth ??
                                   windowAdjustedDefaultWidth)
                                 : windowAdjustedDefaultWidth,
                         }}
-                        maxW={windowAdjustedDefaultWidth}
+                        // maxW={windowAdjustedDefaultWidth}
                     >
                         {/* VStack component for the trading card details */}
                         <VStack
@@ -425,7 +443,7 @@ export default function TrendingCard({
                                     fontWeight={'bold'}
                                 >
                                     {card.price
-                                        ? `$${card.price.toFixed(2)}`
+                                        ? `$${card.price}`
                                         : 'TRADE ONLY'}
                                 </Text>
                                 {shouldShowButton && (
@@ -454,19 +472,15 @@ export default function TrendingCard({
                                 {/* Text component for the player's name */}
                                 <Text
                                     textTransform={'uppercase'}
-                                    fontSize="20px"
-                                    fontFamily="Barlow Semi Condensed"
-                                    fontWeight="extrabold"
+                                    fontSize={18}
+                                    fontFamily={'Helvetica'}
+                                    fontWeight={'bolder'}
                                 >
                                     {`${card.firstName} ${card.lastName}`}
                                 </Text>
 
                                 {/* Text component for the player's sport, position, and team */}
-                                <Text
-                                    fontSize="17px"
-                                    fontFamily="Helvetica Neue"
-                                    fontWeight={400}
-                                >
+                                <Text>
                                     {card.position} / {card.teamName}
                                 </Text>
 
@@ -481,7 +495,6 @@ export default function TrendingCard({
                                 ) : (
                                     <Text
                                         color={'gray'}
-                                        fontSize="17px"
                                     >{`${card.currentlyAvailable} of ${card.totalCreated} available`}</Text>
                                 )}
                             </VStack>
@@ -490,9 +503,6 @@ export default function TrendingCard({
                                     alignSelf={'center'}
                                     w={'100%'}
                                     variant={'trendingNow'}
-                                    _hover={{
-                                        filter: 'brightness(0.85)',
-                                    }}
                                     fontSize={14}
                                     textTransform={'uppercase'}
                                     fontFamily={'Barlow Semi Condensed'}
