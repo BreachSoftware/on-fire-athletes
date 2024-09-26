@@ -31,6 +31,7 @@ export default function MobileFrontWrapper() {
             pb="32px"
             position="sticky"
             bottom="0px !important"
+            display={{ base: 'flex', md: 'none' }}
             px={{ base: '32px', xs: '40px' }}
             justifyContent="space-between"
             bgGradient="linear(to-b, #00000000 5%, #00000060, #000000b9, #000 90%)"
