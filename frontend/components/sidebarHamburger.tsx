@@ -1,12 +1,17 @@
-import { Box, Flex, Image, useBreakpointValue, useDisclosure } from "@chakra-ui/react";
+import { IconButton, Flex, Image, useBreakpointValue } from "@chakra-ui/react";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import SidebarDots from "../public/sidebar_dots.svg";
 import SidebarDotsGreen from "../public/sidebar_dots_green.svg";
-import SideDrawer from "./sideDrawer";
+import HamburgerMenuImage from "../public/hamburger-menu.png";
 
 interface SideBarHamburgerProps {
+	onClick: () => void;
 	backgroundPresent?: boolean;
 	backColor?: string;
 	isGridIconAltColor?: boolean;
+	showXIcon: boolean;
+	onSubClose: () => void;
 	isMobile?: boolean;
 }
 
@@ -20,39 +25,40 @@ interface SideBarHamburgerProps {
  * @returns {JSX.Element} The sidebar hamburger component.
  */
 export default function SideBarHamburger(props: SideBarHamburgerProps) {
-	const { isOpen, onClose, onOpen } = useDisclosure();
+	// Hook to manage the open and close state of the side drawer
+	const gridIconColor = props.isGridIconAltColor || props.backgroundPresent ? "green" : "white";
 
 	const greenIcon = useBreakpointValue({ base: false, md: !props.backColor });
 
 	return (
 		<>
-			<Box
-				position="fixed"
-				display={{ base: "inline", md: "none" }}
-				top={0}
-				left={0}
-				right={0}
-				w="full"
-				bgGradient="linear(to-b, #000 20%, #00000000)"
-				h="80px"
-				zIndex={98}
-			/>
-			<Flex
-				position="fixed"
-				zIndex={101}
-				display={{ base: "flex", md: "none" }}
-				top={0}
-				left={0}
-				right={0}
-				justifyContent="flex-end"
-				pt="24px"
-				pb="24px"
-				px="24px">
-				<Flex onClick={onOpen} position="relative">
-					<Image alt={"Open Drawer"} width="32px" height="32px" src={greenIcon ? SidebarDotsGreen.src : SidebarDots.src} cursor={"pointer"} />
+			{/* show X Icon if showXIcon is true, else show the normal grid */}
+			{props.showXIcon ? (
+				<IconButton
+					variant="ghost"
+					aria-label="Close menu"
+					icon={<FontAwesomeIcon icon={faXmark} />}
+					boxSize="48px"
+					fontSize="48px"
+					isRound
+					color={gridIconColor}
+					_active={{ color: "green.300" }}
+					_hover={{ md: { color: "green.300" } }}
+					onClick={props.onSubClose}
+				/>
+			) : (
+				<Flex
+					onClick={props.onClick}
+					p="5px"
+					alignSelf={{ base: "flex-start", md: "center" }}
+					cursor="pointer"
+					_hover={{
+						// slightly darken on hover
+						filter: "brightness(0.7)",
+					}}>
+					<Image boxSize={{ base: "28px", md: "43px" }} alt="Open Drawer" src={greenIcon ? SidebarDotsGreen.src : HamburgerMenuImage.src} />
 				</Flex>
-			</Flex>
-			<SideDrawer isOpen={isOpen} onClose={onClose} placement="right" size="xl" isMobile={true} />
+			)}
 		</>
 	);
 }
