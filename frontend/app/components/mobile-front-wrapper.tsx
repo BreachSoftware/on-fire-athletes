@@ -17,13 +17,6 @@ export default function MobileFrontWrapper() {
     const [collectButtonLoading, setCollectButtonLoading] = useState(false)
 
     return (
-        // <Box
-        //     position="sticky"
-        //     display={{ base: 'inline', md: 'none' }}
-        //     bottom="0px !important"
-        //     w="full"
-        //     h="fit-content"
-        // >
         <Flex
             direction="row"
             w="full"
@@ -76,6 +69,5 @@ export default function MobileFrontWrapper() {
                 <ChevronRightIcon boxSize={6} />
             </Button>
         </Flex>
-        // </Box>
     )
 }

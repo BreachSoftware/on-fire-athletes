@@ -19,7 +19,7 @@ export default function BuiltForAthletes() {
             px={{ base: '32px', xs: '40px', lg: '64px', xl: '124px' }}
             pb={{ base: '132px', lg: '96px', xl: '112px' }}
             mb={{ base: '-148px', md: 0 }}
-            height="100dvh"
+            height="100vh"
             width="full"
             overflow="clip"
         >

@@ -51,7 +51,7 @@ export default function Index() {
 
     return (
         <>
-            <Box minH="100dvh" w="full" position="relative">
+            <Box w="full" position="relative" minH="100vh">
                 <Flex flexDir="row" w="full" h="full">
                     <Box w="full">
                         <Box
@@ -62,8 +62,9 @@ export default function Index() {
                             controls={false}
                             autoPlay={true}
                             playsInline={true}
-                            minW="full"
-                            minH="100dvh"
+                            w={{ base: 'full', md: '100dvw' }}
+                            h={{ base: 'full', md: '100dvh' }}
+                            minH="100vh"
                             objectFit="cover"
                             position="fixed"
                             top={0}
@@ -75,7 +76,8 @@ export default function Index() {
                             <Flex
                                 w="100%"
                                 position="relative"
-                                h="100dvh"
+                                minH="100vh"
+                                h="fit-content"
                                 direction="column"
                                 bgGradient={{
                                     base: 'none',
