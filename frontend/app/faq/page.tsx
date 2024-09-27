@@ -100,6 +100,7 @@ export default function FAQPage() {
                             />
                             {/* FAQ */}
                             <Flex
+                                w="full"
                                 flex={1}
                                 transition={'all 0.3s ease-in-out'}
                                 overflowY={'auto'}
