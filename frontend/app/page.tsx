@@ -84,7 +84,12 @@ export default function Index() {
                                     md: 'linear(to-r, #000, #00000000)',
                                 }}
                             >
-                                <Navbar />
+                                <Navbar
+                                    bgGradient={{
+                                        base: 'linear(to-b, #000, #000000f0)',
+                                        md: 'linear(to-b, rgba(0,0,0,1), rgba(0,0,0,0.6), rgba(0,0,0,0))',
+                                    }}
+                                />
                                 <CaptureCreateCustomize />
                             </Flex>
                             <BuiltForAthletes />

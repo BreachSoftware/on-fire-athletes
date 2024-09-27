@@ -49,13 +49,7 @@ export default function CreationOverview() {
                         <Sidebar height="100%" />
                     </Box>
                     <Flex w="full" flexDir="column" h="full">
-                        <NavBar
-                            noDivider
-                            bgGradient={{
-                                base: 'none',
-                                md: 'linear(to-b, rgba(0,0,0,1), rgba(0,0,0,0.6), rgba(0,0,0,0))',
-                            }}
-                        />
+                        <NavBar noDivider />
                         <SharedStack
                             flex={1}
                             pt={{ base: '40px', lg: 'none' }}

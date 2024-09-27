@@ -23,6 +23,7 @@ import { useEffect, useState } from 'react'
 import SideDrawer from '@/components/sideDrawer'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import ResponsiveBlock from '@/components/shared/wrappers/responsive-block'
+import SideBarHamburger from '@/components/sidebarHamburger'
 
 // Optional params
 interface NavBarProps extends BoxProps {
@@ -377,14 +378,12 @@ export default function NavBar({
     ...rest
 }: NavBarProps) {
     const { isOpen, onToggle } = useDisclosure()
-    const [isMobile, setIsMobile] = useState(false)
 
     const [generatedByUUID, setGeneratedByUUID] = useState<string | null>(null)
     const [cardSentUUID, setCardSentUUID] = useState<string | null>(null)
     const [senderUUID, setSenderUUID] = useState<string | null>(null)
 
     const [windowLocation, setWindowLocation] = useState<string | null>(null)
-    const isSmallScreen = useBreakpointValue({ base: true, md: false }) || false
 
     /**
      * Returns the correct href for the navbar item.
@@ -420,74 +419,72 @@ export default function NavBar({
         }
     }, [])
 
-    useEffect(() => {
-        let userAgent = ''
-        if (typeof window !== 'undefined') {
-            userAgent = navigator.userAgent.toLowerCase()
-        }
-        setIsMobile(
-            /mobile|android|iphone|ipod|blackberry|iemobile|opera mini/i.test(
-                userAgent,
-            ) && isSmallScreen,
-        )
-    }, [isSmallScreen])
+    const isMobile = useBreakpointValue({ base: true, lg: false })
 
     return (
-        <ResponsiveBlock
-            bgGradient={{
-                base: 'linear(to-b, #000, #000000fe)',
-                md: 'linear(to-b, rgba(0,0,0,1), rgba(0,0,0,0.6), rgba(0,0,0,0))',
-            }}
-            {...rest}
-            zIndex={100}
-        >
-            <Flex
-                pt={{ base: '20px', md: '32px' }}
-                align={'center'}
-                justify={'space-between'}
-                width={'100%'}
-                borderBottom={
-                    isMobile && windowLocation === '/create/card_creation'
-                        ? '2px solid #161E1C'
-                        : 'none'
-                }
+        <>
+            <SideBarHamburger />
+            <ResponsiveBlock
+                bgGradient={{
+                    base: 'none',
+                    md: 'linear(to-b, rgba(0,0,0,1), rgba(0,0,0,0.6), rgba(0,0,0,0))',
+                }}
+                zIndex={100}
+                position="relative"
+                {...rest}
             >
                 <Flex
-                    flex={1}
+                    pt={{ base: '20px', md: '32px' }}
                     align={'center'}
                     justify={'space-between'}
-                    position={'relative'}
+                    width={'100%'}
+                    borderBottom={
+                        windowLocation === '/create/card_creation'
+                            ? '2px solid #161E1C'
+                            : 'none'
+                    }
                 >
-                    {/* Logo */}
-                    <Link
-                        href="/"
-                        style={{ outline: 'none', boxShadow: 'none' }}
-                    >
-                        <Image src={OnFireLogo.src} alt="Logo" width={'59px'} />
-                    </Link>
-
-                    {/* Navbar Items */}
                     <Flex
-                        display={{ base: 'none', md: 'flex' }}
-                        ml={5}
-                        width={'100%'}
+                        flex={1}
+                        align={'center'}
+                        justify={'space-between'}
+                        position={'relative'}
                     >
-                        <DesktopNav
-                            darkText={darkText}
-                            logoDropShadow={logoDropShadow}
-                            hreffunc={calcHREF}
-                            cryptoWalletConnected={cryptoWalletConnected}
-                        />
+                        {/* Logo */}
+                        <Link
+                            href="/"
+                            style={{ outline: 'none', boxShadow: 'none' }}
+                        >
+                            <Image
+                                src={OnFireLogo.src}
+                                alt="Logo"
+                                width={'59px'}
+                            />
+                        </Link>
+
+                        {/* Navbar Items */}
+                        <Flex
+                            display={{ base: 'none', md: 'flex' }}
+                            ml={5}
+                            width={'100%'}
+                        >
+                            <DesktopNav
+                                darkText={darkText}
+                                logoDropShadow={logoDropShadow}
+                                hreffunc={calcHREF}
+                                cryptoWalletConnected={cryptoWalletConnected}
+                            />
+                        </Flex>
                     </Flex>
                 </Flex>
-            </Flex>
-            <SideDrawer
-                isOpen={isOpen}
-                onClose={onToggle}
-                placement={'right'}
-                size={'xl'}
-                isMobile={isMobile}
-            />
-        </ResponsiveBlock>
+                <SideDrawer
+                    isOpen={isOpen}
+                    onClose={onToggle}
+                    placement={'right'}
+                    size={'xl'}
+                    isMobile={isMobile}
+                />
+            </ResponsiveBlock>
+        </>
     )
 }
