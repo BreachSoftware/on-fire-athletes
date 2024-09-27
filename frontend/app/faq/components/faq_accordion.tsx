@@ -62,7 +62,7 @@ export default function FAQAccordion(props: FAQProps) {
                 <Flex direction={'column'} gap={5}>
                     {data.map((item, index) => {
                         return (
-                            <AccordionItem key={index} border={'none'}>
+                            <AccordionItem key={index} border={'none'} w="full">
                                 {({ isExpanded }) => {
                                     return (
                                         <>
