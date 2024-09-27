@@ -1,34 +1,15 @@
 'use client'
 
-import { Flex, Text, Box } from '@chakra-ui/react'
+import { Flex, Box } from '@chakra-ui/react'
 import NavBar from '../navbar'
 import Sidebar from '@/components/sidebar'
 import FAQAccordion from './components/faq_accordion'
-import FAQConstants from './components/faq_constants'
 import { useEffect, useState } from 'react'
 import { BackToCheckoutModal } from '../components/BackToCheckoutModal'
 import Footer from '../components/footer'
 import SharedStack from '@/components/shared/wrappers/shared-stack'
-
-// Dictionary of categories
-const categories = {
-    'The Platform': FAQConstants.FAQ_DATA.THE_PLATFORM,
-    GameCoin: FAQConstants.FAQ_DATA.GMEX,
-    Legal: FAQConstants.FAQ_DATA.LEGAL,
-}
-
-// Styling Color Palette
-const leftHeaderColor = 'gray.400'
-const headerFont = 'Barlow Semi Condensed'
-const headerSpacing = 0.4
-
-const subHeaderFont = 'Barlow Semi Condensed'
-const subHeaderSpacing = 2
-const subHeaderWeight = 'bold'
-const subHeaderFontSize = { base: 16, md: 30 }
-const selectedSubHeaderFontSize = { base: 22, md: '40px' }
-
-const limeGreen = 'green.100'
+import { FAQ_CATEGORIES } from './components/faq_constants'
+import FAQHeader from './components/faq_header'
 
 /**
  * FAQ page component.
@@ -48,7 +29,7 @@ export default function FAQPage() {
             const itemParam = parseInt(urlParams.get('item') ?? '', 10)
 
             const matchingCategory = categoryParam
-                ? Object.keys(categories).find((cat) => {
+                ? Object.keys(FAQ_CATEGORIES).find((cat) => {
                       return cat.toLowerCase() === categoryParam.toLowerCase()
                   })
                 : undefined
@@ -86,11 +67,18 @@ export default function FAQPage() {
                     <Flex w="100%" direction={'column'} h="fit-content">
                         <NavBar />
                     </Flex>
+                    <FAQHeader
+                        selectedCategory={selectedCategory}
+                        setSelectedCategory={setSelectedCategory}
+                        display={{ base: 'flex', lg: 'none' }}
+                        px="24px"
+                        mt="24px"
+                    />
                     <SharedStack
                         overflowY="scroll"
                         gap={0}
-                        px={{ base: '24px', md: '72px' }}
-                        mt="40px"
+                        px={{ base: '24px', lg: '72px' }}
+                        mt={{ base: '24px', lg: '40px' }}
                         pb="40px"
                         h="full"
                         __css={{ '::-webkit-scrollbar': { display: 'none' } }}
@@ -103,108 +91,13 @@ export default function FAQPage() {
                             wrap={'wrap'}
                             userSelect={'none'}
                             w="full"
-                            gap={{ md: '168px' }}
+                            gap={{ lg: '168px' }}
                         >
-                            {/* Header */}
-                            <Flex
-                                direction={'column'}
-                                gap={5}
-                                position="sticky"
-                                top={0}
-                                w="fit-content"
-                                minW={{ xl: '20%' }}
-                            >
-                                <Text
-                                    color={'white'}
-                                    fontFamily={headerFont}
-                                    fontSize={'20px'}
-                                    letterSpacing={headerSpacing}
-                                    fontWeight={'semibold'}
-                                    textTransform={'uppercase'}
-                                >
-                                    FAQ Categories
-                                </Text>
-
-                                {/* Categories */}
-                                <Flex flexDirection={'column'} gap={4}>
-                                    {/* Map Categories. The "selected" one is styled, the others are not. */}
-                                    {Object.keys(categories).map((category) => {
-                                        return (
-                                            <Text
-                                                key={category}
-                                                w={'fit-content'}
-                                                display={'inline-block'}
-                                                position={'relative'}
-                                                textDecoration={'none'}
-                                                color={
-                                                    category ===
-                                                    selectedCategory
-                                                        ? limeGreen
-                                                        : leftHeaderColor
-                                                }
-                                                fontFamily={subHeaderFont}
-                                                fontSize={
-                                                    category ===
-                                                    selectedCategory
-                                                        ? selectedSubHeaderFontSize
-                                                        : subHeaderFontSize
-                                                }
-                                                fontWeight={subHeaderWeight}
-                                                letterSpacing={subHeaderSpacing}
-                                                textTransform={'uppercase'}
-                                                transform={
-                                                    category ===
-                                                    selectedCategory
-                                                        ? 'skewX(-10deg)'
-                                                        : 'none'
-                                                }
-                                                transition={
-                                                    'all 0.2s ease-in-out'
-                                                }
-                                                _after={{
-                                                    content: "''",
-                                                    position: 'absolute',
-                                                    width: '100%',
-                                                    height: '0.2em',
-                                                    bottom: 0,
-                                                    left: 0,
-                                                    background: limeGreen,
-                                                    transition:
-                                                        'transform 0.25s ease-out',
-                                                    // Ensure the underline is always shown for the selected category
-                                                    transform:
-                                                        category ===
-                                                        selectedCategory
-                                                            ? 'scaleX(1)'
-                                                            : 'scaleX(0)',
-                                                    transformOrigin:
-                                                        category ===
-                                                        selectedCategory
-                                                            ? 'bottom left'
-                                                            : 'bottom right',
-                                                }}
-                                                _hover={{
-                                                    color: limeGreen,
-                                                    cursor: 'pointer',
-                                                    _after: {
-                                                        transform: 'scaleX(1)',
-                                                        transformOrigin:
-                                                            'bottom left',
-                                                    },
-                                                }}
-                                                onClick={() => {
-                                                    return setSelectedCategory(
-                                                        category,
-                                                    )
-                                                }}
-                                            >
-                                                {category}
-                                            </Text>
-                                        )
-                                    })}
-                                </Flex>
-                            </Flex>
-
+                            <FAQHeader
+                                selectedCategory={selectedCategory}
+                                setSelectedCategory={setSelectedCategory}
+                                display={{ base: 'none', lg: 'flex' }}
+                            />
                             {/* FAQ */}
                             <Flex
                                 flex={1}
@@ -233,8 +126,8 @@ export default function FAQPage() {
                             >
                                 <FAQAccordion
                                     data={
-                                        categories[
-                                            selectedCategory as keyof typeof categories
+                                        FAQ_CATEGORIES[
+                                            selectedCategory as keyof typeof FAQ_CATEGORIES
                                         ]
                                     }
                                     activeIndex={activeIndex}
@@ -245,7 +138,7 @@ export default function FAQPage() {
                     </SharedStack>
                     <Footer />
                 </SharedStack>
-                <Box h="full" display={{ base: 'none', md: 'initial' }}>
+                <Box h="full" display={{ base: 'none', lg: 'initial' }}>
                     <Sidebar />
                 </Box>
             </SharedStack>
