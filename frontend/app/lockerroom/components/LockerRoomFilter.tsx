@@ -46,7 +46,7 @@ export default function Filter(props: FilterProps) {
 	const currentFilter = useCurrentFilterInfo();	// Current filter info.
 
 	// Check if we are on mobile
-	const isMobile = useBreakpointValue({ base: true, md: false });
+	const isMobile = useBreakpointValue({ base: true, lg: false });
 
 	/**
  	 * Function to update the filter tags based on the card values.
@@ -186,7 +186,7 @@ export default function Filter(props: FilterProps) {
 						<BsFilter color={"white"} size={30}/>
 
 						<Text color={"white"} fontSize={15}>
-									Filters
+							Filters
 						</Text>
 					</Flex>
 				}
@@ -251,7 +251,8 @@ export default function Filter(props: FilterProps) {
 							>
 								<AccordionItem
 									border={"none"}
-									marginTop={2}
+									px="17px"
+									py="12px"
 								>
 									<Flex
 										direction={"column"}
@@ -259,7 +260,7 @@ export default function Filter(props: FilterProps) {
 										alignItems={"flex-start"}
 									>
 										{/* Our accordion button to open the filter */}
-										<AccordionButton>
+										<AccordionButton pl={0}>
 											<Box
 												flex="1"
 												textAlign="left"
@@ -281,11 +282,9 @@ export default function Filter(props: FilterProps) {
 
 										{/* Our "active tags" in the filter */}
 										<Flex
-											paddingLeft={4}
-											paddingRight={4}
 											// Only show bottom padding if there are tags present
-											paddingBottom={tags.filter((tag) => {
-												return tag.value;
+											paddingBottom={tags.filter(({ value }) => {
+												return Boolean(value);
 											}).length > 0 ? 2 : 0}
 											wrap={"wrap"}
 											gap={1}
@@ -327,17 +326,14 @@ export default function Filter(props: FilterProps) {
 															});
 														}}
 													>
-																Clear All
+														Clear All
 													</Text>
 												) : null}
 										</Flex>
 									</Flex>
-									<AccordionPanel>
-										<Divider
-											borderColor={"gray.500"}
-											marginBottom={2}
-										/>
+									<AccordionPanel p={"5px"}>
 										<Flex
+											mt="23px"
 											direction={"column"}
 											gap={2}
 											alignItems={"flex-start"}
@@ -355,33 +351,27 @@ export default function Filter(props: FilterProps) {
 												"&::-webkit-scrollbar-thumb:hover": { backgroundColor: "#363C3B" },
 											}}
 										>
-											<Spacer/>
 											{tags.map((tag, index) => {
 												return (
-													<>
-														<Flex
+													<Flex key={index} align="center">
+														<Box
+															onClick={() => {
+																toggleTag(tag.title, tag.value);
+															} }
 														>
-															<Box
-																onClick={() => {
-																	toggleTag(tag.title, tag.value);
-																} }
-															>
-																<StatusIcon isCheck={true} isGlowing={false} isActive={tag.value}/>
-															</Box>
-															<FilterTag
-																text={tag.title}
-																onClick={() => {
-																	toggleTag(tag.title, tag.value);
-																} }
-																order={index}
-																filterType={filter.title}
-																key={index}
-															/>
-														</Flex>
-													</>
+															<StatusIcon iconSize={11} padding={"1px"} isCheck={true} isGlowing={false} isActive={tag.value}/>
+														</Box>
+														<FilterTag
+															text={tag.title}
+															onClick={() => {
+																toggleTag(tag.title, tag.value);
+															} }
+															order={index}
+															filterType={filter.title}
+														/>
+													</Flex>
 												);
-											}
-											)}
+											})}
 										</Flex>
 									</AccordionPanel>
 								</AccordionItem>
@@ -405,9 +395,10 @@ export default function Filter(props: FilterProps) {
 					props.setSearchValue(e.target.value);
 					props.setCurrentPage(1);
 				}}
+				py={0}
 			/>
-			<InputRightElement>
-				<Search2Icon color={"white"} />
+			<InputRightElement mr="6px" mt="-1px">
+				<Search2Icon color={"white"} fontSize="17px" />
 			</InputRightElement>
 		</InputGroup>
 	);

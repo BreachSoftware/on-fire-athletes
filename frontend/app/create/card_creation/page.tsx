@@ -8,7 +8,7 @@ import Step4 from "@/components/create/Step4";
 import Step5 from "@/components/create/Step5";
 import Sidebar from "@/components/sidebar";
 import NavBar from "@/app/navbar";
-import OnFireCard from "@/components/create/OnFireCard/OnFireCard";
+import OnfireCard from "@/components/create/OnFireCard/OnFireCard";
 import { useCurrentCardInfo } from "@/hooks/useCurrentCardInfo";
 import TradingCardInfo from "@/hooks/TradingCardInfo";
 import { useEffect, useRef, useState } from "react";
@@ -21,6 +21,8 @@ import MobileStepWrapper from "@/components/create/mobile/MobileStepWrapper";
 export default function CreationOverview() {
 	const currentInfo = useCurrentCardInfo();
 	const cardFrontRef = useRef(null);
+	const foregroundRef = useRef(null);
+	const backgroundRef = useRef(null);
 	const cardBackRef = useRef(null);
 	useEffect(() => {
 		currentInfo.setCurCard(new TradingCardInfo());
@@ -99,14 +101,13 @@ export default function CreationOverview() {
 		<Box w={"100vw"}
 			backgroundColor={isMobile ? "black" : "none"}
 			bgGradient={isMobile ? "none" : "linear(180deg, gray.1200 0%, gray.1300 100%) 0% 0% no-repeat padding-box;"}
-			minH={typeof window == "undefined" ? "100vh" : window.innerHeight} // making sure that the whole page is on screen at the same time
+			minH={typeof window == "undefined" ? "89vh" : window.innerHeight} // making sure that the whole page is on screen at the same time
 			overflowY={isMobile && currentInfo.curCard.stepNumber == 1 ? "hidden" : "scroll"}
 			overflowX={"hidden"}
-			bgColor={"gray.1200"} // Fixed a bug where there was a white space on the bottom of the screen on mobile (iPhone 14 Pro Max)
 		>
 			<HStack w="100%" h="100%" align="top">
 				<VStack w="100%" flexGrow={1} height="100%">
-					<Flex w="100%" direction={"column"} h={"100px"} pb={isMobile ? "0px" : "120px"}>
+					<Flex w="100%" direction={"column"} h={"100px"}>
 						<NavBar />
 					</Flex>
 					<HStack
@@ -119,7 +120,13 @@ export default function CreationOverview() {
 						{/* Don't show card on side if on step 1 */}
 						{currentInfo.curCard.stepNumber !== 1 &&
 						<Box transform={isMobile ? `scale(${ screenScaleFactor.toString() })` : ""} transformOrigin={"top center"}>
-							<OnFireCard cardFrontRef={cardFrontRef} cardBackRef={cardBackRef} mobileFlipButton={isMobile} showButton={!isMobile}/>
+							<OnfireCard cardFrontRef={cardFrontRef}
+								cardForegroundRef={foregroundRef}
+								cardBackgroundRef={backgroundRef}
+								cardBackRef={cardBackRef}
+								mobileFlipButton={isMobile}
+								showButton={!isMobile}
+							/>
 						</Box>
 						}
 						{isMobile && currentInfo.curCard.stepNumber !== 1 ?
@@ -135,6 +142,8 @@ export default function CreationOverview() {
 									numSteps={5}
 									cardCreationSteps={CardCreationSteps}
 									entireCardRef={cardFrontRef}
+									foregroundRef={foregroundRef}
+									backgroundRef={backgroundRef}
 									cardBackRef={cardBackRef}
 								/>
 							</Flex>

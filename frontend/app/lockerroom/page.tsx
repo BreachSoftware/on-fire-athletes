@@ -18,6 +18,7 @@ import PaginatedList from "./components/PaginatedList";
 import { fetchAllCards } from "./components/FetchAllCards";
 import { getWithExpiry } from "@/components/localStorageFunctions";
 import { BackToCheckoutModal } from "../components/BackToCheckoutModal";
+import { helvetica } from "@/theming/fonts";
 
 
 /**
@@ -185,14 +186,13 @@ export default function LockerRoom() {
 			<Box
 				bgGradient={"linear(180deg, gray.1200 0%, gray.1300 100%) 0% 0% no-repeat padding-box;"}
 				minH={"100vh"}
-				w={"100vw"}
 			>
 				<HStack alignItems={"top"} width={"100%"}>
-					<VStack w={showSidebar ? "calc(100vw - 140px)" : "100vw"}>
+					<Box w={showSidebar ? "calc(100vw - 155px)" : "100vw"}>
 						<Box width={"100%"}>
 							<NavBar />
 						</Box>
-						<VStack width={"100%"} maxWidth={1920} pl={{ base: "0", md: "32px" }}>
+						<VStack width={"100%"}>
 
 							{/* The Locker Room Title */}
 							<HStack
@@ -202,7 +202,7 @@ export default function LockerRoom() {
 								alignContent={"center"}
 								overflowX={"hidden"}
 								// The title is centered on desktop, taking into account the sidebar, which mobile doesn't have
-								pl = {useBreakpointValue({ base: "0px", md: "70px" })}
+								pl={{ base: "0px", md: "70px" }}
 							>
 								<Image src={the} alt="The" height={titleHeight! * 0.8} />
 								<Flex>
@@ -214,21 +214,23 @@ export default function LockerRoom() {
 							{/* Main Content */}
 							<HStack
 								width={{ base: "100%", sm: "" }}
-								alignItems={"top"}
+								alignItems={{ base: "top", sm: "top", lg: "top" }}
 								justifyContent={"center"}
 								display={"flex"}
-								flexWrap={{ base: "wrap", md: "nowrap" }}
-								flexDir={{ base: "column", md: "row" }}
-								paddingLeft={{ base: 0, sm: 0, md: "6.3vw" }}
+								flexWrap={{ base: "wrap", sm: "wrap", lg: "nowrap" }}
+								flexDir={{ base: "column", sm: "column", lg: "row" }}
+								gap={{ "base": 0, "md": "45px", "lg": "25px", "2xl": "75px" }}
+								paddingLeft={{ "base": 0, "sm": 0, "md": "40px", "lg": "50px", "xl": "80px", "2xl": "121px" }}
 								paddingTop="25px"
 							>
 								{/* Left Side Filter Area */}
 								<Box
+									flex={"1"}
 									height={"min-content"}
-									minW={{ base: "95%", sm: "95%", md: 332 }}
-									maxW={{ base: "95%", sm: "95%", md: 332 }}
-									margin={{ base: "auto", sm: "auto", md: 0 }}	// Center the filter on mobile and tablet
-									marginBottom={{ base: 4, sm: 4, md: 16 }}
+									minW={{ base: "95%", sm: "95%", lg: 240, xl: 332 }}
+									maxW={{ base: "95%", sm: "95%", lg: 240, xl: 332 }}
+									margin={{ base: "auto", sm: "auto", lg: 0 }}	// Center the filter on mobile and tablet
+									marginBottom={{ base: 4, sm: 4, lg: 16 }}
 								>
 									<LockerRoomFilter
 										setCurrentPage={setCurrentPage}
@@ -250,15 +252,13 @@ export default function LockerRoom() {
 										flexDirection={"column"}
 										width={"100%"}
 										justify={"space-between"}
-										mt={{ base: 0, md: -14 }}
-										pl={{ base: 0, md: "3.9vw" }}
+										mt={{ base: 0, lg: -14 }}
 									>
 
 										{/* Sort By Dropdown */}
 										<Flex
 											direction={"row-reverse"}
 											width={"100%"}
-											height={"min-content"}
 											ref={targetRef}
 											pb={4}
 										>
@@ -271,6 +271,7 @@ export default function LockerRoom() {
 													rightIcon={<ChevronDownIcon />}
 													width={"fit-content"}
 													fontWeight={"medium"}
+													fontFamily={helvetica}
 												>
 													Sort by: {sortBy}
 												</MenuButton>
@@ -302,13 +303,12 @@ export default function LockerRoom() {
 											itemsPerPage={12}
 											data={sortCards()}
 											targetRef={targetRef}
-											alignSelf={"top"}
 										/>
 									</Flex>
 								)}
 							</HStack>
 						</VStack>
-					</VStack>
+					</Box>
 					<Flex w={ showSidebar ? "140px" : "0px" } position="fixed" top="0" right="0" h="100vh">
 						{ showSidebar ? <Sidebar height={"auto"} backgroundPresent={false} /> : null }
 					</Flex>

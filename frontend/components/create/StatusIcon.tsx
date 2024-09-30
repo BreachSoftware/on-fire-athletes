@@ -1,11 +1,12 @@
 
-import { Box } from "@chakra-ui/react";
+import { Box, Center } from "@chakra-ui/react";
 import { FaXmark, FaCheck } from "react-icons/fa6";
 
 interface StatusIconProps {
 	isCheck: boolean;
 	isGlowing: boolean;
 	iconSize?: number;
+	padding?: string | number | undefined;
 	isActive?: boolean;
 }
 
@@ -24,7 +25,7 @@ export default function StatusIcon(props: StatusIconProps) {
 			{props.isActive ? (
 				props.isCheck ? (
 					// Green Checkmark icon
-					<Box
+					<Center
 						border={"1px solid"}
 						borderColor={"green.100"}
 						backgroundColor={"green.100"}
@@ -32,10 +33,10 @@ export default function StatusIcon(props: StatusIconProps) {
 						boxShadow={props.isGlowing ? "0 0 10px 2px rgba(0, 255, 0, 0.5)" : ""}
 						alignItems={"center"}
 						justifyContent={"center"}
-						padding={1}
+						padding={props.padding ? props.padding : 1}
 					>
 						<FaCheck color="white" size={props.iconSize ? props.iconSize : 12} />
-					</Box>
+					</Center>
 				) : (
 					// Red X mark icon
 					<Box
@@ -46,7 +47,8 @@ export default function StatusIcon(props: StatusIconProps) {
 						boxShadow={props.isGlowing ? "0 0 10px 2px rgba(255, 0, 0, 0.5)" : ""}
 						alignItems={"center"}
 						justifyContent={"center"}
-						padding={1}
+						padding={props.padding ? props.padding : 1}
+
 					>
 						<FaXmark color="white" size={props.iconSize ? props.iconSize : 12} />
 					</Box>
@@ -59,7 +61,7 @@ export default function StatusIcon(props: StatusIconProps) {
 					borderRadius={"full"}
 					alignItems={"center"}
 					justifyContent={"center"}
-					padding={1}
+					padding={props.padding ? props.padding : 1}
 				>
 					<FaCheck color="transparent" size={props.iconSize ? props.iconSize : 12} />
 				</Box>

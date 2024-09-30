@@ -62,6 +62,8 @@ export default class TradingCardInfo {
 	heroXOffset: number;
 	heroYOffset: number;
 	heroWidth: number;
+	cardForegroundS3URL: string;
+	cardBackgroundS3URL: string;
 	signature: string; // Assuming this is going to be an S3 link or something
 	signatureS3URL: string;
 	signatureXOffset: number;
@@ -125,6 +127,8 @@ export default class TradingCardInfo {
 	heroXOffset?: number;
 	heroYOffset?: number;
 	heroWidth?: number;
+	cardForegroundS3URL?: string;
+	cardBackgroundS3URL?: string;
 	signature?: string;
 	signatureS3URL?: string;
 	signatureXOffset?: number;
@@ -183,6 +187,8 @@ export default class TradingCardInfo {
 		this.heroXOffset = options?.heroXOffset || 0;
 		this.heroYOffset = options?.heroYOffset || 0;
 		this.heroWidth = options?.heroWidth || 350;
+		this.cardForegroundS3URL = options?.cardForegroundS3URL || "";
+		this.cardBackgroundS3URL = options?.cardBackgroundS3URL || "";
 		this.signature = options?.signature || "";
 		this.signatureS3URL = options?.signatureS3URL || "";
 		this.signatureXOffset = options?.signatureXOffset || 0;
@@ -249,6 +255,8 @@ export default class TradingCardInfo {
 			heroXOffset: ${cardInfo.heroXOffset}
 			heroYOffset: ${cardInfo.heroYOffset}
 			heroWidth: ${cardInfo.heroWidth}
+			cardForegroundS3URL: ${cardInfo.cardForegroundS3URL}
+			cardBackgroundS3URL: ${cardInfo.cardBackgroundS3URL}
 			backVideoURL: ${cardInfo.backVideoURL.substring(0, 100)}
 			backVideoS3URL: ${cardInfo.backVideoS3URL}
 			backVideoURL: ${cardInfo.backVideoURL.substring(0, 100)}

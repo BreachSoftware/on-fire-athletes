@@ -2,8 +2,8 @@
 import React from "react";
 /* eslint-disable func-style */
 import { useState, useEffect } from "react";
-import { Box, BoxProps, Center, GridItem, SimpleGrid, Text, useBreakpointValue } from "@chakra-ui/react";
-import TrendingCard, { defaultTrendingCardWidth, pixelsToShaveOffOfEachSide } from "@/components/trending_now/TrendingCard";
+import { Box, Center, GridItem, SimpleGrid, Text, useBreakpointValue } from "@chakra-ui/react";
+import TrendingCard from "@/components/trending_now/TrendingCard";
 import TradingCardInfo from "@/hooks/TradingCardInfo";
 import PaginationNavigator from "./PaginationNavigator";
 import { setWithExpiry } from "@/components/localStorageFunctions";
@@ -22,7 +22,7 @@ interface ProfilePageProps {
 	privateView?: boolean;
   }
 
-  interface PaginatedListProps extends BoxProps {
+  interface PaginatedListProps {
 	itemsPerPage: number;
 	data: TradingCardInfo[] | SerializedTradingCard[];
 	targetRef: React.RefObject<HTMLDivElement>;
@@ -60,13 +60,10 @@ export default function PaginatedList({
 	setCurrentPage,
 	profilePage = false,
 	profilePageProps,
-	...rest
 }: PaginatedListProps) {
 
 
 	const [ isPageFlipping, setIsPageFlipping ] = useState(false);
-	const [ customTrendingCardWidth, setCustomTrendingCardWidth ] = useState<number|null>(null);
-	const [ numColumnsInGrid, setNumColumnsInGrid ] = useState<number>(3);
 
 	const indexOfLastItem = currentPage * itemsPerPage;
 	const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -88,9 +85,6 @@ export default function PaginatedList({
 	};
 
 	const isMobile = useBreakpointValue({ base: true, md: false });
-
-	// Padding for in between cards in pixels
-	const paddingForCard = 21;
 
 	/**
 	 * Focuses on the current card when the view card button or the card is clicked.
@@ -131,79 +125,39 @@ export default function PaginatedList({
 		}
 	}, [ currentPage, targetRef, isPageFlipping ]);
 
-	useEffect(() => {
-
-		let numCardsPerRow = 3;
-		let minWidthOfCardsOnScreen = 0, widthOfPaddingOnScreen = 0;
-
-		/**
-		 * function that functions
-		 */
-		function recalculateWidths() {
-			minWidthOfCardsOnScreen = ((defaultTrendingCardWidth - 2 * pixelsToShaveOffOfEachSide) * numCardsPerRow);
-			widthOfPaddingOnScreen = paddingForCard * (numCardsPerRow - 1);
-		}
-
-		/**
-		 * Handles resizing of the trending cards.
-		 */
-		function handleResize() {
-			if(isMobile) {
-				setCustomTrendingCardWidth(null);
-			} else if (parentStackRef.current) {
-				const parentWidth = parentStackRef.current.offsetWidth;
-				recalculateWidths();
-				if(parentWidth <= (minWidthOfCardsOnScreen - widthOfPaddingOnScreen)) {
-					numCardsPerRow = 2;
-					recalculateWidths();
-					if(parentWidth <= (minWidthOfCardsOnScreen - widthOfPaddingOnScreen)) {
-						numCardsPerRow = 1;
-					}
-				}
-				setNumColumnsInGrid(numCardsPerRow);
-
-				const cardWidthBeforeShaving = parentStackRef.current.offsetWidth / numCardsPerRow - paddingForCard * (numCardsPerRow - 1);
-				setCustomTrendingCardWidth(cardWidthBeforeShaving);
-			}
-		}
-
-		handleResize(); // Calculate on mount
-		window.addEventListener("resize", handleResize); // Recalculate on window resize
-
-		return () => {
-			return window.removeEventListener("resize", handleResize);
-		}; // Cleanup on unmount
-	});
-
 	return (
 		<Box
 			minWidth="100%"
 			paddingBottom={24}
-			{...rest}
+			px={{ base: "23px", md: "0px" }}
 		>
 			<SimpleGrid
 				ref={parentStackRef}
-				columns={numColumnsInGrid}
-				spacing={paddingForCard * 2}
+				columns={{
+					"base": 1,
+					"sm": 1,
+					"md": 2,
+					"lg": 2,
+					"xl": 2,
+					"2xl": 2,
+					"3xl": 3,
+				}}
+				spacing={{ base: "36px", md: "41px" }}
+				flexWrap={"wrap"}
 				alignItems={"top"}
 				minWidth="100%"
 				width={profilePage ? "65vw" : undefined}
-				// Set the max width of the grid to the number of columns times the width of the card plus the padding between the cards
-				maxWidth={numColumnsInGrid * defaultTrendingCardWidth + (paddingForCard * 2) * (numColumnsInGrid - 1)}
+				maxWidth={"1250px"}
 				justifyContent={{ base: "center", md: "start" }} // Center on mobile, start on larger screens
-				// Flex and flexwrap needed for mobile screens
-				flexWrap={{ base: "wrap", md: "nowrap" }}
-				display={{ base: "flex", md: "grid" }}
 			>
-				{currentItems.map((card, index) => {
+				{[ ...currentItems, ...currentItems, currentItems[0] ].map((card, index) => {
 					return (
-						<GridItem key={index}>
+						<GridItem key={index} flex={1}>
 							<TrendingCard
 								isPageFlipping={isPageFlipping}
 								passedInCard={card}
 								shouldShowButton={isMobile}
 								overrideCardClick={profilePage ? focusCurrentCard : undefined}
-								trendingCardWidth={customTrendingCardWidth}
 								onProfilePage={profilePage}
 								tabName={profilePage ? profilePageProps?.tabName : undefined}
 								currentUserId={profilePageProps?.currentUserId}
