@@ -21,6 +21,8 @@ interface StepWrapperProps {
 	numSteps: number;
 	cardCreationSteps?: { step: JSX.Element, stepTitle: string }[];
 	entireCardRef: React.RefObject<HTMLDivElement>;
+	foregroundRef: React.RefObject<HTMLDivElement>;
+	backgroundRef: React.RefObject<HTMLDivElement>;
 	cardBackRef: React.RefObject<HTMLDivElement>;
 }
 
@@ -31,134 +33,245 @@ export enum SubmitResult {
 	Failure = 4,
 }
 
-/**
- * Submits the current card using useAuth and the current card ref.
- */
-export async function submitCardWithAuth(
-	entireCardRef: React.RefObject<HTMLDivElement>,
-	cardBackRef: React.RefObject<HTMLDivElement>,
-	currentInfo: useCurrentCardInfoProperties,
-	userID: string,
-) {
+interface SubmitCardProps {
+  entireCardRef: React.RefObject<HTMLDivElement>;
+  foregroundRef: React.RefObject<HTMLDivElement>;
+  backgroundRef: React.RefObject<HTMLDivElement>;
+  cardBackRef: React.RefObject<HTMLDivElement>;
+  currentInfo: useCurrentCardInfoProperties;
+  userID: string;
+}
 
-	if (entireCardRef.current === null || cardBackRef.current === null) {
-		return SubmitResult.Failure;
+interface CardImageData {
+  cardImageBase64: string;
+  cardForegroundImageBase64: string;
+  cardBackgroundImageBase64: string;
+  cardBackImageBase64: string;
+}
+
+interface CardUrls {
+  cardS3URL: string;
+  cardForegroundS3URL: string;
+  cardBackgroundS3URL: string;
+  cardBackS3URL: string;
+}
+
+class CardSubmissionError extends Error {
+
+	/**
+	 * Creates a new CardSubmissionError
+	 */
+	constructor(message: string) {
+		super(message);
+		this.name = "CardSubmissionError";
+	}
+}
+
+/**
+ * Generates a card image from the given reference and mask
+ * @param ref The reference to the card
+ * @param mask The mask to use for the card
+ * @returns The card image
+ */
+async function generateCardImage(
+	ref: React.RefObject<HTMLDivElement>,
+	mask: string
+): Promise<string> {
+	if (!ref.current) {
+		throw new CardSubmissionError("Card reference is null");
 	}
 
-	// Get the current Unix timestamp
-	const current_unix_time = Math.floor(Date.now() / 1000);
+	const canvas = await html2canvas(ref.current, { backgroundColor: null, scale: 2 });
+	const imageBase64 = canvas.toDataURL("image/png", 1.0);
+	const resizedMask = await resize(mask, 700, null);
+	return maskImageToCard(imageBase64, resizedMask);
+}
 
+/**
+ * Generates the card images for the card
+ * @param entireCardRef The reference to the entire card
+ * @param cardBackRef The reference to the card back
+ * @returns The card images
+ */
+async function generateCardImages(
+	entireCardRef: React.RefObject<HTMLDivElement>,
+	foregroundRef: React.RefObject<HTMLDivElement>,
+	backgroundRef: React.RefObject<HTMLDivElement>,
+	cardBackRef: React.RefObject<HTMLDivElement>
+): Promise<CardImageData> {
+	// Ensure images are displayed correctly for html2canvas
 	const style = document.createElement("style");
 	document.head.appendChild(style);
-	// @ts-expect-error Changing this specific line makes the card get generated incorrectly.
+	// @ts-expect-error - style.sheet is not defined
 	style.sheet?.insertRule("body > div:last-child img { display: inline-block; }");
 
-	const canvas = await html2canvas(entireCardRef.current, { backgroundColor: null, scale: 2 });
-	let cardImageBase64 = canvas.toDataURL("image/png", 1.0);
+	const [
+		cardImageBase64,
+		cardForegroundImageBase64,
+		cardBackgroundImageBase64,
+		cardBackImageBase64
+	 ] = await Promise.all([
+		generateCardImage(entireCardRef, CardMask.src),
+		generateCardImage(foregroundRef, CardMask.src),
+		generateCardImage(backgroundRef, CardMask.src),
+		generateCardImage(cardBackRef, CardMaskReverse.src)
+	]);
 
-	const resizedMask = await resize(CardMask.src, 700, null);
-	cardImageBase64 = await maskImageToCard(cardImageBase64, resizedMask);
+	return {
+		cardImageBase64: cardImageBase64,
+		cardForegroundImageBase64: cardForegroundImageBase64,
+		cardBackgroundImageBase64: cardBackgroundImageBase64,
+		cardBackImageBase64: cardBackImageBase64
+	};
+}
 
-	const resizedReversedMask = await resize(CardMaskReverse.src, 700, null);
+/**
+ * Generates a filename for the card. If the user is signed in, the filename is the user's ID and a timestamp.
+ * If the user is not signed in, the filename is a random string and a timestamp.
+ * @param userID The ID of the user
+ * @returns The filename
+ */
+function generateFilename(userID: string): string {
+	const timestamp = Date.now();
+	return userID ? `${userID}-${timestamp}.png` : `${Math.random().toString(36).substring(2)}-${timestamp}.png`;
+}
 
-	const cardBackCanvas = await html2canvas(cardBackRef.current, { backgroundColor: null, scale: 2 });
-	let cardBackImageBase64 = cardBackCanvas.toDataURL("image/png", 1.0);
-	cardBackImageBase64 = await maskImageToCard(cardBackImageBase64, resizedReversedMask);
+/**
+ * Uploads the card images to S3
+ * @param filename The filename to use for the card
+ * @param cardImageBase64 The base64 encoded card image
+ * @param cardBackImageBase64 The base64 encoded card back image
+ * @returns The URLs of the card images
+ */
+async function uploadImages(
+	filename: string,
+	{
+		cardImageBase64,
+		cardForegroundImageBase64,
+		cardBackgroundImageBase64,
+		cardBackImageBase64
+	}: CardImageData): Promise<CardUrls> {
+	const [ cardBlob, cardForegroundBlob, cardBackgroundBlob, cardBackBlob ] = await Promise.all([
+		b64toBlob(cardImageBase64),
+		b64toBlob(cardForegroundImageBase64),
+		b64toBlob(cardBackgroundImageBase64),
+		b64toBlob(cardBackImageBase64)
+	]);
 
-	// Generate the filename for the card image
-	let filename = "";
-	if (userID === "") {
-		// If the user is not signed in, generate a random filename
-		const randomNumbers = `${Math.random() * 100000000000000000}`;
-		filename = `${randomNumbers}-${current_unix_time}.png`;
-	} else {
-		// If the user is signed in, use their user ID in the filename
-		filename = `${userID}-${current_unix_time}.png`;
+	await Promise.all([
+		uploadAssetToS3(filename, cardBlob, "card", "image/png"),
+		uploadAssetToS3(filename, cardForegroundBlob, "card-foreground", "image/png"),
+		uploadAssetToS3(filename, cardBackgroundBlob, "card-background", "image/png"),
+		uploadAssetToS3(filename, cardBackBlob, "card-back", "image/png")
+	]);
+
+	const baseUrl = "https://gamechangers-media-uploads.s3.amazonaws.com";
+	return {
+		cardS3URL: `${baseUrl}/card/${filename}`,
+		cardForegroundS3URL: `${baseUrl}/card-foreground/${filename}`,
+		cardBackgroundS3URL: `${baseUrl}/card-background/${filename}`,
+		cardBackS3URL: `${baseUrl}/card-back/${filename}`
+	};
+}
+
+/**
+ * Checks if the user has created a card before
+ * @param userID The ID of the user
+ * @returns True if the user has created a card before, false otherwise
+ */
+async function checkFirstCardCreation(userID: string): Promise<boolean> {
+	const response = await fetch(apiEndpoints.getCreatedCards(), {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify({ generatedBy: userID }),
+	});
+
+	if (!response.ok) {
+		throw new CardSubmissionError("Failed to check card creation status");
 	}
 
-	await uploadAssetToS3(filename, await b64toBlob(cardImageBase64), "card", "image/png");
-	await uploadAssetToS3(filename, await b64toBlob(cardBackImageBase64), "card-back", "image/png");
+	const result = await response.json();
+	return result.length === 0;
+}
 
-	currentInfo.setCurCard({
-		...currentInfo.curCard,
-		submitted: true,
-		cardImage: `https://gamechangers-media-uploads.s3.amazonaws.com/card/${filename}`,
-		cardBackS3URL: `https://gamechangers-media-uploads.s3.amazonaws.com/card-back/${filename}`,
+/**
+ * Updates the user's profile
+ * @param userID The ID of the user
+ * @param cardInfo The current card info
+ */
+async function updateUserProfile(userID: string, cardInfo: useCurrentCardInfoProperties["curCard"]): Promise<void> {
+	const isFirstCard = await checkFirstCardCreation(userID);
+	if (!isFirstCard) {
+		return;
+	}
+
+	const profileData = {
+		uuid: userID,
+		team_hometown: cardInfo.teamName,
+		position: cardInfo.position,
+		last_name: cardInfo.lastName,
+		generated: Math.floor(Date.now() / 1000),
+		first_name: cardInfo.firstName,
+		bio: cardInfo.NFTDescription,
+		avatar: null,
+	};
+
+	const response = await fetch(apiEndpoints.users_updateUserProfile(), {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify(profileData),
 	});
-	currentInfo.curCard.cardImage = `https://gamechangers-media-uploads.s3.amazonaws.com/card/${filename}`;
-	currentInfo.curCard.cardBackS3URL = `https://gamechangers-media-uploads.s3.amazonaws.com/card-back/${filename}`;
-	currentInfo.curCard.submitted = true;
-	currentInfo.curCard.paymentStatus = PaymentStatus.PENDING;
-	currentInfo.curCard.tradeStatus = TradeStatus.TRADE_ONLY;
 
-	// If the user is signed in
-	if (userID !== "") {
-		// Submit the card
+	if (!response.ok) {
+		throw new CardSubmissionError("Failed to update user profile");
+	}
+}
 
-		const myHeaders = new Headers();
-		myHeaders.append("Content-Type", "application/json");
+/**
+ * Submits the card with the given user ID
+ * @param entireCardRef The reference to the entire card
+ * @param foregroundRef The reference to the front foreground
+ * @param backgroundRef The reference to the front background
+ * @param cardBackRef The reference to the card back
+ * @param currentInfo The current card info
+ * @param userID The ID of the user
+ * @returns The result of the submission
+ */
+export async function submitCardWithAuth({
+	entireCardRef,
+	foregroundRef,
+	backgroundRef,
+	cardBackRef,
+	currentInfo,
+	userID,
+}: SubmitCardProps): Promise<SubmitResult> {
+	try {
+		const cardImages = await generateCardImages(entireCardRef, foregroundRef, backgroundRef, cardBackRef);
+		const filename = generateFilename(userID);
+		const cardUrls = await uploadImages(filename, cardImages);
 
-		const raw = JSON.stringify({
-			generatedBy: userID,
+		console.log("cardUrls", cardUrls);
+
+		currentInfo.setCurCard({
+			...currentInfo.curCard,
+			...cardUrls,
+			submitted: true,
+			paymentStatus: PaymentStatus.PENDING,
+			tradeStatus: TradeStatus.TRADE_ONLY,
 		});
 
-		const requestOptions = {
-			method: "POST",
-			headers: myHeaders,
-			body: raw,
-		};
-		let shouldSave = null;
-		await fetch(apiEndpoints.getCreatedCards(), requestOptions)
-			.then((response: Response) => {
-				return response.json();
-			})
-			.then((result: string) => {
-				shouldSave = result.length === 0;
-				return;
-			})
-			.catch((error) => {
-				return console.error(error);
-			});
-
-		// update the user profile if they are signed in and create a card Only on the first card
-		if(shouldSave) {
-			const cardRequestOptions : RequestInit = {
-				method: "POST",
-				headers: myHeaders,
-				body: JSON.stringify({
-					uuid: userID,
-					team_hometown: currentInfo.curCard.teamName,
-					position: currentInfo.curCard.position,
-					last_name: currentInfo.curCard.lastName,
-					generated: current_unix_time,
-					first_name: currentInfo.curCard.firstName,
-					bio: currentInfo.curCard.NFTDescription,
-					avatar: null,
-				}),
-				// redirect: "follow"
-			};
-
-			await fetch(
-				apiEndpoints.users_updateUserProfile(),
-				cardRequestOptions) // change to prod when ready
-				.then((response: Response) => {
-					return response.text();
-				})
-				.then(() => {
-					return;
-				})
-				.catch((error) => {
-					return console.error(error);
-				});
+		if (userID) {
+			await updateUserProfile(userID, currentInfo.curCard);
+			await TradingCardInfo.submitCard(currentInfo.curCard, userID);
+			return SubmitResult.GoToCheckout;
 		}
+		TradingCardInfo.saveCard(currentInfo.curCard);
+		return SubmitResult.GoToSignup;
 
-		await TradingCardInfo.submitCard(currentInfo.curCard, userID);
-		// Redirect to the pricing page
-		return SubmitResult.GoToCheckout;
+	} catch (error) {
+		console.error("Card submission failed:", error);
+		return SubmitResult.Failure;
 	}
-	// Save the card and redirect to the sign-up page
-	TradingCardInfo.saveCard(currentInfo.curCard);
-	return SubmitResult.GoToSignup;
 }
 
 /**
@@ -166,7 +279,7 @@ export async function submitCardWithAuth(
  * @param param0 StepWrapperProps
  * @returns the React component for the step wrapper
  */
-export default function StepWrapper({ numSteps, cardCreationSteps, entireCardRef, cardBackRef }: StepWrapperProps) {
+export default function StepWrapper({ numSteps, cardCreationSteps, entireCardRef, foregroundRef, backgroundRef, cardBackRef }: StepWrapperProps) {
 
 	const currentInfo = useCurrentCardInfo();
 
@@ -204,7 +317,7 @@ export default function StepWrapper({ numSteps, cardCreationSteps, entireCardRef
 
 	const [ submitButtonLoading, setSubmitButtonLoading ] = useState(false);
 
-	const router = useRouter();
+	// const router = useRouter();
 
 	return (
 		<Box backgroundColor={"transparent"} backdropBlur={30} w={"100%"} maxWidth={900} h="100%">
@@ -276,16 +389,25 @@ export default function StepWrapper({ numSteps, cardCreationSteps, entireCardRef
 
 									// Get the user's ID
 									const userID = user.userId;
-									const result = await submitCardWithAuth(entireCardRef, cardBackRef, currentInfo, userID);
+									// const result =
+									await submitCardWithAuth({
+										entireCardRef: entireCardRef,
+										foregroundRef: foregroundRef,
+										backgroundRef: backgroundRef,
+										cardBackRef: cardBackRef,
+										currentInfo: currentInfo,
+										userID: userID
+									});
 
-									if(result === SubmitResult.GoToCheckout) {
-										router.push("/checkout");
-									} else if(result === SubmitResult.GoToSignup) {
-										router.push("/signup");
-									} else {
-										console.error("Error submitting card!");
-										setSubmitButtonLoading(false);
-									}
+									// ! TODO: COMMENT THIS BACK IN
+									// if(result === SubmitResult.GoToCheckout) {
+									// 	router.push("/checkout");
+									// } else if(result === SubmitResult.GoToSignup) {
+									// 	router.push("/signup");
+									// } else {
+									// 	console.error("Error submitting card!");
+									// 	setSubmitButtonLoading(false);
+									// }
 
 								}
 							}} isDisabled={stepIsIncomplete()} isLoading={submitButtonLoading} />

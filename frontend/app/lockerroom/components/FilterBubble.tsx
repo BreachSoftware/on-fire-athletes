@@ -1,6 +1,7 @@
 import { Button, Text } from "@chakra-ui/react";
 import { FaXmark } from "react-icons/fa6";
 import { formatTitle } from "@/components/create/DropdownInput";
+import { helvetica } from "@/theming/fonts";
 
 interface FilterBubbleProps {
 	text: string;
@@ -20,14 +21,14 @@ export default function FilterBubble(props: FilterBubbleProps) {
 				size={"md"}
 				onClick={props.onClick}
 				borderRadius={"full"}
-				backgroundColor={"white"}
+				backgroundColor={"#D5D5D5"}
 				textColor={"black"}
 				textAlign={"center"}
 				justifyContent={"center"}
 				alignItems={"center"}
 				paddingLeft="8px"
 				paddingRight="8px"
-				gap={2}
+				gap={0.5}
 				maxH={"22px"}
 				width={"min-content"}
 				_hover={{
@@ -37,15 +38,13 @@ export default function FilterBubble(props: FilterBubbleProps) {
 				}}
 			>
 				<Text
-					fontSize="16px"
-					letterSpacing="0.44px"
-					fontFamily="Barlow Semi Condensed"
+					fontSize="14px"
+					fontFamily={helvetica}
 					fontWeight={400}
-					height={"100%"}
 				>
 					{formatTitle(props.text)}
 				</Text>
-				<FaXmark color="black" size={12} />
+				<FaXmark color="black" size={14} />
 			</Button>
 		</>
 	);

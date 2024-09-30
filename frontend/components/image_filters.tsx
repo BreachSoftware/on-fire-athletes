@@ -35,7 +35,7 @@ export async function tint(imageString: string, color: string, inHeader:Headers,
 		return "";
 	}
 
-	if(useAPI) {
+	if(useAPI && false) {
 		const imagebase64 = await image.getBase64Async(Jimp.MIME_PNG);
 		const removedPrefixBase64 = imagebase64.split(",")[1];
 
@@ -85,7 +85,7 @@ export async function recolor(imageString: string, color: string, inHeader:Heade
 	if (typeof window == "undefined" || imageString == "") {
 		return "";
 	}
-	if (useAPI) {
+	if (useAPI && false) {
 		const imagebase64 = await image.getBase64Async(Jimp.MIME_PNG);
 		const removedPrefixBase64 = imagebase64.split(",")[1];
 

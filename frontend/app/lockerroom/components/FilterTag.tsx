@@ -1,6 +1,7 @@
 import { Button, Spacer } from "@chakra-ui/react";
 import { CheckIcon } from "@chakra-ui/icons";
 import { formatTitle } from "@/components/create/DropdownInput";
+import { helvetica } from "@/theming/fonts";
 
 interface FilterTagProps {
 	text: string;
@@ -37,8 +38,7 @@ export default function FilterTag(props: FilterTagProps) {
 				<span style={{
 					alignSelf: "start",
 					fontSize: "16px",
-					letterSpacing: "0.44px",
-					fontFamily: "Barlow Semi Condensed",
+					fontFamily: helvetica,
 					fontWeight: 400,
 				}}>
 					{formatTitle(props.text)}
