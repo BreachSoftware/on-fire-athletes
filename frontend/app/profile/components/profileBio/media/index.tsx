@@ -8,6 +8,7 @@ import { FaX } from 'react-icons/fa6'
 import { MediaType } from '@/hooks/useMediaProcessing'
 import ProfileMediaViewModal from './viewModal'
 import ProfileMediaDeleteModal from './deleteModal'
+import { useRef } from 'react'
 
 interface Props {
     media: string
@@ -25,6 +26,7 @@ export default function ProfileBioMedia({
     isEditable,
     handleDelete,
 }: Props) {
+    const videoRef = useRef<HTMLVideoElement>(null)
     const {
         isOpen: isViewOpen,
         onOpen: onOpenView,
@@ -137,7 +139,7 @@ export default function ProfileBioMedia({
                         <ChakraImage
                             alt="Bio Image"
                             src={media}
-                            _groupHover={{ transform: 'scale(1.05)' }}
+                            _groupHover={{ transform: 'scale(1.025)' }}
                             transition="transform 0.1s ease-out"
                             style={{
                                 width: '100%',
@@ -149,10 +151,22 @@ export default function ProfileBioMedia({
                         <Box
                             w="full"
                             h="full"
-                            _groupHover={{ transform: 'scale(1.05)' }}
+                            _groupHover={{ transform: 'scale(1.025)' }}
                             transition="transform 0.1s ease-out"
+                            onMouseEnter={() => {
+                                if (videoRef.current) {
+                                    videoRef.current.play()
+                                }
+                            }}
+                            onMouseLeave={() => {
+                                if (videoRef.current) {
+                                    videoRef.current.pause()
+                                    videoRef.current.currentTime = 0
+                                }
+                            }}
                         >
                             <video
+                                ref={videoRef}
                                 src={media}
                                 style={{
                                     width: '100%',
@@ -160,12 +174,8 @@ export default function ProfileBioMedia({
                                     objectFit: 'cover',
                                 }}
                                 muted={true}
-                                autoPlay={true}
+                                autoPlay={false}
                                 playsInline={true}
-                                onPlay={(e) => {
-                                    // As soon as the video starts playing, pause it
-                                    e.currentTarget.pause()
-                                }}
                             />
                         </Box>
                     )}
