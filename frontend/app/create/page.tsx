@@ -60,8 +60,8 @@ export default function CreationOverview() {
                             <SharedStack
                                 w="full"
                                 spacing={8}
-                                pl={{ base: '12px', lg: '48px', '2xl': 32 }}
-                                pr={{ base: '12px', lg: '48px', '2xl': 32 }}
+                                pl={{ base: '12px', lg: '48px', '2xl': 24 }}
+                                pr={{ base: '12px', lg: '48px', '2xl': 24 }}
                             >
                                 <Flex
                                     w="full"
@@ -107,6 +107,7 @@ export default function CreationOverview() {
                                         alt="Your Card"
                                         objectFit="contain"
                                         transform="rotate(12deg) scale(0.75)"
+                                        filter="drop-shadow(0 0 24px rgba(204,134,37,0.6))"
                                     />
                                 </Box>
                                 <Box

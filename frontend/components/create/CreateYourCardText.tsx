@@ -11,7 +11,7 @@ export default function CreateYourCardText() {
             color="white"
             direction="column"
             fontFamily="Barlow Condensed"
-            fontSize={{ base: '54px', xs: '60px', '2xl': '80px' }}
+            fontSize={{ base: '54px', xs: '60px', '2xl': '74px' }}
             lineHeight={{ base: '50px', sm: '58px', '2xl': '70px' }}
         >
             <Flex direction={'row'}>

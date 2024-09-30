@@ -6,13 +6,13 @@ export default function StartCreatingButton() {
     return (
         <Link href="/create/card_creation">
             <Button
-                h={{ base: '50px', lg: '56px', '2xl': '64px' }}
+                h={{ base: '50px', lg: '56px', '2xl': '60px' }}
                 w="fit-content"
-                px={{ base: '24px', lg: '32px', '2xl': '48px' }}
+                px={{ base: '24px', lg: '32px', '2xl': '32px' }}
                 bg="green.600"
                 color="white"
                 fontFamily="Roboto"
-                fontSize={{ base: '20px', md: '18px', '2xl': '22px' }}
+                fontSize={{ base: '20px', md: '18px', '2xl': '18px' }}
                 letterSpacing="1.4px"
                 fontWeight="medium"
                 textTransform="uppercase"
@@ -23,7 +23,7 @@ export default function StartCreatingButton() {
                 }}
                 rightIcon={
                     <ChevronRightIcon
-                        fontSize={{ base: '24px', md: '22px', '2xl': '30px' }}
+                        fontSize={{ base: '24px', md: '22px', '2xl': '24px' }}
                     />
                 }
             >
