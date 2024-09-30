@@ -107,6 +107,7 @@ export default function CreationOverview() {
                                         alt="Your Card"
                                         objectFit="contain"
                                         transform="rotate(12deg) scale(0.75)"
+                                        filter="drop-shadow(0 0 24px rgba(204,134,37,0.6))"
                                     />
                                 </Box>
                                 <Box
