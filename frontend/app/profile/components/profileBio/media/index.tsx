@@ -46,9 +46,62 @@ export default function ProfileBioMedia({
             <Box
                 position="relative"
                 w="full"
+                display={{ base: 'block', md: 'none' }}
+                h="full"
+                onClick={onOpenView}
+            >
+                <AspectRatio
+                    w="full"
+                    position="relative"
+                    ratio={1}
+                    overflow="hidden"
+                >
+                    {mediaType === MediaType.PHOTO ? (
+                        <ChakraImage
+                            alt="Bio Image"
+                            src={media}
+                            _groupHover={{ transform: 'scale(1.05)' }}
+                            transition="transform 0.1s ease-out"
+                            style={{
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'cover',
+                            }}
+                        />
+                    ) : (
+                        <Box
+                            w="full"
+                            h="full"
+                            _groupHover={{ transform: 'scale(1.05)' }}
+                            transition="transform 0.1s ease-out"
+                        >
+                            <video
+                                src={media}
+                                style={{
+                                    width: '100%',
+                                    height: '100%',
+                                    objectFit: 'cover',
+                                }}
+                                muted={true}
+                                autoPlay={true}
+                                playsInline={true}
+                                onPlay={(e) => {
+                                    // As soon as the video starts playing, pause it
+                                    e.currentTarget.pause()
+                                }}
+                            />
+                        </Box>
+                    )}
+                </AspectRatio>
+            </Box>
+            <Box
+                position="relative"
+                w="full"
+                display={{ base: 'none', md: 'block' }}
                 h="full"
                 role="group"
                 cursor="pointer"
+                onClick={onOpenView}
             >
                 <IconButton
                     display={isEditable ? 'block' : 'none'}
@@ -78,7 +131,6 @@ export default function ProfileBioMedia({
                     w="full"
                     position="relative"
                     ratio={1}
-                    onClick={onOpenView}
                     overflow="hidden"
                 >
                     {mediaType === MediaType.PHOTO ? (
