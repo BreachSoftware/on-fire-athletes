@@ -60,8 +60,8 @@ export default function CreationOverview() {
                             <SharedStack
                                 w="full"
                                 spacing={8}
-                                pl={{ base: '12px', lg: '48px', '2xl': 32 }}
-                                pr={{ base: '12px', lg: '48px', '2xl': 32 }}
+                                pl={{ base: '12px', lg: '48px', '2xl': 24 }}
+                                pr={{ base: '12px', lg: '48px', '2xl': 24 }}
                             >
                                 <Flex
                                     w="full"

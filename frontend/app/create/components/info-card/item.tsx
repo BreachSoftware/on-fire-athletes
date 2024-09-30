@@ -15,8 +15,8 @@ export default function InfoItem({ number, description }: InfoItemProps) {
             maxW={{ base: '224px', lg: 'none' }}
         >
             <Text
-                fontSize={{ base: '50px', lg: '88px' }}
-                lineHeight={{ base: '58px', lg: '116px' }}
+                fontSize={{ base: '50px', lg: '80px' }}
+                lineHeight={{ base: '58px', lg: '96px' }}
                 fontFamily="Roboto"
                 fontWeight="black"
                 fontStyle="italic"
@@ -31,7 +31,7 @@ export default function InfoItem({ number, description }: InfoItemProps) {
                 0{number}
             </Text>
             <Heading
-                fontSize={{ base: '26px', lg: '30px' }}
+                fontSize="24px"
                 letterSpacing="0.6px"
                 textColor="white"
                 fontStyle="italic"
