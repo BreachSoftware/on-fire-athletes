@@ -281,34 +281,38 @@ export default function TrendingCard({
                     >
                         <HStack justifyContent={"space-between"}>
                             <Text
-                                fontSize={18}
+                                fontSize={"20px"}
                                 fontFamily={"Barlow Semi Condensed"}
-                                fontWeight={"bold"}
+                                fontWeight={"normal"}
                             >
-                                {card.price ? `$${card.price}` : "TRADE ONLY"}
+                                {card.price
+                                    ? `$${card.price.toFixed(2)}`
+                                    : "TRADE ONLY"}
                             </Text>
                             {shouldShowButton && (
                                 <IconButton
                                     onClick={handleFlipFromOutside}
                                     aria-label="Flip Card"
-                                    size="xs"
-                                    w="5%"
-                                    background={"white"}
+                                    minW="26px"
+                                    maxW="26px"
+                                    minH="26px"
+                                    maxH="26px"
+                                    background="#D5D5D5"
                                     marginLeft={5}
                                     icon={
                                         <Icon
                                             as={FaRotate}
-                                            color="black"
+                                            color="#121212"
                                             style={{
-                                                width: "15px",
-                                                height: "15px",
+                                                width: "16px",
+                                                height: "16px",
                                             }}
                                         />
                                     }
                                 />
                             )}
                         </HStack>
-                        <Divider borderColor="white" />
+                        <Divider borderColor="#707070" />
                         <VStack align={"left"} gap={0} lineHeight={"20px"}>
                             {/* Text component for the player's name */}
                             <Text
@@ -334,8 +338,8 @@ export default function TrendingCard({
                                 </>
                             ) : (
                                 <Text
-                                    color={"gray"}
-                                >{`${card.currentlyAvailable} of ${card.totalCreated} available`}</Text>
+                                    color={"gray.400"}
+                                >{`${card.currentlyAvailable} of ${card.totalCreated} Available`}</Text>
                             )}
                         </VStack>
                         {buttonText && (
@@ -343,7 +347,10 @@ export default function TrendingCard({
                                 alignSelf={"center"}
                                 w={"100%"}
                                 variant={"trendingNow"}
+                                bg="#CECECE"
+                                color="#121212"
                                 fontSize={"18px"}
+                                fontWeight={"semibold"}
                                 textTransform={"uppercase"}
                                 fontFamily={"Barlow Semi Condensed"}
                                 h="41px"

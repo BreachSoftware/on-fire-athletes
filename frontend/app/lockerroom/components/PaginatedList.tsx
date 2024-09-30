@@ -140,7 +140,7 @@ export default function PaginatedList({
     return (
         <Box
             minWidth="100%"
-            paddingBottom={24}
+            paddingBottom={{ base: "32px", lg: "151px" }}
             px={{ base: "23px", md: "0px" }}
         >
             <SimpleGrid
