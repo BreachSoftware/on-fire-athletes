@@ -8,6 +8,7 @@ import { FaX } from 'react-icons/fa6'
 import { MediaType } from '@/hooks/useMediaProcessing'
 import ProfileMediaViewModal from './viewModal'
 import ProfileMediaDeleteModal from './deleteModal'
+import { useRef } from 'react'
 
 interface Props {
     media: string
@@ -25,6 +26,7 @@ export default function ProfileBioMedia({
     isEditable,
     handleDelete,
 }: Props) {
+    const videoRef = useRef<HTMLVideoElement>(null)
     const {
         isOpen: isViewOpen,
         onOpen: onOpenView,
@@ -46,39 +48,14 @@ export default function ProfileBioMedia({
             <Box
                 position="relative"
                 w="full"
+                display={{ base: 'block', md: 'none' }}
                 h="full"
-                role="group"
-                cursor="pointer"
+                onClick={onOpenView}
             >
-                <IconButton
-                    display={isEditable ? 'block' : 'none'}
-                    opacity={0}
-                    aria-label="Delete image"
-                    icon={<Icon as={FaX} />}
-                    position="absolute"
-                    top="-10px"
-                    right="-10px"
-                    bg="red.600"
-                    color="white"
-                    w="40px"
-                    h="40px"
-                    zIndex={1}
-                    _hover={{ bgColor: 'red.700' }}
-                    _groupHover={{
-                        opacity: 1,
-                    }}
-                    transition="opacity 0.1s ease-out"
-                    onClick={(e) => {
-                        e.stopPropagation()
-                        e.preventDefault()
-                        onOpenDelete()
-                    }}
-                />
                 <AspectRatio
                     w="full"
                     position="relative"
                     ratio={1}
-                    onClick={onOpenView}
                     overflow="hidden"
                 >
                     {mediaType === MediaType.PHOTO ? (
@@ -114,6 +91,91 @@ export default function ProfileBioMedia({
                                     // As soon as the video starts playing, pause it
                                     e.currentTarget.pause()
                                 }}
+                            />
+                        </Box>
+                    )}
+                </AspectRatio>
+            </Box>
+            <Box
+                position="relative"
+                w="full"
+                display={{ base: 'none', md: 'block' }}
+                h="full"
+                role="group"
+                cursor="pointer"
+                onClick={onOpenView}
+            >
+                <IconButton
+                    display={isEditable ? 'block' : 'none'}
+                    opacity={0}
+                    aria-label="Delete image"
+                    icon={<Icon as={FaX} />}
+                    position="absolute"
+                    top="-10px"
+                    right="-10px"
+                    bg="red.600"
+                    color="white"
+                    w="40px"
+                    h="40px"
+                    zIndex={1}
+                    _hover={{ bgColor: 'red.700' }}
+                    _groupHover={{
+                        opacity: 1,
+                    }}
+                    transition="opacity 0.1s ease-out"
+                    onClick={(e) => {
+                        e.stopPropagation()
+                        e.preventDefault()
+                        onOpenDelete()
+                    }}
+                />
+                <AspectRatio
+                    w="full"
+                    position="relative"
+                    ratio={1}
+                    overflow="hidden"
+                >
+                    {mediaType === MediaType.PHOTO ? (
+                        <ChakraImage
+                            alt="Bio Image"
+                            src={media}
+                            _groupHover={{ transform: 'scale(1.025)' }}
+                            transition="transform 0.1s ease-out"
+                            style={{
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'cover',
+                            }}
+                        />
+                    ) : (
+                        <Box
+                            w="full"
+                            h="full"
+                            _groupHover={{ transform: 'scale(1.025)' }}
+                            transition="transform 0.1s ease-out"
+                            onMouseEnter={() => {
+                                if (videoRef.current) {
+                                    videoRef.current.play()
+                                }
+                            }}
+                            onMouseLeave={() => {
+                                if (videoRef.current) {
+                                    videoRef.current.pause()
+                                    videoRef.current.currentTime = 0
+                                }
+                            }}
+                        >
+                            <video
+                                ref={videoRef}
+                                src={media}
+                                style={{
+                                    width: '100%',
+                                    height: '100%',
+                                    objectFit: 'cover',
+                                }}
+                                muted={true}
+                                autoPlay={false}
+                                playsInline={true}
                             />
                         </Box>
                     )}

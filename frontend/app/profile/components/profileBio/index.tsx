@@ -373,7 +373,7 @@ export default function ProfileBioTab({
 
     return (
         <Flex w="full" direction="column">
-            <Flex direction="column" mb="80px" w="full" px="172px">
+            <Flex direction="column" mb={{ base: '32px', lg: '80px' }} w="full">
                 <Text
                     fontSize="24px"
                     fontFamily="'Barlow Condensed', sans-serif"
@@ -381,7 +381,7 @@ export default function ProfileBioTab({
                     fontWeight="600"
                     color="green.600"
                     letterSpacing={'0.75px'}
-                    mb="12px"
+                    mb={{ base: '4px', lg: '12px' }}
                 >
                     About
                 </Text>
@@ -393,17 +393,17 @@ export default function ProfileBioTab({
             </Flex>
             <Grid
                 templateColumns={{
-                    base: 'repeat(1, 1fr)',
+                    base: 'repeat(2, 1fr)',
                     md: 'repeat(2, 1fr)',
                     lg: 'repeat(3, 1fr)',
                     xl: 'repeat(4, 1fr)',
                 }}
-                gap="40px"
-                mb="40px"
+                gap={{ base: '12px', lg: '40px' }}
+                mb={{ base: '12px', lg: '40px' }}
                 alignItems={'center'}
             >
                 {editable && isLoaded && (
-                    <GridItem h="full">
+                    <GridItem>
                         <ProfileNewMedia
                             isLoading={fileIsLoading}
                             handleClick={handleButtonClick}

@@ -601,21 +601,26 @@ export default function Profile() {
                         <NavBar bgGradient="none" />
                         <Flex
                             position="relative"
-                            pl="278px"
-                            pr="138px"
-                            py="64px"
+                            px={{ base: '32px', xs: '50px', xl: '212px' }}
+                            py={{ base: '40px', lg: '64px' }}
                             w="full"
+                            gridGap={{ base: '32px', md: 0 }}
+                            flexDir={{ base: 'column', md: 'row' }}
                             justifyContent="space-between"
                             alignItems="center"
                         >
-                            <SharedStack row fit spacing="52px">
+                            <SharedStack
+                                row
+                                fit
+                                spacing={{ base: '40px', lg: '52px' }}
+                            >
                                 <ProfileAvatar
                                     profileInfo={profileInfo}
                                     isLoaded={isLoaded}
                                     isOnPrivateProfile={loadPrivateProfile}
                                     onOpen={onOpen}
                                 />
-                                <SharedStack>
+                                <SharedStack spacing={{ base: 3, md: 2 }}>
                                     <Box>
                                         <UserSocialLinks
                                             profileInfo={profileInfo}
@@ -624,22 +629,24 @@ export default function Profile() {
                                             }
                                             onOpen={slimSocialMediaModal.onOpen}
                                         />
-                                        <Skeleton isLoaded={isLoaded} mt="1px">
+                                        <Skeleton
+                                            isLoaded={isLoaded}
+                                            mt={{ base: 3, md: '1px' }}
+                                        >
                                             <Text
                                                 fontFamily="'Barlow Condensed', sans-serif"
                                                 fontStyle="italic"
                                                 fontWeight="600"
                                                 fontSize={{
                                                     base: '30px',
-                                                    md: '40px',
+                                                    lg: '40px',
                                                 }}
                                                 color="green.100"
                                                 letterSpacing="2px"
                                                 lineHeight={{
                                                     base: '30px',
-                                                    md: '48px',
+                                                    lg: '48px',
                                                 }}
-                                                maxW="90vw"
                                                 textTransform="uppercase"
                                             >
                                                 {profileInfo?.first_name || ''}{' '}
@@ -648,50 +655,24 @@ export default function Profile() {
                                         </Skeleton>
                                     </Box>
                                     <Skeleton isLoaded={isLoaded}>
-                                        <Flex
-                                            direction={{
-                                                base: 'column',
-                                                md: 'row',
-                                                xl: 'column',
-                                                '2xl': 'row',
+                                        <Text
+                                            fontSize={{
+                                                base: '14px',
+                                                lg: '16px',
                                             }}
-                                            mb="10px"
-                                            lineHeight={{
-                                                base: '16px',
-                                                md: '18px',
-                                            }}
+                                            fontWeight="700"
+                                            color="white"
+                                            fontFamily="Helvetica Neue"
                                         >
-                                            {/* Position */}
-                                            <Text
-                                                fontSize={{
-                                                    base: '14px',
-                                                    md: '16px',
-                                                }}
-                                                fontWeight="700"
-                                                color="white"
-                                                fontFamily="Helvetica Neue"
-                                                maxW="90vw"
-                                            >
-                                                {profileInfo?.position || ''}
-                                                {profileInfo?.position
-                                                    ? ','
-                                                    : null}
-                                                &nbsp;
-                                            </Text>
-                                            {/* Hometown */}
-                                            <Text
-                                                fontSize={{
-                                                    base: '14px',
-                                                    md: '16px',
-                                                }}
-                                                color="white"
-                                                fontFamily="Helvetica Neue"
-                                                maxW="90vw"
-                                            >
+                                            {profileInfo?.position || ''}
+                                            {profileInfo?.position
+                                                ? ','
+                                                : null}{' '}
+                                            <Box as="span" fontWeight="400">
                                                 {profileInfo?.team_hometown ||
                                                     ''}
-                                            </Text>
-                                        </Flex>
+                                            </Box>
+                                        </Text>
                                     </Skeleton>
                                 </SharedStack>
                             </SharedStack>
@@ -764,8 +745,7 @@ export default function Profile() {
                         />
                         <Box
                             w="100%"
-                            pl="278px"
-                            pr="138px"
+                            px={{ base: '32px', xs: '50px', xl: '212px' }}
                             pt="34px"
                             pb="64px"
                             position="relative"
