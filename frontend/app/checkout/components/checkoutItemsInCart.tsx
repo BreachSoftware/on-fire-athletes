@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import {
     VStack,
     Box,
@@ -8,23 +8,23 @@ import {
     AccordionItem,
     AccordionPanel,
     Spacer,
-} from '@chakra-ui/react'
-import Item from '@/components/cart_items/item'
-import TradingCardInfo from '@/hooks/TradingCardInfo'
-import { useCurrentCheckout } from '@/hooks/useCheckout'
-import { useState, useEffect, JSX, SVGProps } from 'react'
-import SharedStack from '@/components/shared/wrappers/shared-stack'
+} from "@chakra-ui/react";
+import Item from "@/components/cart_items/item";
+import TradingCardInfo from "@/hooks/TradingCardInfo";
+import { useCurrentCheckout } from "@/hooks/useCheckout";
+import { useState, useEffect, JSX, SVGProps } from "react";
+import SharedStack from "@/components/shared/wrappers/shared-stack";
 
 interface CheckoutItemsAttributes {
-    title: string
-    card: TradingCardInfo | null
-    numberOfCards: number
-    numberOfOrders: number
-    price: number
+    title: string;
+    card: TradingCardInfo | null;
+    numberOfCards: number;
+    numberOfOrders: number;
+    price: number;
 }
 interface CheckoutItemsInCartProps {
-    items: CheckoutItemsAttributes[]
-    buyingOtherCard: boolean
+    items: CheckoutItemsAttributes[];
+    buyingOtherCard: boolean;
 }
 
 /**
@@ -35,7 +35,7 @@ interface CheckoutItemsInCartProps {
 export function ItemsInCartComponent({
     items,
 }: {
-    items: CheckoutItemsAttributes[]
+    items: CheckoutItemsAttributes[];
 }) {
     return (
         <VStack>
@@ -43,8 +43,8 @@ export function ItemsInCartComponent({
                 // If the item is a physical or digital card, allow the user to edit or remove it
                 // Otherwise, don't allow the user to edit or remove the item
                 const isPhysicalOrDigitalCardAddOn =
-                    item.title.startsWith('Physical') ||
-                    item.title.startsWith('Digital')
+                    item.title.startsWith("Physical") ||
+                    item.title.startsWith("Digital");
 
                 return (
                     <Item
@@ -57,10 +57,10 @@ export function ItemsInCartComponent({
                         canEdit={isPhysicalOrDigitalCardAddOn}
                         canRemove={isPhysicalOrDigitalCardAddOn}
                     />
-                )
+                );
             })}
         </VStack>
-    )
+    );
 }
 
 /**
@@ -68,20 +68,20 @@ export function ItemsInCartComponent({
  * @returns JSX.Element
  */
 export default function CheckoutItemsInCart(props: CheckoutItemsInCartProps) {
-    const curCheckout = useCurrentCheckout()
+    const curCheckout = useCurrentCheckout();
 
     // State to keep track of whether the user is buying physical cards
-    const [buyingPhysicalCards, setBuyingPhysicalCards] = useState(false)
+    const [buyingPhysicalCards, setBuyingPhysicalCards] = useState(false);
     useEffect(() => {
         if (curCheckout.checkout.physicalCardCount > 0) {
-            setBuyingPhysicalCards(true)
+            setBuyingPhysicalCards(true);
         } else {
-            setBuyingPhysicalCards(false)
+            setBuyingPhysicalCards(false);
         }
     }, [
         curCheckout.checkout.packageName,
         curCheckout.checkout.physicalCardCount,
-    ])
+    ]);
 
     /**
      * thin Accordion Icon
@@ -107,7 +107,7 @@ export default function CheckoutItemsInCart(props: CheckoutItemsInCartProps) {
             >
                 <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
-        )
+        );
     }
 
     return (
@@ -117,52 +117,40 @@ export default function CheckoutItemsInCart(props: CheckoutItemsInCartProps) {
                 p={4}
                 bg="#171C1B"
                 alignItems="flex-start"
-                justifyContent={'space-between'}
+                justifyContent={"space-between"}
                 h="495px"
                 overflowY="auto"
                 roundedBottom="xl"
                 overflowX="hidden"
                 css={{
                     // Getting rid of default scrollbar
-                    msOverflowStyle: 'none',
+                    msOverflowStyle: "none",
                     // Creating custom scrollbar.
                     // Unfortunately the colors from themes don't work here so you have to hard code
-                    '&::-webkit-scrollbar': { width: '0.75rem' },
-                    '&::-webkit-scrollbar-track': {
-                        backgroundColor: '#1E2423',
-                        borderRadius: '5rem',
+                    "&::-webkit-scrollbar": { width: "0.75rem" },
+                    "&::-webkit-scrollbar-track": {
+                        backgroundColor: "#1E2423",
+                        borderRadius: "5rem",
                     },
-                    '&::-webkit-scrollbar-thumb': {
-                        backgroundColor: '#2A302F',
-                        borderRadius: '5rem',
+                    "&::-webkit-scrollbar-thumb": {
+                        backgroundColor: "#2A302F",
+                        borderRadius: "5rem",
                     },
-                    '&::-webkit-scrollbar-thumb:hover': {
-                        backgroundColor: '#363C3B',
+                    "&::-webkit-scrollbar-thumb:hover": {
+                        backgroundColor: "#363C3B",
                     },
                 }}
-                display={{ base: 'none', lg: 'flex' }}
+                display={{ base: "none", lg: "flex" }}
             >
                 <ItemsInCartComponent items={props.items} />
-                <Spacer />
-                {buyingPhysicalCards && (
-                    <SharedStack align="center">
-                        <Text
-                            fontFamily={'Barlow Semi Condensed'}
-                            color={'#808080'}
-                            transform={'skew(-10deg)'}
-                        >
-                            {`Shipping & Handling - $${curCheckout.checkout.shippingCost}`}
-                        </Text>
-                    </SharedStack>
-                )}
             </SharedStack>
             {curCheckout.checkout.stepNum !== 5 ? (
                 <Accordion
-                    color={'#31453D'}
-                    borderBottom={'2px'}
-                    borderTop={'2px'}
+                    color={"#31453D"}
+                    borderBottom={"2px"}
+                    borderTop={"2px"}
                     allowToggle
-                    display={{ base: 'block', lg: 'none' }}
+                    display={{ base: "block", lg: "none" }}
                     defaultIndex={[0]}
                 >
                     <AccordionItem>
@@ -172,10 +160,10 @@ export default function CheckoutItemsInCart(props: CheckoutItemsInCartProps) {
                                     <AccordionButton>
                                         <Text
                                             fontWeight={200}
-                                            fontSize={'26px'}
-                                            fontStyle={'italic'}
-                                            color={'white'}
-                                            fontFamily={'Barlow Condensed'}
+                                            fontSize={"26px"}
+                                            fontStyle={"italic"}
+                                            color={"white"}
+                                            fontFamily={"Barlow Condensed"}
                                             as="span"
                                             flex="1"
                                             textAlign="left"
@@ -188,36 +176,23 @@ export default function CheckoutItemsInCart(props: CheckoutItemsInCartProps) {
                                             color="green.400"
                                             rotation={
                                                 isExpanded
-                                                    ? 'rotate(180deg)'
-                                                    : 'rotate(0deg)'
+                                                    ? "rotate(180deg)"
+                                                    : "rotate(0deg)"
                                             }
                                             transition="transform 0.2s"
                                             sx={{
-                                                '& svg': {
-                                                    strokeWidth: '1px',
-                                                    fill: 'none',
-                                                    stroke: 'currentColor',
+                                                "& svg": {
+                                                    strokeWidth: "1px",
+                                                    fill: "none",
+                                                    stroke: "currentColor",
                                                 },
                                             }}
                                         />
                                     </AccordionButton>
-                                    <AccordionPanel color={'white'} pb={4}>
+                                    <AccordionPanel color={"white"} pb={4}>
                                         <ItemsInCartComponent
                                             items={props.items}
                                         />
-                                        {buyingPhysicalCards && (
-                                            <SharedStack align="center">
-                                                <Text
-                                                    fontFamily={
-                                                        'Barlow Semi Condensed'
-                                                    }
-                                                    color={'#808080'}
-                                                    transform={'skew(-10deg)'}
-                                                >
-                                                    {`Shipping & Handling - $${curCheckout.checkout.shippingCost}`}
-                                                </Text>
-                                            </SharedStack>
-                                        )}
                                         {/* <VStack textColor={"white"}>
 										{props.items.map((item, index) => {
 											let canEdit = false;
@@ -245,7 +220,7 @@ export default function CheckoutItemsInCart(props: CheckoutItemsInCartProps) {
 									</VStack> */}
                                     </AccordionPanel>
                                 </>
-                            )
+                            );
                         }}
                     </AccordionItem>
                 </Accordion>
@@ -253,5 +228,5 @@ export default function CheckoutItemsInCart(props: CheckoutItemsInCartProps) {
                 <></>
             )}
         </>
-    )
+    );
 }

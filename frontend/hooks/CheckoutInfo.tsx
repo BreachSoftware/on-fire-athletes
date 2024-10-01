@@ -1,138 +1,137 @@
 import TradingCardInfo from "./TradingCardInfo";
 
 export interface StreetAddress {
-	firstName: string;
-	lastName: string;
-	streetAddress: string;
-	unitNumber?: string;
-	city: string;
-	state: string;
-	zipCode: string;
-};
+    firstName: string;
+    lastName: string;
+    streetAddress: string;
+    unitNumber?: string;
+    city: string;
+    state: string;
+    zipCode: string;
+}
 
 export interface ContactInfo {
-	firstName: string;
-	lastName: string;
-	email: string;
-	phone?: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone?: string;
 }
 
 export interface Item {
-	title: string;
-	card: TradingCardInfo | null;
-	numberOfCards: number;
-	numberOfOrders: number;
-	price: number;
+    title: string;
+    card: TradingCardInfo | null;
+    numberOfCards: number;
+    numberOfOrders: number;
+    price: number;
 }
 
 export default class CheckoutInfo {
-	visitedSteps: number;
+    visitedSteps: number;
 
-	cart: Item[];
-	subtotal: number;
-	shippingCost: number;
-	tax: number;
-	total: number;
+    cart: Item[];
+    subtotal: number;
+    shippingCost: number;
+    tax: number;
+    total: number;
 
-	packageName: "rookie" | "allStar" | "mvp" | null;
-	onFireCard: TradingCardInfo | null;
-	packageCardCount: number;
-	packagePrice: number;
-	digitalCardCount: number;
-	digitalCardPrice: number;
-	physicalCardCount: number;
-	physicalCardPrice: number;
+    packageName: "rookie" | "allStar" | "mvp" | null;
+    onFireCard: TradingCardInfo | null;
+    packageCardCount: number;
+    packagePrice: number;
+    digitalCardCount: number;
+    digitalCardPrice: number;
+    physicalCardCount: number;
+    physicalCardPrice: number;
 
-	contactInfo: ContactInfo;
+    contactInfo: ContactInfo;
 
-	// This customerId is for Stripe
-	customerId: string;
-	clientSecret: string;
-	paymentMethodId?: string;
-	paymentComplete: boolean;
-	// These two are optional because they are only used when the payment method is a card
-	paymentCardBrand?: string;
-	paymentCardLastFour?: string;
-	cryptoWalletConnected: boolean;
+    // This customerId is for Stripe
+    customerId: string;
+    clientSecret: string;
+    paymentMethodId?: string;
+    paymentComplete: boolean;
+    // These two are optional because they are only used when the payment method is a card
+    paymentCardBrand?: string;
+    paymentCardLastFour?: string;
+    cryptoWalletConnected: boolean;
 
-	stepNum: number;
-	shippingCards: boolean;
-	shippingAddress: StreetAddress;
-	billingAddress: StreetAddress;
-	shippingIsBilling: boolean;
-	paymentInfoEntered: boolean; // I'm thinking this is what happens when they link their wallet or enter their card info, but it hasnt charged yet
+    stepNum: number;
+    shippingCards: boolean;
+    shippingAddress: StreetAddress;
+    billingAddress: StreetAddress;
+    shippingIsBilling: boolean;
+    paymentInfoEntered: boolean; // I'm thinking this is what happens when they link their wallet or enter their card info, but it hasnt charged yet
 
-	termsAccepted: boolean;
-	complete: boolean;
+    termsAccepted: boolean;
+    complete: boolean;
 
-	// This is the price the user sets for the card if they choose the all-star package
-	cardPrice: string;
+    // This is the price the user sets for the card if they choose the all-star package
+    cardPrice: string;
 
-	/**
-	 * Constructor for the CheckoutInfo class
-	 */
-	constructor() {
-		// Start on the first step of the StepWrapper
-		this.visitedSteps = 2;
+    /**
+     * Constructor for the CheckoutInfo class
+     */
+    constructor() {
+        // Start on the first step of the StepWrapper
+        this.visitedSteps = 2;
 
-		this.cart = [];
-		this.subtotal = 0;
-		this.shippingCost = 4.99;
-		this.tax = 0;
-		this.total = 0;
+        this.cart = [];
+        this.subtotal = 0;
+        this.shippingCost = 0;
+        this.tax = 0;
+        this.total = 0;
 
-		this.packageName = "allStar";
-		this.onFireCard = null;
-		this.packageCardCount = 0;
-		this.packagePrice = 0;
-		this.digitalCardCount = 0;
-		this.digitalCardPrice = 0.50;
-		this.physicalCardCount = 0;
-		this.physicalCardPrice = 9.99;
+        this.packageName = "allStar";
+        this.onFireCard = null;
+        this.packageCardCount = 0;
+        this.packagePrice = 0;
+        this.digitalCardCount = 0;
+        this.digitalCardPrice = 0.5;
+        this.physicalCardCount = 0;
+        this.physicalCardPrice = 9.99;
 
-		this.contactInfo = {
-			firstName: "",
-			lastName: "",
-			email: "",
-			phone: ""
-		};
+        this.contactInfo = {
+            firstName: "",
+            lastName: "",
+            email: "",
+            phone: "",
+        };
 
-		this.customerId = "";
-		this.clientSecret = "";
-		this.paymentMethodId = "";
-		this.paymentComplete = false;
-		this.paymentCardBrand = "";
-		this.paymentCardLastFour = "";
-		this.cryptoWalletConnected = false;
+        this.customerId = "";
+        this.clientSecret = "";
+        this.paymentMethodId = "";
+        this.paymentComplete = false;
+        this.paymentCardBrand = "";
+        this.paymentCardLastFour = "";
+        this.cryptoWalletConnected = false;
 
-		this.stepNum = 0;
-		this.shippingCards = false;
-		this.shippingAddress = {
-			firstName: "",
-			lastName: "",
-			streetAddress: "",
-			city: "",
-			state: "",
-			zipCode: ""
-		};
-		this.billingAddress = this.shippingAddress;
-		// Does not start checked according to the flow
-		this.shippingIsBilling = false;
+        this.stepNum = 0;
+        this.shippingCards = false;
+        this.shippingAddress = {
+            firstName: "",
+            lastName: "",
+            streetAddress: "",
+            city: "",
+            state: "",
+            zipCode: "",
+        };
+        this.billingAddress = this.shippingAddress;
+        // Does not start checked according to the flow
+        this.shippingIsBilling = false;
 
-		this.paymentInfoEntered = false;
+        this.paymentInfoEntered = false;
 
-		this.termsAccepted = false;
-		this.complete = false;
+        this.termsAccepted = false;
+        this.complete = false;
 
-		this.cardPrice = "";
-	}
+        this.cardPrice = "";
+    }
 
-	/**
-	 * Converts the CheckoutInfo object to a string so you can see all its attributes
-	 */
-	static showInfo(checkoutInfo: CheckoutInfo): string {
-		return(
-			`
+    /**
+     * Converts the CheckoutInfo object to a string so you can see all its attributes
+     */
+    static showInfo(checkoutInfo: CheckoutInfo): string {
+        return `
 			visitedSteps: ${checkoutInfo.visitedSteps}
 			type: ${checkoutInfo.stepNum}
 			cart: ${checkoutInfo.cart}
@@ -155,7 +154,6 @@ export default class CheckoutInfo {
 			paymentInfoEntered: ${checkoutInfo.paymentInfoEntered}
 			termsAccepted: ${checkoutInfo.termsAccepted}
 			cardPrice: ${checkoutInfo.cardPrice}
-			`
-		);
-	}
+			`;
+    }
 }
