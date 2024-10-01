@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-import { useCurrentCardInfo } from '@/hooks/useCurrentCardInfo'
+import { useCurrentCardInfo } from "@/hooks/useCurrentCardInfo";
 import {
     Image,
     Text,
@@ -14,36 +14,36 @@ import {
     ImageProps,
     IconButton,
     useToast,
-} from '@chakra-ui/react'
-import mergeImages, { ImageSource } from 'merge-images'
+} from "@chakra-ui/react";
+import mergeImages, { ImageSource } from "merge-images";
 import {
     useState,
     useEffect,
     useRef,
     useImperativeHandle,
     forwardRef,
-} from 'react'
-import { recolor, tint } from '@/components/image_filters'
-import '@fontsource/barlow'
-import TradingCardInfo, { CardPart } from '@/hooks/TradingCardInfo'
-import { MotionProps, motion } from 'framer-motion'
-import { delay } from 'lodash'
-import { cardRenderOrder, imageColors, imagePaths } from './card_render_config'
+} from "react";
+import { recolor, tint } from "@/components/image_filters";
+import "@fontsource/barlow";
+import TradingCardInfo, { CardPart } from "@/hooks/TradingCardInfo";
+import { MotionProps, motion } from "framer-motion";
+import { delay } from "lodash";
+import { cardRenderOrder, imageColors, imagePaths } from "./card_render_config";
 import {
     cardAnimation,
     cardBackAnimation,
     cardTopAnimation,
-} from './card_animation_config'
-import { darkenHexString } from './card_utils'
-import Draggable, { DraggableEvent } from 'react-draggable'
-import ReactPlayer from 'react-player'
-import { Spinner } from '@chakra-ui/react'
-import CardDropShadow from '../CardDropShadow'
-import { CSSProperties } from 'styled-components'
-import RepeatingPetch from './repeating_petch'
-import FlipCardIcon from './flip_card_button'
-import { useMediaProcessing } from '@/hooks/useMediaProcessing'
-import OnFireCardSliders from './OnFireCardSliders'
+} from "./card_animation_config";
+import { darkenHexString } from "./card_utils";
+import Draggable, { DraggableEvent } from "react-draggable";
+import ReactPlayer from "react-player";
+import { Spinner } from "@chakra-ui/react";
+import CardDropShadow from "../CardDropShadow";
+import { CSSProperties } from "styled-components";
+import RepeatingPetch from "./repeating_petch";
+import FlipCardIcon from "./flip_card_button";
+import { useMediaProcessing } from "@/hooks/useMediaProcessing";
+import OnFireCardSliders from "./OnFireCardSliders";
 
 // Use this enum to determine the zIndex of the elements on the card
 enum zIndex {
@@ -56,7 +56,7 @@ enum zIndex {
     cardBackVideo = 7,
 }
 
-const headers: Headers = new Headers()
+const headers: Headers = new Headers();
 
 /**
  * Function to call recolor() on all the images in the card.
@@ -69,21 +69,21 @@ export async function recolorAllImages(
     paths: string[],
     header: Headers,
 ) {
-    const base64arr: string[] = new Array(paths.length)
+    const base64arr: string[] = new Array(paths.length);
 
     // Parallel processing of all the images
     await Promise.all(
         paths.map(async (path, index) => {
-            if (path === '' || colors[index] === '') {
-                return
+            if (path === "" || colors[index] === "") {
+                return;
             }
 
-            let parsedImage = null
+            let parsedImage = null;
 
             const isBorderColor =
                 index == CardPart.EXTERIOR_BORDER ||
-                index == CardPart.INTERIOR_BORDER
-            const recolorFunction = isBorderColor ? tint : recolor
+                index == CardPart.INTERIOR_BORDER;
+            const recolorFunction = isBorderColor ? tint : recolor;
 
             // Second true value is for the tint function's inverted parameter
             parsedImage = await recolorFunction(
@@ -92,14 +92,14 @@ export async function recolorAllImages(
                 header,
                 true,
                 true,
-            )
+            );
             if (parsedImage) {
-                base64arr[index] = parsedImage
+                base64arr[index] = parsedImage;
             }
         }),
-    )
+    );
 
-    return base64arr
+    return base64arr;
 }
 
 /**
@@ -116,27 +116,27 @@ export async function loadImage(
 ) {
     if (curCard.partsToRecolor.length !== 0) {
         // Make sure that you're not waiting on anything
-        return
+        return;
     }
     try {
         const cardRenderFrontArray = cardRenderOrder(
-            'front',
+            "front",
             curCard,
             recoloredGamecardImages,
             finalRender,
-        )
+        );
         const cardRenderBackArray = cardRenderOrder(
-            'back',
+            "back",
             curCard,
             recoloredGamecardImages,
-        )
-        let cardRenderFrontArrayNoLogo: ImageSource[] = cardRenderFrontArray!
-        const bBorderRecoloredGamecardImages = [...recoloredGamecardImages]
+        );
+        let cardRenderFrontArrayNoLogo: ImageSource[] = cardRenderFrontArray!;
+        const bBorderRecoloredGamecardImages = [...recoloredGamecardImages];
 
         // Get the B border recolored
         // B Border is used on the back of the card, so that is why we are doing this here.
         tint(
-            '/card_assets/card-interior-border-b.png',
+            "/card_assets/card-interior-border-b.png",
             curCard.borderColor,
             headers,
             true,
@@ -145,61 +145,63 @@ export async function loadImage(
                 // Set up the stack of cards to render, with the interior border as the recolored B border
                 // bBorderRecoloredGamecardImages is copied from the current recoloredGamecardImages to reduce backend calls.
                 bBorderRecoloredGamecardImages[CardPart.INTERIOR_BORDER] =
-                    result
+                    result;
 
                 // Take out the front element, which is the logo. Forcing card type B to get B's border on the back
-                const frontArrayStart = 3
-                const bCard = { ...curCard, cardType: 'b' }
+                const frontArrayStart = 3;
+                const bCard = { ...curCard, cardType: "b" };
                 cardRenderFrontArrayNoLogo = cardRenderOrder(
-                    'front',
+                    "front",
                     bCard,
                     bBorderRecoloredGamecardImages,
                     finalRender,
-                )!.slice(frontArrayStart)
+                )!.slice(frontArrayStart);
 
                 if (!cardRenderFrontArray || !cardRenderBackArray) {
-                    console.error('Null Arrays!')
-                    return
+                    console.error("Null Arrays!");
+                    return;
                 }
 
                 const b64FrontNoLogo = await mergeImages(
                     cardRenderFrontArrayNoLogo,
-                )
-                setGamecardTopLayerNoLogo(b64FrontNoLogo)
+                );
+                setGamecardTopLayerNoLogo(b64FrontNoLogo);
 
-                const b64Front = await mergeImages(cardRenderFrontArray)
-                setGamecardTopLayer(b64Front)
+                const b64Front = await mergeImages(cardRenderFrontArray);
+                setGamecardTopLayer(b64Front);
 
-                const b64Back = await mergeImages(cardRenderBackArray)
-                setGamecardBottomLayer(b64Back)
+                const b64Back = await mergeImages(cardRenderBackArray);
+                setGamecardBottomLayer(b64Back);
 
                 setGamecardSignatureImage(
                     recoloredGamecardImages[CardPart.SIGNATURE],
-                )
-                curCard.signature = recoloredGamecardImages[CardPart.SIGNATURE]
+                );
+                curCard.signature = recoloredGamecardImages[CardPart.SIGNATURE];
             } else {
-                console.error('Something wrong with tinting the B border')
+                console.error("Something wrong with tinting the B border");
             }
-        })
+        });
     } catch (error) {
-        console.error('Error loading image:', error)
+        console.error("Error loading image:", error);
     }
 }
 
 export interface OnFireCardRef {
-    handleClick: () => void
+    handleClick: () => void;
 }
 
 type OnFireCardProps = {
-    card?: TradingCardInfo
-    cardFrontRef?: React.RefObject<HTMLDivElement>
-    cardBackRef?: React.RefObject<HTMLDivElement>
-    showShadow?: boolean
-    showButton?: boolean
-    slim?: boolean
-    shouldFlipOnClick?: boolean
-    mobileFlipButton?: boolean
-}
+    card?: TradingCardInfo;
+    cardFrontRef?: React.RefObject<HTMLDivElement>;
+    cardBackRef?: React.RefObject<HTMLDivElement>;
+    cardForegroundRef?: React.RefObject<HTMLDivElement>;
+    cardBackgroundRef?: React.RefObject<HTMLDivElement>;
+    showShadow?: boolean;
+    showButton?: boolean;
+    slim?: boolean;
+    shouldFlipOnClick?: boolean;
+    mobileFlipButton?: boolean;
+};
 
 /**
  * Renders the OnFireCard card and outputs the image.
@@ -220,25 +222,25 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
         ref,
     ) => {
         // usingHook should be true only if you are not slim and you did not put in a card.
-        const usingHook = card === undefined
-        const cardHook = useCurrentCardInfo()
+        const usingHook = card === undefined;
+        const cardHook = useCurrentCardInfo();
         const [curCard, setCurrentCard] = useState(
             usingHook ? cardHook.curCard : card,
-        )
+        );
 
-        headers.append('Content-Type', 'application/json')
+        headers.append("Content-Type", "application/json");
 
-        const [isFlipped, setIsFlipped] = useState(true)
+        const [isFlipped, setIsFlipped] = useState(true);
 
         const frontCardFlip = {
-            visible: { transform: 'rotateY(180deg)' },
-            hidden: { transform: 'rotateY(0deg)' },
-        }
+            visible: { transform: "rotateY(180deg)" },
+            hidden: { transform: "rotateY(0deg)" },
+        };
 
         const backCardFlip = {
-            visible: { transform: 'rotateY(-180deg)' },
-            hidden: { transform: 'rotateY(0deg)' },
-        }
+            visible: { transform: "rotateY(-180deg)" },
+            hidden: { transform: "rotateY(0deg)" },
+        };
 
         /**
          * setCard will enable universal setting of the card, regardless of whether the hook is being used or not.
@@ -246,14 +248,14 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
          */
         function setCard(newCardAttributes: TradingCardInfo) {
             if (usingHook) {
-                cardHook.setCurCard(newCardAttributes)
+                cardHook.setCurCard(newCardAttributes);
             } else {
-                setCurrentCard(newCardAttributes)
+                setCurrentCard(newCardAttributes);
             }
         }
 
-        const { isProcessingMedia } = useMediaProcessing()
-        const toast = useToast()
+        const { isProcessingMedia } = useMediaProcessing();
+        const toast = useToast();
 
         /**
          * Function to handle the flip of the card
@@ -262,16 +264,16 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
         function handleFlip(flip: boolean) {
             if (isProcessingMedia) {
                 toast({
-                    title: 'Please wait for the media to finish processing',
-                    status: 'error',
+                    title: "Please wait for the media to finish processing",
+                    status: "error",
                     duration: 3000,
                     isClosable: true,
-                    position: 'bottom-left',
-                })
-                return
+                    position: "bottom-left",
+                });
+                return;
             }
-            setCard({ ...curCard, frontIsShowing: flip })
-            setIsFlipped(flip)
+            setCard({ ...curCard, frontIsShowing: flip });
+            setIsFlipped(flip);
         }
 
         /**
@@ -281,33 +283,33 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
          * @param e The event triggered
          */
         function handleClick() {
-            handleFlip(!isFlipped)
+            handleFlip(!isFlipped);
         }
 
         useEffect(() => {
-            setIsFlipped(cardHook.curCard.frontIsShowing)
+            setIsFlipped(cardHook.curCard.frontIsShowing);
             // We only want to run this once, so we don't need to add handleFlip to the dependencies
             // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [cardHook.curCard.frontIsShowing])
+        }, [cardHook.curCard.frontIsShowing]);
         // Update state variable when cardHook changes
         useEffect(() => {
             if (usingHook) {
                 // Potential guardrails
-                setCurrentCard(cardHook.curCard)
+                setCurrentCard(cardHook.curCard);
             }
 
             // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [cardHook.curCard])
+        }, [cardHook.curCard]);
 
         // useEffect(() => {
 
         // )}
 
-        const [cardHover, setCardHover] = useState(false)
+        const [cardHover, setCardHover] = useState(false);
 
-        const [firstTimeAnimation, setFirstTimeAnimation] = useState(false)
+        const [firstTimeAnimation, setFirstTimeAnimation] = useState(false);
 
-        const shouldAnimate = false
+        const shouldAnimate = false;
 
         /*
          * An array of base64 strings of the recolored images.
@@ -315,45 +317,47 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
          */
         const [recoloredGamecardImages, setRecoloredGamecardImages] = useState<
             string[]
-        >([])
+        >([]);
 
         // The string for the b64 of the front layer. This is the borders and the logo
-        const [gamecardTopLayer, setGamecardTopLayer] = useState('')
+        const [gamecardTopLayer, setGamecardTopLayer] = useState("");
         // The b64 of the front layer without the logo
-        const [gamecardTopLayerNoLogo, setGamecardTopLayerNoLogo] = useState('')
+        const [gamecardTopLayerNoLogo, setGamecardTopLayerNoLogo] =
+            useState("");
         // The string for the b64 of the back layer. This is the background p much
-        const [gamecardBottomLayer, setGamecardBottomLayer] = useState('')
+        const [gamecardBottomLayer, setGamecardBottomLayer] = useState("");
         // The string for the b64 of the signature
-        const [gamecardSignatureImage, setGamecardSignatureImage] = useState('')
+        const [gamecardSignatureImage, setGamecardSignatureImage] =
+            useState("");
 
         // stop the animation after the first time
         useEffect(() => {
             if (gamecardTopLayer && gamecardBottomLayer) {
-                setFirstTimeAnimation(true)
-                delay(setFirstTimeAnimation, 12000, false)
-                delay(setCard, 1000, { ...curCard, inputDisabled: false })
+                setFirstTimeAnimation(true);
+                delay(setFirstTimeAnimation, 12000, false);
+                delay(setCard, 1000, { ...curCard, inputDisabled: false });
             }
             // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [gamecardBottomLayer, gamecardTopLayer])
+        }, [gamecardBottomLayer, gamecardTopLayer]);
 
-        const [cardGlowColor, setCardGlowColor] = useState(curCard.borderColor)
+        const [cardGlowColor, setCardGlowColor] = useState(curCard.borderColor);
 
         useEffect(() => {
             /**
              * Function to recolor the necessary images. Taken out to make things easier to understand.
              */
             function recolorNecessaryImages() {
-                const partsLeft = curCard.partsToRecolor
+                const partsLeft = curCard.partsToRecolor;
                 for (let i = 0; i < curCard.partsToRecolor.length; i++) {
                     const recolorFunction =
                         curCard.partsToRecolor[0] ===
                             CardPart.EXTERIOR_BORDER ||
                         curCard.partsToRecolor[0] === CardPart.INTERIOR_BORDER
                             ? tint
-                            : recolor
+                            : recolor;
                     // Take the first element of the list to recolor
                     // Create the small array of recolored images
-                    const temp = recoloredGamecardImages
+                    const temp = recoloredGamecardImages;
                     // Second true value is for the tint function's inverted parameter
                     recolorFunction(
                         imagePaths(curCard)[partsLeft[0]],
@@ -364,32 +368,34 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                     ).then((result) => {
                         if (result) {
                             // Add the new card
-                            temp[curCard.partsToRecolor[0]] = result
+                            temp[curCard.partsToRecolor[0]] = result;
                             // Set the glow color to the border color if the border is being recolored
                             if (
                                 curCard.partsToRecolor[0] ===
                                 CardPart.EXTERIOR_BORDER
                             ) {
-                                setCardGlowColor(curCard.borderColor)
+                                setCardGlowColor(curCard.borderColor);
                             }
                             // Remove the first element of the list
                             setCard({
                                 ...curCard,
                                 partsToRecolor: curCard.partsToRecolor.slice(1),
-                            })
+                            });
                             // Set the state variable to the new array after everything is recolored
-                            setRecoloredGamecardImages(temp)
+                            setRecoloredGamecardImages(temp);
                         } else {
-                            console.error('Error recoloring in recolorFunction')
+                            console.error(
+                                "Error recoloring in recolorFunction",
+                            );
                         }
-                    })
+                    });
                 }
             }
 
-            const needToRecolor = curCard.partsToRecolor.length !== 0
+            const needToRecolor = curCard.partsToRecolor.length !== 0;
             if (needToRecolor && !slim) {
                 // Object.keys(CardPart).length / 2 is the number of elements in the enum due to some 'reverse mapping' thing
-                const keysInCardPartEnum = Object.keys(CardPart).length / 2
+                const keysInCardPartEnum = Object.keys(CardPart).length / 2;
                 if (curCard.partsToRecolor.length === keysInCardPartEnum) {
                     recolorAllImages(
                         imageColors(curCard),
@@ -397,17 +403,17 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                         headers,
                     ).then((result) => {
                         if (result) {
-                            setRecoloredGamecardImages(result)
-                            setCard({ ...curCard, partsToRecolor: [] })
-                            setCardGlowColor(curCard.borderColor)
+                            setRecoloredGamecardImages(result);
+                            setCard({ ...curCard, partsToRecolor: [] });
+                            setCardGlowColor(curCard.borderColor);
                         } else {
                             console.error(
-                                'Error recoloring in recolorAllImages',
-                            )
+                                "Error recoloring in recolorAllImages",
+                            );
                         }
-                    })
+                    });
                 } else {
-                    recolorNecessaryImages()
+                    recolorNecessaryImages();
                 }
             } else if (!slim) {
                 // This shouldnt be called if the card is slim.
@@ -419,40 +425,40 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                     setGamecardSignatureImage,
                     recoloredGamecardImages,
                     curCard,
-                )
+                );
             }
             // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [curCard.partsToRecolor.length])
+        }, [curCard.partsToRecolor.length]);
 
         const nameSolidStyle: CSSProperties = {
             color: curCard.nameColor,
-            pointerEvents: 'none',
-            WebkitTextStrokeWidth: '1.75px',
-            WebkitTextStrokeColor: 'transparent',
-            userSelect: 'none',
-            WebkitUserSelect: 'none',
-            MozUserSelect: 'none',
-        }
+            pointerEvents: "none",
+            WebkitTextStrokeWidth: "1.75px",
+            WebkitTextStrokeColor: "transparent",
+            userSelect: "none",
+            WebkitUserSelect: "none",
+            MozUserSelect: "none",
+        };
 
         const nameOutlineStyle: CSSProperties = {
-            color: 'transparent',
-            pointerEvents: 'none',
-            WebkitTextStrokeWidth: '1.75px',
+            color: "transparent",
+            pointerEvents: "none",
+            WebkitTextStrokeWidth: "1.75px",
             WebkitTextStrokeColor: curCard.nameColor,
-            userSelect: 'none',
-            WebkitUserSelect: 'none',
-            MozUserSelect: 'none',
-        }
+            userSelect: "none",
+            WebkitUserSelect: "none",
+            MozUserSelect: "none",
+        };
 
         const petchOutlineStyle: CSSProperties = {
-            color: 'transparent',
-            pointerEvents: 'none',
-            WebkitTextStrokeWidth: '1px',
+            color: "transparent",
+            pointerEvents: "none",
+            WebkitTextStrokeWidth: "1px",
             WebkitTextStrokeColor: curCard.backgroundTextColor,
-            userSelect: 'none',
-            WebkitUserSelect: 'none',
-            MozUserSelect: 'none',
-        }
+            userSelect: "none",
+            WebkitUserSelect: "none",
+            MozUserSelect: "none",
+        };
 
         /**
          * Function to handle the drag stop event.
@@ -464,7 +470,7 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
             data: { x: number; y: number },
         ) {
             // Set the state variable to the new position
-            setCard({ ...curCard, heroXOffset: data.x, heroYOffset: data.y })
+            setCard({ ...curCard, heroXOffset: data.x, heroYOffset: data.y });
         }
 
         /**
@@ -481,7 +487,7 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                 ...curCard,
                 signatureXOffset: data.x,
                 signatureYOffset: data.y,
-            })
+            });
         }
 
         /**
@@ -498,7 +504,7 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                 ...curCard,
                 backVideoXOffset: data.x,
                 backVideoYOffset: data.y,
-            })
+            });
         }
 
         /**
@@ -510,8 +516,8 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
             flipped = false,
             noLogo = false,
         }: {
-            flipped?: boolean
-            noLogo?: boolean
+            flipped?: boolean;
+            noLogo?: boolean;
         }) {
             return (noLogo ? gamecardTopLayerNoLogo : gamecardTopLayer) &&
                 gamecardBottomLayer ? (
@@ -519,24 +525,24 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                     animation={
                         shouldAnimate && (cardHover || firstTimeAnimation)
                             ? cardTopAnimation
-                            : 'translate(0);'
+                            : "translate(0);"
                     }
                     src={`${noLogo ? gamecardTopLayerNoLogo : gamecardTopLayer}`}
                     alt="Merged Front Image"
-                    maxWidth={'350px'}
+                    maxWidth={"350px"}
                     zIndex={zIndex.border}
-                    position={'absolute'}
+                    position={"absolute"}
                     draggable={false}
                     style={{
-                        pointerEvents: 'none',
-                        transform: flipped ? 'scaleX(-1)' : 'scaleX(1)',
+                        pointerEvents: "none",
+                        transform: flipped ? "scaleX(-1)" : "scaleX(1)",
                     }}
                 />
-            ) : null
+            ) : null;
         }
 
         interface CardBottomLayerProps extends ImageProps {
-            flipped?: boolean
+            flipped?: boolean;
         }
 
         /**
@@ -553,21 +559,21 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                     animation={
                         shouldAnimate && (cardHover || firstTimeAnimation)
                             ? cardBackAnimation
-                            : 'translate(0);'
+                            : "translate(0);"
                     }
                     src={`${gamecardBottomLayer}`}
                     alt="Merged Back Image"
-                    maxWidth={'350px'}
+                    maxWidth={"350px"}
                     zIndex={zIndex.background}
-                    transition={'filter 1s ease-in'}
+                    transition={"filter 1s ease-in"}
                     draggable={false}
                     style={{
-                        pointerEvents: 'none',
-                        transform: flipped ? 'scaleX(-1)' : 'scaleX(1)',
+                        pointerEvents: "none",
+                        transform: flipped ? "scaleX(-1)" : "scaleX(1)",
                     }}
                     {...rest}
                 />
-            ) : null
+            ) : null;
         }
 
         /**
@@ -575,30 +581,30 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
          * @returns the component to render the name text
          */
         function NameText({ ...rest }: TextProps) {
-            return curCard.cardType === 'a' ? null : (
+            return curCard.cardType === "a" ? null : (
                 <Text
                     as={motion.div}
                     animation={
                         shouldAnimate && (cardHover || firstTimeAnimation)
                             ? cardTopAnimation
-                            : 'translate(0);'
+                            : "translate(0);"
                     }
                     zIndex={zIndex.text}
                     position="absolute"
-                    top={'20px'}
-                    left={'25px'}
+                    top={"20px"}
+                    left={"25px"}
                     fontFamily={"'Barlow', sans-serif;"}
-                    fontWeight={'700'}
-                    fontSize={'12px'}
+                    fontWeight={"700"}
+                    fontSize={"12px"}
                     color={curCard.topCardTextColor}
-                    transition={'color 0.5s ease-in-out'}
-                    style={{ pointerEvents: 'none' }}
+                    transition={"color 0.5s ease-in-out"}
+                    style={{ pointerEvents: "none" }}
                     {...rest}
                 >
-                    {curCard.firstName.toUpperCase()}{' '}
+                    {curCard.firstName.toUpperCase()}{" "}
                     {curCard.lastName.toUpperCase()}
                 </Text>
-            )
+            );
         }
 
         /**
@@ -613,23 +619,23 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                     animation={
                         shouldAnimate && (cardHover || firstTimeAnimation)
                             ? cardTopAnimation
-                            : 'translate(0);'
+                            : "translate(0);"
                     }
                     position="absolute"
-                    top={curCard.cardType === 'a' ? '477px' : '36px'}
-                    left={curCard.cardType === 'a' ? '64px' : '25px'}
+                    top={curCard.cardType === "a" ? "477px" : "36px"}
+                    left={curCard.cardType === "a" ? "64px" : "25px"}
                     fontFamily={"'Barlow', sans-serif;"}
-                    fontSize={'12px'}
+                    fontSize={"12px"}
                     style={{
                         color: curCard.topCardTextColor,
-                        pointerEvents: 'none',
+                        pointerEvents: "none",
                     }}
-                    transition={'color 0.5s ease-in-out'}
+                    transition={"color 0.5s ease-in-out"}
                     {...rest}
                 >
                     {curCard.position.toUpperCase()}
                 </Text>
-            )
+            );
         }
 
         /**
@@ -643,24 +649,24 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                     animation={
                         shouldAnimate && (cardHover || firstTimeAnimation)
                             ? cardTopAnimation
-                            : 'translate(0);'
+                            : "translate(0);"
                     }
                     zIndex={zIndex.text}
                     position="absolute"
-                    top={curCard.cardType === 'a' ? '493px' : '52px'}
-                    left={curCard.cardType === 'a' ? '64px' : '25px'}
+                    top={curCard.cardType === "a" ? "493px" : "52px"}
+                    left={curCard.cardType === "a" ? "64px" : "25px"}
                     fontFamily={"'Barlow', sans-serif;"}
-                    fontSize={'12px'}
+                    fontSize={"12px"}
                     style={{
                         color: curCard.topCardTextColor,
-                        pointerEvents: 'none',
+                        pointerEvents: "none",
                     }}
-                    transition={'color 0.5s ease-in-out'}
+                    transition={"color 0.5s ease-in-out"}
                     {...rest}
                 >
                     {curCard.teamName.toUpperCase()}
                 </Text>
-            )
+            );
         }
 
         /**
@@ -674,31 +680,31 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                     animation={
                         shouldAnimate && (cardHover || firstTimeAnimation)
                             ? cardTopAnimation
-                            : 'translate(0);'
+                            : "translate(0);"
                     }
                     zIndex={zIndex.text}
                     position="absolute"
-                    top={'480px'}
-                    left={'7px'}
-                    width={'50px'}
+                    top={"480px"}
+                    left={"7px"}
+                    width={"50px"}
                     fontFamily={"'Barlow', sans-serif;"}
-                    fontWeight={'900'}
-                    textAlign={'center'}
-                    fontSize={'18px'}
-                    transition={'color 0.5s ease-in-out'}
+                    fontWeight={"900"}
+                    textAlign={"center"}
+                    fontSize={"18px"}
+                    transition={"color 0.5s ease-in-out"}
                     style={{
                         color: curCard.numberColor,
-                        pointerEvents: 'none',
+                        pointerEvents: "none",
                     }}
                     {...rest}
                 >
-                    {typeof curCard !== 'undefined'
-                        ? curCard.number !== ''
+                    {typeof curCard !== "undefined"
+                        ? curCard.number !== ""
                             ? `#${curCard.number.substring(0, 2)}`
                             : null
                         : null}
                 </Text>
-            )
+            );
         }
 
         /**
@@ -712,31 +718,31 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                     animation={
                         shouldAnimate && (cardHover || firstTimeAnimation)
                             ? cardTopAnimation
-                            : 'translate(0);'
+                            : "translate(0);"
                     }
                     zIndex={zIndex.text}
                     position="absolute"
-                    top={'375px'}
-                    left={'25px'}
+                    top={"375px"}
+                    left={"25px"}
                     fontFamily={"'Barlow', sans-serif;"}
-                    fontWeight={'900'}
-                    textAlign={'center'}
-                    fontSize={'20px'}
-                    letterSpacing={'-1px'}
-                    transition={'color 0.5s ease-in-out'}
+                    fontWeight={"900"}
+                    textAlign={"center"}
+                    fontSize={"20px"}
+                    letterSpacing={"-1px"}
+                    transition={"color 0.5s ease-in-out"}
                     style={{
                         color: curCard.numberColor,
-                        pointerEvents: 'none',
+                        pointerEvents: "none",
                     }}
                     {...rest}
                 >
-                    {typeof curCard !== 'undefined'
-                        ? curCard.number !== ''
+                    {typeof curCard !== "undefined"
+                        ? curCard.number !== ""
                             ? `#${curCard.number}`
                             : null
                         : null}
                 </Text>
-            )
+            );
         }
 
         /**
@@ -744,11 +750,11 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
          * @returns the component to render the number text in its proper position
          */
         function NumberText({ ...rest }: TextProps) {
-            return curCard.cardType === 'a' ? (
+            return curCard.cardType === "a" ? (
                 <NumberTextA {...rest} />
             ) : (
                 <NumberTextB {...rest} />
-            )
+            );
         }
 
         /**
@@ -761,35 +767,35 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                 animation:
                     shouldAnimate && (cardHover || firstTimeAnimation)
                         ? cardTopAnimation
-                        : 'translate(0);',
-                fontFamily: 'Uniser-Bold',
-                letterSpacing: '2px',
-                fontSize: '45px',
+                        : "translate(0);",
+                fontFamily: "Uniser-Bold",
+                letterSpacing: "2px",
+                fontSize: "45px",
                 style: curCard.firstNameSolid
                     ? nameSolidStyle
                     : nameOutlineStyle,
                 transition:
-                    'color 0.5s ease-in-out, ' +
-                    '-webkit-text-stroke-color 0.5s ease-in-out, ' +
-                    '-webkit-text-stroke-width 0.5s ease-in-out',
-            }
+                    "color 0.5s ease-in-out, " +
+                    "-webkit-text-stroke-color 0.5s ease-in-out, " +
+                    "-webkit-text-stroke-width 0.5s ease-in-out",
+            };
 
             if (slim && usingHook) {
                 console.error(
-                    'If you are generating slim cards, you must pass in a card!',
-                )
-                return <></>
+                    "If you are generating slim cards, you must pass in a card!",
+                );
+                return <></>;
             }
             return (
                 <HStack
                     style={{
-                        transform: 'rotate(-90deg)',
-                        transformOrigin: '0 0',
+                        transform: "rotate(-90deg)",
+                        transformOrigin: "0 0",
                     }}
                     zIndex={zIndex.text}
                     position="absolute"
-                    top={'470px'} // Higher = More Down
-                    left={'0px'} // Higher = More Right
+                    top={"470px"} // Higher = More Down
+                    left={"0px"} // Higher = More Right
                 >
                     <Text
                         {...textAttributes}
@@ -799,9 +805,9 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                 : nameOutlineStyle
                         }
                         transition={
-                            'color 0.5s ease-in-out, ' +
-                            '-webkit-text-stroke-color 0.5s ease-in-out, ' +
-                            '-webkit-text-stroke-width 0.5s ease-in-out'
+                            "color 0.5s ease-in-out, " +
+                            "-webkit-text-stroke-color 0.5s ease-in-out, " +
+                            "-webkit-text-stroke-width 0.5s ease-in-out"
                         }
                     >
                         {curCard.firstName.toUpperCase()}
@@ -814,15 +820,15 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                 : nameOutlineStyle
                         }
                         transition={
-                            'color 0.5s ease-in-out, ' +
-                            '-webkit-text-stroke-color 0.5s ease-in-out, ' +
-                            '-webkit-text-stroke-width 0.5s ease-in-out'
+                            "color 0.5s ease-in-out, " +
+                            "-webkit-text-stroke-color 0.5s ease-in-out, " +
+                            "-webkit-text-stroke-width 0.5s ease-in-out"
                         }
                     >
                         {curCard.lastName.toUpperCase()}
                     </Text>
                 </HStack>
-            )
+            );
         }
 
         /**
@@ -836,14 +842,14 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                 animation:
                     shouldAnimate && (cardHover || firstTimeAnimation)
                         ? cardTopAnimation
-                        : 'translate(0);',
-                position: 'absolute',
-                top: '388px',
-                left: '25px',
+                        : "translate(0);",
+                position: "absolute",
+                top: "388px",
+                left: "25px",
                 fontFamily: curCard.nameFont,
-                letterSpacing: '2px',
-                fontSize: '55px',
-            }
+                letterSpacing: "2px",
+                fontSize: "55px",
+            };
 
             return (
                 <>
@@ -855,31 +861,31 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                 : nameOutlineStyle
                         }
                         transition={
-                            'color 0.5s ease-in-out, ' +
-                            '-webkit-text-stroke-color 0.5s ease-in-out, ' +
-                            '-webkit-text-stroke-width 0.5s ease-in-out'
+                            "color 0.5s ease-in-out, " +
+                            "-webkit-text-stroke-color 0.5s ease-in-out, " +
+                            "-webkit-text-stroke-width 0.5s ease-in-out"
                         }
                     >
                         {curCard.firstName.toUpperCase()}
                     </Text>
                     <Text
                         {...textAttributes}
-                        top={'438px'}
+                        top={"438px"}
                         style={
                             curCard.lastNameSolid
                                 ? nameSolidStyle
                                 : nameOutlineStyle
                         }
                         transition={
-                            'color 0.5s ease-in-out, ' +
-                            '-webkit-text-stroke-color 0.5s ease-in-out, ' +
-                            '-webkit-text-stroke-width 0.5s ease-in-out'
+                            "color 0.5s ease-in-out, " +
+                            "-webkit-text-stroke-color 0.5s ease-in-out, " +
+                            "-webkit-text-stroke-width 0.5s ease-in-out"
                         }
                     >
                         {curCard.lastName.toUpperCase()}
                     </Text>
                 </>
-            )
+            );
         }
 
         /**
@@ -892,21 +898,21 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                     animation={
                         shouldAnimate && (cardHover || firstTimeAnimation)
                             ? cardTopAnimation
-                            : 'translate(0);'
+                            : "translate(0);"
                     }
                     src={`${curCard.cardImage}`}
                     alt={`${curCard.firstName} ${curCard.lastName}`}
-                    maxWidth={'350px'}
+                    maxWidth={"350px"}
                     zIndex={zIndex.border}
-                    position={'absolute'}
+                    position={"absolute"}
                     left={0}
                     right={0}
                     top={0}
                     bottom={0}
                     draggable={false}
-                    style={{ pointerEvents: 'none' }}
+                    style={{ pointerEvents: "none" }}
                 />
-            )
+            );
         }
 
         /**
@@ -920,22 +926,22 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                     animation={
                         shouldAnimate && (cardHover || firstTimeAnimation)
                             ? cardBackAnimation
-                            : 'translate(0);'
+                            : "translate(0);"
                     }
                     src={`${curCard.cardBackS3URL}`}
                     alt={`Back of ${curCard.firstName} ${curCard.lastName}'s card`}
-                    maxWidth={'350px'}
+                    maxWidth={"350px"}
                     zIndex={zIndex.background}
-                    position={'absolute'}
+                    position={"absolute"}
                     left={0}
                     right={0}
                     top={0}
                     bottom={0}
-                    transition={'filter 1s ease-in'}
+                    transition={"filter 1s ease-in"}
                     draggable={false}
-                    style={{ pointerEvents: 'none' }}
+                    style={{ pointerEvents: "none" }}
                 />
-            )
+            );
         }
 
         const BackCardLogoImage =
@@ -945,14 +951,14 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                     alt="OnFire Logo"
                     position="absolute"
                     zIndex={zIndex.border}
-                    pointerEvents={'none'}
-                    top={'453px'}
-                    left={'300px'}
-                    height={'50px'}
+                    pointerEvents={"none"}
+                    top={"453px"}
+                    left={"300px"}
+                    height={"50px"}
                 />
             ) : (
                 <></>
-            )
+            );
         /**
          * The SVG that is used to mask the card
          */
@@ -972,113 +978,113 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                         </clipPath>
                     </defs>
                 </svg>
-            )
+            );
         }
 
         const outerBoxStyling: BoxProps = {
-            id: 'card',
-            position: 'relative',
-            w: '100%',
-            h: '490px',
-            marginBottom: !showButton ? '0' : '100px',
-            minW: '350px',
-            style: { transformStyle: 'preserve-3d', perspective: '1000px' },
-        }
+            id: "card",
+            position: "relative",
+            w: "100%",
+            h: "490px",
+            marginBottom: !showButton ? "0" : "100px",
+            minW: "350px",
+            style: { transformStyle: "preserve-3d", perspective: "1000px" },
+        };
         if (slim) {
-            outerBoxStyling.onClick = handleClick
+            outerBoxStyling.onClick = handleClick;
         }
 
         const frontCardMotionStyling: MotionProps = {
             variants: frontCardFlip,
-            animate: isFlipped ? 'hidden' : 'visible',
+            animate: isFlipped ? "hidden" : "visible",
             transition: { duration: 0.5 },
             style: {
-                position: 'absolute',
-                height: '100%',
-                width: '100%',
-                backfaceVisibility: 'hidden',
-                color: 'white',
+                position: "absolute",
+                height: "100%",
+                width: "100%",
+                backfaceVisibility: "hidden",
+                color: "white",
                 filter: `drop-shadow(0px 0px 15px ${darkenHexString(cardGlowColor)})`,
-                transition: 'filter 1s ease-in',
+                transition: "filter 1s ease-in",
             },
-        }
+        };
 
         const frontCardContainerStyling: StackProps & MotionProps = {
-            alignItems: 'left',
+            alignItems: "left",
             animation:
                 shouldAnimate && (cardHover || firstTimeAnimation)
                     ? cardAnimation
-                    : 'rotate(0);',
+                    : "rotate(0);",
             as: motion.div,
-            w: '100%',
-            maxWidth: '400px',
-            height: '525px',
+            w: "100%",
+            maxWidth: "400px",
+            height: "525px",
             onHoverStart: () => {
-                setCardHover(true)
+                setCardHover(true);
             },
             onHoverEnd: () => {
-                setCardHover(false)
+                setCardHover(false);
             },
-            position: 'relative',
-            overflow: 'hidden',
-            style: { transformStyle: 'preserve-3d' },
-        }
+            position: "relative",
+            overflow: "hidden",
+            style: { transformStyle: "preserve-3d" },
+        };
 
         const backCardMotionStyling: MotionProps = {
             variants: backCardFlip,
-            animate: !isFlipped ? 'hidden' : 'visible',
+            animate: !isFlipped ? "hidden" : "visible",
             transition: { duration: 0.5 },
             style: {
-                position: 'absolute',
-                height: '100%',
-                width: '100%',
-                backfaceVisibility: 'hidden',
-                color: 'white',
-                transform: 'rotateY(180deg)',
+                position: "absolute",
+                height: "100%",
+                width: "100%",
+                backfaceVisibility: "hidden",
+                color: "white",
+                transform: "rotateY(180deg)",
                 filter: `drop-shadow(0px 0px 15px ${darkenHexString(cardGlowColor)})`,
             },
-        }
+        };
 
         const backCardContainerStyling: StackProps & MotionProps = {
-            alignItems: 'left',
+            alignItems: "left",
             animation:
                 shouldAnimate && (cardHover || firstTimeAnimation)
                     ? cardAnimation
-                    : 'rotate(0);',
+                    : "rotate(0);",
             as: motion.div,
-            w: '100%',
-            maxWidth: '400px',
-            height: '525px',
+            w: "100%",
+            maxWidth: "400px",
+            height: "525px",
             onHoverStart: () => {
-                setCardHover(true)
+                setCardHover(true);
             },
             onHoverEnd: () => {
-                setCardHover(false)
+                setCardHover(false);
             },
-            position: 'relative',
-            overflow: 'hidden',
-            style: { transformStyle: 'preserve-3d' },
-        }
+            position: "relative",
+            overflow: "hidden",
+            style: { transformStyle: "preserve-3d" },
+        };
 
-        const heroRef = useRef(null)
-        const signatureRef = useRef(null)
-        const videoRef = useRef(null)
+        const heroRef = useRef(null);
+        const signatureRef = useRef(null);
+        const videoRef = useRef(null);
 
         // If the slim card is hovered over, the card will flip
         if (slim) {
             outerBoxStyling.onMouseEnter = () => {
-                handleFlip(false)
-            }
+                handleFlip(false);
+            };
             outerBoxStyling.onMouseLeave = () => {
-                handleFlip(true)
-            }
+                handleFlip(true);
+            };
         }
 
         useImperativeHandle(ref, () => {
             return {
                 handleClick: handleClick,
-            }
-        })
+            };
+        });
 
         return (
             <div>
@@ -1099,9 +1105,9 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
                                     transition="opacity 0.5s"
-                                    width={'100%'}
-                                    position={'relative'}
-                                    height={'100%'}
+                                    width={"100%"}
+                                    position={"relative"}
+                                    height={"100%"}
                                 >
                                     {slim ? (
                                         <PrerenderedGamecardFrontImage />
@@ -1110,7 +1116,7 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                             <CardBottomLayer position="absolute" />
 
                                             {/* Not its own element because it causes Petch text to jump around */}
-                                            {curCard.cardType === 'a' && (
+                                            {curCard.cardType === "a" && (
                                                 <RepeatingPetch
                                                     as={motion.div}
                                                     animation={
@@ -1118,7 +1124,7 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                                         (cardHover ||
                                                             firstTimeAnimation)
                                                             ? cardTopAnimation
-                                                            : 'translate(0);'
+                                                            : "translate(0);"
                                                     }
                                                     text={curCard.lastName}
                                                     position="absolute"
@@ -1126,8 +1132,8 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                                     style={petchOutlineStyle}
                                                     fontFam={
                                                         curCard.nameFont ===
-                                                        'Uniser-Bold'
-                                                            ? 'Chakra Petch'
+                                                        "Uniser-Bold"
+                                                            ? "Chakra Petch"
                                                             : "'Brotherhood', sans-serif"
                                                     }
                                                     zIndex={zIndex.petch}
@@ -1136,14 +1142,14 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
 
                                             {/* Not its own element because the Draggable snaps back when it is */}
                                             <Box
-                                                w={'100%'}
-                                                h={'100%'}
+                                                w={"100%"}
+                                                h={"100%"}
                                                 zIndex={zIndex.hero}
-                                                position={'absolute'}
+                                                position={"absolute"}
                                                 style={{
                                                     maskImage: `url(${gamecardBottomLayer})`,
-                                                    maskSize: 'contain',
-                                                    maskRepeat: 'no-repeat',
+                                                    maskSize: "contain",
+                                                    maskRepeat: "no-repeat",
                                                 }}
                                             >
                                                 {/* Draggable Hero */}
@@ -1166,7 +1172,7 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                                     >
                                                         <Center
                                                             verticalAlign={
-                                                                'center'
+                                                                "center"
                                                             }
                                                             ref={heroRef}
                                                         >
@@ -1176,18 +1182,18 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                                                     (cardHover ||
                                                                         firstTimeAnimation)
                                                                         ? cardTopAnimation
-                                                                        : 'translate(0);'
+                                                                        : "translate(0);"
                                                                 }
                                                                 src={`${curCard.frontPhotoURL}`}
                                                                 alt="Player Hero"
                                                                 maxWidth={`${curCard.heroWidth}px`}
-                                                                top={'-5px'}
-                                                                left={'0px'}
+                                                                top={"-5px"}
+                                                                left={"0px"}
                                                                 draggable={
                                                                     false
                                                                 }
                                                                 style={{
-                                                                    filter: 'drop-shadow(0px 0px 2px #000000)',
+                                                                    filter: "drop-shadow(0px 0px 2px #000000)",
                                                                 }}
                                                             />
                                                         </Center>
@@ -1216,25 +1222,25 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                                             gamecardSignatureImage ==
                                                                 undefined ||
                                                             gamecardSignatureImage ===
-                                                                ''
+                                                                ""
                                                         }
                                                         animation={
                                                             shouldAnimate &&
                                                             (cardHover ||
                                                                 firstTimeAnimation)
                                                                 ? cardTopAnimation
-                                                                : 'translate(0);'
+                                                                : "translate(0);"
                                                         }
                                                         src={`${gamecardSignatureImage}`}
                                                         alt="Player Signature"
                                                         maxWidth={`${curCard.signatureWidth}px`}
                                                         position="absolute"
-                                                        top={'250px'}
+                                                        top={"250px"}
                                                         draggable={false}
                                                         alignSelf="center"
                                                         justifySelf="center"
                                                         style={{
-                                                            filter: 'drop-shadow(0px 0px 2px #000000)',
+                                                            filter: "drop-shadow(0px 0px 2px #000000)",
                                                         }}
                                                         ref={signatureRef}
                                                     />
@@ -1251,7 +1257,7 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
 
                                             <NumberText />
 
-                                            {curCard.cardType === 'a' ? (
+                                            {curCard.cardType === "a" ? (
                                                 <BigTextA />
                                             ) : (
                                                 <BigTextB />
@@ -1262,10 +1268,10 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                                 <Box
                                                     alignSelf="center"
                                                     paddingTop="50px"
-                                                    w={'170%'}
+                                                    w={"170%"}
                                                     visibility={{
-                                                        base: 'hidden',
-                                                        md: 'visible',
+                                                        base: "hidden",
+                                                        md: "visible",
                                                     }}
                                                 >
                                                     <CardDropShadow
@@ -1278,12 +1284,12 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                 </Box>
                             ) : (
                                 <Spinner
-                                    speed={'0.75s'}
+                                    speed={"0.75s"}
                                     color="white"
                                     w="150px"
                                     h="150px"
-                                    margin={'auto'}
-                                    marginTop={'30%'}
+                                    margin={"auto"}
+                                    marginTop={"30%"}
                                 />
                             )}
                         </VStack>
@@ -1335,15 +1341,15 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                             slim
                                                 ? {
                                                       clipPath:
-                                                          'url(#cardMask)',
+                                                          "url(#cardMask)",
                                                   }
                                                 : {
                                                       maskImage:
-                                                          'url(/card_assets/card-backdrop-reverse.png)',
-                                                      maskSize: 'contain',
-                                                      maskRepeat: 'no-repeat',
+                                                          "url(/card_assets/card-backdrop-reverse.png)",
+                                                      maskSize: "contain",
+                                                      maskRepeat: "no-repeat",
                                                       clipPath:
-                                                          'url(#cardMask)',
+                                                          "url(#cardMask)",
                                                   }
                                         }
                                     >
@@ -1366,8 +1372,8 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
 											allowing the width to bleed outside the card */}
                                             <Box
                                                 display="grid"
-                                                alignItems={'center'}
-                                                justifyContent={'center'}
+                                                alignItems={"center"}
+                                                justifyContent={"center"}
                                                 ref={videoRef}
                                             >
                                                 <ReactPlayer
@@ -1395,15 +1401,15 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                     {!slim && showButton && !mobileFlipButton && (
                         <Button
                             onClick={handleClick}
-                            variant={'white'}
-                            bottom={'-350px'}
-                            width={'70%'}
+                            variant={"white"}
+                            bottom={"-350px"}
+                            width={"70%"}
                             style={{
                                 opacity:
                                     gamecardTopLayer && gamecardBottomLayer
                                         ? 1
                                         : 0,
-                                transition: 'opacity 1s ease-in',
+                                transition: "opacity 1s ease-in",
                             }}
                             rightIcon={<FlipCardIcon />}
                             iconSpacing={4}
@@ -1413,7 +1419,7 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                     )}
 
                     {!slim && (
-                        <Box top={'0px'} right={'-70px'} pos={'absolute'}>
+                        <Box top={"0px"} right={"-70px"} pos={"absolute"}>
                             <OnFireCardSliders />
                         </Box>
                     )}
@@ -1423,28 +1429,28 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                             <IconButton
                                 onClick={handleClick}
                                 aria-label="Flip Card"
-                                bottom={'-265px'}
-                                right={'-225px'}
-                                width={'12'}
-                                height={'12'}
-                                background={'white'}
+                                bottom={"-265px"}
+                                right={"-225px"}
+                                width={"12"}
+                                height={"12"}
+                                background={"white"}
                                 icon={<FlipCardIcon boxSize={30} />}
                                 style={{
                                     opacity:
                                         gamecardTopLayer && gamecardBottomLayer
                                             ? 1
                                             : 0,
-                                    transition: 'opacity 1s ease-in',
+                                    transition: "opacity 1s ease-in",
                                 }}
                             />
                         </VStack>
                     )}
                 </Center>
             </div>
-        )
+        );
     },
-)
+);
 
-OnFireCard.displayName = 'GamechangersCard'
+OnFireCard.displayName = "GamechangersCard";
 
-export default OnFireCard
+export default OnFireCard;

@@ -8286,7 +8286,7 @@ react-draggable@^4.4.6:
 
 react-easy-crop@^5.0.8:
   version "5.0.8"
-  resolved "https://registry.npmjs.org/react-easy-crop/-/react-easy-crop-5.0.8.tgz#6cf5be061c0ec6dc0c6ee7413974c34e35bf7475"
+  resolved "https://registry.yarnpkg.com/react-easy-crop/-/react-easy-crop-5.0.8.tgz#6cf5be061c0ec6dc0c6ee7413974c34e35bf7475"
   integrity sha512-KjulxXhR5iM7+ATN2sGCum/IyDxGw7xT0dFoGcqUP+ysaPU5Ka7gnrDa2tUHFHUoMNyPrVZ05QA+uvMgC5ym/g==
   dependencies:
     normalize-wheel "^1.0.1"

@@ -156,12 +156,14 @@ export default function ProfileBioMedia({
                             onMouseEnter={() => {
                                 if (videoRef.current) {
                                     videoRef.current.play()
+                                    videoRef.current.loop = true
                                 }
                             }}
                             onMouseLeave={() => {
                                 if (videoRef.current) {
                                     videoRef.current.pause()
                                     videoRef.current.currentTime = 0
+                                    videoRef.current.loop = false
                                 }
                             }}
                         >

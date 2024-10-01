@@ -791,6 +791,7 @@ export default function Profile() {
                 onClose={onClose}
                 undoProfileChanges={undoProfileChanges}
                 checkUpdate={checkUpdate}
+                profileInfo={profileInfo}
                 editableFirstName={editableFirstName}
                 setEditableFirstName={setEditableFirstName}
                 editableLastName={editableLastName}

@@ -1,8 +1,6 @@
 'use client'
 import {
     VStack,
-    Flex,
-    useBreakpointValue,
     Box,
     Text,
     Accordion,
@@ -10,7 +8,6 @@ import {
     AccordionItem,
     AccordionPanel,
     Spacer,
-    Heading,
 } from '@chakra-ui/react'
 import Item from '@/components/cart_items/item'
 import TradingCardInfo from '@/hooks/TradingCardInfo'

@@ -7,19 +7,15 @@ import {
     ModalContent,
     ModalCloseButton,
 } from '@chakra-ui/modal'
-import { Avatar } from '@chakra-ui/avatar'
 import { Button } from '@chakra-ui/button'
-import { useEffect, useState } from 'react'
 import { Textarea } from '@chakra-ui/textarea'
 import { Text, Flex, Grid, GridItem } from '@chakra-ui/layout'
 
 import EditProfileInput from './input'
-import { useAuth } from '@/hooks/useAuth'
 import SocialMediaInput from '../socialMediaInput'
 import { validateSocialLink } from '../../helpers'
-import { resize } from '@/components/image_filters'
-import DropzoneButton from '@/components/create/dropzoneButton'
-import { b64toBlob, uploadAssetToS3 } from '@/components/create/Step3'
+import ProfileAvatarInput from './avatar'
+import { ProfileInfo } from '../../page'
 
 interface Props {
     // Modal Props
@@ -29,6 +25,9 @@ interface Props {
     // Actions
     checkUpdate: () => void
     undoProfileChanges: () => void
+
+    // Profile Info
+    profileInfo?: ProfileInfo
 
     // Values
     editableFirstName: string
@@ -70,6 +69,8 @@ export default function EditProfileModal({
     checkUpdate,
     undoProfileChanges,
 
+    profileInfo,
+
     editableFirstName,
     setEditableFirstName,
     editableLastName,
@@ -95,77 +96,6 @@ export default function EditProfileModal({
     editableSnapchatLink,
     setEditableSnapchatLink,
 }: Props) {
-    const { currentAuthenticatedUser } = useAuth()
-
-    const [uploadComplete, setUploadComplete] = useState(false)
-
-    /**
-     * This function processes the photo selection
-     * @param files the files to be processed
-     */
-    async function processProfileImageSelect(files: FileList) {
-        const maxResolution = 2160
-        const myPhoto = URL.createObjectURL(files[0])
-
-        // Create an image element
-        const img: HTMLImageElement = await new Promise<HTMLImageElement>(
-            (resolve, reject) => {
-                const imgElement: HTMLImageElement = new window.Image() // Use the global Image constructor
-                imgElement.onload = () => {
-                    return resolve(imgElement)
-                }
-                imgElement.onerror = reject
-                imgElement.src = myPhoto
-            },
-        )
-
-        // Calculate the new dimensions while preserving aspect ratio
-        let newWidth = 0
-        let newHeight = 0
-        if (img.width > img.height) {
-            newWidth = Math.max(img.width, maxResolution)
-            newHeight = (newWidth * img.height) / img.width
-        } else {
-            newHeight = Math.max(img.height, maxResolution)
-            newWidth = (newHeight * img.width) / img.height
-        }
-
-        const resizedPhoto = await resize(myPhoto, newWidth, newHeight)
-        const resizedPhotoBlob = await b64toBlob(resizedPhoto)
-
-        // Upload the photo to S3
-        const user = await currentAuthenticatedUser()
-        const user_id = user.userId
-        const current_unix_time = Math.floor(Date.now() / 1000)
-        const filename = `${user_id}-${current_unix_time}.jpeg`
-
-        await uploadAssetToS3(
-            filename,
-            resizedPhotoBlob,
-            'profile_media',
-            'image/png',
-        )
-
-        setEditableProfilePicture(
-            `https://gamechangers-media-uploads.s3.amazonaws.com/profile_media/${filename}`,
-        )
-        setUploadComplete(true)
-    }
-
-    useEffect(() => {
-        if (uploadComplete) {
-            const timer = setTimeout(() => {
-                setUploadComplete(false)
-            }, 5000) // Reset after 5 seconds, adjust time as needed
-
-            return () => {
-                return clearTimeout(timer)
-            } // Cleanup timer
-        }
-
-        return () => {}
-    }, [uploadComplete])
-
     return (
         <Modal
             isOpen={isOpen}
@@ -251,54 +181,13 @@ export default function EditProfileModal({
                         </GridItem>
                         <GridItem colSpan={{ base: 1, xl: 3 }}>
                             <Text>Profile Picture</Text>
-                            <Flex
-                                justifyContent="space-between"
-                                alignItems="center"
-                                mx={{ base: '2%', md: '10%' }}
-                            >
-                                <Flex flexDir="column" py="10px" mr="20px">
-                                    <DropzoneButton
-                                        buttonText={'UPLOAD'}
-                                        svgcomp={'profile'}
-                                        onProfileImageSelect={
-                                            processProfileImageSelect
-                                        }
-                                        uploadComplete={uploadComplete}
-                                    />
-                                    <Button
-                                        bgColor="red.600"
-                                        color="white"
-                                        h="28px"
-                                        w="80px"
-                                        _hover={{
-                                            md: {
-                                                backgroundColor: 'red.700',
-                                            },
-                                        }}
-                                        letterSpacing={'2px'}
-                                        alignSelf="center"
-                                        fontSize="12px"
-                                        onClick={() => {
-                                            setEditableProfilePicture(
-                                                '/placeholderProfile.jpg',
-                                            )
-                                        }}
-                                    >
-                                        REMOVE
-                                    </Button>
-                                </Flex>
-                                <Avatar
-                                    size="2xl"
-                                    src={
-                                        editableProfilePicture ||
-                                        '/placeholderProfile.jpg'
-                                    }
-                                    sx={{
-                                        transition: 'filter 0.3s ease-in-out',
-                                        aspectRatio: '1 / 1',
-                                    }}
-                                />
-                            </Flex>
+                            <ProfileAvatarInput
+                                profileInfo={profileInfo}
+                                editableProfilePicture={editableProfilePicture}
+                                setEditableProfilePicture={
+                                    setEditableProfilePicture
+                                }
+                            />
                         </GridItem>
 
                         {/* Socials */}
