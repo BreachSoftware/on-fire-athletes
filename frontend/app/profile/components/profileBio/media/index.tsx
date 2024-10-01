@@ -1,19 +1,21 @@
-import { Icon } from '@chakra-ui/icons'
-import { IconButton } from '@chakra-ui/button'
-import { useDisclosure } from '@chakra-ui/hooks'
-import { Box, AspectRatio } from '@chakra-ui/layout'
-import { Image as ChakraImage } from '@chakra-ui/image'
-import { FaX } from 'react-icons/fa6'
+import { Icon } from "@chakra-ui/icons";
+import { IconButton } from "@chakra-ui/button";
+import { useDisclosure } from "@chakra-ui/hooks";
+import { Box, AspectRatio } from "@chakra-ui/layout";
+import { Image as ChakraImage } from "@chakra-ui/image";
+import { FaX } from "react-icons/fa6";
 
-import { MediaType } from '@/hooks/useMediaProcessing'
-import ProfileMediaViewModal from './viewModal'
-import ProfileMediaDeleteModal from './deleteModal'
-import { useRef } from 'react'
+import { MediaType } from "@/hooks/useMediaProcessing";
+import ProfileMediaViewModal from "./viewModal";
+import ProfileMediaDeleteModal from "./deleteModal";
+import { useRef } from "react";
+import ProfileMediaEditModal from "./editModal";
 
 interface Props {
-    media: string
-    isEditable: boolean
-    handleDelete: (media: string) => void
+    media: string;
+    isEditable: boolean;
+    handleEdit: (oldMedia: string, newMedia: string) => void;
+    handleDelete: (media: string) => void;
 }
 
 /**
@@ -24,31 +26,37 @@ interface Props {
 export default function ProfileBioMedia({
     media,
     isEditable,
+    handleEdit,
     handleDelete,
 }: Props) {
-    const videoRef = useRef<HTMLVideoElement>(null)
+    const videoRef = useRef<HTMLVideoElement>(null);
     const {
         isOpen: isViewOpen,
         onOpen: onOpenView,
         onClose: onCloseView,
-    } = useDisclosure()
+    } = useDisclosure();
     const {
         isOpen: isDeleteOpen,
         onOpen: onOpenDelete,
         onClose: onCloseDelete,
-    } = useDisclosure()
+    } = useDisclosure();
+    const {
+        isOpen: isEditOpen,
+        onOpen: onOpenEdit,
+        onClose: onCloseEdit,
+    } = useDisclosure();
 
     const mediaType =
-        media.includes('.mp4') || media.includes('.mov')
+        media.includes(".mp4") || media.includes(".mov")
             ? MediaType.VIDEO
-            : MediaType.PHOTO
+            : MediaType.PHOTO;
 
     return (
         <>
             <Box
                 position="relative"
                 w="full"
-                display={{ base: 'block', md: 'none' }}
+                display={{ base: "block", md: "none" }}
                 h="full"
                 onClick={onOpenView}
             >
@@ -62,34 +70,34 @@ export default function ProfileBioMedia({
                         <ChakraImage
                             alt="Bio Image"
                             src={media}
-                            _groupHover={{ transform: 'scale(1.05)' }}
+                            _groupHover={{ transform: "scale(1.05)" }}
                             transition="transform 0.1s ease-out"
                             style={{
-                                width: '100%',
-                                height: '100%',
-                                objectFit: 'cover',
+                                width: "100%",
+                                height: "100%",
+                                objectFit: "cover",
                             }}
                         />
                     ) : (
                         <Box
                             w="full"
                             h="full"
-                            _groupHover={{ transform: 'scale(1.05)' }}
+                            _groupHover={{ transform: "scale(1.05)" }}
                             transition="transform 0.1s ease-out"
                         >
                             <video
                                 src={media}
                                 style={{
-                                    width: '100%',
-                                    height: '100%',
-                                    objectFit: 'cover',
+                                    width: "100%",
+                                    height: "100%",
+                                    objectFit: "cover",
                                 }}
                                 muted={true}
                                 autoPlay={true}
                                 playsInline={true}
                                 onPlay={(e) => {
                                     // As soon as the video starts playing, pause it
-                                    e.currentTarget.pause()
+                                    e.currentTarget.pause();
                                 }}
                             />
                         </Box>
@@ -99,14 +107,14 @@ export default function ProfileBioMedia({
             <Box
                 position="relative"
                 w="full"
-                display={{ base: 'none', md: 'block' }}
+                display={{ base: "none", md: "block" }}
                 h="full"
                 role="group"
                 cursor="pointer"
                 onClick={onOpenView}
             >
                 <IconButton
-                    display={isEditable ? 'block' : 'none'}
+                    display={isEditable ? "block" : "none"}
                     opacity={0}
                     aria-label="Delete image"
                     icon={<Icon as={FaX} />}
@@ -118,15 +126,15 @@ export default function ProfileBioMedia({
                     w="40px"
                     h="40px"
                     zIndex={1}
-                    _hover={{ bgColor: 'red.700' }}
+                    _hover={{ bgColor: "red.700" }}
                     _groupHover={{
                         opacity: 1,
                     }}
                     transition="opacity 0.1s ease-out"
                     onClick={(e) => {
-                        e.stopPropagation()
-                        e.preventDefault()
-                        onOpenDelete()
+                        e.stopPropagation();
+                        e.preventDefault();
+                        onOpenDelete();
                     }}
                 />
                 <AspectRatio
@@ -139,31 +147,31 @@ export default function ProfileBioMedia({
                         <ChakraImage
                             alt="Bio Image"
                             src={media}
-                            _groupHover={{ transform: 'scale(1.025)' }}
+                            _groupHover={{ transform: "scale(1.025)" }}
                             transition="transform 0.1s ease-out"
                             style={{
-                                width: '100%',
-                                height: '100%',
-                                objectFit: 'cover',
+                                width: "100%",
+                                height: "100%",
+                                objectFit: "cover",
                             }}
                         />
                     ) : (
                         <Box
                             w="full"
                             h="full"
-                            _groupHover={{ transform: 'scale(1.025)' }}
+                            _groupHover={{ transform: "scale(1.025)" }}
                             transition="transform 0.1s ease-out"
                             onMouseEnter={() => {
                                 if (videoRef.current) {
-                                    videoRef.current.play()
-                                    videoRef.current.loop = true
+                                    videoRef.current.play();
+                                    videoRef.current.loop = true;
                                 }
                             }}
                             onMouseLeave={() => {
                                 if (videoRef.current) {
-                                    videoRef.current.pause()
-                                    videoRef.current.currentTime = 0
-                                    videoRef.current.loop = false
+                                    videoRef.current.pause();
+                                    videoRef.current.currentTime = 0;
+                                    videoRef.current.loop = false;
                                 }
                             }}
                         >
@@ -171,9 +179,9 @@ export default function ProfileBioMedia({
                                 ref={videoRef}
                                 src={media}
                                 style={{
-                                    width: '100%',
-                                    height: '100%',
-                                    objectFit: 'cover',
+                                    width: "100%",
+                                    height: "100%",
+                                    objectFit: "cover",
                                 }}
                                 muted={true}
                                 autoPlay={false}
@@ -189,6 +197,7 @@ export default function ProfileBioMedia({
                 isOpen={isViewOpen}
                 onClose={onCloseView}
                 isEditable={isEditable}
+                onOpenEditModal={onOpenEdit}
                 onOpenDeleteModal={onOpenDelete}
             />
             <ProfileMediaDeleteModal
@@ -198,6 +207,13 @@ export default function ProfileBioMedia({
                 onClose={onCloseDelete}
                 handleDelete={handleDelete}
             />
+            <ProfileMediaEditModal
+                media={media}
+                mediaType={mediaType}
+                isOpen={isEditOpen}
+                onClose={onCloseEdit}
+                onComplete={handleEdit}
+            />
         </>
-    )
+    );
 }
