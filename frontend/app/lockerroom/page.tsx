@@ -5,6 +5,7 @@ import {
     Box,
     HStack,
     VStack,
+    Image as ChakraImage,
     Spinner,
     useToast,
     Flex,
@@ -13,7 +14,6 @@ import {
     MenuButton,
     MenuItem,
     MenuList,
-    useBreakpointValue,
 } from "@chakra-ui/react";
 import NavBar from "../navbar";
 import Sidebar from "@/components/sidebar";
@@ -52,19 +52,6 @@ export default function LockerRoom() {
         const expiryVariable = getWithExpiry("lastPaginationPage");
         const savedPage = parseInt(expiryVariable || 1);
         return savedPage;
-    });
-
-    const showSidebar = useBreakpointValue({
-        base: false,
-        lg: true,
-    });
-
-    // You cannot use double bracket notation on next/images, which is why we have to use useBreakpointValue
-    const titleHeight = useBreakpointValue({
-        base: 70,
-        sm: 85,
-        md: 100,
-        xl: 150,
     });
 
     /**
@@ -222,7 +209,7 @@ export default function LockerRoom() {
                 minH={"100vh"}
             >
                 <HStack alignItems={"top"} width={"100%"}>
-                    <Box w={showSidebar ? "calc(100vw - 155px)" : "100vw"}>
+                    <Box w="full">
                         <Box width={"100%"}>
                             <NavBar />
                         </Box>
@@ -237,22 +224,43 @@ export default function LockerRoom() {
                                 // The title is centered on desktop, taking into account the sidebar, which mobile doesn't have
                                 pl={{ base: "0px", md: "70px" }}
                             >
-                                <Image
+                                <ChakraImage
+                                    as={Image}
                                     src={the}
                                     alt="The"
-                                    height={titleHeight! * 0.8}
+                                    height={{
+                                        base: "60px",
+                                        sm: "72px",
+                                        md: "80px",
+                                        xl: "132px",
+                                    }}
+                                    w="fit-content"
                                 />
                                 <Flex>
-                                    <Image
+                                    <ChakraImage
+                                        as={Image}
                                         src={locker}
                                         priority
                                         alt="Locker"
-                                        height={titleHeight}
+                                        height={{
+                                            base: "70px",
+                                            sm: "85px",
+                                            md: "100px",
+                                            xl: "150px",
+                                        }}
+                                        w="fit-content"
                                     />
-                                    <Image
+                                    <ChakraImage
+                                        as={Image}
                                         src={room}
                                         alt="Room"
-                                        height={titleHeight}
+                                        height={{
+                                            base: "70px",
+                                            sm: "85px",
+                                            md: "100px",
+                                            xl: "150px",
+                                        }}
+                                        w="fit-content"
                                     />
                                 </Flex>
                             </HStack>
@@ -429,20 +437,15 @@ export default function LockerRoom() {
                             </HStack>
                         </VStack>
                     </Box>
-                    <Flex
-                        w={showSidebar ? "140px" : "0px"}
-                        position="fixed"
-                        top="0"
-                        right="0"
-                        h="100vh"
+                    <Box
+                        position="sticky"
+                        top={0}
+                        w="140px"
+                        h="100dvh"
+                        display={{ base: "none", md: "inline" }}
                     >
-                        {showSidebar ? (
-                            <Sidebar
-                                height={"auto"}
-                                backgroundPresent={false}
-                            />
-                        ) : null}
-                    </Flex>
+                        <Sidebar height={"100dvh"} />
+                    </Box>
                 </HStack>
             </Box>
             {/* <Box bgImage="crinkled-paper.png" bgPos="center"> */}
