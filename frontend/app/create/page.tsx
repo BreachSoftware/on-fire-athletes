@@ -36,10 +36,10 @@ export default function CreationOverview() {
 
     return (
         <Box w="full" position="relative" minH="100vh">
-            <Flex flexDir="row" w="full" h="full">
+            <Flex flexDir="row" position="relative" w="full" h="full">
                 <BackToCheckoutModal />
                 <CreateBackground />
-                <Flex direction="row-reverse">
+                <Flex direction="row-reverse" position="relative">
                     <Flex w="full" flexDir="column" h="full">
                         <NavBar noDivider />
                         <SharedStack

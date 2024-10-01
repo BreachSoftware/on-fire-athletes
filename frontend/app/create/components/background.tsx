@@ -1,40 +1,39 @@
-import { Flex } from "@chakra-ui/layout";
+import { Box, Flex } from "@chakra-ui/layout";
 
 export default function CreateBackground() {
     return (
         <Flex
             direction="column"
             position="absolute"
-            top="0"
-            left="0"
-            zIndex={-10}
-            h="100%"
-            w="full"
+            top={0}
+            left={0}
+            right={0}
+            bg="red.500"
+            h="100vh"
         >
             {/* Top Background Image */}
-            <Flex
+            <Box
                 bgImage="young-athletes-card-array-bw.png"
                 bgPosition="center"
                 bgRepeat="no-repeat"
                 filter={"grayscale(0%)"}
                 bgSize="cover"
                 bgPos="60% 40%"
-                h={{ base: "65vh", lg: "50%" }}
-                minH={{ base: "560px", lg: "none" }}
+                h={{ base: "65vh", lg: "47%" }}
                 w="full"
             >
-                <Flex
+                <Box
                     bgGradient="linear(#000C, #17760BC3, #058D05C3)"
                     h="100%"
                     w="100%"
                 />
-            </Flex>
+            </Box>
             {/* Bottom Part of the Background */}
-            <Flex
+            <Box
                 bgGradient={
                     "linear(180deg, gray.1200 0%, gray.1300 100%) 0% 0% no-repeat padding-box;"
                 }
-                h={{ base: "100%", lg: "50%" }}
+                flex={1}
                 w="full"
             />
         </Flex>

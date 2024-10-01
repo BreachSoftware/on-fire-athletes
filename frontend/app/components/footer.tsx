@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
-import ResponsiveBlock from '@/components/shared/wrappers/responsive-block'
-import { Divider, Flex, Image, Link } from '@chakra-ui/react'
+import ResponsiveBlock from "@/components/shared/wrappers/responsive-block";
+import { Divider, Flex, Image, Link } from "@chakra-ui/react";
 
 /**
  * Footer
@@ -12,25 +12,25 @@ export default function Footer() {
     return (
         <ResponsiveBlock
             bgImage={{
-                base: 'mobileFooterBackground.png',
-                md: 'desktopFooterBackground.png',
+                base: "mobileFooterBackground.png",
+                md: "desktopFooterBackground.png",
             }}
             w="full"
             zIndex={11}
         >
             <Flex
-                direction={{ base: 'column', md: 'row' }}
+                direction={{ base: "column", md: "row" }}
                 wrap="wrap"
-                justify={'space-around'}
+                justify={"space-around"}
                 align="center"
                 w="100%"
                 color="white"
                 fontSize="sm"
-                gap="25px"
+                gap={{ base: "20px", md: "24px" }}
                 borderWidth={0}
                 boxSizing="border-box"
-                pb={{ base: '48px', md: '48px' }}
-                pt={{ base: '64px', md: '48px' }}
+                pb={{ base: "32px", md: "48px" }}
+                pt={{ base: "24px", md: "48px" }}
             >
                 <Image
                     src="on-fire-athletes-full-logo.png"
@@ -40,7 +40,7 @@ export default function Footer() {
                 />
                 <Flex
                     flexGrow={{ base: 0, md: 1 }}
-                    width={{ base: '75%', md: 'auto' }}
+                    width={{ base: "75%", md: "auto" }}
                 >
                     <Divider
                         orientation="horizontal"
@@ -52,7 +52,7 @@ export default function Footer() {
                         opacity="1"
                     />
                 </Flex>
-                <Flex direction={'row'} gap={'25px'}>
+                <Flex direction={"row"} gap={"25px"}>
                     <Link href="/faq?category=Legal&item=0" noOfLines={1}>
                         TERMS & CONDITIONS
                     </Link>
@@ -62,5 +62,5 @@ export default function Footer() {
                 </Flex>
             </Flex>
         </ResponsiveBlock>
-    )
+    );
 }
