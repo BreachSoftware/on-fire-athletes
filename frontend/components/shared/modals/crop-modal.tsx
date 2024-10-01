@@ -6,65 +6,79 @@ import {
     ModalOverlay,
     ModalContent,
     ModalCloseButton,
-} from '@chakra-ui/modal'
+} from "@chakra-ui/modal";
 import {
     Slider,
     SliderThumb,
     SliderTrack,
     SliderFilledTrack,
-} from '@chakra-ui/slider'
-import { useState } from 'react'
-import { Button } from '@chakra-ui/button'
-import { useToast } from '@chakra-ui/toast'
-import { Flex, Box } from '@chakra-ui/layout'
-import Cropper, { Area, Point } from 'react-easy-crop'
+} from "@chakra-ui/slider";
+import { useEffect, useState } from "react";
+import { Button } from "@chakra-ui/button";
+import { useToast } from "@chakra-ui/toast";
+import { Flex, Text, Box } from "@chakra-ui/layout";
+import Cropper, { Area, Point } from "react-easy-crop";
 
 interface Props {
-    image: string
-    onSave: (croppedImage: string) => Promise<void>
-    onCancel: () => void
-    isOpen: boolean
-    onClose: () => void
+    aspect?: number;
+    cropShape?: "round" | "rect";
+    allowResize?: boolean;
+    image: string;
+    onSave: (croppedImage: string) => Promise<void>;
+    onCancel: () => void;
+    isOpen: boolean;
+    onClose: () => void;
 }
 
 export default function CropModal({
+    aspect = 1,
+    cropShape = "round",
+    allowResize = false,
     isOpen,
     onClose,
     image,
     onSave,
     onCancel,
 }: Props) {
-    const toast = useToast()
-    const [isSaving, setIsSaving] = useState<boolean>(false)
+    const toast = useToast();
+    const [isSaving, setIsSaving] = useState<boolean>(false);
 
-    const [crop, setCrop] = useState<Point>({ x: 0, y: 0 })
-    const [zoom, setZoom] = useState<number>(1)
+    const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
+    const [zoom, setZoom] = useState<number>(1);
+    const [cropSize, setCropSize] = useState<{ width: number; height: number }>(
+        {
+            width: 200,
+            height: 200,
+        },
+    );
+    const [maxWidth, setMaxWidth] = useState<number>(200);
+    const [maxHeight, setMaxHeight] = useState<number>(200);
     const [croppedAreaPixels, setCroppedAreaPixels] = useState<
         Area | undefined
-    >(undefined)
+    >(undefined);
 
     function onCropComplete(croppedArea: Area, croppedAreaPixels: Area) {
-        setCroppedAreaPixels(croppedAreaPixels)
+        setCroppedAreaPixels(croppedAreaPixels);
     }
 
     function showErrorToast() {
         toast({
-            title: 'Error saving changes',
-            description: 'Something went wrong. Please try again.',
-            status: 'error',
-        })
+            title: "Error saving changes",
+            description: "Something went wrong. Please try again.",
+            status: "error",
+        });
     }
 
     async function createImage(url: string): Promise<HTMLImageElement> {
-        console.log(url)
+        console.log(url);
 
         return new Promise<HTMLImageElement>((resolve, reject) => {
-            const image = new Image()
-            image.addEventListener('load', () => resolve(image))
-            image.addEventListener('error', (error) => reject(error))
-            image.src = url
-            image.crossOrigin = 'anonymous'
-        })
+            const image = new Image();
+            image.addEventListener("load", () => resolve(image));
+            image.addEventListener("error", (error) => reject(error));
+            image.src = url;
+            image.crossOrigin = "anonymous";
+        });
     }
 
     /**
@@ -77,42 +91,42 @@ export default function CropModal({
         pixelCrop: Area,
     ): Promise<string | null> {
         try {
-            setIsSaving(true)
-            const image = (await createImage(imageSrc)) as HTMLImageElement
+            setIsSaving(true);
+            const image = (await createImage(imageSrc)) as HTMLImageElement;
             const canvas = window.document.createElement(
-                'canvas',
-            ) as unknown as HTMLCanvasElement
-            const ctx = canvas.getContext('2d')
+                "canvas",
+            ) as unknown as HTMLCanvasElement;
+            const ctx = canvas.getContext("2d");
 
             if (!ctx) {
-                console.log('no ctx')
-                setIsSaving(false)
-                showErrorToast()
-                return null
+                console.log("no ctx");
+                setIsSaving(false);
+                showErrorToast();
+                return null;
             }
 
             // No rotation, so set canvas size to the original image size
-            canvas.width = image.width
-            canvas.height = image.height
+            canvas.width = image.width;
+            canvas.height = image.height;
 
             // No need to translate or rotate the canvas context as we're not rotating the image
-            ctx.drawImage(image, 0, 0)
+            ctx.drawImage(image, 0, 0);
 
             const croppedCanvas = window.document.createElement(
-                'canvas',
-            ) as unknown as HTMLCanvasElement
-            const croppedCtx = croppedCanvas.getContext('2d')
+                "canvas",
+            ) as unknown as HTMLCanvasElement;
+            const croppedCtx = croppedCanvas.getContext("2d");
 
             if (!croppedCtx) {
-                console.log('no croppedCtx')
-                setIsSaving(false)
-                showErrorToast()
-                return null
+                console.log("no croppedCtx");
+                setIsSaving(false);
+                showErrorToast();
+                return null;
             }
 
             // Set the size of the cropped canvas to match the specified crop area
-            croppedCanvas.width = pixelCrop.width
-            croppedCanvas.height = pixelCrop.height
+            croppedCanvas.width = pixelCrop.width;
+            croppedCanvas.height = pixelCrop.height;
 
             // Draw the cropped image onto the new canvas
             croppedCtx.drawImage(
@@ -125,68 +139,96 @@ export default function CropModal({
                 0,
                 pixelCrop.width,
                 pixelCrop.height,
-            )
+            );
 
             // Return the cropped image as a blob
             return new Promise((resolve, reject) => {
                 croppedCanvas.toBlob((blob) => {
                     if (blob) {
-                        console.log('returning')
-                        setIsSaving(false)
-                        resolve(URL.createObjectURL(blob))
+                        console.log("returning");
+                        setIsSaving(false);
+                        resolve(URL.createObjectURL(blob));
                     } else {
-                        showErrorToast()
-                        setIsSaving(false)
-                        console.error('cannot get cropped canvas')
-                        reject(new Error('Canvas to Blob conversion failed'))
+                        showErrorToast();
+                        setIsSaving(false);
+                        console.error("cannot get cropped canvas");
+                        reject(new Error("Canvas to Blob conversion failed"));
                     }
-                }, 'image/png')
-            })
+                }, "image/png");
+            });
         } catch (e) {
-            console.error(e)
-            setIsSaving(false)
-            showErrorToast()
+            console.error(e);
+            setIsSaving(false);
+            showErrorToast();
 
-            return null
+            return null;
         }
     }
 
+    useEffect(() => {
+        if (allowResize) {
+            try {
+                const imageElement = new Image();
+                imageElement.src = image;
+
+                imageElement.onload = () => {
+                    const { width, height } = imageElement;
+                    setMaxWidth(width);
+                    setMaxHeight(height);
+                };
+                imageElement.onerror = () => {
+                    showErrorToast();
+                };
+            } catch (e) {
+                console.error(e);
+                showErrorToast();
+            }
+        }
+    }, []);
+
     return (
-        <Modal isOpen={isOpen} onClose={onClose} size="2xl" isCentered>
+        <Modal isOpen={isOpen} onClose={onClose} size="full" isCentered>
             <ModalOverlay />
             <ModalContent bg="gray.600">
                 <ModalCloseButton color="white" />
                 <ModalHeader color="white">Crop Image</ModalHeader>
-                <ModalBody pb={0} px={2} h="full">
-                    <Box position="relative" flex={1} h="512px">
+                <ModalBody p={0} display="flex">
+                    <Box position="relative" flex={1} h="calc(100vh - 172px)">
                         {/* Cropper */}
                         <Cropper
                             image={image}
-                            cropShape="round"
+                            cropShape={cropShape}
                             crop={crop}
                             zoom={zoom}
-                            aspect={1 / 1}
+                            cropSize={allowResize ? cropSize : undefined}
+                            aspect={aspect}
                             onCropChange={setCrop}
                             onZoomChange={setZoom}
                             onCropComplete={onCropComplete}
+                            onCropSizeChange={setCropSize}
                             style={{
                                 containerStyle: {
-                                    position: 'absolute',
+                                    position: "absolute",
                                     top: 0,
                                     left: 0,
                                     right: 0,
                                     bottom: 0,
-                                    borderTopRightRadius: '10px',
-                                    borderTopLeftRadius: '10px',
+                                    borderTopRightRadius: "10px",
+                                    borderTopLeftRadius: "10px",
                                 },
                             }}
                         />
                     </Box>
                 </ModalBody>
-                <ModalFooter pt={0} px={2}>
+                <ModalFooter p={0}>
                     <CropControls
                         zoom={zoom}
                         setZoom={setZoom}
+                        allowResize={allowResize}
+                        size={cropSize}
+                        setSize={setCropSize}
+                        maxHeight={maxHeight}
+                        maxWidth={maxWidth}
                         croppedAreaPixels={croppedAreaPixels}
                         processCroppedProfileImage={async (
                             croppedAreaPixels,
@@ -194,29 +236,29 @@ export default function CropModal({
                             const blob = await getCroppedImg(
                                 image,
                                 croppedAreaPixels,
-                            )
+                            );
                             if (blob) {
                                 await onSave(blob)
                                     .then(() => {
-                                        setIsSaving(false)
-                                        onClose()
+                                        setIsSaving(false);
+                                        onClose();
                                     })
                                     .catch(() => {
-                                        setIsSaving(false)
-                                        showErrorToast()
-                                    })
+                                        setIsSaving(false);
+                                        showErrorToast();
+                                    });
                             }
                         }}
                         onCancel={() => {
-                            onCancel()
-                            onClose()
+                            onCancel();
+                            onClose();
                         }}
                         isSaving={isSaving}
                     />
                 </ModalFooter>
             </ModalContent>
         </Modal>
-    )
+    );
 }
 
 function CropControls({
@@ -224,15 +266,25 @@ function CropControls({
     setZoom,
     croppedAreaPixels,
     processCroppedProfileImage,
+    allowResize = false,
+    size,
+    setSize,
+    maxWidth,
+    maxHeight,
     onCancel,
     isSaving,
 }: {
-    zoom: number
-    setZoom: (value: number) => void
-    croppedAreaPixels?: Area
-    processCroppedProfileImage: (croppedAreaPixels: Area) => Promise<void>
-    onCancel: () => void
-    isSaving: boolean
+    zoom: number;
+    setZoom: (value: number) => void;
+    croppedAreaPixels?: Area;
+    processCroppedProfileImage: (croppedAreaPixels: Area) => Promise<void>;
+    onCancel: () => void;
+    allowResize?: boolean;
+    size: { width: number; height: number };
+    setSize: (size: { width: number; height: number }) => void;
+    maxWidth: number;
+    maxHeight: number;
+    isSaving: boolean;
 }) {
     return (
         <Flex
@@ -244,24 +296,89 @@ function CropControls({
             justifyContent="space-between"
             alignItems="center"
         >
-            <Flex flex={1} mr={5} ml={4}>
-                <Slider
-                    value={zoom}
-                    onChange={(value) => {
-                        return setZoom(value)
-                    }}
-                    min={1}
-                    max={3}
-                    step={0.1}
-                    aria-label="zoom"
-                    defaultValue={2}
-                >
-                    <SliderTrack>
-                        <SliderFilledTrack />
-                    </SliderTrack>
-                    <SliderThumb />
-                </Slider>
-            </Flex>
+            <Box flex={1} mr={5} ml={4}>
+                {allowResize && (
+                    <Flex w="full" gridGap={8}>
+                        <Box flex={1}>
+                            <Text
+                                color="white"
+                                fontSize="14px"
+                                fontWeight="medium"
+                            >
+                                Width
+                            </Text>
+                            <Slider
+                                value={size.width}
+                                onChange={(value) => {
+                                    setSize({
+                                        width: value,
+                                        height: size.height,
+                                    });
+                                }}
+                                min={100}
+                                max={maxWidth}
+                                step={10}
+                                aria-label="width"
+                                defaultValue={maxWidth}
+                            >
+                                <SliderTrack>
+                                    <SliderFilledTrack />
+                                </SliderTrack>
+                                <SliderThumb />
+                            </Slider>
+                        </Box>
+                        <Box flex={1}>
+                            <Text
+                                color="white"
+                                fontSize="14px"
+                                fontWeight="medium"
+                            >
+                                Height
+                            </Text>
+                            <Slider
+                                value={size.height}
+                                onChange={(value) => {
+                                    setSize({
+                                        width: size.width,
+                                        height: value,
+                                    });
+                                }}
+                                min={100}
+                                max={maxHeight}
+                                step={10}
+                                aria-label="height"
+                                defaultValue={maxHeight}
+                            >
+                                <SliderTrack>
+                                    <SliderFilledTrack />
+                                </SliderTrack>
+                                <SliderThumb />
+                            </Slider>
+                        </Box>
+                    </Flex>
+                )}
+                <Box>
+                    <Text color="white" fontSize="14px" fontWeight="medium">
+                        Zoom
+                    </Text>
+                    <Slider
+                        value={zoom}
+                        onChange={(value) => {
+                            return setZoom(value);
+                        }}
+                        min={1}
+                        max={3}
+                        step={0.1}
+                        aria-label="zoom"
+                        defaultValue={2}
+                    >
+                        <SliderTrack>
+                            <SliderFilledTrack />
+                        </SliderTrack>
+                        <SliderThumb />
+                    </Slider>
+                </Box>
+            </Box>
             <Flex>
                 <Button
                     bgColor="green.100"
@@ -271,7 +388,7 @@ function CropControls({
                     mr={3}
                     _hover={{
                         md: {
-                            backgroundColor: 'green.500',
+                            backgroundColor: "green.500",
                         },
                     }}
                     letterSpacing="2px"
@@ -280,7 +397,7 @@ function CropControls({
                     isLoading={isSaving}
                     onClick={() => {
                         if (croppedAreaPixels !== undefined) {
-                            processCroppedProfileImage(croppedAreaPixels)
+                            processCroppedProfileImage(croppedAreaPixels);
                         }
                     }}
                 >
@@ -293,20 +410,20 @@ function CropControls({
                     w="80px"
                     _hover={{
                         md: {
-                            backgroundColor: 'red.700',
+                            backgroundColor: "red.700",
                         },
                     }}
-                    letterSpacing={'2px'}
+                    letterSpacing={"2px"}
                     alignSelf="center"
                     fontSize="12px"
                     isDisabled={isSaving}
                     onClick={() => {
-                        onCancel()
+                        onCancel();
                     }}
                 >
                     CANCEL
                 </Button>
             </Flex>
         </Flex>
-    )
+    );
 }
