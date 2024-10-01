@@ -11,7 +11,7 @@ import {
 import Item from "@/components/cart_items/item";
 import TradingCardInfo from "@/hooks/TradingCardInfo";
 import { useCurrentCheckout } from "@/hooks/useCheckout";
-import { useState, useEffect, JSX, SVGProps } from "react";
+import { JSX, SVGProps } from "react";
 import SharedStack from "@/components/shared/wrappers/shared-stack";
 
 interface CheckoutItemsAttributes {
@@ -68,19 +68,6 @@ export function ItemsInCartComponent({
  */
 export default function CheckoutItemsInCart(props: CheckoutItemsInCartProps) {
     const curCheckout = useCurrentCheckout();
-
-    // State to keep track of whether the user is buying physical cards
-    const [_buyingPhysicalCards, setBuyingPhysicalCards] = useState(false);
-    useEffect(() => {
-        if (curCheckout.checkout.physicalCardCount > 0) {
-            setBuyingPhysicalCards(true);
-        } else {
-            setBuyingPhysicalCards(false);
-        }
-    }, [
-        curCheckout.checkout.packageName,
-        curCheckout.checkout.physicalCardCount,
-    ]);
 
     /**
      * thin Accordion Icon
