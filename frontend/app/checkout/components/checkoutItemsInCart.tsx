@@ -1,30 +1,33 @@
-"use client";
+'use client'
 import {
-	VStack,
-	Flex,
-	useBreakpointValue,
-	Box,
-	Text,
-	Accordion,
-	AccordionButton,
-	AccordionItem,
-	AccordionPanel
-} from "@chakra-ui/react";
-import Item from "@/components/cart_items/item";
-import TradingCardInfo from "@/hooks/TradingCardInfo";
-import { useCurrentCheckout } from "@/hooks/useCheckout";
-import { useState, useEffect, JSX, SVGProps } from "react";
+    VStack,
+    Flex,
+    useBreakpointValue,
+    Box,
+    Text,
+    Accordion,
+    AccordionButton,
+    AccordionItem,
+    AccordionPanel,
+    Spacer,
+    Heading,
+} from '@chakra-ui/react'
+import Item from '@/components/cart_items/item'
+import TradingCardInfo from '@/hooks/TradingCardInfo'
+import { useCurrentCheckout } from '@/hooks/useCheckout'
+import { useState, useEffect, JSX, SVGProps } from 'react'
+import SharedStack from '@/components/shared/wrappers/shared-stack'
 
 interface CheckoutItemsAttributes {
-	title: string;
-	card: TradingCardInfo | null;
-	numberOfCards: number;
-	numberOfOrders: number;
-	price: number;
+    title: string
+    card: TradingCardInfo | null
+    numberOfCards: number
+    numberOfOrders: number
+    price: number
 }
 interface CheckoutItemsInCartProps {
-	items: CheckoutItemsAttributes[];
-	buyingOtherCard: boolean;
+    items: CheckoutItemsAttributes[]
+    buyingOtherCard: boolean
 }
 
 /**
@@ -32,29 +35,35 @@ interface CheckoutItemsInCartProps {
  * @param items The items in the cart
  * @returns JSX.Element
  */
-export function ItemsInCartComponent({ items }: { items: CheckoutItemsAttributes[] }) {
-	return (
-		<VStack>
-			{items.map((item, index) => {
-				// If the item is a physical or digital card, allow the user to edit or remove it
-				// Otherwise, don't allow the user to edit or remove the item
-				const isPhysicalOrDigitalCardAddOn = item.title.startsWith("Physical") || item.title.startsWith("Digital");
+export function ItemsInCartComponent({
+    items,
+}: {
+    items: CheckoutItemsAttributes[]
+}) {
+    return (
+        <VStack>
+            {items.map((item, index) => {
+                // If the item is a physical or digital card, allow the user to edit or remove it
+                // Otherwise, don't allow the user to edit or remove the item
+                const isPhysicalOrDigitalCardAddOn =
+                    item.title.startsWith('Physical') ||
+                    item.title.startsWith('Digital')
 
-				return (
-					<Item
-						key={index}
-						title={item.title}
-						card={item.card}
-						numberOfCards={item.numberOfCards}
-						numberOfOrders={item.numberOfOrders}
-						price={item.price}
-						canEdit={isPhysicalOrDigitalCardAddOn}
-						canRemove={isPhysicalOrDigitalCardAddOn}
-					/>
-				);
-			})}
-		</VStack>
-	);
+                return (
+                    <Item
+                        key={index}
+                        title={item.title}
+                        card={item.card}
+                        numberOfCards={item.numberOfCards}
+                        numberOfOrders={item.numberOfOrders}
+                        price={item.price}
+                        canEdit={isPhysicalOrDigitalCardAddOn}
+                        canRemove={isPhysicalOrDigitalCardAddOn}
+                    />
+                )
+            })}
+        </VStack>
+    )
 }
 
 /**
@@ -62,164 +71,157 @@ export function ItemsInCartComponent({ items }: { items: CheckoutItemsAttributes
  * @returns JSX.Element
  */
 export default function CheckoutItemsInCart(props: CheckoutItemsInCartProps) {
+    const curCheckout = useCurrentCheckout()
 
-	const curCheckout = useCurrentCheckout();
+    // State to keep track of whether the user is buying physical cards
+    const [buyingPhysicalCards, setBuyingPhysicalCards] = useState(false)
+    useEffect(() => {
+        if (curCheckout.checkout.physicalCardCount > 0) {
+            setBuyingPhysicalCards(true)
+        } else {
+            setBuyingPhysicalCards(false)
+        }
+    }, [
+        curCheckout.checkout.packageName,
+        curCheckout.checkout.physicalCardCount,
+    ])
 
-	// State to keep track of whether the user is buying physical cards
-	const [ buyingPhysicalCards, setBuyingPhysicalCards ] = useState(false);
-	useEffect(() => {
-		if (curCheckout.checkout.physicalCardCount > 0) {
-			setBuyingPhysicalCards(true);
-		} else {
-			setBuyingPhysicalCards(false);
-		}
-	}, [ curCheckout.checkout.packageName, curCheckout.checkout.physicalCardCount ]);
+    /**
+     * thin Accordion Icon
+     * @param props
+     * @returns
+     */
+    function ThinChevronIcon(
+        props: JSX.IntrinsicAttributes &
+            SVGProps<SVGSVGElement> & { rotation?: string },
+    ) {
+        return (
+            <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#27CE00"
+                strokeWidth="1"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                style={{ transform: props.rotation }}
+                {...props}
+            >
+                <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+        )
+    }
 
-	/**
-	 * thin Accordion Icon
-	 * @param props
-	 * @returns
-	 */
-	function ThinChevronIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement> & { rotation?: string }) {
-		return (
-			<svg
-				width="24"
-				height="24"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="#27CE00"
-				strokeWidth="1"
-				strokeLinecap="round"
-				strokeLinejoin="round"
-				style={{ transform: props.rotation }}
-				{...props}
-			>
-				<polyline points="6 9 12 15 18 9"></polyline>
-			</svg>
-		);
-	};
-
-
-	return (
-		<>
-			<Box w="100%"
-				pl="2"
-				pt="2" bg="#171C1B"
-				height={useBreakpointValue({ base: "min-content", sm: 470, lg: "65vh" })}
-				maxHeight={"65vh"}
-				width={"100%"}
-				alignItems="flex-start"
-				justifyContent={"space-between"}
-				overflowY="auto"
-				css={{
-					// Getting rid of default scrollbar
-					"msOverflowStyle": "none",
-					// Creating custom scrollbar.
-					// Unfortunately the colors from themes don't work here so you have to hard code
-					"&::-webkit-scrollbar": { width: "0.75rem" },
-					"&::-webkit-scrollbar-track": { backgroundColor: "#1E2423", borderRadius: "5rem" },
-					"&::-webkit-scrollbar-thumb": { backgroundColor: "#2A302F", borderRadius: "5rem" },
-					"&::-webkit-scrollbar-thumb:hover": { backgroundColor: "#363C3B" },
-				}}
-				display={{ base: "none", lg: "block" }}
-			>
-				{/* The items in the cart */}
-				<ItemsInCartComponent items={props.items} />
-				{
-					buyingPhysicalCards && (
-						<Flex
-							direction={"row"}
-							alignItems={"flex-end"}
-							justifyContent={"flex-end"}
-							marginTop={5}
-							marginBottom={2}
-						>
-							<Text
-								fontFamily={"Barlow Semi Condensed"}
-								fontWeight={"bold"}
-								fontSize={"xs"}
-								color={"#808080"}
-								transform={"skew(-10deg)"}
-							>
-								<Text
-									fontFamily={"Barlow Semi Condensed"}
-									fontWeight={"bold"}
-									fontSize={"xs"}
-									color={"#808080"}
-									transform={"skew(-10deg)"}
-								>
-						* Physical cards incur extra shipping fees
-								</Text>
-							</Text>
-						</Flex>
-					)
-				}
-			</Box>
-			{curCheckout.checkout.stepNum !== 5 ?
-				<Accordion color={"#31453D"} borderBottom={"2px"} borderTop={"2px"} allowToggle display={{ base: "block", lg: "none" }} defaultIndex={[ 0 ]}>
-					<AccordionItem >
-						{({ isExpanded }) => {
-							return (
-								<>
-									<AccordionButton>
-										<Text
-											fontWeight={200}
-											fontSize={"26px"}
-											fontStyle={"italic"}
-											color={"white"}
-											fontFamily={"Barlow Condensed"}
-											as="span"
-											flex="1"
-											textAlign="left">
-            Items in Cart
-										</Text>
-										<Box
-											as={ThinChevronIcon}
-											boxSize="15%"
-											color="green.400"
-											rotation={isExpanded ? "rotate(180deg)" : "rotate(0deg)"}
-											transition="transform 0.2s"
-											sx={{
-												"& svg": {
-													strokeWidth: "1px",
-													fill: "none",
-													stroke: "currentColor",
-												}
-											}}
-										/>
-									</AccordionButton>
-									<AccordionPanel color={"white"} pb={4}>
-										<ItemsInCartComponent items={props.items} />
-										{
-											buyingPhysicalCards && (
-												<Flex
-													direction={"row"}
-													alignItems={"flex-start"}
-													justifyContent={"flex-start"}
-													marginTop={5}
-													marginBottom={2}
-												>
-													<Text
-														fontFamily={"Barlow Semi Condensed"}
-														fontWeight={"bold"}
-														fontSize={"xs"}
-														color={"#808080"}
-														transform={"skew(-10deg)"}
-													>
-														<Text
-															fontFamily={"Barlow Semi Condensed"}
-															fontWeight={"bold"}
-															fontSize={"xs"}
-															color={"#808080"}
-															transform={"skew(-10deg)"}
-														>
-													* Physical cards incur extra shipping fees
-														</Text>
-													</Text>
-												</Flex>
-											)
-										}
-										{/* <VStack textColor={"white"}>
+    return (
+        <>
+            <SharedStack
+                w="100%"
+                p={4}
+                bg="#171C1B"
+                alignItems="flex-start"
+                justifyContent={'space-between'}
+                h="495px"
+                overflowY="auto"
+                roundedBottom="xl"
+                overflowX="hidden"
+                css={{
+                    // Getting rid of default scrollbar
+                    msOverflowStyle: 'none',
+                    // Creating custom scrollbar.
+                    // Unfortunately the colors from themes don't work here so you have to hard code
+                    '&::-webkit-scrollbar': { width: '0.75rem' },
+                    '&::-webkit-scrollbar-track': {
+                        backgroundColor: '#1E2423',
+                        borderRadius: '5rem',
+                    },
+                    '&::-webkit-scrollbar-thumb': {
+                        backgroundColor: '#2A302F',
+                        borderRadius: '5rem',
+                    },
+                    '&::-webkit-scrollbar-thumb:hover': {
+                        backgroundColor: '#363C3B',
+                    },
+                }}
+                display={{ base: 'none', lg: 'flex' }}
+            >
+                <ItemsInCartComponent items={props.items} />
+                <Spacer />
+                {buyingPhysicalCards && (
+                    <SharedStack align="center">
+                        <Text
+                            fontFamily={'Barlow Semi Condensed'}
+                            color={'#808080'}
+                            transform={'skew(-10deg)'}
+                        >
+                            {`Shipping & Handling - $${curCheckout.checkout.shippingCost}`}
+                        </Text>
+                    </SharedStack>
+                )}
+            </SharedStack>
+            {curCheckout.checkout.stepNum !== 5 ? (
+                <Accordion
+                    color={'#31453D'}
+                    borderBottom={'2px'}
+                    borderTop={'2px'}
+                    allowToggle
+                    display={{ base: 'block', lg: 'none' }}
+                    defaultIndex={[0]}
+                >
+                    <AccordionItem>
+                        {({ isExpanded }) => {
+                            return (
+                                <>
+                                    <AccordionButton>
+                                        <Text
+                                            fontWeight={200}
+                                            fontSize={'26px'}
+                                            fontStyle={'italic'}
+                                            color={'white'}
+                                            fontFamily={'Barlow Condensed'}
+                                            as="span"
+                                            flex="1"
+                                            textAlign="left"
+                                        >
+                                            Items in Cart
+                                        </Text>
+                                        <Box
+                                            as={ThinChevronIcon}
+                                            boxSize="15%"
+                                            color="green.400"
+                                            rotation={
+                                                isExpanded
+                                                    ? 'rotate(180deg)'
+                                                    : 'rotate(0deg)'
+                                            }
+                                            transition="transform 0.2s"
+                                            sx={{
+                                                '& svg': {
+                                                    strokeWidth: '1px',
+                                                    fill: 'none',
+                                                    stroke: 'currentColor',
+                                                },
+                                            }}
+                                        />
+                                    </AccordionButton>
+                                    <AccordionPanel color={'white'} pb={4}>
+                                        <ItemsInCartComponent
+                                            items={props.items}
+                                        />
+                                        {buyingPhysicalCards && (
+                                            <SharedStack align="center">
+                                                <Text
+                                                    fontFamily={
+                                                        'Barlow Semi Condensed'
+                                                    }
+                                                    color={'#808080'}
+                                                    transform={'skew(-10deg)'}
+                                                >
+                                                    {`Shipping & Handling - $${curCheckout.checkout.shippingCost}`}
+                                                </Text>
+                                            </SharedStack>
+                                        )}
+                                        {/* <VStack textColor={"white"}>
 										{props.items.map((item, index) => {
 											let canEdit = false;
 											let canRemove = false;
@@ -244,13 +246,15 @@ export default function CheckoutItemsInCart(props: CheckoutItemsInCartProps) {
 											);
 										})}
 									</VStack> */}
-									</AccordionPanel>
-
-								</>
-							);
-						}}
-					</AccordionItem>
-				</Accordion> : <></>}
-		</>
-	);
+                                    </AccordionPanel>
+                                </>
+                            )
+                        }}
+                    </AccordionItem>
+                </Accordion>
+            ) : (
+                <></>
+            )}
+        </>
+    )
 }

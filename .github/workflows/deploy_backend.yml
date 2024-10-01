@@ -2,13 +2,13 @@ name: Test Backend Deployment
 
 on:
     push:
-        branches: [ "main" ]
+        branches: ['master']
         paths:
-          - "backend/**"
+            - 'backend/**'
     pull_request:
-        branches: [ "main" ]
+        branches: ['master']
         paths:
-          - "backend/**"
+            - 'backend/**'
 
 jobs:
     build:
@@ -25,11 +25,11 @@ jobs:
             - name: Install dependencies
               run: npm i -f
 
-            - name: Change stage 
+            - name: Change stage
               run: yq -i '.provider.stage = "zenith-mac-test-${{ github.run_number }}"' serverless.yml
 
             - name: Deploy to AWS
               run: sls deploy
-            
+
             - name: Remove deployment
               run: sls remove
