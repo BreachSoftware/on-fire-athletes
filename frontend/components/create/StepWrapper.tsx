@@ -129,8 +129,12 @@ async function generateCardImages(
         cardBackImageBase64,
     ] = await Promise.all([
         generateCardImage(entireCardRef, CardMask.src),
-        generateCardImage(foregroundRef, CardMask.src),
-        generateCardImage(backgroundRef, CardMask.src),
+        foregroundRef.current
+            ? generateCardImage(foregroundRef, CardMask.src)
+            : "",
+        backgroundRef.current
+            ? generateCardImage(backgroundRef, CardMask.src)
+            : "",
         generateCardImage(cardBackRef, CardMaskReverse.src),
     ]);
 
