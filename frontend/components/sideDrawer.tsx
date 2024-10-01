@@ -11,92 +11,92 @@ import {
     Divider,
     Box,
     Button,
-} from '@chakra-ui/react'
-import Sidebar from './sidebar'
-import Headline from './headline_section/headline'
-import { ChevronRightIcon } from '@chakra-ui/icons'
-import { useRouter, usePathname } from 'next/navigation'
-import { BeatLoader } from 'react-spinners'
-import { useState } from 'react'
-import { useAuth } from '@/hooks/useAuth'
-import { displayTabs } from '@/app/navbar'
+} from "@chakra-ui/react";
+import Sidebar from "./sidebar";
+import Headline from "./headline_section/headline";
+import { ChevronRightIcon } from "@chakra-ui/icons";
+import { useRouter, usePathname } from "next/navigation";
+import { BeatLoader } from "react-spinners";
+import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { displayTabs } from "@/app/navbar";
 
 interface SideDrawerProps extends DrawerContentProps {
-    isOpen: boolean
-    onClose: () => void
-    placement?: 'bottom' | 'end' | 'left' | 'right' | 'start' | 'top'
-    size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full'
-    isMobile?: boolean
+    isOpen: boolean;
+    onClose: () => void;
+    placement?: "bottom" | "end" | "left" | "right" | "start" | "top";
+    size?: "xs" | "sm" | "md" | "lg" | "xl" | "full";
+    isMobile?: boolean;
 }
 
 interface MobileNavItem {
-    title: string
-    href: string
+    title: string;
+    href: string;
 }
 
 interface MobileNavSection {
-    header: string
-    children?: Array<MobileNavItem>
+    header: string;
+    children?: Array<MobileNavItem>;
 }
 
 // The items used for our Navigation Menu
 const navItems: Array<MobileNavSection> = [
     {
-        header: 'Light it Up',
+        header: "Light it Up",
         children: [
             {
-                title: 'Sign Up',
-                href: '/signup',
+                title: "Sign Up",
+                href: "/signup",
             },
             {
-                title: 'Sign In',
-                href: '/login',
+                title: "Sign In",
+                href: "/login",
             },
             {
-                title: 'Profile',
-                href: '/profile',
+                title: "Profile",
+                href: "/profile",
             },
             {
-                title: 'Sign Out',
-                href: '/',
+                title: "Sign Out",
+                href: "/",
             },
         ],
     },
     {
-        header: 'Create',
+        header: "Create",
         children: [
             {
-                title: 'Create Sports Card',
-                href: '/create',
+                title: "Create Sports Card",
+                href: "/create",
             },
         ],
     },
     {
-        header: 'Collect',
+        header: "Collect",
         children: [
             {
-                title: 'Locker Room',
-                href: '/lockerroom',
+                title: "Locker Room",
+                href: "/lockerroom",
             },
         ],
     },
     {
-        header: 'About',
+        header: "About",
         children: [
             {
-                title: 'FAQs',
-                href: '/faq',
+                title: "FAQs",
+                href: "/faq",
             },
             {
-                title: 'Contact',
-                href: '/contact',
+                title: "Contact",
+                href: "/contact",
             },
         ],
     },
     {
-        header: 'Get Started Today',
+        header: "Get Started Today",
     },
-]
+];
 
 /**
  * The side drawer component.
@@ -104,51 +104,51 @@ const navItems: Array<MobileNavSection> = [
  * @returns
  */
 function SideDrawer(props: SideDrawerProps) {
-    const { onClose, isMobile } = props
+    const { onClose, isMobile } = props;
 
-    const rightHeaderColor = '#187b07'
-    const leftHeaderColor = 'green.100'
-    const headerFont = 'Barlow Condensed'
-    const headerWeight = 600
+    const rightHeaderColor = "#187b07";
+    const leftHeaderColor = "green.100";
+    const headerFont = "Barlow Condensed";
+    const headerWeight = 600;
     const headerFontSize =
-        useBreakpointValue({ base: '16px', lg: '20px' }) || '20px'
-    const headerSpacing = '0.4px'
+        useBreakpointValue({ base: "16px", lg: "20px" }) || "20px";
+    const headerSpacing = "0.4px";
     const headerLineHeight =
-        useBreakpointValue({ base: '18px', lg: '24px' }) || '20px'
+        useBreakpointValue({ base: "18px", lg: "24px" }) || "20px";
 
-    const subHeaderColor = 'white'
-    const subHeaderFont = 'Barlow Semi Condensed'
-    const subHeaderSpacing = '1.68px'
-    const subHeaderWeight = 600
+    const subHeaderColor = "white";
+    const subHeaderFont = "Barlow Semi Condensed";
+    const subHeaderSpacing = "1.68px";
+    const subHeaderWeight = 600;
     const subHeaderFontSize =
-        useBreakpointValue({ base: '18px', lg: '28px' }) || '20px'
+        useBreakpointValue({ base: "18px", lg: "28px" }) || "20px";
     const subHeaderLineHeight =
-        useBreakpointValue({ base: '20px', lg: '34px' }) || '24px'
+        useBreakpointValue({ base: "20px", lg: "34px" }) || "24px";
 
-    const primaryBackgroundColor = 'green.100' // Background color for drawer right
-    const secondaryBackgroundColor = '#171C1B' // Linear gradient for drawer left
+    const primaryBackgroundColor = "green.100"; // Background color for drawer right
+    const secondaryBackgroundColor = "#171C1B"; // Linear gradient for drawer left
 
-    const router = useRouter()
-    const pathname = usePathname()
-    const auth = useAuth()
+    const router = useRouter();
+    const pathname = usePathname();
+    const auth = useAuth();
 
     // State for the create button loading
-    const [createButtonLoading, setCreateButtonLoading] = useState(false)
-    const [collectButtonLoading, setCollectButtonLoading] = useState(false)
+    const [createButtonLoading, setCreateButtonLoading] = useState(false);
+    const [collectButtonLoading, setCollectButtonLoading] = useState(false);
 
     return (
         <Drawer
             isOpen={props.isOpen}
-            placement={props.placement || 'right'}
+            placement={props.placement || "right"}
             onClose={props.onClose}
-            size={props.size || 'xl'}
+            size={props.size || "xl"}
         >
             <DrawerOverlay />
 
-            <DrawerContent w="1000px" maxW="1000px">
+            <DrawerContent w={{ base: "100%", md: "1000px" }} maxW="1000px">
                 {/* Grid split in two halves that takes up full width */}
                 <Grid
-                    templateColumns={props.isMobile ? '100%' : '1fr 1fr'}
+                    templateColumns={props.isMobile ? "100%" : "1fr 1fr"}
                     templateRows="auto"
                     height="100dvh"
                     overflowY="hidden"
@@ -159,12 +159,12 @@ function SideDrawer(props: SideDrawerProps) {
                         <Flex
                             flexDirection="column"
                             bgColor={secondaryBackgroundColor}
-                            justifyContent={'center'}
+                            justifyContent={"center"}
                         >
                             <Flex
-                                direction={'column'}
-                                width={'80%'}
-                                alignSelf={'center'}
+                                direction={"column"}
+                                width={"80%"}
+                                alignSelf={"center"}
                                 gap={5}
                             >
                                 <Text
@@ -173,17 +173,17 @@ function SideDrawer(props: SideDrawerProps) {
                                     fontSize={headerFontSize}
                                     letterSpacing={headerSpacing}
                                     fontWeight={headerWeight}
-                                    textTransform={'uppercase'}
+                                    textTransform={"uppercase"}
                                 >
                                     Get Started Today
                                 </Text>
 
                                 {/* Headline Boxes */}
                                 <Flex
-                                    direction={'column'}
-                                    height={'min-content'}
+                                    direction={"column"}
+                                    height={"min-content"}
                                     gap={34}
-                                    justifyContent={'center'}
+                                    justifyContent={"center"}
                                 >
                                     <Headline
                                         headlineTitle="Create Your Card"
@@ -207,27 +207,27 @@ function SideDrawer(props: SideDrawerProps) {
 
                     {/* Right half */}
                     <Flex
-                        flexDirection={isMobile ? 'row-reverse' : 'row'}
+                        flexDirection={isMobile ? "row-reverse" : "row"}
                         backgroundColor={primaryBackgroundColor}
-                        justifyContent={'center'}
-                        alignItems={'center'}
-                        height="100dvh"
+                        justifyContent={"center"}
+                        alignItems={"center"}
+                        height="100%"
                         overflowY="scroll"
                         w="100%"
                     >
-                        <DrawerBody h="100dvh">
+                        <DrawerBody h="100%">
                             {/* Nav Menu */}
                             <Flex
-                                flexDirection={'column'}
-                                justifySelf={'center'}
-                                alignSelf={'center'}
-                                height={'100%'}
+                                flexDirection={"column"}
+                                justifySelf={"center"}
+                                alignSelf={"center"}
+                                height={"100%"}
                             >
                                 <Flex
-                                    flexDirection={'column'}
-                                    alignSelf={'center'}
-                                    height={'100dvh'}
-                                    py="80px"
+                                    flexDirection={"column"}
+                                    alignSelf={"center"}
+                                    height={"100%"}
+                                    py={{ base: "32px", md: "80px" }}
                                     w="90%"
                                 >
                                     {/* Smaller groupings of each nav section */}
@@ -237,7 +237,7 @@ function SideDrawer(props: SideDrawerProps) {
                                             !isMobile == true &&
                                             index === navItems.length - 1
                                         ) {
-                                            return null
+                                            return null;
                                         }
 
                                         return (
@@ -254,7 +254,7 @@ function SideDrawer(props: SideDrawerProps) {
                                                         headerSpacing
                                                     }
                                                     fontWeight={headerWeight}
-                                                    textTransform={'uppercase'}
+                                                    textTransform={"uppercase"}
                                                     lineHeight={
                                                         headerLineHeight
                                                     }
@@ -262,7 +262,7 @@ function SideDrawer(props: SideDrawerProps) {
                                                     {navItem.header}
                                                 </Text>
                                                 <Flex
-                                                    flexDirection={'column'}
+                                                    flexDirection={"column"}
                                                     gap="12px"
                                                 >
                                                     {/* Each child of the nav section */}
@@ -277,18 +277,18 @@ function SideDrawer(props: SideDrawerProps) {
                                                                     )}
                                                                     _focus={{
                                                                         outline:
-                                                                            'none',
+                                                                            "none",
                                                                     }}
                                                                 >
                                                                     <Text
                                                                         display={
-                                                                            'inline-block'
+                                                                            "inline-block"
                                                                         }
                                                                         position={
-                                                                            'relative'
+                                                                            "relative"
                                                                         }
                                                                         textDecoration={
-                                                                            'none'
+                                                                            "none"
                                                                         }
                                                                         color={
                                                                             subHeaderColor
@@ -306,42 +306,42 @@ function SideDrawer(props: SideDrawerProps) {
                                                                             subHeaderSpacing
                                                                         }
                                                                         textTransform={
-                                                                            'uppercase'
+                                                                            "uppercase"
                                                                         }
                                                                         lineHeight={
                                                                             subHeaderLineHeight
                                                                         }
                                                                         // fancy underline animation on hover
                                                                         transition={
-                                                                            'all 0.2s ease-in-out'
+                                                                            "all 0.2s ease-in-out"
                                                                         }
                                                                         _after={{
                                                                             content:
                                                                                 "''",
                                                                             position:
-                                                                                'absolute',
-                                                                            width: '100%',
+                                                                                "absolute",
+                                                                            width: "100%",
                                                                             transform:
-                                                                                'scaleX(0)',
+                                                                                "scaleX(0)",
                                                                             borderRadius: 5,
-                                                                            height: '0.05em',
+                                                                            height: "0.05em",
                                                                             bottom: 0,
                                                                             left: 0,
                                                                             background:
-                                                                                'white',
+                                                                                "white",
                                                                             transformOrigin:
-                                                                                'bottom right',
+                                                                                "bottom right",
                                                                             transition:
-                                                                                'transform 0.25s ease-out',
+                                                                                "transform 0.25s ease-out",
                                                                         }}
                                                                         _hover={{
                                                                             md: {
-                                                                                cursor: 'pointer',
+                                                                                cursor: "pointer",
                                                                                 _after: {
                                                                                     transform:
-                                                                                        'scaleX(1)',
+                                                                                        "scaleX(1)",
                                                                                     transformOrigin:
-                                                                                        'bottom left',
+                                                                                        "bottom left",
                                                                                 },
                                                                             },
                                                                         }}
@@ -349,20 +349,20 @@ function SideDrawer(props: SideDrawerProps) {
                                                                             child.title
                                                                                 .toLocaleLowerCase()
                                                                                 .replace(
-                                                                                    ' ',
-                                                                                    '',
+                                                                                    " ",
+                                                                                    "",
                                                                                 ) ===
-                                                                            'signout'
+                                                                            "signout"
                                                                                 ? async () => {
-                                                                                      await auth.signOut()
+                                                                                      await auth.signOut();
                                                                                       // Refreshes the page to update the navbar
                                                                                       window.location.href =
-                                                                                          '/'
+                                                                                          "/";
                                                                                   }
                                                                                 : () => {
                                                                                       router.push(
                                                                                           child.href,
-                                                                                      )
+                                                                                      );
                                                                                   }
                                                                         }
                                                                     >
@@ -371,7 +371,7 @@ function SideDrawer(props: SideDrawerProps) {
                                                                         }
                                                                     </Text>
                                                                 </Box>
-                                                            )
+                                                            );
                                                         },
                                                     )}
                                                 </Flex>
@@ -385,13 +385,13 @@ function SideDrawer(props: SideDrawerProps) {
                                                             2 ? null : (
                                                         <Divider
                                                             borderColor={
-                                                                'gray.1700'
+                                                                "gray.1700"
                                                             }
                                                             opacity={0.26}
                                                             borderWidth={1}
                                                             width="106%"
-                                                            marginTop="16px"
-                                                            marginBottom="28px"
+                                                            marginTop="12px"
+                                                            marginBottom="24px"
                                                         />
                                                     ))}
 
@@ -402,27 +402,30 @@ function SideDrawer(props: SideDrawerProps) {
                                                         // Action Buttons
                                                         <Flex
                                                             flexDirection={
-                                                                'column'
+                                                                "column"
                                                             }
-                                                            gap={'15px'}
+                                                            gap={"15px"}
                                                             mb="30px"
                                                         >
                                                             {/* Create Button */}
                                                             <Button
                                                                 variant="infoButton"
                                                                 style={{
-                                                                    border: '1px solid white',
-                                                                    height: '50px',
+                                                                    border: "1px solid white",
+                                                                    height: "50px",
                                                                 }}
                                                                 w="100%"
                                                                 letterSpacing={
-                                                                    '1.5px'
+                                                                    "1.5px"
                                                                 }
                                                                 bg={
-                                                                    'transparent'
+                                                                    "transparent"
                                                                 }
                                                                 borderRadius="30px"
                                                                 color="white"
+                                                                _focus={{
+                                                                    shadow: "none",
+                                                                }}
                                                                 pl="32px"
                                                                 isLoading={
                                                                     createButtonLoading
@@ -436,16 +439,16 @@ function SideDrawer(props: SideDrawerProps) {
                                                                 onClick={() => {
                                                                     if (
                                                                         pathname !==
-                                                                        '/create'
+                                                                        "/create"
                                                                     ) {
                                                                         router.push(
-                                                                            '/create',
-                                                                        )
+                                                                            "/create",
+                                                                        );
                                                                         setCreateButtonLoading(
                                                                             true,
-                                                                        )
+                                                                        );
                                                                     } else {
-                                                                        onClose()
+                                                                        onClose();
                                                                     }
                                                                 }}
                                                             >
@@ -463,18 +466,21 @@ function SideDrawer(props: SideDrawerProps) {
                                                             <Button
                                                                 variant="infoButton"
                                                                 style={{
-                                                                    border: '1px solid white',
-                                                                    height: '50px',
+                                                                    border: "1px solid white",
+                                                                    height: "50px",
                                                                 }}
                                                                 w="100%"
                                                                 letterSpacing={
-                                                                    '1.5px'
+                                                                    "1.5px"
                                                                 }
                                                                 bg={
-                                                                    'transparent'
+                                                                    "transparent"
                                                                 }
                                                                 borderRadius="30px"
                                                                 color="white"
+                                                                _focus={{
+                                                                    shadow: "none",
+                                                                }}
                                                                 pl="32px"
                                                                 isLoading={
                                                                     collectButtonLoading
@@ -488,16 +494,16 @@ function SideDrawer(props: SideDrawerProps) {
                                                                 onClick={() => {
                                                                     if (
                                                                         pathname !==
-                                                                        '/lockerroom'
+                                                                        "/lockerroom"
                                                                     ) {
                                                                         router.push(
-                                                                            '/lockerroom',
-                                                                        )
+                                                                            "/lockerroom",
+                                                                        );
                                                                         setCollectButtonLoading(
                                                                             true,
-                                                                        )
+                                                                        );
                                                                     } else {
-                                                                        onClose()
+                                                                        onClose();
                                                                     }
                                                                 }}
                                                             >
@@ -513,7 +519,7 @@ function SideDrawer(props: SideDrawerProps) {
                                                         </Flex>
                                                     )}
                                             </Flex>
-                                        )
+                                        );
                                     })}
                                 </Flex>
                             </Flex>
@@ -528,7 +534,7 @@ function SideDrawer(props: SideDrawerProps) {
                 </Grid>
             </DrawerContent>
         </Drawer>
-    )
+    );
 }
 
-export default SideDrawer
+export default SideDrawer;
