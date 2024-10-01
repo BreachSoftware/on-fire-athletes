@@ -7,7 +7,6 @@ import {
     AccordionButton,
     AccordionItem,
     AccordionPanel,
-    Spacer,
 } from "@chakra-ui/react";
 import Item from "@/components/cart_items/item";
 import TradingCardInfo from "@/hooks/TradingCardInfo";
@@ -71,7 +70,7 @@ export default function CheckoutItemsInCart(props: CheckoutItemsInCartProps) {
     const curCheckout = useCurrentCheckout();
 
     // State to keep track of whether the user is buying physical cards
-    const [buyingPhysicalCards, setBuyingPhysicalCards] = useState(false);
+    const [_buyingPhysicalCards, setBuyingPhysicalCards] = useState(false);
     useEffect(() => {
         if (curCheckout.checkout.physicalCardCount > 0) {
             setBuyingPhysicalCards(true);
