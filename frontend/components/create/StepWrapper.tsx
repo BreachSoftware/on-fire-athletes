@@ -10,10 +10,11 @@ import {
     WrapItem,
     Flex,
 } from "@chakra-ui/react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import ProgressBar from "./ProgressBar";
 import NextButton from "@/app/components/buttons/next_button";
 import BackButton from "@/app/components/buttons/back_button";
-import { useState } from "react";
 import {
     useCurrentCardInfo,
     useCurrentCardInfoProperties,
@@ -131,10 +132,10 @@ async function generateCardImages(
         generateCardImage(entireCardRef, CardMask.src),
         foregroundRef.current
             ? generateCardImage(foregroundRef, CardMask.src)
-            : "",
+            : Promise.resolve(""),
         backgroundRef.current
             ? generateCardImage(backgroundRef, CardMask.src)
-            : "",
+            : Promise.resolve(""),
         generateCardImage(cardBackRef, CardMaskReverse.src),
     ]);
 
@@ -372,7 +373,7 @@ export default function StepWrapper({
 
     const [submitButtonLoading, setSubmitButtonLoading] = useState(false);
 
-    // const router = useRouter();
+    const router = useRouter();
 
     return (
         <Box
@@ -478,25 +479,31 @@ export default function StepWrapper({
 
                                         // Get the user's ID
                                         const userID = user.userId;
-                                        // const result =
-                                        await submitCardWithAuth({
-                                            entireCardRef: entireCardRef,
-                                            foregroundRef: foregroundRef,
-                                            backgroundRef: backgroundRef,
-                                            cardBackRef: cardBackRef,
-                                            currentInfo: currentInfo,
-                                            userID: userID,
-                                        });
+                                        const result = await submitCardWithAuth(
+                                            {
+                                                entireCardRef: entireCardRef,
+                                                foregroundRef: foregroundRef,
+                                                backgroundRef: backgroundRef,
+                                                cardBackRef: cardBackRef,
+                                                currentInfo: currentInfo,
+                                                userID: userID,
+                                            },
+                                        );
 
-                                        // ! TODO: COMMENT THIS BACK IN
-                                        // if(result === SubmitResult.GoToCheckout) {
-                                        // 	router.push("/checkout");
-                                        // } else if(result === SubmitResult.GoToSignup) {
-                                        // 	router.push("/signup");
-                                        // } else {
-                                        // 	console.error("Error submitting card!");
-                                        // 	setSubmitButtonLoading(false);
-                                        // }
+                                        if (
+                                            result === SubmitResult.GoToCheckout
+                                        ) {
+                                            router.push("/checkout");
+                                        } else if (
+                                            result === SubmitResult.GoToSignup
+                                        ) {
+                                            router.push("/signup");
+                                        } else {
+                                            console.error(
+                                                "Error submitting card!",
+                                            );
+                                            setSubmitButtonLoading(false);
+                                        }
                                     }
                                 }}
                                 isDisabled={stepIsIncomplete()}
