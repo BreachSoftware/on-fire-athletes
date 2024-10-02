@@ -2,7 +2,7 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 
-'use client'
+"use client";
 
 // Procedure to make a new card now that it's manual:
 /*
@@ -10,7 +10,7 @@
 	1. Create the card and get the images from the S3 bucket, noting the card UUID and generatedBy.
 	2. Go to https://hiukim.github.io/mind-ar-js-doc/tools/compile and get that mind file.
 		- Be sure to put the card image first, then the OnFireCardBack.png image second.
-		- OnFireCardBack found at https://gamechangers-media-uploads.s3.amazonaws.com/mind-ar/OnFireCardBack.png
+		- OnFireCardBack found at https://onfireathletes-media-uploads.s3.amazonaws.com/mind-ar/OnFireCardBack.png
 	3. Upload the mind file to the S3 bucket, with the filename being {cardUUID}.mind.
 		- gamechangers-mediu-uploads/mind-ar/{cardUUID}.mind
 	4. Go to the ARViewer page and scan the QR code.
@@ -24,16 +24,16 @@
 */
 
 // eslint-disable-next-line no-use-before-define
-import React, { useEffect, useRef, useState } from 'react'
-import PlayImage from '../../../../public/card_assets/play.png'
-import { useCurrentCardInfo } from '@/hooks/useCurrentCardInfo'
-import { Result, useZxing } from 'react-zxing'
+import React, { useEffect, useRef, useState } from "react";
+import PlayImage from "../../../../public/card_assets/play.png";
+import { useCurrentCardInfo } from "@/hooks/useCurrentCardInfo";
+import { Result, useZxing } from "react-zxing";
 // import { getCard } from "@/app/generate_card_asset/cardFunctions";
-import { Box, Button, Center, Text } from '@chakra-ui/react'
-import TradingCardInfo from '@/hooks/TradingCardInfo'
-import 'aframe'
-import 'mind-ar/dist/mindar-image-aframe.prod.js'
-import { apiEndpoints } from '@backend/EnvironmentManager/EnvironmentManager'
+import { Box, Button, Center, Text } from "@chakra-ui/react";
+import TradingCardInfo from "@/hooks/TradingCardInfo";
+import "aframe";
+import "mind-ar/dist/mindar-image-aframe.prod.js";
+import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
 
 /**
  * The MindAR ARViewer component that renders the video on the OnFire card.
@@ -41,12 +41,12 @@ import { apiEndpoints } from '@backend/EnvironmentManager/EnvironmentManager'
  * @returns {JSX.Element} ARViewer component
  */
 function ARViewer() {
-    const card = useCurrentCardInfo()
-    const [isVideoSourceSet, setIsVideoSourceSet] = useState(false)
-    const [imgSource, setImgSource] = useState(card.curCard.cardImage)
-    const [qrResult, setQRResult] = useState<string>('')
-    const sceneRef = useRef<HTMLElement>(null)
-    const videoRef = useRef<HTMLVideoElement>(null)
+    const card = useCurrentCardInfo();
+    const [isVideoSourceSet, setIsVideoSourceSet] = useState(false);
+    const [imgSource, setImgSource] = useState(card.curCard.cardImage);
+    const [qrResult, setQRResult] = useState<string>("");
+    const sceneRef = useRef<HTMLElement>(null);
+    const videoRef = useRef<HTMLVideoElement>(null);
 
     /**
      * A callback function that is called when a QR code is scanned.
@@ -56,78 +56,78 @@ function ARViewer() {
      * @param result The result of the QR code scan
      */
     async function onQRResult(result: Result) {
-        console.log('Decoded result:', result)
+        console.log("Decoded result:", result);
 
         // Get all the OnFire cards
-        const onFireCards = await fetch(apiEndpoints.getAllCards())
-        const cards: TradingCardInfo[] = await onFireCards.json()
+        const onFireCards = await fetch(apiEndpoints.getAllCards());
+        const cards: TradingCardInfo[] = await onFireCards.json();
 
         // Get the card UUID from the QR code
         const stringedResult =
-            typeof result === 'string' ? result : result.getText()
-        const queryParams = new URLSearchParams(stringedResult.split('?')[1])
-        const cardUUID = queryParams.get('card')
-        setQRResult(cardUUID)
+            typeof result === "string" ? result : result.getText();
+        const queryParams = new URLSearchParams(stringedResult.split("?")[1]);
+        const cardUUID = queryParams.get("card");
+        setQRResult(cardUUID);
 
         // Find the OnFire card that matches the UUID of the QR code
-        let found = false
-        let readCard = new TradingCardInfo()
+        let found = false;
+        let readCard = new TradingCardInfo();
         cards.forEach((fetchedCard) => {
             if (fetchedCard.uuid === cardUUID) {
-                readCard = fetchedCard
-                setImgSource(fetchedCard.cardImage)
-                console.log(imgSource)
-                found = true
+                readCard = fetchedCard;
+                setImgSource(fetchedCard.cardImage);
+                console.log(imgSource);
+                found = true;
             }
-        })
+        });
 
         // Set the card to the card that was scanned
         if (videoRef.current && found) {
-            videoRef.current.src = readCard.backVideoURL
-            console.log('Playing: ', readCard.backVideoURL)
-            videoRef.current.play()
-            setIsVideoSourceSet(true)
+            videoRef.current.src = readCard.backVideoURL;
+            console.log("Playing: ", readCard.backVideoURL);
+            videoRef.current.play();
+            setIsVideoSourceSet(true);
         }
     }
 
     // Use the useZxing hook to handle QR code scanning
     const { ref } = useZxing({
         onDecodeResult: onQRResult,
-    })
+    });
 
     useEffect(() => {
-        const sceneEl = sceneRef.current
+        const sceneEl = sceneRef.current;
         if (!sceneEl) {
-            return () => {}
+            return () => {};
         }
 
         // Get the AR system from the scene element
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const arSystem = (sceneEl as any).systems['mindar-image-system']
+        const arSystem = (sceneEl as any).systems["mindar-image-system"];
 
         /**
          * Starts the AR system when the scene is ready.
          */
         function startARSystem() {
             if (arSystem) {
-                arSystem.start() // start AR
-                console.info('AR System started')
+                arSystem.start(); // start AR
+                console.info("AR System started");
                 if (videoRef.current) {
                     // Wait 1 second before playing the video
                     setTimeout(() => {
-                        videoRef.current?.play()
-                    }, 1000)
+                        videoRef.current?.play();
+                    }, 1000);
                 }
             }
             // Add a click event listener to play the video
-            window.addEventListener('click', () => {
+            window.addEventListener("click", () => {
                 if (videoRef.current) {
-                    console.log(videoRef.current.src)
-                    videoRef.current.src = card.curCard.backVideoURL
-                    console.log('Playing: ', card.curCard.backVideoURL)
-                    videoRef.current.play()
+                    console.log(videoRef.current.src);
+                    videoRef.current.src = card.curCard.backVideoURL;
+                    console.log("Playing: ", card.curCard.backVideoURL);
+                    videoRef.current.play();
                 }
-            })
+            });
         }
 
         // Here lies the section in which the cloak material used to be loaded. It is now in the patch file.
@@ -135,23 +135,23 @@ function ARViewer() {
         // Add a renderstart event listener to start the AR system
         // FOR SOME REASON this renderstart listener doesnt work after the page is reloaded
         // This is true even after the patch, so let's just avoid putting crucial code in this listener
-        sceneEl.addEventListener('renderstart', startARSystem)
+        sceneEl.addEventListener("renderstart", startARSystem);
 
         // Load the video prematurely for the card scanned to get here
-        console.log('Current card: ', window.location.href)
+        console.log("Current card: ", window.location.href);
         onQRResult(window.location.href).then(() => {
             // Reset the QR result the first time
-            setQRResult('')
-        })
+            setQRResult("");
+        });
 
         // Clean up the event listener and stop the AR system when the component unmounts
         return () => {
             if (arSystem) {
-                arSystem.stop()
+                arSystem.stop();
             }
-        }
+        };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [card.curCard.backVideoURL])
+    }, [card.curCard.backVideoURL]);
 
     /**
      * A function to determine which mindFile to use for the given card.
@@ -159,15 +159,15 @@ function ARViewer() {
      */
     function determineMindFile() {
         // Get the query parameters from the URL (if any).
-        const queryParams = new URLSearchParams(window.location.search)
-        const cardUUID = queryParams.get('card')
+        const queryParams = new URLSearchParams(window.location.search);
+        const cardUUID = queryParams.get("card");
 
         if (cardUUID) {
             // This should eventually have guardrails in case the card is not found
-            return `https://gamechangers-media-uploads.s3.amazonaws.com/mind-ar/${cardUUID}.mind`
+            return `https://onfireathletes-media-uploads.s3.amazonaws.com/mind-ar/${cardUUID}.mind`;
         }
         // Something that we just know works. Not really the correct URL.
-        return 'https://gamechangers-media-uploads.s3.amazonaws.com/mind-ar/magback.mind'
+        return "https://onfireathletes-media-uploads.s3.amazonaws.com/mind-ar/magback.mind";
     }
 
     /**
@@ -176,8 +176,8 @@ function ARViewer() {
      * @returns the value of the query parameter
      */
     function getQueryParam(param: string): string | null {
-        const urlParams = new URLSearchParams(window.location.search)
-        return urlParams.get(param)
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
     }
 
     /**
@@ -185,8 +185,8 @@ function ARViewer() {
      */
     function reloadWithNewCard() {
         window.location.href = window.location.href
-            .split('?')[0]
-            .concat(`?card=${qrResult}`)
+            .split("?")[0]
+            .concat(`?card=${qrResult}`);
     }
 
     return (
@@ -202,7 +202,7 @@ function ARViewer() {
                 }
             `}</style>
 
-            {qrResult !== '' && qrResult !== getQueryParam('card') && (
+            {qrResult !== "" && qrResult !== getQueryParam("card") && (
                 <Center>
                     <Button
                         zIndex={3}
@@ -245,14 +245,14 @@ function ARViewer() {
                         id="card-video"
                         autoPlay
                         style={{
-                            'webkit-playsinline': 'true',
-                            objectFit: 'cover',
+                            "webkit-playsinline": "true",
+                            objectFit: "cover",
                         }}
                         muted
                         playsInline
                         loop
                         crossOrigin="anonymous"
-                        src={''}
+                        src={""}
                         type="video/mp4"
                     ></video>
                     <img
@@ -311,7 +311,7 @@ function ARViewer() {
                 <video ref={ref} />
             </Box>
         </>
-    )
+    );
 }
 
-export default ARViewer
+export default ARViewer;

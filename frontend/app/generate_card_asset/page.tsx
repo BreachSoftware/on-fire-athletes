@@ -19,193 +19,221 @@ import { getCard } from "./cardFunctions";
  * @returns The image of the card asset
  */
 function GenerateCardAssetContent() {
-	const searchParams = useSearchParams();
-	const uuid = searchParams.get("uuid");
-	const generatedBy = searchParams.get("generatedBy");
+    const searchParams = useSearchParams();
+    const uuid = searchParams.get("uuid");
+    const generatedBy = searchParams.get("generatedBy");
 
-	// We need to save the front photo URL for the card
-	// because we do not want the database to be overwritten
-	// with the base64 image
-	const frontPhotoURL = useRef("");
+    // We need to save the front photo URL for the card
+    // because we do not want the database to be overwritten
+    // with the base64 image
+    const frontPhotoURL = useRef("");
 
-	const [ card, setCard ] = useState(new TradingCardInfo({}));
-	const [ isLoaded, setIsLoaded ] = useState(false);
+    const [card, setCard] = useState(new TradingCardInfo({}));
+    const [isLoaded, setIsLoaded] = useState(false);
 
-	const cardFrontRef = useRef(null);
-	const cardBackRef = useRef(null);
+    const cardFrontRef = useRef(null);
+    const cardBackRef = useRef(null);
 
+    /**
+     * Takes a screenshot of the card and uploads it to S3
+     *
+     * @param uuid: string - The UUID of the card
+     * @param generatedBy: string - The UUID of the user who generated the card
+     */
+    async function getCardImage() {
+        if (cardFrontRef.current === null || cardBackRef.current === null) {
+            console.error("Element ref is null");
+            return;
+        }
 
-	/**
-	 * Takes a screenshot of the card and uploads it to S3
-	 *
-	 * @param uuid: string - The UUID of the card
-	 * @param generatedBy: string - The UUID of the user who generated the card
-	 */
-	async function getCardImage() {
+        // Get the current Unix timestamp
+        const current_unix_time = Math.floor(Date.now() / 1000);
 
-		if (cardFrontRef.current === null || cardBackRef.current === null) {
-			console.error("Element ref is null");
-			return;
-		}
+        const style = document.createElement("style");
+        document.head.appendChild(style);
+        // @ts-expect-error Changing this specific line makes the card get generated incorrectly.
+        style.sheet?.insertRule(
+            "body > div:last-child img { display: inline-block; }",
+        );
 
-		// Get the current Unix timestamp
-		const current_unix_time = Math.floor(Date.now() / 1000);
+        const scaleValue = 4;
+        const canvas = await html2canvas(cardFrontRef.current, {
+            backgroundColor: null,
+            scale: scaleValue,
+        });
+        let base64 = canvas.toDataURL("image/png", 1.0);
 
-		const style = document.createElement("style");
-		document.head.appendChild(style);
-		// @ts-expect-error Changing this specific line makes the card get generated incorrectly.
-		style.sheet?.insertRule("body > div:last-child img { display: inline-block; }");
+        const resizedMask = await resize(CardMask.src, scaleValue * 350, null);
+        base64 = await maskImageToCard(base64, resizedMask);
 
-		const scaleValue = 4;
-		const canvas = await html2canvas(cardFrontRef.current, { backgroundColor: null, scale: scaleValue });
-		let base64 = canvas.toDataURL("image/png", 1.0);
+        const resizedReversedMask = await resize(
+            CardMaskReverse.src,
+            scaleValue * 350,
+            null,
+        );
 
-		const resizedMask = await resize(CardMask.src, scaleValue * 350, null);
-		base64 = await maskImageToCard(base64, resizedMask);
+        const cardBackCanvas = await html2canvas(cardBackRef.current, {
+            backgroundColor: null,
+            scale: scaleValue,
+        });
+        let cardBackImageBase64 = cardBackCanvas.toDataURL("image/png", 1.0);
+        cardBackImageBase64 = await maskImageToCard(
+            cardBackImageBase64,
+            resizedReversedMask,
+        );
 
-		const resizedReversedMask = await resize(CardMaskReverse.src, scaleValue * 350, null);
+        // If the user is signed in, use their user ID in the filename
+        const filename = `Hidden-Page-${generatedBy}-${current_unix_time}.png`;
 
-		const cardBackCanvas = await html2canvas(cardBackRef.current, { backgroundColor: null, scale: scaleValue });
-		let cardBackImageBase64 = cardBackCanvas.toDataURL("image/png", 1.0);
-		cardBackImageBase64 = await maskImageToCard(cardBackImageBase64, resizedReversedMask);
+        await uploadAssetToS3(
+            filename,
+            await b64toBlob(base64),
+            "card",
+            "image/png",
+        );
+        await uploadAssetToS3(
+            filename,
+            await b64toBlob(cardBackImageBase64),
+            "card-back",
+            "image/png",
+        );
 
-		// If the user is signed in, use their user ID in the filename
-		const filename = `Hidden-Page-${generatedBy}-${current_unix_time}.png`;
+        setCard({
+            ...card,
+            cardImage: `https://onfireathletes-media-uploads.s3.amazonaws.com/card/${filename}`,
+            frontPhotoURL: frontPhotoURL.current,
+            frontPhotoS3URL: frontPhotoURL.current,
+            backVideoS3URL: card.backVideoURL,
+            cardBackS3URL: `https://onfireathletes-media-uploads.s3.amazonaws.com/card-back/${filename}`,
+        });
 
-		await uploadAssetToS3(filename, await b64toBlob(base64), "card", "image/png");
-		await uploadAssetToS3(filename, await b64toBlob(cardBackImageBase64), "card-back", "image/png");
+        card.cardImage = `https://onfireathletes-media-uploads.s3.amazonaws.com/card/${filename}`;
+        card.cardBackS3URL = `https://onfireathletes-media-uploads.s3.amazonaws.com/card-back/${filename}`;
+        card.frontPhotoURL = frontPhotoURL.current;
+        card.frontPhotoS3URL = frontPhotoURL.current;
+        card.backVideoS3URL = card.backVideoURL;
 
-		setCard({
-			...card,
-			cardImage: `https://gamechangers-media-uploads.s3.amazonaws.com/card/${filename}`,
-			frontPhotoURL: frontPhotoURL.current,
-			frontPhotoS3URL: frontPhotoURL.current,
-			backVideoS3URL: card.backVideoURL,
-			cardBackS3URL: `https://gamechangers-media-uploads.s3.amazonaws.com/card-back/${filename}`,
-		});
+        TradingCardInfo.showInfo(card);
 
-		card.cardImage = `https://gamechangers-media-uploads.s3.amazonaws.com/card/${filename}`;
-		card.cardBackS3URL = `https://gamechangers-media-uploads.s3.amazonaws.com/card-back/${filename}`;
-		card.frontPhotoURL = frontPhotoURL.current;
-		card.frontPhotoS3URL = frontPhotoURL.current;
-		card.backVideoS3URL = card.backVideoURL;
+        // Submit the card to the database
+        // The false value indicates that the card is not being generated by the user
+        await TradingCardInfo.submitCard(card, card.generatedBy, false);
 
-		TradingCardInfo.showInfo(card);
+        window.close();
+    }
 
-		// Submit the card to the database
-		// The false value indicates that the card is not being generated by the user
-		await TradingCardInfo.submitCard(card, card.generatedBy, false);
+    /**
+     *
+     * Gets the image from the URL and converts it to base64
+     *
+     * @param url The URL of the image to fetch
+     * @returns The base64 representation of the image
+     */
+    function getBase64Image(url: string | URL | Request) {
+        frontPhotoURL.current = url as string;
 
-		window.close();
+        return new Promise((resolve, reject) => {
+            const myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+            myHeaders.append("origin", "https://getinthegame.net");
 
-	}
+            const requestOptions = {
+                method: "GET",
+                headers: myHeaders,
+            };
 
-	/**
-	 *
-	 * Gets the image from the URL and converts it to base64
-	 *
-	 * @param url The URL of the image to fetch
-	 * @returns The base64 representation of the image
-	 */
-	function getBase64Image(url: string | URL | Request) {
+            fetch(url, requestOptions)
+                .then((response) => {
+                    if (!response.ok) {
+                        console.error(response);
+                        window.close();
+                        throw new Error("Network response was not ok");
+                    }
+                    return response.blob();
+                })
+                .then((blob) => {
+                    if (!blob.type.startsWith("image/")) {
+                        window.close();
+                        throw new Error("Fetched resource is not an image");
+                    }
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        const base64data = reader.result;
+                        resolve(base64data);
+                    };
+                    reader.onerror = () => {
+                        window.close();
+                        reject(new Error("Failed to convert image to base64"));
+                    };
+                    reader.readAsDataURL(blob);
+                })
+                .catch((error) => {
+                    reject(error);
+                });
+        });
+    }
 
-		frontPhotoURL.current = url as string;
+    useEffect(() => {
+        if (!isLoaded) {
+            getCard(uuid as string, generatedBy as string)
+                .then((result) => {
+                    const card = result as TradingCardInfo;
+                    // eslint-disable-next-line react-hooks/exhaustive-deps
+                    // Get the card image
+                    getBase64Image(card.frontPhotoURL as string)
+                        .then((base64data) => {
+                            card.frontPhotoURL = base64data as string;
+                            setCard(result as TradingCardInfo);
+                            setIsLoaded(true);
+                        })
+                        .catch((error) => {
+                            console.error("Error fetching card image:", error);
+                        });
+                })
+                .catch((error) => {
+                    console.error("Error fetching cards:", error);
+                });
+        } else {
+            // getCardImage(generatedBy as string);
+            delay(getCardImage, 10000, false);
+        }
 
-		return new Promise((resolve, reject) => {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isLoaded, uuid, generatedBy]);
 
-			const myHeaders = new Headers();
-			myHeaders.append("Content-Type", "application/json");
-			myHeaders.append("origin", "https://getinthegame.net");
-
-			const requestOptions = {
-				method: "GET",
-				headers: myHeaders,
-			};
-
-			fetch(url, requestOptions)
-				.then((response) => {
-					if (!response.ok) {
-						console.error(response);
-						window.close();
-						throw new Error("Network response was not ok");
-					}
-					return response.blob();
-				})
-				.then((blob) => {
-					if (!blob.type.startsWith("image/")) {
-						window.close();
-						throw new Error("Fetched resource is not an image");
-					}
-					const reader = new FileReader();
-					reader.onloadend = () => {
-						const base64data = reader.result;
-						resolve(base64data);
-					};
-					reader.onerror = () => {
-						window.close();
-						reject(new Error("Failed to convert image to base64"));
-					};
-					reader.readAsDataURL(blob);
-				})
-				.catch((error) => {
-					reject(error);
-				});
-		});
-	}
-
-	useEffect(() => {
-
-		if (!isLoaded) {
-			getCard(uuid as string, generatedBy as string)
-				.then((result) => {
-					const card = result as TradingCardInfo;
-					// eslint-disable-next-line react-hooks/exhaustive-deps
-					// Get the card image
-					getBase64Image(card.frontPhotoURL as string)
-						.then((base64data) => {
-							card.frontPhotoURL = base64data as string;
-							setCard(result as TradingCardInfo);
-							setIsLoaded(true);
-						})
-						.catch((error) => {
-							console.error("Error fetching card image:", error);
-						});
-				})
-				.catch((error) => {
-					console.error("Error fetching cards:", error);
-				});
-		} else {
-			// getCardImage(generatedBy as string);
-			delay(getCardImage, 10000, false);
-
-		}
-
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [ isLoaded, uuid, generatedBy ]);
-
-
-	return (
-		<>
-			<Center bgGradient={"linear(180deg, #000000 0%, #203030 100%) 0% 0% no-repeat padding-box;"} width={"100%"} height={"100vh"}>
-				{isLoaded ?
-					<Box>
-						<OnFireCard card={card} cardFrontRef={cardFrontRef} cardBackRef={cardBackRef} />
-					</Box> : <></>
-				}
-			</Center>
-		</>
-	);
+    return (
+        <>
+            <Center
+                bgGradient={
+                    "linear(180deg, #000000 0%, #203030 100%) 0% 0% no-repeat padding-box;"
+                }
+                width={"100%"}
+                height={"100vh"}
+            >
+                {isLoaded ? (
+                    <Box>
+                        <OnFireCard
+                            card={card}
+                            cardFrontRef={cardFrontRef}
+                            cardBackRef={cardBackRef}
+                        />
+                    </Box>
+                ) : (
+                    <></>
+                )}
+            </Center>
+        </>
+    );
 }
-
 
 /**
  * GenerateCardAsset is a page that generates a card asset from a card UUID
  * @returns The card asset image
  */
 export default function GenerateCardAsset() {
-	return (
-		<Suspense fallback={<div>Loading...</div>}>
-			<GenerateCardAssetContent />
-		</Suspense>
-	);
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <GenerateCardAssetContent />
+        </Suspense>
+    );
 }

@@ -387,7 +387,7 @@ export default function ProfileBioTab({
 
         // Update the media array
         await addToMediaArray(
-            `https://gamechangers-media-uploads.s3.amazonaws.com/profile_media/${filename}`,
+            `https://onfireathletes-media-uploads.s3.amazonaws.com/profile_media/${filename}`,
         );
     }
 

@@ -201,7 +201,7 @@ async function uploadImages(
         uploadAssetToS3(filename, cardBackBlob, "card-back", "image/png"),
     ]);
 
-    const baseUrl = "https://gamechangers-media-uploads.s3.amazonaws.com";
+    const baseUrl = "https://onfireathletes-media-uploads.s3.amazonaws.com";
     return {
         cardS3URL: `${baseUrl}/card/${filename}`,
         cardForegroundS3URL: `${baseUrl}/card-foreground/${filename}`,
@@ -295,6 +295,8 @@ export async function submitCardWithAuth({
         const cardUrls = await uploadImages(filename, cardImages);
 
         console.log("cardUrls", cardUrls);
+
+        console.log("cardImages", cardImages);
 
         currentInfo.setCurCard({
             ...currentInfo.curCard,

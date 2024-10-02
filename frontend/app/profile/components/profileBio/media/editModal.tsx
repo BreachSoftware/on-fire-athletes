@@ -37,7 +37,7 @@ export default function ProfileMediaEditModal({
 
         onComplete(
             media,
-            `https://gamechangers-media-uploads.s3.amazonaws.com/profile_media/${filename}`,
+            `https://onfireathletes-media-uploads.s3.amazonaws.com/profile_media/${filename}`,
         );
     }
 

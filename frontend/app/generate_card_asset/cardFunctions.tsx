@@ -9,20 +9,20 @@ import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
  * @returns The card object
  */
 export async function getCard(uuid: string, generatedBy: string) {
-	try {
-		const response = await fetch(`${apiEndpoints.getCard()}?uuid=${uuid}&generatedBy=${generatedBy}`);
-		const data = await response.json();
+    try {
+        const response = await fetch(
+            `${apiEndpoints.getCard()}?uuid=${uuid}&generatedBy=${generatedBy}`,
+        );
+        const data = await response.json();
 
-		return new TradingCardInfo({
-			...data
-		});
-
-	} catch (error) {
-		console.error("Error fetching cards:", error);
-		throw error;
-	}
+        return new TradingCardInfo({
+            ...data,
+        });
+    } catch (error) {
+        console.error("Error fetching cards:", error);
+        throw error;
+    }
 }
-
 
 /**
  * An async function to load the card back image
@@ -30,24 +30,25 @@ export async function getCard(uuid: string, generatedBy: string) {
  * @returns the Image object
  */
 export async function loadImageObject(src: string) {
-	return new Promise((resolve, reject) => {
-		const img = new Image();
-		img.src = src;
-		img.onload = () => {
-			return resolve(img);
-		};
-		img.onerror = reject;
-		img.crossOrigin = "anonymous";
-	});
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.src = src;
+        img.onload = () => {
+            return resolve(img);
+        };
+        img.onerror = reject;
+        img.crossOrigin = "anonymous";
+    });
 }
 
 /**
  * Fetches the card back from the backend
  *
  * @returns The card back image as an Image element
-**/
+ **/
 export async function getCardBack(): Promise<HTMLImageElement> {
-	// This will just return the proper S3 image for now
-	return loadImageObject("https://gamechangers-media-uploads.s3.amazonaws.com/mind-ar/OnFireCardBack.png") as Promise<HTMLImageElement>;
-
+    // This will just return the proper S3 image for now
+    return loadImageObject(
+        "https://onfireathletes-media-uploads.s3.amazonaws.com/mind-ar/OnFireCardBack.png",
+    ) as Promise<HTMLImageElement>;
 }

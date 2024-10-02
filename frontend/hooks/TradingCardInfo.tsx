@@ -340,7 +340,7 @@ export default class TradingCardInfo {
                 cardInfo.backVideoS3URL = cardInfo.backVideoURL;
             } else {
                 cardInfo.backVideoS3URL =
-                    "https://gamechangers-media-uploads.s3.amazonaws.com/";
+                    "https://onfireathletes-media-uploads.s3.amazonaws.com/";
             }
         }
 
@@ -365,13 +365,13 @@ export default class TradingCardInfo {
         if (renameMedia) {
             // change the name of the S3 objects uploaded for this card
             const frontPhotoKey = cardInfo.frontPhotoS3URL.split(
-                "https://gamechangers-media-uploads.s3.amazonaws.com/",
+                "https://onfireathletes-media-uploads.s3.amazonaws.com/",
             )[1];
             const backVideoKey = cardInfo.backVideoS3URL.split(
-                "https://gamechangers-media-uploads.s3.amazonaws.com/",
+                "https://onfireathletes-media-uploads.s3.amazonaws.com/",
             )[1];
             const cardBackImageKey = cardInfo.cardBackS3URL.split(
-                "https://gamechangers-media-uploads.s3.amazonaws.com/",
+                "https://onfireathletes-media-uploads.s3.amazonaws.com/",
             )[1];
 
             const newURLs = await TradingCardInfo.renameMedia(
@@ -383,12 +383,12 @@ export default class TradingCardInfo {
 
             // replace image url with the new url the update succeeded
             if (newURLs.cardImage !== undefined && newURLs.cardImage !== "") {
-                frontPhotoS3URL = `https://gamechangers-media-uploads.s3.amazonaws.com/${newURLs.cardImage}`;
+                frontPhotoS3URL = `https://onfireathletes-media-uploads.s3.amazonaws.com/${newURLs.cardImage}`;
             }
 
             // replace video url with the new url the update succeeded
             if (newURLs.video !== undefined && newURLs.video !== "") {
-                backVideoS3URL = `https://gamechangers-media-uploads.s3.amazonaws.com/${newURLs.video}`;
+                backVideoS3URL = `https://onfireathletes-media-uploads.s3.amazonaws.com/${newURLs.video}`;
             }
 
             // replace card back image url with the new url the update succeeded
@@ -396,7 +396,7 @@ export default class TradingCardInfo {
                 newURLs.cardBackImage !== undefined &&
                 newURLs.cardBackImage !== ""
             ) {
-                cardBackImageS3URL = `https://gamechangers-media-uploads.s3.amazonaws.com/${newURLs.cardBackImage}`;
+                cardBackImageS3URL = `https://onfireathletes-media-uploads.s3.amazonaws.com/${newURLs.cardBackImage}`;
             }
         }
 

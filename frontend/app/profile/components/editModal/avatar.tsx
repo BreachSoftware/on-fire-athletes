@@ -1,20 +1,20 @@
-import { Flex } from '@chakra-ui/layout'
-import { Avatar } from '@chakra-ui/avatar'
-import { Button } from '@chakra-ui/button'
-import { useState, useEffect } from 'react'
+import { Flex } from "@chakra-ui/layout";
+import { Avatar } from "@chakra-ui/avatar";
+import { Button } from "@chakra-ui/button";
+import { useState, useEffect } from "react";
 
-import { useAuth } from '@/hooks/useAuth'
-import { resize } from '@/components/image_filters'
-import DropzoneButton from '@/components/create/dropzoneButton'
-import { b64toBlob, uploadAssetToS3 } from '@/components/create/Step3'
-import CropModal from '@/components/shared/modals/crop-modal'
-import { ProfileInfo } from '../../page'
-import { useDisclosure } from '@chakra-ui/react'
+import { useAuth } from "@/hooks/useAuth";
+import { resize } from "@/components/image_filters";
+import DropzoneButton from "@/components/create/dropzoneButton";
+import { b64toBlob, uploadAssetToS3 } from "@/components/create/Step3";
+import CropModal from "@/components/shared/modals/crop-modal";
+import { ProfileInfo } from "../../page";
+import { useDisclosure } from "@chakra-ui/react";
 
 interface Props {
-    profileInfo?: ProfileInfo
-    editableProfilePicture: string
-    setEditableProfilePicture: (value: string) => void
+    profileInfo?: ProfileInfo;
+    editableProfilePicture: string;
+    setEditableProfilePicture: (value: string) => void;
 }
 
 export default function ProfileAvatarInput({
@@ -22,62 +22,62 @@ export default function ProfileAvatarInput({
     editableProfilePicture,
     setEditableProfilePicture,
 }: Props) {
-    const { currentAuthenticatedUser } = useAuth()
-    const [uploadComplete, setUploadComplete] = useState(false)
+    const { currentAuthenticatedUser } = useAuth();
+    const [uploadComplete, setUploadComplete] = useState(false);
 
-    const { isOpen, onOpen, onClose } = useDisclosure()
+    const { isOpen, onOpen, onClose } = useDisclosure();
 
     /**
      * This function processes the photo selection
      * @param files the files to be processed
      */
     async function processProfileImageSelect(files: FileList) {
-        const maxResolution = 2160
-        const myPhoto = URL.createObjectURL(files[0])
+        const maxResolution = 2160;
+        const myPhoto = URL.createObjectURL(files[0]);
 
         // Create an image element
         const img: HTMLImageElement = await new Promise<HTMLImageElement>(
             (resolve, reject) => {
-                const imgElement: HTMLImageElement = new window.Image() // Use the global Image constructor
+                const imgElement: HTMLImageElement = new window.Image(); // Use the global Image constructor
                 imgElement.onload = () => {
-                    return resolve(imgElement)
-                }
-                imgElement.onerror = reject
-                imgElement.src = myPhoto
+                    return resolve(imgElement);
+                };
+                imgElement.onerror = reject;
+                imgElement.src = myPhoto;
             },
-        )
+        );
 
         // Calculate the new dimensions while preserving aspect ratio
-        let newWidth = 0
-        let newHeight = 0
+        let newWidth = 0;
+        let newHeight = 0;
         if (img.width > img.height) {
-            newWidth = Math.max(img.width, maxResolution)
-            newHeight = (newWidth * img.height) / img.width
+            newWidth = Math.max(img.width, maxResolution);
+            newHeight = (newWidth * img.height) / img.width;
         } else {
-            newHeight = Math.max(img.height, maxResolution)
-            newWidth = (newHeight * img.width) / img.height
+            newHeight = Math.max(img.height, maxResolution);
+            newWidth = (newHeight * img.width) / img.height;
         }
 
-        const resizedPhoto = await resize(myPhoto, newWidth, newHeight)
-        const resizedPhotoBlob = await b64toBlob(resizedPhoto)
+        const resizedPhoto = await resize(myPhoto, newWidth, newHeight);
+        const resizedPhotoBlob = await b64toBlob(resizedPhoto);
 
         // Upload the photo to S3
-        const user = await currentAuthenticatedUser()
-        const user_id = user.userId
-        const current_unix_time = Math.floor(Date.now() / 1000)
-        const filename = `${user_id}-${current_unix_time}.jpeg`
+        const user = await currentAuthenticatedUser();
+        const user_id = user.userId;
+        const current_unix_time = Math.floor(Date.now() / 1000);
+        const filename = `${user_id}-${current_unix_time}.jpeg`;
 
         await uploadAssetToS3(
             filename,
             resizedPhotoBlob,
-            'profile_media',
-            'image/png',
-        )
+            "profile_media",
+            "image/png",
+        );
 
         setEditableProfilePicture(
-            `https://gamechangers-media-uploads.s3.amazonaws.com/profile_media/${filename}`,
-        )
-        setUploadComplete(true)
+            `https://onfireathletes-media-uploads.s3.amazonaws.com/profile_media/${filename}`,
+        );
+        setUploadComplete(true);
     }
 
     /**
@@ -85,42 +85,42 @@ export default function ProfileAvatarInput({
      * @param croppedImagePixels is the value of the newly cropped image in the form of an Area
      */
     async function processCroppedProfileImage(croppedImage: string) {
-        const resizedPhotoBlob = await b64toBlob(croppedImage)
-        console.log({ resizedPhotoBlob })
+        const resizedPhotoBlob = await b64toBlob(croppedImage);
+        console.log({ resizedPhotoBlob });
 
         // Upload the photo to S3
-        const user = await currentAuthenticatedUser()
-        const user_id = user.userId
-        const current_unix_time = Math.floor(Date.now() / 1000)
-        const filename = `${user_id}-${current_unix_time}.jpeg`
+        const user = await currentAuthenticatedUser();
+        const user_id = user.userId;
+        const current_unix_time = Math.floor(Date.now() / 1000);
+        const filename = `${user_id}-${current_unix_time}.jpeg`;
 
         await uploadAssetToS3(
             filename,
             resizedPhotoBlob,
-            'profile_media',
-            'image/png',
-        )
+            "profile_media",
+            "image/png",
+        );
 
-        console.log('Uploading')
+        console.log("Uploading");
 
         setEditableProfilePicture(
-            `https://gamechangers-media-uploads.s3.amazonaws.com/profile_media/${filename}`,
-        )
+            `https://onfireathletes-media-uploads.s3.amazonaws.com/profile_media/${filename}`,
+        );
     }
 
     useEffect(() => {
         if (uploadComplete) {
             const timer = setTimeout(() => {
-                setUploadComplete(false)
-            }, 5000) // Reset after 5 seconds, adjust time as needed
+                setUploadComplete(false);
+            }, 5000); // Reset after 5 seconds, adjust time as needed
 
             return () => {
-                return clearTimeout(timer)
-            } // Cleanup timer
+                return clearTimeout(timer);
+            }; // Cleanup timer
         }
 
-        return () => {}
-    }, [uploadComplete])
+        return () => {};
+    }, [uploadComplete]);
 
     return (
         <>
@@ -132,10 +132,10 @@ export default function ProfileAvatarInput({
             >
                 <Avatar
                     size="2xl"
-                    src={editableProfilePicture || '/placeholderProfile.jpg'}
+                    src={editableProfilePicture || "/placeholderProfile.jpg"}
                     sx={{
-                        transition: 'filter 0.3s ease-in-out',
-                        aspectRatio: '1 / 1',
+                        transition: "filter 0.3s ease-in-out",
+                        aspectRatio: "1 / 1",
                     }}
                 />
                 <Flex
@@ -145,8 +145,8 @@ export default function ProfileAvatarInput({
                     gridGap={4}
                 >
                     <DropzoneButton
-                        buttonText={'UPLOAD'}
-                        svgcomp={'profile'}
+                        buttonText={"UPLOAD"}
+                        svgcomp={"profile"}
                         width="100%"
                         onProfileImageSelect={processProfileImageSelect}
                         uploadComplete={uploadComplete}
@@ -169,8 +169,8 @@ export default function ProfileAvatarInput({
                             fontSize="12px"
                             onClick={() => {
                                 setEditableProfilePicture(
-                                    '/placeholderProfile.jpg',
-                                )
+                                    "/placeholderProfile.jpg",
+                                );
                             }}
                         >
                             REMOVE
@@ -182,11 +182,11 @@ export default function ProfileAvatarInput({
                 image={editableProfilePicture}
                 onSave={processCroppedProfileImage}
                 onCancel={() => {
-                    setEditableProfilePicture(profileInfo?.avatar || '')
+                    setEditableProfilePicture(profileInfo?.avatar || "");
                 }}
                 isOpen={isOpen}
                 onClose={onClose}
             />
         </>
-    )
+    );
 }

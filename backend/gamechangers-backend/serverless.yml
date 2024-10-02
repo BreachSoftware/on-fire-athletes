@@ -1,11 +1,11 @@
 service: gamechangers-backend
-frameworkVersion: '3'
+frameworkVersion: "3"
 useDotenv: true
 
 custom:
   serverless-offline:
     binaryMediaTypes:
-      - '*/*'
+      - "*/*"
     httpPort: 4000
     lambdaPort: 4001
     endpoint: http://localhost:4001
@@ -17,7 +17,7 @@ provider:
   versionFunctions: false
   httpApi:
     cors: true
-  environment:    
+  environment:
     NEXT_PUBLIC_APP_ENV: ${param:NEXT_PUBLIC_APP_ENV, 'development'}
   iam:
     role:
@@ -43,7 +43,7 @@ provider:
           Action:
             - s3:*
             - "s3-object-lambda:*"
-          Resource: "arn:aws:s3:::gamechangers-media-uploads/*"
+          Resource: "arn:aws:s3:::onfireathletes-media-uploads/*"
         - Effect: Allow
           Action:
             - cognito-idp:AdminGet*
@@ -206,7 +206,7 @@ functions:
       - httpApi:
           path: /createSetupIntent
           method: post
-  retrievePaymentMethod: 
+  retrievePaymentMethod:
     handler: lambda/handlers/retrievePaymentMethod.retrievePaymentMethod
     events:
       - httpApi:
@@ -215,7 +215,7 @@ functions:
   createOrder:
     handler: lambda/handlers/createOrder.createOrder
     events:
-      - httpApi: 
+      - httpApi:
           path: /createOrder
           method: post
   getOrder:
