@@ -36,7 +36,7 @@ interface InTheNewsProps {
 export default function InTheNews(props: InTheNewsProps) {
     const isMobile = useBreakpointValue({
         base: true,
-        md: false,
+        xl: false,
     });
 
     const router = useRouter();
@@ -218,7 +218,6 @@ export default function InTheNews(props: InTheNewsProps) {
                     <Flex
                         justifyContent="space-around"
                         flexDir={"row"}
-                        flexWrap={"wrap"}
                         zIndex={1}
                     >
                         {props.data.map((item) => {
