@@ -226,7 +226,7 @@ export default function TrendingCard({
     ]);
 
     return (
-        <VStack width={"auto"}>
+        <VStack flex={1}>
             {onProfilePage ? (
                 <>
                     <Link
