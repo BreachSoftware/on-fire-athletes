@@ -82,7 +82,7 @@ export default function TrendingNow() {
                     w="full"
                     px={"16px"}
                 >
-                    {cards.map((card, index) => {
+                    {[...cards, ...cards].slice(0, 4).map((card, index) => {
                         return (
                             <TrendingCard
                                 key={index}

@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import {
     Divider,
@@ -10,38 +10,38 @@ import {
     useToast,
     Box,
     Spinner,
-} from '@chakra-ui/react'
-import CardDropShadow from '@/components/create/CardDropShadow'
-import { useEffect, useRef, useState } from 'react'
-import { Element } from 'react-scroll'
+} from "@chakra-ui/react";
+import CardDropShadow from "@/components/create/CardDropShadow";
+import { useEffect, useRef, useState } from "react";
+import { Element } from "react-scroll";
 // eslint-disable-next-line no-use-before-define
-import React from 'react'
-import TradingCardInfo from '@/hooks/TradingCardInfo'
-import SendMyCardModal from './sendMyCardModal'
-import CardListGrid from './CardListGrid'
+import React from "react";
+import TradingCardInfo from "@/hooks/TradingCardInfo";
+import SendMyCardModal from "./sendMyCardModal";
+import CardListGrid from "./CardListGrid";
 import OnFireCard, {
     OnFireCardRef,
-} from '@/components/create/OnFireCard/OnFireCard'
-import LoginModal from '@/components/loginModal'
-import { AddToCollectionModal } from './addToCollectionModal'
-import ViewedCardActionButton from './viewedCardActionButton'
-import SerializedTradingCard from '@/hooks/SerializedTradingCard'
-import { useRouter } from 'next/navigation'
+} from "@/components/create/OnFireCard/OnFireCard";
+import LoginModal from "@/components/loginModal";
+import { AddToCollectionModal } from "./addToCollectionModal";
+import ViewedCardActionButton from "./viewedCardActionButton";
+import SerializedTradingCard from "@/hooks/SerializedTradingCard";
+import { useRouter } from "next/navigation";
 
 export enum TabName {
-    Created = 'CREATED',
-    Traded = 'TRADED',
-    Bought = 'BOUGHT',
+    Created = "CREATED",
+    Traded = "TRADED",
+    Bought = "BOUGHT",
 }
 
 interface ProfileAlbumProps {
-    currentProfileId: string
-    currentUserName: string
-    currentUserId: string
-    createdCardList: TradingCardInfo[]
-    tradedCardList: SerializedTradingCard[]
-    boughtCardList: SerializedTradingCard[]
-    privateView: boolean
+    currentProfileId: string;
+    currentUserName: string;
+    currentUserId: string;
+    createdCardList: TradingCardInfo[];
+    tradedCardList: SerializedTradingCard[];
+    boughtCardList: SerializedTradingCard[];
+    privateView: boolean;
 }
 
 /**
@@ -50,135 +50,135 @@ interface ProfileAlbumProps {
  * @returns The rendered ProfileAlbumTab component.
  */
 export default function ProfileAlbumTab(props: ProfileAlbumProps) {
-    const toast = useToast()
-    const router = useRouter()
-    const [currentTab, setCurrentTab] = useState(TabName.Created)
-    const [currentCard, setCurrentCard] = useState(new TradingCardInfo({}))
+    const toast = useToast();
+    const router = useRouter();
+    const [currentTab, setCurrentTab] = useState(TabName.Created);
+    const [currentCard, setCurrentCard] = useState(new TradingCardInfo({}));
     const [currentSerializedCard, setCurrentSerializedCard] = useState(
         new SerializedTradingCard(0, new TradingCardInfo({})),
-    )
-    const [viewCardClicked, setViewCardClicked] = useState(false)
-    const [firstVisitFromRedirect, setFirstVisitFromRedirect] = useState(true)
-    const [isLoading, setIsLoading] = useState(true)
+    );
+    const [viewCardClicked, setViewCardClicked] = useState(false);
+    const [firstVisitFromRedirect, setFirstVisitFromRedirect] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    const queryParams = new URLSearchParams(window.location.search)
+    const queryParams = new URLSearchParams(window.location.search);
     const currentCardYearCreated = new Date(
         currentCard.createdAt * 1000,
-    ).getFullYear()
-    const onFireCardRef = useRef<OnFireCardRef | null>(null)
+    ).getFullYear();
+    const onFireCardRef = useRef<OnFireCardRef | null>(null);
     const isBuyableCard =
         currentCard.price !== 0 &&
         currentCard.currentlyAvailable > 0 &&
-        !props.privateView
+        !props.privateView;
 
     // Scroll to the top of the page when the page changes if the page didn't just load
-    const navigateToTopOfList = useRef<HTMLDivElement>(null)
+    const navigateToTopOfList = useRef<HTMLDivElement>(null);
 
     // Detect the user agent to determine if the user is on a mobile device
-    let userAgent = ''
-    if (typeof window !== 'undefined' && navigator) {
-        userAgent = navigator.userAgent.toLowerCase()
+    let userAgent = "";
+    if (typeof window !== "undefined" && navigator) {
+        userAgent = navigator.userAgent.toLowerCase();
     }
     const isMobile =
         /mobile|android|ipad|iphone|ipod|blackberry|iemobile|opera mini/i.test(
             userAgent,
-        )
+        );
 
     // Handle the first visit from a redirect with a card ID in the query params
     useEffect(() => {
         if (firstVisitFromRedirect) {
-            const cardId = queryParams.get('card')
+            const cardId = queryParams.get("card");
             if (cardId) {
                 const card = props.createdCardList.find((card) => {
-                    return card.uuid === cardId
-                })
+                    return card.uuid === cardId;
+                });
                 if (card) {
-                    setCurrentCard(card)
-                    setViewCardClicked(true)
-                    setFirstVisitFromRedirect(false)
+                    setCurrentCard(card);
+                    setViewCardClicked(true);
+                    setFirstVisitFromRedirect(false);
                 }
             }
         }
-    }, [firstVisitFromRedirect, props.createdCardList, queryParams])
+    }, [firstVisitFromRedirect, props.createdCardList, queryParams]);
 
     // Handle the first visit from a redirect with a tab and card ID in the query params
     useEffect(() => {
-        const tabSelected = queryParams.get('tab')
+        const tabSelected = queryParams.get("tab");
         if (tabSelected && firstVisitFromRedirect) {
-            const cardId = queryParams.get('card')
-            let card = null
+            const cardId = queryParams.get("card");
+            let card = null;
             switch (tabSelected) {
-                case 'created':
-                    setCurrentTab(TabName.Created)
+                case "created":
+                    setCurrentTab(TabName.Created);
                     card = props.createdCardList.find((card) => {
-                        return card.uuid === cardId
-                    })
-                    break
-                case 'traded':
-                    setCurrentTab(TabName.Traded)
+                        return card.uuid === cardId;
+                    });
+                    break;
+                case "traded":
+                    setCurrentTab(TabName.Traded);
                     card = props.tradedCardList.find((card) => {
-                        return card.TradingCardInfo.uuid === cardId
-                    })
-                    break
-                case 'bought':
-                    setCurrentTab(TabName.Bought)
+                        return card.TradingCardInfo.uuid === cardId;
+                    });
+                    break;
+                case "bought":
+                    setCurrentTab(TabName.Bought);
                     card = props.boughtCardList.find((card) => {
-                        return card.TradingCardInfo.uuid === cardId
-                    })
-                    break
+                        return card.TradingCardInfo.uuid === cardId;
+                    });
+                    break;
                 default:
-                    break
+                    break;
             }
             if (card instanceof SerializedTradingCard) {
-                setCurrentSerializedCard(card)
-                setViewCardClicked(true)
-                setFirstVisitFromRedirect(false)
+                setCurrentSerializedCard(card);
+                setViewCardClicked(true);
+                setFirstVisitFromRedirect(false);
             } else if (card instanceof TradingCardInfo) {
-                setCurrentCard(card)
-                setViewCardClicked(true)
-                setFirstVisitFromRedirect(false)
+                setCurrentCard(card);
+                setViewCardClicked(true);
+                setFirstVisitFromRedirect(false);
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [queryParams])
+    }, [queryParams]);
 
     // When a serialized card is clicked, set the current card to the serialized card's TradingCardInfo
     useEffect(() => {
         if (currentSerializedCard.TradingCardInfo.uuid) {
-            setCurrentCard(currentSerializedCard.TradingCardInfo)
+            setCurrentCard(currentSerializedCard.TradingCardInfo);
         }
-    }, [currentSerializedCard])
+    }, [currentSerializedCard]);
     // stop the spinner after 3 seconds
     useEffect(() => {
         const timer = setTimeout(() => {
-            setIsLoading(false)
-        }, 1500)
+            setIsLoading(false);
+        }, 1500);
         return () => {
-            clearTimeout(timer)
-        }
-    }, [currentTab])
+            clearTimeout(timer);
+        };
+    }, [currentTab]);
 
     // when the page is flipped, reset the spinner
     useEffect(() => {
-        setIsLoading(true)
-    }, [currentTab])
+        setIsLoading(true);
+    }, [currentTab]);
 
-    const sendCardModal = useDisclosure()
-    const loginModal = useDisclosure()
-    const addToCollectionModal = useDisclosure()
+    const sendCardModal = useDisclosure();
+    const loginModal = useDisclosure();
+    const addToCollectionModal = useDisclosure();
 
     // Determine if the button should be disabled based on the current tab and card availability
     const buttonShouldBeDisabled = props.privateView
         ? currentTab === TabName.Created && currentCard.currentlyAvailable <= 0
-        : currentCard.currentlyAvailable <= 0
+        : currentCard.currentlyAvailable <= 0;
 
     /**
      * Function to verify opening the SendMyCardModal.
      */
     function processSendCardModalOpen() {
         if (props.privateView) {
-            sendCardModal.onOpen()
+            sendCardModal.onOpen();
         }
     }
 
@@ -186,44 +186,44 @@ export default function ProfileAlbumTab(props: ProfileAlbumProps) {
      * This function is used to share the card via the Web Share API.
      */
     async function tradeCardShare() {
-        const senderUUID = props.currentUserId
-        const generatedByUUID = currentCard.generatedBy
-        const cardUUID = currentCard.uuid
+        const senderUUID = props.currentUserId;
+        const generatedByUUID = currentCard.generatedBy;
+        const cardUUID = currentCard.uuid;
 
         if (!senderUUID || !generatedByUUID || !cardUUID) {
             console.error(
-                'Error sharing: No user UUID, no generatedBy UUID, or card UUID found',
-            )
+                "Error sharing: No user UUID, no generatedBy UUID, or card UUID found",
+            );
             toast({
-                title: 'Error Sharing!',
+                title: "Error Sharing!",
                 description:
-                    'An error occurred while sharing the card. Please try again later.',
+                    "An error occurred while sharing the card. Please try again later.",
                 duration: 5000,
                 isClosable: true,
-                status: 'error',
-            })
-            return
+                status: "error",
+            });
+            return;
         }
 
         const sharedData = {
-            title: 'OnFire Trading Card',
-            text: 'Click here to accept my OnFire Trading trading card!',
+            title: "OnFire Trading Card",
+            text: "Click here to accept my OnFire Trading trading card!",
             url: `https://gamechangers.zenithsoftware.dev/signup?generatedByUUID=${generatedByUUID}&fromUUID=${senderUUID}&cardUUID=${cardUUID}`,
-        }
+        };
 
         try {
-            if (typeof window !== 'undefined' && navigator.share) {
-                await navigator.share(sharedData)
+            if (typeof window !== "undefined" && navigator.share) {
+                await navigator.share(sharedData);
             }
             // If the share was successful, show a success message
             toast({
-                title: 'Card Shared!',
+                title: "Card Shared!",
                 duration: 5000,
                 isClosable: true,
-                status: 'success',
-            })
+                status: "success",
+            });
         } catch (err) {
-            console.error(`Error sharing: ${err}`)
+            console.error(`Error sharing: ${err}`);
         }
     }
 
@@ -236,11 +236,11 @@ export default function ProfileAlbumTab(props: ProfileAlbumProps) {
             return (
                 <ViewedCardActionButton
                     opacity="0.4"
-                    hover={{ cursor: 'not-allowed' }}
+                    hover={{ cursor: "not-allowed" }}
                     onClick={() => {}}
                 >
                     <Text
-                        fontFamily={'Barlow'}
+                        fontFamily={"Barlow"}
                         fontSize="16px"
                         fontWeight="600"
                         letterSpacing="2px"
@@ -248,7 +248,7 @@ export default function ProfileAlbumTab(props: ProfileAlbumProps) {
                         CARD UNAVAILABLE
                     </Text>
                 </ViewedCardActionButton>
-            )
+            );
         } else if (props.privateView) {
             // If the user is on their account, they should be able to sell their cards, regardless of the price
             if (
@@ -257,18 +257,18 @@ export default function ProfileAlbumTab(props: ProfileAlbumProps) {
             ) {
                 return (
                     <ViewedCardActionButton
-                        opacity={'1'}
+                        opacity={"1"}
                         hover={{
-                            bgColor: '#CCC',
-                            cursor: 'pointer',
-                            color: 'black',
+                            bgColor: "#CCC",
+                            cursor: "pointer",
+                            color: "black",
                         }}
                         onClick={
                             isMobile ? tradeCardShare : processSendCardModalOpen
                         }
                     >
                         <Text
-                            fontFamily={'Barlow'}
+                            fontFamily={"Barlow"}
                             fontSize="18px"
                             fontWeight="600"
                             letterSpacing="2px"
@@ -276,10 +276,10 @@ export default function ProfileAlbumTab(props: ProfileAlbumProps) {
                             SEND MY CARD
                         </Text>
                     </ViewedCardActionButton>
-                )
+                );
             }
             // If the user is viewing the bought tab, the button should not appear
-            return null
+            return null;
         }
 
         // If the user is not viewing the private view
@@ -287,39 +287,39 @@ export default function ProfileAlbumTab(props: ProfileAlbumProps) {
             if (isBuyableCard) {
                 return (
                     <Flex
-                        width={'100%'}
-                        alignItems={'center'}
-                        direction={{ base: 'column', md: 'row' }}
-                        backgroundColor={'gray.1100'}
-                        borderRadius={'8px'}
-                        padding={'20px'}
-                        paddingX={'30px'}
-                        gap={{ base: '20px', md: '40px' }}
+                        width={"100%"}
+                        alignItems={"center"}
+                        direction={{ base: "column", md: "row" }}
+                        backgroundColor={"gray.1100"}
+                        borderRadius={"8px"}
+                        padding={"20px"}
+                        paddingX={"30px"}
+                        gap={{ base: "20px", md: "40px" }}
                     >
                         <ViewedCardActionButton
-                            opacity={'1'}
+                            opacity={"1"}
                             hover={{
-                                bgColor: '#CCC',
-                                cursor: 'pointer',
-                                color: 'black',
+                                bgColor: "#CCC",
+                                cursor: "pointer",
+                                color: "black",
                             }}
                             onClick={() => {
                                 if (props.currentUserId) {
                                     // Saves the card information to local storage
-                                    TradingCardInfo.saveCard(currentCard)
+                                    TradingCardInfo.saveCard(currentCard);
 
                                     // Redirect the user to the payment page
                                     router.push(
-                                        '/checkout?buyingOtherCard=true',
-                                    )
+                                        "/checkout?buyingOtherCard=true",
+                                    );
                                 } else {
-                                    loginModal.onOpen()
+                                    loginModal.onOpen();
                                 }
                             }}
                             alignSelf="center"
                         >
                             <Text
-                                fontFamily={'Barlow'}
+                                fontFamily={"Barlow"}
                                 fontSize="18px"
                                 fontWeight="600"
                                 letterSpacing="2.5px"
@@ -329,38 +329,38 @@ export default function ProfileAlbumTab(props: ProfileAlbumProps) {
                         </ViewedCardActionButton>
 
                         <Text
-                            maxW={{ base: '100%', md: '60%' }}
-                            fontFamily={'Barlow'}
-                            fontSize={'16px'}
+                            maxW={{ base: "100%", md: "60%" }}
+                            fontFamily={"Barlow"}
+                            fontSize={"16px"}
                             fontWeight="medium"
                             letterSpacing="0.32px"
-                            lineHeight={'19px'}
-                            color={'white.100'}
+                            lineHeight={"19px"}
+                            color={"white.100"}
                         >
                             By purchasing a digital card, you will also receive
                             a physical card in the mail.
                         </Text>
                     </Flex>
-                )
+                );
             }
             return (
                 <ViewedCardActionButton
-                    opacity={'1'}
+                    opacity={"1"}
                     hover={{
-                        bgColor: '#CCC',
-                        cursor: 'pointer',
-                        color: 'black',
+                        bgColor: "#CCC",
+                        cursor: "pointer",
+                        color: "black",
                     }}
                     onClick={() => {
                         if (props.currentUserId) {
-                            addToCollectionModal.onOpen()
+                            addToCollectionModal.onOpen();
                         } else {
-                            loginModal.onOpen()
+                            loginModal.onOpen();
                         }
                     }}
                 >
                     <Text
-                        fontFamily={'Barlow'}
+                        fontFamily={"Barlow"}
                         fontSize="18px"
                         fontWeight="600"
                         letterSpacing="2px"
@@ -368,10 +368,10 @@ export default function ProfileAlbumTab(props: ProfileAlbumProps) {
                         REQUEST TRADE
                     </Text>
                 </ViewedCardActionButton>
-            )
+            );
         }
         // If the user is viewing the traded tab or bought tab, the button should not appear
-        return null
+        return null;
     }
 
     return (
@@ -389,19 +389,19 @@ export default function ProfileAlbumTab(props: ProfileAlbumProps) {
                                 <Flex
                                     w="max-content"
                                     borderRadius="10px"
-                                    direction={{ base: 'column', xl: 'row' }}
+                                    direction={{ base: "column", xl: "row" }}
                                     alignItems="center"
-                                    gap={{ base: '0px', sm: '15px' }}
+                                    gap={{ base: "0px", sm: "15px" }}
                                 >
                                     {/* Container for the Card */}
                                     <Flex
-                                        w={{ base: '100%', md: '331px' }}
+                                        w={{ base: "100%", md: "331px" }}
                                         aspectRatio={2 / 3}
                                         borderRadius="20px"
                                         gridGap="24px"
                                         direction="column"
                                         align="center"
-                                        mt={{ sm: '50px' }}
+                                        mt={{ sm: "50px" }}
                                     >
                                         <Element
                                             name="cardElement"
@@ -423,8 +423,8 @@ export default function ProfileAlbumTab(props: ProfileAlbumProps) {
                                         w="75vw"
                                         maxW="500px"
                                         justify="center"
-                                        mb={{ base: '10px', md: '60px' }}
-                                        userSelect={'none'}
+                                        mb={{ base: "10px", md: "60px" }}
+                                        userSelect={"none"}
                                     >
                                         <Text
                                             fontFamily="'Barlow Condensed', sans-serif"
@@ -432,12 +432,12 @@ export default function ProfileAlbumTab(props: ProfileAlbumProps) {
                                             color="green.100"
                                             fontStyle="italic"
                                             fontWeight="semibold"
-                                            letterSpacing={'2px'}
-                                            textTransform={'uppercase'}
-                                            lineHeight={'16px'}
+                                            letterSpacing={"2px"}
+                                            textTransform={"uppercase"}
+                                            lineHeight={"16px"}
                                             mb="8px"
                                         >
-                                            {currentCard.firstName}{' '}
+                                            {currentCard.firstName}{" "}
                                             {currentCard.lastName},
                                         </Text>
                                         <Text
@@ -446,11 +446,11 @@ export default function ProfileAlbumTab(props: ProfileAlbumProps) {
                                             color="green.100"
                                             fontStyle="italic"
                                             fontWeight="semibold"
-                                            letterSpacing={'0.48px'}
+                                            letterSpacing={"0.48px"}
                                             mb="8px"
                                         >
-                                            {currentCard.sport},{' '}
-                                            {currentCard.position} /{' '}
+                                            {currentCard.sport},{" "}
+                                            {currentCard.position} /{" "}
                                             {currentCard.teamName}
                                         </Text>
                                         <Text
@@ -464,7 +464,7 @@ export default function ProfileAlbumTab(props: ProfileAlbumProps) {
                                             templateColumns="3fr 3fr"
                                             templateRows="repeat(1, 1fr)"
                                             alignItems="center"
-                                            w={{ base: '100%', xl: '500px' }}
+                                            w={{ base: "100%", xl: "500px" }}
                                             gap="25px"
                                             fontSize="18px"
                                             color="white"
@@ -479,12 +479,12 @@ export default function ProfileAlbumTab(props: ProfileAlbumProps) {
                                                         Price
                                                     </Text>
                                                     <Text
-                                                        color={'gray.400'}
+                                                        color={"gray.400"}
                                                         fontFamily="Barlow"
                                                         fontWeight={400}
                                                     >
                                                         $
-                                                        {currentCard.price.toFixed(
+                                                        {currentCard?.price?.toFixed(
                                                             2,
                                                         )}
                                                     </Text>
@@ -500,14 +500,14 @@ export default function ProfileAlbumTab(props: ProfileAlbumProps) {
                                                         Card Number
                                                     </Text>
                                                     <Text
-                                                        color={'gray.400'}
+                                                        color={"gray.400"}
                                                         fontFamily="Barlow"
                                                         fontWeight={400}
                                                     >
                                                         {
                                                             currentSerializedCard.serialNumber
-                                                        }{' '}
-                                                        of{' '}
+                                                        }{" "}
+                                                        of{" "}
                                                         {
                                                             currentCard.totalCreated
                                                         }
@@ -522,14 +522,14 @@ export default function ProfileAlbumTab(props: ProfileAlbumProps) {
                                                         Cards Available
                                                     </Text>
                                                     <Text
-                                                        color={'gray.400'}
+                                                        color={"gray.400"}
                                                         fontFamily="Barlow"
                                                         fontWeight={400}
                                                     >
                                                         {
                                                             currentCard.currentlyAvailable
-                                                        }{' '}
-                                                        of{' '}
+                                                        }{" "}
+                                                        of{" "}
                                                         {
                                                             currentCard.totalCreated
                                                         }
@@ -543,14 +543,14 @@ export default function ProfileAlbumTab(props: ProfileAlbumProps) {
                                                 Year Created / Package Type
                                             </Text>
                                             <Text
-                                                color={'gray.400'}
+                                                color={"gray.400"}
                                                 fontFamily="Barlow"
                                                 fontWeight={400}
                                             >
-                                                {currentCardYearCreated} /{' '}
+                                                {currentCardYearCreated} /{" "}
                                                 {currentCard.price == 0
-                                                    ? 'Rookie Package'
-                                                    : 'All-Star Package'}
+                                                    ? "Rookie Package"
+                                                    : "All-Star Package"}
                                             </Text>
                                         </Grid>
                                         {/* Button code */}
@@ -600,89 +600,89 @@ export default function ProfileAlbumTab(props: ProfileAlbumProps) {
                 </Box>
                 <Flex
                     w="full"
-                    gap={{ base: '50px', md: '0px' }}
-                    mt={{ base: '30px', md: '0px' }}
-                    mb={{ base: '30px', md: '80px' }}
-                    direction={'row'}
-                    align={{ base: 'center', md: 'flex-start' }}
-                    justifyContent={{ base: 'center', sm: 'flex-start' }}
+                    gap={{ base: "50px", md: "0px" }}
+                    mt={{ base: "30px", md: "0px" }}
+                    mb={{ base: "30px", md: "80px" }}
+                    direction={"row"}
+                    align={{ base: "center", md: "flex-start" }}
+                    justifyContent={{ base: "center", sm: "flex-start" }}
                 >
                     <Text
-                        mr={{ base: '0px', md: '40px' }}
+                        mr={{ base: "0px", md: "40px" }}
                         fontSize="20px"
-                        _hover={{ cursor: 'pointer' }}
+                        _hover={{ cursor: "pointer" }}
                         textColor={
                             currentTab === TabName.Created
-                                ? 'green.100'
-                                : 'white'
+                                ? "green.100"
+                                : "white"
                         }
                         textDecor={
                             currentTab === TabName.Created
-                                ? 'underline'
-                                : 'none'
+                                ? "underline"
+                                : "none"
                         }
                         onClick={() => {
-                            setCurrentTab(TabName.Created)
-                            setViewCardClicked(false)
-                            setCurrentCard(new TradingCardInfo({}))
+                            setCurrentTab(TabName.Created);
+                            setViewCardClicked(false);
+                            setCurrentCard(new TradingCardInfo({}));
                             setCurrentSerializedCard(
                                 new SerializedTradingCard(
                                     0,
                                     new TradingCardInfo({}),
                                 ),
-                            )
+                            );
                         }}
                     >
                         Created
                     </Text>
                     <Text
-                        mr={{ base: '0px', md: '40px' }}
+                        mr={{ base: "0px", md: "40px" }}
                         fontSize="20px"
-                        _hover={{ cursor: 'pointer' }}
+                        _hover={{ cursor: "pointer" }}
                         textColor={
                             currentTab === TabName.Traded
-                                ? 'green.100'
-                                : 'white'
+                                ? "green.100"
+                                : "white"
                         }
                         textDecor={
-                            currentTab === TabName.Traded ? 'underline' : 'none'
+                            currentTab === TabName.Traded ? "underline" : "none"
                         }
                         onClick={() => {
-                            setCurrentTab(TabName.Traded)
-                            setViewCardClicked(false)
-                            setCurrentCard(new TradingCardInfo({}))
+                            setCurrentTab(TabName.Traded);
+                            setViewCardClicked(false);
+                            setCurrentCard(new TradingCardInfo({}));
                             setCurrentSerializedCard(
                                 new SerializedTradingCard(
                                     0,
                                     new TradingCardInfo({}),
                                 ),
-                            )
+                            );
                         }}
                     >
                         Traded
                     </Text>
                     <Text
-                        mr={{ base: '0px', md: '40px' }}
+                        mr={{ base: "0px", md: "40px" }}
                         fontSize="20px"
-                        _hover={{ cursor: 'pointer' }}
+                        _hover={{ cursor: "pointer" }}
                         textColor={
                             currentTab === TabName.Bought
-                                ? 'green.100'
-                                : 'white'
+                                ? "green.100"
+                                : "white"
                         }
                         textDecor={
-                            currentTab === TabName.Bought ? 'underline' : 'none'
+                            currentTab === TabName.Bought ? "underline" : "none"
                         }
                         onClick={() => {
-                            setCurrentTab(TabName.Bought)
-                            setViewCardClicked(false)
-                            setCurrentCard(new TradingCardInfo({}))
+                            setCurrentTab(TabName.Bought);
+                            setViewCardClicked(false);
+                            setCurrentCard(new TradingCardInfo({}));
                             setCurrentSerializedCard(
                                 new SerializedTradingCard(
                                     0,
                                     new TradingCardInfo({}),
                                 ),
-                            )
+                            );
                         }}
                         ref={navigateToTopOfList}
                     >
@@ -694,11 +694,11 @@ export default function ProfileAlbumTab(props: ProfileAlbumProps) {
                 {currentTab === TabName.Created &&
                     (isLoading ? (
                         <Spinner
-                            speed={'0.75s'}
+                            speed={"0.75s"}
                             color="white"
                             w="150px"
                             h="150px"
-                            margin={'auto'}
+                            margin={"auto"}
                         />
                     ) : (
                         <CardListGrid
@@ -727,11 +727,11 @@ export default function ProfileAlbumTab(props: ProfileAlbumProps) {
                 {currentTab === TabName.Traded &&
                     (isLoading ? (
                         <Spinner
-                            speed={'0.75s'}
+                            speed={"0.75s"}
                             color="white"
                             w="150px"
                             h="150px"
-                            margin={'auto'}
+                            margin={"auto"}
                         />
                     ) : (
                         <CardListGrid
@@ -761,11 +761,11 @@ export default function ProfileAlbumTab(props: ProfileAlbumProps) {
                 {currentTab === TabName.Bought &&
                     (isLoading ? (
                         <Spinner
-                            speed={'0.75s'}
+                            speed={"0.75s"}
                             color="white"
                             w="150px"
                             h="150px"
-                            margin={'auto'}
+                            margin={"auto"}
                         />
                     ) : (
                         <CardListGrid
@@ -792,5 +792,5 @@ export default function ProfileAlbumTab(props: ProfileAlbumProps) {
                     ))}
             </Flex>
         </>
-    )
+    );
 }

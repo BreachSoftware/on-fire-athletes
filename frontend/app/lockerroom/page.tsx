@@ -208,7 +208,7 @@ export default function LockerRoom() {
                 }
                 minH={"100vh"}
             >
-                <HStack alignItems={"top"} width={"100%"}>
+                <HStack alignItems={"top"} width={"100%"} gap={0}>
                     <Box w="full">
                         <Box width={"100%"}>
                             <NavBar />
@@ -289,15 +289,15 @@ export default function LockerRoom() {
                                     base: 0,
                                     md: "45px",
                                     lg: "25px",
-                                    "2xl": "75px",
+                                    "2xl": "60px",
                                 }}
-                                paddingLeft={{
+                                paddingX={{
                                     base: 0,
                                     sm: 0,
-                                    md: "40px",
-                                    lg: "50px",
-                                    xl: "80px",
-                                    "2xl": "121px",
+                                    md: "12px",
+                                    lg: "24px",
+                                    xl: "48px",
+                                    "2xl": "72px",
                                 }}
                                 paddingTop="25px"
                             >
@@ -436,6 +436,8 @@ export default function LockerRoom() {
                                 )}
                             </HStack>
                         </VStack>
+
+                        <Footer />
                     </Box>
                     <Box
                         position="sticky"
@@ -449,7 +451,8 @@ export default function LockerRoom() {
                 </HStack>
             </Box>
             {/* <Box bgImage="crinkled-paper.png" bgPos="center"> */}
-            <Footer />
+
+            {/* <Footer /> */}
             {/* </Box> */}
         </>
     );
