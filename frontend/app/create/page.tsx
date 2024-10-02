@@ -95,6 +95,7 @@ export default function CreationOverview() {
                                     }}
                                 >
                                     <Image
+                                        maxH={{ base: "500px", md: "unset" }}
                                         src="step_one_template_cards/demario_a.png"
                                         alt="Your Card"
                                         objectFit="contain"

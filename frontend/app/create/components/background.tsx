@@ -9,7 +9,8 @@ export default function CreateBackground() {
             left={0}
             right={0}
             bg="red.500"
-            h="100vh"
+            minH="100vh"
+            h="100%"
         >
             {/* Top Background Image */}
             <Box
@@ -19,7 +20,7 @@ export default function CreateBackground() {
                 filter={"grayscale(0%)"}
                 bgSize="cover"
                 bgPos="60% 40%"
-                h={{ base: "65vh", lg: "47%" }}
+                h={{ base: "65vh", lg: "47%", xl: "47%", "2xl": "500px" }}
                 w="full"
             >
                 <Box
@@ -35,6 +36,7 @@ export default function CreateBackground() {
                 }
                 flex={1}
                 w="full"
+                h="100%"
             />
         </Flex>
     );
