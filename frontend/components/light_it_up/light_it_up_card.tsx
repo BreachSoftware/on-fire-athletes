@@ -1,23 +1,25 @@
-'use client'
-import LightItUpCTAButton from '@/app/components/buttons/light-it-up-button'
-import { Center, Flex, Image, Text, VStack } from '@chakra-ui/react'
-import '@fontsource/roboto'
+'use client';
+import LightItUpCTAButton from '@/app/components/buttons/light-it-up-button';
+import { Box, Center, Flex, Image, Text, VStack } from '@chakra-ui/react';
+import '@fontsource/roboto';
 
 type LightItUpCardProps = {
-    image: string
-    imageOverlayTitle: string
-    imageOverlaySubtitle: string
-    title: string
-    description: string
-    buttonTitle: string
-    buttonLink: string
-}
+    image: string;
+    videoUrl: string;
+    imageOverlayTitle: string;
+    imageOverlaySubtitle: string;
+    title: string;
+    description: string;
+    buttonTitle: string;
+    buttonLink: string;
+};
 
 /**
  * LightItUpCard is a UI component that displays an image with overlay text and a call-to-action button.
  */
 function LightItUpCard({
     image,
+    videoUrl,
     imageOverlayTitle,
     imageOverlaySubtitle,
     title,
@@ -37,24 +39,49 @@ function LightItUpCard({
                     alignItems="center"
                     overflow="visible"
                 >
-                    <Image
-                        // Only apply the hover effect on desktop
-                        _hover={{
-                            base: {},
-                            md: {
-                                opacity: 1,
-                                transition: 'all 0.3s ease-in-out',
-                                transform: 'translateY(-30px)',
-                                transformOrigin: 'top center',
-                            },
-                        }}
-                        opacity={0.5}
-                        src={image}
-                        alt={`${title} Image`}
-                        h={{ base: '336px', md: '256px', xl: '450px' }}
-                        objectFit="cover"
-                        w={'auto'}
-                    />
+                    {videoUrl ? (
+                        <Box
+                            as="video"
+                            src={videoUrl}
+                            loop
+                            muted
+                            controls={false}
+                            autoPlay
+                            playsInline
+                            objectFit="cover"
+                            opacity={0.5}
+                            h={{ base: '336px', md: '256px', xl: '450px' }}
+                            w={'auto'}
+                            transition="all 0.3s ease-in-out"
+                            _hover={{
+                                base: {},
+                                md: {
+                                    opacity: 1,
+                                    transform: 'translateY(-30px)',
+                                    transformOrigin: 'top center',
+                                },
+                            }}
+                        />
+                    ) : (
+                        <Image
+                            transition="all 0.3s ease-in-out"
+                            // Only apply the hover effect on desktop
+                            _hover={{
+                                base: {},
+                                md: {
+                                    opacity: 1,
+                                    transform: 'translateY(-30px)',
+                                    transformOrigin: 'top center',
+                                },
+                            }}
+                            opacity={0.5}
+                            src={image}
+                            alt={`${title} Image`}
+                            h={{ base: '336px', md: '256px', xl: '450px' }}
+                            objectFit="cover"
+                            w={'auto'}
+                        />
+                    )}
                     <VStack pos={'absolute'} bottom={0} spacing={0}>
                         {/* Overlapping text with a transparent fill and a stroke*/}
                         <Text
@@ -123,7 +150,7 @@ function LightItUpCard({
                 </LightItUpCTAButton>
             </VStack>
         </Center>
-    )
+    );
 }
 
-export default LightItUpCard
+export default LightItUpCard;

@@ -1,11 +1,11 @@
-'use client'
+'use client';
 
-import { LightItUpSection } from './types'
-import LightItUpCard from './light_it_up_card'
-import SharedCarousel from '../shared/carousel'
+import { LightItUpSection } from './types';
+import LightItUpCard from './light_it_up_card';
+import SharedCarousel from '../shared/carousel';
 
 interface Props {
-    sections: LightItUpSection[]
+    sections: LightItUpSection[];
 }
 
 /**
@@ -20,7 +20,7 @@ export default function LightItUpCarousel({ sections }: Props) {
             containerOverrides={{
                 display: { base: 'block', lg: 'none' },
                 w: '100dvw',
-                px: '24px',
+                px: '12px',
             }}
             arrowTopPosition="55%"
         >
@@ -28,7 +28,8 @@ export default function LightItUpCarousel({ sections }: Props) {
                 return (
                     <div key={i}>
                         <LightItUpCard
-                            image={section.image}
+                            image={section.image || ''}
+                            videoUrl={section.videoUrl || ''}
                             imageOverlayTitle={section.imageOverlayTitle}
                             imageOverlaySubtitle={section.imageOverlaySubtitle}
                             title={section.title}
@@ -38,8 +39,8 @@ export default function LightItUpCarousel({ sections }: Props) {
                             key={section.id}
                         />
                     </div>
-                )
+                );
             })}
         </SharedCarousel>
-    )
+    );
 }
