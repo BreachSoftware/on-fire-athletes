@@ -12,7 +12,7 @@ import { HexColorPicker } from "react-colorful";
 import { useState, Fragment, createRef, ChangeEvent } from "react";
 import { useCurrentCardInfo } from "@/hooks/useCurrentCardInfo";
 import TradingCardInfo, { CardPart } from "@/hooks/TradingCardInfo";
-import { CARD_BACKGROUNDS } from "./card-backgrounds";
+
 export interface FullColorPickerProps {
     type: keyof TradingCardInfo;
     setColor?: (color: string) => void;
