@@ -285,8 +285,8 @@ export default function TrendingCard({
                                 fontFamily={"Barlow Semi Condensed"}
                                 fontWeight={"normal"}
                             >
-                                {card.price
-                                    ? `$${card.price.toFixed(2)}`
+                                {card?.price
+                                    ? `$${card?.price?.toFixed(2)}`
                                     : "TRADE ONLY"}
                             </Text>
                             {shouldShowButton && (
