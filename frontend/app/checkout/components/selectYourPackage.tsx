@@ -268,6 +268,50 @@ export default function SelectYourPackage() {
                                 gap={"10px"}
                                 flexGrow={1}
                             >
+                                {pkg.title === "ALL-STAR" && (
+                                    <>
+                                        <Text
+                                            fontFamily={"Barlow Condensed"}
+                                            fontSize={"16"}
+                                            textColor={"#F8F8F8"}
+                                        >
+                                            ADD-ONS:
+                                        </Text>
+
+                                        {/* Add-Ons for MVP Package */}
+
+                                        <Flex
+                                            flexDirection={"column"}
+                                            alignItems={"center"}
+                                            width={"100%"}
+                                            gap={"10px"}
+                                        >
+                                            <AddOn
+                                                title={
+                                                    "Additional 5 Digital Cards"
+                                                }
+                                                price={(
+                                                    checkout.digitalCardPrice *
+                                                    5
+                                                ).toFixed(2)}
+                                                value={
+                                                    checkout.packageName ===
+                                                    "allStar"
+                                                        ? checkout.digitalCardCount /
+                                                          5
+                                                        : 0
+                                                }
+                                                onChange={(value) => {
+                                                    curCheckout.setCheckout({
+                                                        ...checkout,
+                                                        digitalCardCount:
+                                                            value * 5,
+                                                    });
+                                                }}
+                                            />
+                                        </Flex>
+                                    </>
+                                )}
                                 {pkg.title === "MVP" && (
                                     <>
                                         <Text
@@ -388,7 +432,7 @@ export default function SelectYourPackage() {
                                                 physicalCardCount:
                                                     checkout.physicalCardCount +
                                                     5,
-                                                stepNum: checkout.stepNum + 2,
+                                                stepNum: checkout.stepNum + 1,
                                             });
                                         }
                                     }}

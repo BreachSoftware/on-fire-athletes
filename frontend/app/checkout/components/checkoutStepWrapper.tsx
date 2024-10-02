@@ -294,7 +294,7 @@ export default function CheckoutStepWrapper({
                                 } // Disable the button if it's the first step
                                 onClick={() => {
                                     if (
-                                        checkout.packageName !== "allStar" &&
+                                        checkout.packageName === "rookie" &&
                                         stepNumber == 2
                                     ) {
                                         curCheckout.setCheckout({
