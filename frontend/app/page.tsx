@@ -1,20 +1,20 @@
-'use client'
+"use client";
 
-import BuiltForAthletes from '@/components/built_for_athletes'
-import { Flex } from '@chakra-ui/react'
-import { Box } from '@chakra-ui/react'
-import Navbar from '@/app/navbar'
-import Sidebar from '@/components/sidebar'
-import Footer from './components/footer'
-import TrendingNow from '@/components/trending_now/TrendingNow'
-import CaptureCreateCustomize from '@/app/components/CaptureCreateCustomize'
-import '@fontsource/water-brush'
-import '@fontsource/barlow'
-import MobileFrontWrapper from './components/mobile-front-wrapper'
-import { BackToCheckoutModal } from './components/BackToCheckoutModal'
-import InTheNews from '@/components/in_the_news'
-import LightItUp from '@/components/light_it_up/light_it_up'
-import SideBarHamburger from '@/components/sidebarHamburger'
+import BuiltForAthletes from "@/components/built_for_athletes";
+import { Flex } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
+import Navbar from "@/app/navbar";
+import Sidebar from "@/components/sidebar";
+import Footer from "./components/footer";
+import TrendingNow from "@/components/trending_now/TrendingNow";
+import CaptureCreateCustomize from "@/app/components/CaptureCreateCustomize";
+import "@fontsource/water-brush";
+import "@fontsource/barlow";
+import MobileFrontWrapper from "./components/mobile-front-wrapper";
+import { BackToCheckoutModal } from "./components/BackToCheckoutModal";
+import InTheNews from "@/components/in_the_news";
+import LightItUp from "@/components/light_it_up/light_it_up";
+import SideBarHamburger from "@/components/sidebarHamburger";
 
 /**
  * Renders the home screen.
@@ -27,27 +27,27 @@ export default function Index() {
     const inTheNewsData = [
         {
             id: 1,
-            imageUrl: 'in_the_news/news1.jpeg',
-            headline: 'Headline Here',
+            imageUrl: "in_the_news/news1.jpeg",
+            headline: "Headline Here",
             description:
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
         },
         {
             id: 2,
-            imageUrl: 'in_the_news/news2.jpeg',
-            headline: 'Headline Here',
+            imageUrl: "in_the_news/news2.jpeg",
+            headline: "Headline Here",
             description:
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
         },
         {
             id: 3,
-            imageUrl: 'in_the_news/news3.jpeg',
-            headline: 'Headline Here',
+            imageUrl: "in_the_news/news3.jpeg",
+            headline: "Headline Here",
             description:
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
         },
         // ...other news items
-    ]
+    ];
 
     return (
         <>
@@ -62,8 +62,8 @@ export default function Index() {
                             controls={false}
                             autoPlay={true}
                             playsInline={true}
-                            w={{ base: 'full', md: '100dvw' }}
-                            h={{ base: 'full', md: '100dvh' }}
+                            w={{ base: "full", md: "100dvw" }}
+                            h={{ base: "full", md: "100dvh" }}
                             minH="100vh"
                             objectFit="cover"
                             position="fixed"
@@ -80,14 +80,14 @@ export default function Index() {
                                 h="fit-content"
                                 direction="column"
                                 bgGradient={{
-                                    base: 'none',
-                                    md: 'linear(to-r, #000, #00000000)',
+                                    base: "none",
+                                    md: "linear(to-r, #000, #00000000)",
                                 }}
                             >
                                 <Navbar
                                     bgGradient={{
-                                        base: 'linear(to-b, #000, #000000f0)',
-                                        md: 'linear(to-b, rgba(0,0,0,1), rgba(0,0,0,0.6), rgba(0,0,0,0))',
+                                        base: "linear(to-b, #000, #000000f0)",
+                                        md: "linear(to-b, rgba(0,0,0,1), rgba(0,0,0,0.6), rgba(0,0,0,0))",
                                     }}
                                 />
                                 <CaptureCreateCustomize />
@@ -95,10 +95,10 @@ export default function Index() {
                             <BuiltForAthletes />
                             <MobileFrontWrapper />
                         </Box>
-                        <Box position="relative">
+                        <Box position="relative" zIndex={1}>
                             <LightItUp />
                             <InTheNews
-                                showBackground
+                                showBackground={true}
                                 title="In The News"
                                 data={inTheNewsData}
                             />
@@ -111,14 +111,14 @@ export default function Index() {
                         top={0}
                         w="140px"
                         h="100dvh"
-                        display={{ base: 'none', md: 'inline' }}
+                        display={{ base: "none", md: "inline" }}
                     >
-                        <Sidebar height={'100dvh'} />
+                        <Sidebar height={"100dvh"} />
                     </Box>
                 </Flex>
             </Box>
             <BackToCheckoutModal />
             <SideBarHamburger />
         </>
-    )
+    );
 }
