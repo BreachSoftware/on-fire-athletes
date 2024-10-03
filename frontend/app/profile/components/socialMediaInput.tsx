@@ -1,20 +1,21 @@
 // eslint-disable-next-line no-use-before-define
-import React from 'react'
+import React from "react";
 import {
+    Box,
     Icon,
     InputGroup,
     Input,
     InputRightElement,
     Tooltip,
-} from '@chakra-ui/react'
-import { FaExclamationCircle, FaCheckCircle } from 'react-icons/fa'
+} from "@chakra-ui/react";
+import { FaExclamationCircle, FaCheckCircle } from "react-icons/fa";
 
 interface SocialMediaInputProps {
-    name: string
-    editableSocialMediaLink: string
-    setEditableSocialMediaLink: (value: string) => void
-    validSocialMediaPrefix: string
-    validateSocialLink: (link: string, prefix: string) => boolean
+    name: string;
+    editableSocialMediaLink: string;
+    setEditableSocialMediaLink: (value: string) => void;
+    validSocialMediaPrefix: string;
+    validateSocialLink: (link: string, prefix: string) => boolean;
 }
 
 /**
@@ -27,19 +28,19 @@ export default function SocialMediaInput(
     return (
         <InputGroup>
             <Input
-                variant={'basicInput'}
+                variant={"basicInput"}
                 rounded="md"
                 backgroundColor="#2B2B2B"
-                border={'solid 1px #323232'}
+                border={"solid 1px #323232"}
                 placeholder={`${props.name}`}
                 value={props.editableSocialMediaLink}
                 onChange={(e) => {
-                    props.setEditableSocialMediaLink(e.target.value)
+                    props.setEditableSocialMediaLink(e.target.value);
                 }}
                 pr="32px"
             />
             <InputRightElement>
-                {props.editableSocialMediaLink !== '' &&
+                {props.editableSocialMediaLink === "" ||
                 !props.validateSocialLink(
                     props.editableSocialMediaLink,
                     props.validSocialMediaPrefix,
@@ -50,12 +51,14 @@ export default function SocialMediaInput(
                         w="230px"
                         placement="right"
                     >
-                        <Icon as={FaExclamationCircle} color="orange" />
+                        <Box>
+                            <Icon as={FaExclamationCircle} color="orange" />
+                        </Box>
                     </Tooltip>
                 ) : (
                     <Icon as={FaCheckCircle} color="#27CE00" />
                 )}
             </InputRightElement>
         </InputGroup>
-    )
+    );
 }
