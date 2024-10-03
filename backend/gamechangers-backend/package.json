@@ -36,10 +36,10 @@
     "js-yaml": "^4.1.0",
     "serverless-offline": "^13.8.0",
     "serverless-plugin-common-excludes": "^4.0.0",
-    "serverless-plugin-include-dependencies": "^6.0.0",
-    "typescript": "^5.3.3",
+    "serverless-plugin-include-dependencies": "^6.1.1",
     "serverless-plugin-typescript": "^2.1.5",
     "serverless-prune-plugin": "^2.0.2",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
   }
 }

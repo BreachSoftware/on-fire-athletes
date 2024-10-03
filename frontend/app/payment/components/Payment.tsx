@@ -4,17 +4,22 @@ import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "./CheckoutForm";
 import { Box, useToast, Spinner } from "@chakra-ui/react";
 import { useCurrentCheckout } from "@/hooks/useCheckout";
-import { apiEndpoints, Environment, environmentManager } from "@backend/EnvironmentManager/EnvironmentManager";
+import {
+    apiEndpoints,
+    Environment,
+    environmentManager,
+} from "@backend/EnvironmentManager/EnvironmentManager";
 
 interface PaymentProps {
-	checkoutScreen?: boolean;
-	buyCard?: boolean;
+    checkoutScreen?: boolean;
+    buyCard?: boolean;
 }
 
 // OnFire keys
-const STRIPE_PUBLIC_KEY = environmentManager.getApiStage() == Environment.Production ?
-	"pk_live_51PssXyCEBFOTy6pM9DfyGbI7JZUqMoClqRVuFCEAVamp10DYl2O48SqCjiw7vSbeiv8CCmYPZwSgguOTCcJzbY0u00cwKkUFDZ" :
-	"pk_test_51PssXyCEBFOTy6pMtubViKDQwVSljNAJRQAk5SkRyexPECtx4w8R3IHLQtI7CSNG1g7hSFk044Pc0STSYtxEWmSW00Y4VLvPII";
+const STRIPE_PUBLIC_KEY =
+    environmentManager.getApiStage() == Environment.Production
+        ? "pk_live_51PssXyCEBFOTy6pM9DfyGbI7JZUqMoClqRVuFCEAVamp10DYl2O48SqCjiw7vSbeiv8CCmYPZwSgguOTCcJzbY0u00cwKkUFDZ"
+        : "pk_test_51PssXyCEBFOTy6pMtubViKDQwVSljNAJRQAk5SkRyexPECtx4w8R3IHLQtI7CSNG1g7hSFk044Pc0STSYtxEWmSW00Y4VLvPII";
 
 /**
  * Payment component
@@ -22,107 +27,123 @@ const STRIPE_PUBLIC_KEY = environmentManager.getApiStage() == Environment.Produc
  * @returns
  */
 export default function Payment(props: PaymentProps) {
-	const curCheckout = useCurrentCheckout();
-	const toast = useToast();
-	const stripePromise = loadStripe(STRIPE_PUBLIC_KEY);
-	const [ clientSecret, setClientSecret ] = useState<string>("");
-	const [ setupIntnetCreated, setSetupIntentCreated ] = useState<boolean>(false);
-	const appearance = useRef<Appearance>({
-		theme: "night"
-	});
+    const curCheckout = useCurrentCheckout();
+    const toast = useToast();
+    const stripePromise = loadStripe(STRIPE_PUBLIC_KEY);
+    const [clientSecret, setClientSecret] = useState<string>("");
+    const [setupIntnetCreated, setSetupIntentCreated] =
+        useState<boolean>(false);
+    const appearance = useRef<Appearance>({
+        theme: "night",
+    });
 
-	useEffect(() => {
+    console.log("STRIPE PUBLIC KEY", STRIPE_PUBLIC_KEY);
 
-		/**
-		 * Creates a setup intent for saving payment details
-		 * @returns {void}
-		 */
-		async function createSetupIntent() {
-			// Create a new customer
-			const customerResponse = await fetch(apiEndpoints.createCustomer(), {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					email: curCheckout.checkout.contactInfo.email,
-					name: `${curCheckout.checkout.contactInfo.firstName} ${curCheckout.checkout.contactInfo.lastName}`,
-				}),
-			});
+    useEffect(() => {
+        /**
+         * Creates a setup intent for saving payment details
+         * @returns {void}
+         */
+        async function createSetupIntent() {
+            // Create a new customer
+            const customerResponse = await fetch(
+                apiEndpoints.createCustomer(),
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        email: curCheckout.checkout.contactInfo.email,
+                        name: `${curCheckout.checkout.contactInfo.firstName} ${curCheckout.checkout.contactInfo.lastName}`,
+                    }),
+                },
+            );
 
-			const data = await customerResponse.json();
-			const customerId = data.id;
+            const data = await customerResponse.json();
+            const customerId = data.id;
 
-			if (!customerId) {
-				toast({
-					title: "Error",
-					description: "No customer ID found.",
-					status: "error",
-					duration: 3000,
-					isClosable: true,
-				});
-				console.error("No customer ID found.");
-				return;
-			}
+            if (!customerId) {
+                toast({
+                    title: "Error",
+                    description: "No customer ID found.",
+                    status: "error",
+                    duration: 3000,
+                    isClosable: true,
+                });
+                console.error("No customer ID found.");
+                return;
+            }
 
-			const createSetupIntentResponse = await fetch(apiEndpoints.createSetupIntent(), {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ customerId: customerId }),
-			});
+            const createSetupIntentResponse = await fetch(
+                apiEndpoints.createSetupIntent(),
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ customerId: customerId }),
+                },
+            );
 
-			const setupIntentData = await createSetupIntentResponse.json();
-			const clientSecret = setupIntentData.setupIntent.client_secret;
-			setClientSecret(clientSecret);
-			setSetupIntentCreated(true);
+            const setupIntentData = await createSetupIntentResponse.json();
+            const clientSecret = setupIntentData.setupIntent.client_secret;
 
-			curCheckout.setCheckout({
-				...curCheckout.checkout,
-				customerId: customerId,
-				clientSecret: clientSecret,
-				paymentInfoEntered: false,
-			});
+            console.log("SETUP INTENT", setupIntentData.setupIntent);
 
-		}
+            setClientSecret(clientSecret);
+            setSetupIntentCreated(true);
 
-		if (!setupIntnetCreated) {
-			createSetupIntent();
-		}
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [ curCheckout.checkout.clientSecret ]);
+            curCheckout.setCheckout({
+                ...curCheckout.checkout,
+                customerId: customerId,
+                clientSecret: clientSecret,
+                paymentInfoEntered: false,
+            });
+        }
 
-	useEffect(() => {
-		if(props.checkoutScreen) {
-			appearance.current = {
-				theme: "night",
-				variables: {
-					colorPrimary: "white",
-					colorBackground: "black",
-					colorTextPlaceholder: "gray.400",
-					borderRadius: "0px",
-				}
-			};
-		}
-	});
+        if (!setupIntnetCreated) {
+            createSetupIntent();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [curCheckout.checkout.clientSecret]);
 
-	return (
-		<Box w="100%">
-			{(clientSecret && stripePromise) ? (
-				<Elements stripe={stripePromise} options={{ clientSecret: clientSecret, appearance: appearance.current }}>
-					<CheckoutForm buyCard={props.buyCard} />
-				</Elements>
-			) :
-				<Box
-					display="flex"
-					alignItems="center"
-					justifyContent="center"
-					w="100%"
-				>
-					<Spinner w="150px" h="150px" speed={"0.75s"} />
-				</Box>
-			}
-		</Box>
-	);
+    useEffect(() => {
+        if (props.checkoutScreen) {
+            appearance.current = {
+                theme: "night",
+                variables: {
+                    colorPrimary: "white",
+                    colorBackground: "black",
+                    colorTextPlaceholder: "gray.400",
+                    borderRadius: "0px",
+                },
+            };
+        }
+    });
+
+    return (
+        <Box w="100%">
+            {clientSecret && stripePromise ? (
+                <Elements
+                    stripe={stripePromise}
+                    options={{
+                        clientSecret: clientSecret,
+                        appearance: appearance.current,
+                    }}
+                >
+                    <CheckoutForm buyCard={props.buyCard} />
+                </Elements>
+            ) : (
+                <Box
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    w="100%"
+                >
+                    <Spinner w="150px" h="150px" speed={"0.75s"} />
+                </Box>
+            )}
+        </Box>
+    );
 }

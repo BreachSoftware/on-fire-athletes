@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "fortawesome": "^0.0.1-security",
-    "mind-ar": "^1.2.5"
+    "mind-ar": "^1.2.5",
+    "stripe": "^17.0.0"
   }
 }

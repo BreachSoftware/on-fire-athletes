@@ -291,3 +291,5 @@ plugins:
     - serverless-plugin-typescript
     - serverless-prune-plugin
     - serverless-offline
+    - serverless-plugin-common-excludes
+    - serverless-plugin-include-dependencies
