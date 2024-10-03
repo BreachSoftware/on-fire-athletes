@@ -223,6 +223,7 @@ export default function LockerRoom() {
                                 overflowX={"hidden"}
                                 // The title is centered on desktop, taking into account the sidebar, which mobile doesn't have
                                 pl={{ base: "0px", md: "70px" }}
+                                pt={{ base: "16px", md: "0px" }}
                             >
                                 <ChakraImage
                                     as={Image}
@@ -299,7 +300,7 @@ export default function LockerRoom() {
                                     xl: "48px",
                                     "2xl": "72px",
                                 }}
-                                paddingTop="25px"
+                                paddingTop={{ base: "16px", md: "25px" }}
                             >
                                 {/* Left Side Filter Area */}
                                 <Box

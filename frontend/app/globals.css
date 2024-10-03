@@ -1,9 +1,9 @@
 :root {
     --max-width: 1100px;
     --border-radius: 12px;
-    --font-mono: ui-monospace, Menlo, Monaco, 'Cascadia Mono', 'Segoe UI Mono',
-        'Roboto Mono', 'Oxygen Mono', 'Ubuntu Monospace', 'Source Code Pro',
-        'Fira Mono', 'Droid Sans Mono', 'Courier New', monospace;
+    --font-mono: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono",
+        "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro",
+        "Fira Mono", "Droid Sans Mono", "Courier New", monospace;
 
     --foreground-rgb: 0, 0, 0;
     --background-start-rgb: 214, 219, 220;
@@ -87,6 +87,7 @@ body {
     max-width: 100dvw;
     min-height: 100dvh;
     font-display: auto;
+    overscroll-behavior: none;
 }
 
 body {
@@ -111,19 +112,19 @@ a {
 }
 
 @font-face {
-    font-family: 'Brotherhood';
+    font-family: "Brotherhood";
     font-style: normal;
     font-weight: 400;
     font-display: swap;
     src:
-        url('../public/fonts/Brotherhod.woff2') format('woff2'),
-        url('../public/fonts/Brotherhod.woff2') format('woff');
+        url("../public/fonts/Brotherhod.woff2") format("woff2"),
+        url("../public/fonts/Brotherhod.woff2") format("woff");
 }
 
 @font-face {
-    font-family: 'Uniser-Bold';
+    font-family: "Uniser-Bold";
     font-style: normal;
     font-weight: 400;
     font-display: swap;
-    src: url('../public/fonts/Uniser-Bold.ttf') format('truetype');
+    src: url("../public/fonts/Uniser-Bold.ttf") format("truetype");
 }
