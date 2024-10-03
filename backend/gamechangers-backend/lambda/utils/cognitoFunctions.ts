@@ -1,8 +1,8 @@
 import { CognitoIdentityServiceProvider } from "aws-sdk";
 
 export interface TokenResponse {
-    accessToken: string,
-    error: string
+	accessToken: string;
+	error: string;
 }
 
 /**
@@ -12,15 +12,17 @@ export interface TokenResponse {
  *
  * @returns the access token for the user and an error if any
  */
-export async function getUserToken(email: string, password: string): Promise<TokenResponse> {
-
+export async function getUserToken(
+	email: string,
+	password: string,
+): Promise<TokenResponse> {
 	const tokenResponse: TokenResponse = {
 		accessToken: "",
-		error: ""
+		error: "",
 	};
 
 	const cognito = new CognitoIdentityServiceProvider({
-		region: "us-east-1"
+		region: "us-east-1",
 	});
 
 	const params = {
@@ -28,7 +30,7 @@ export async function getUserToken(email: string, password: string): Promise<Tok
 		ClientId: "201jn51bb4jt2suoi1lbchicj6",
 		AuthParameters: {
 			USERNAME: email,
-			PASSWORD: password
+			PASSWORD: password,
 		},
 	};
 
@@ -37,12 +39,11 @@ export async function getUserToken(email: string, password: string): Promise<Tok
 		const accessToken = response.AuthenticationResult!.AccessToken;
 
 		tokenResponse.accessToken = accessToken ?? "";
-	} catch	(error) {
-		tokenResponse.error = error;
+	} catch (error) {
+		tokenResponse.error = String(error);
 	}
 
 	return tokenResponse;
-
 }
 
 /**
@@ -52,13 +53,13 @@ export async function getUserToken(email: string, password: string): Promise<Tok
  * @returns The userId of the user
  */
 export async function getUserId(authToken: string): Promise<string> {
-
 	const cognito = new CognitoIdentityServiceProvider();
 
 	try {
-
 		// Decode the token to get user information
-		const decodedToken = await cognito.getUser({ AccessToken: authToken }).promise();
+		const decodedToken = await cognito
+			.getUser({ AccessToken: authToken })
+			.promise();
 
 		// Extract the user ID from the decoded token
 		const userId = decodedToken.UserAttributes.find((attr) => {
@@ -70,7 +71,6 @@ export async function getUserId(authToken: string): Promise<string> {
 		}
 
 		return userId;
-
 	} catch (error) {
 		console.error("Error:", error);
 		return "";
@@ -83,18 +83,19 @@ export async function getUserId(authToken: string): Promise<string> {
  * @param authToken - the user authorization token
  * @returns an error if any
  */
-export async function disconnectUser(authToken: string): Promise<{ error: string }> {
-
+export async function disconnectUser(
+	authToken: string,
+): Promise<{ error: string }> {
 	const cognito = new CognitoIdentityServiceProvider();
 
 	const params = {
-		AccessToken: authToken
+		AccessToken: authToken,
 	};
 
 	try {
 		await cognito.globalSignOut(params).promise();
 		return { error: "" };
 	} catch (error) {
-		return { error: error };
+		return { error: String(error) };
 	}
 }

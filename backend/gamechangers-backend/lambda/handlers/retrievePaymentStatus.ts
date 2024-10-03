@@ -1,7 +1,14 @@
 /* eslint-disable func-style */
-import { Handler, APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
+import {
+	Handler,
+	APIGatewayProxyEvent,
+	APIGatewayProxyResult,
+} from "aws-lambda";
 import "dotenv/config";
-import { Environment, environmentManager } from "../../EnvironmentManager/EnvironmentManager";
+import {
+	Environment,
+	environmentManager,
+} from "../../EnvironmentManager/EnvironmentManager";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires, no-process-env
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY, {
@@ -9,15 +16,17 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY, {
 });
 
 // Gamechangers keys
-const STRIPE_PUBLIC_KEY = environmentManager.getApiStage() == Environment.Production ?
-	"pk_live_51PssXyCEBFOTy6pM9DfyGbI7JZUqMoClqRVuFCEAVamp10DYl2O48SqCjiw7vSbeiv8CCmYPZwSgguOTCcJzbY0u00cwKkUFDZ" :
-	"pk_test_51PssXyCEBFOTy6pMtubViKDQwVSljNAJRQAk5SkRyexPECtx4w8R3IHLQtI7CSNG1g7hSFk044Pc0STSYtxEWmSW00Y4VLvPII";
+const STRIPE_PUBLIC_KEY =
+	environmentManager.getApiStage() == Environment.Production
+		? "pk_live_51PssXyCEBFOTy6pM9DfyGbI7JZUqMoClqRVuFCEAVamp10DYl2O48SqCjiw7vSbeiv8CCmYPZwSgguOTCcJzbY0u00cwKkUFDZ"
+		: "pk_test_51PssXyCEBFOTy6pMtubViKDQwVSljNAJRQAk5SkRyexPECtx4w8R3IHLQtI7CSNG1g7hSFk044Pc0STSYtxEWmSW00Y4VLvPII";
 
 /**
  * Creates a payment intent for a new payment.
  */
-export const retrievePaymentStatus: Handler = async(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-
+export const retrievePaymentStatus: Handler = async (
+	event: APIGatewayProxyEvent,
+): Promise<APIGatewayProxyResult> => {
 	console.log(event);
 	if (!event.body) {
 		return {
@@ -29,7 +38,6 @@ export const retrievePaymentStatus: Handler = async(event: APIGatewayProxyEvent)
 		};
 	}
 
-
 	const body = JSON.parse(event.body as string);
 
 	console.log(body);
@@ -39,7 +47,9 @@ export const retrievePaymentStatus: Handler = async(event: APIGatewayProxyEvent)
 	console.log(paymentIntentClientSecret);
 
 	try {
-		const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentClientSecret);
+		const paymentIntent = await stripe.paymentIntents.retrieve(
+			paymentIntentClientSecret,
+		);
 
 		console.log(paymentIntent);
 
@@ -53,7 +63,7 @@ export const retrievePaymentStatus: Handler = async(event: APIGatewayProxyEvent)
 				publishableKey: STRIPE_PUBLIC_KEY,
 				paymentIntentID: paymentIntent.id,
 				paymentIntent: paymentIntent,
-				status: paymentIntent.status
+				status: paymentIntent.status,
 			}),
 		};
 	} catch (e) {
@@ -63,7 +73,7 @@ export const retrievePaymentStatus: Handler = async(event: APIGatewayProxyEvent)
 			headers: {
 				"Content-Type": "application/json",
 			},
-			body: JSON.stringify({ error: e.message }),
+			body: JSON.stringify({ error: (e as Error).message }),
 		};
 	}
 };

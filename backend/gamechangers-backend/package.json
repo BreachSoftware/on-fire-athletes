@@ -1,45 +1,45 @@
 {
-    "name": "gamechangers-backend",
-    "version": "0.1.0",
-    "private": true,
-    "scripts": {
-        "local": "npm run update-endpoints && serverless offline --param=\"NEXT_PUBLIC_APP_ENV=local\"",
-        "deploy:custom": "npm run update-endpoints && serverless deploy",
-        "deploy:dev": "npm run update-endpoints && serverless deploy --stage development",
-        "deploy:prod": "npm run update-endpoints && serverless deploy --param=\"NEXT_PUBLIC_APP_ENV=production\" --stage production",
-        "update-endpoints": "ts-node ./EnvironmentManager/UpdateEndpoints.ts",
-        "run-script:dev": "NODE_ENV=development dotenv -e ./.env -- ts-node --transpile-only -r tsconfig-paths/register",
-        "lint": "eslint . --max-warnings=0"
-    },
-    "dependencies": {
-        "@aws-sdk/client-cognito-identity-provider": "^3.576.0",
-        "@types/fs-extra": "^11.0.4",
-        "@types/inquirer": "^9.0.7",
-        "@types/uuid": "^9.0.8",
-        "at-least-node": "^1.0.0",
-        "aws-sdk": "^2.1582.0",
-        "color-convert": "^2.0.1",
-        "dotenv": "^16.4.5",
-        "dotenv-cli": "^7.4.2",
-        "fs-extra": "^11.2.0",
-        "inquirer": "^10.2.0",
-        "serverless": "^3.0.0",
-        "sharp": "^0.33.5",
-        "stripe": "^15.4.0",
-        "uuid": "^9.0.1"
-    },
-    "devDependencies": {
-        "@types/aws-lambda": "^8.10.134",
-        "@types/color-convert": "^2.0.3",
-        "@types/js-yaml": "^4.0.9",
-        "@types/node": "^20.11.24",
-        "js-yaml": "^4.1.0",
-        "serverless-offline": "^13.8.0",
-        "serverless-plugin-common-excludes": "^4.0.0",
-        "serverless-plugin-include-dependencies": "^6.0.0",
-        "serverless-plugin-typescript": "^2.1.5",
-        "serverless-prune-plugin": "^2.0.2",
-        "ts-node": "^10.9.2",
-        "typescript": "^5.3.3"
-    }
+  "name": "gamechangers-backend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "local": "serverless offline --param=\"NEXT_PUBLIC_APP_ENV=local\"",
+    "deploy:custom": "npm run update-endpoints && serverless deploy",
+    "deploy:dev": "npm run update-endpoints && serverless deploy --stage development",
+    "deploy:prod": "npm run update-endpoints && serverless deploy --param=\"NEXT_PUBLIC_APP_ENV=production\" --stage production",
+    "update-endpoints": "ts-node ./EnvironmentManager/UpdateEndpoints.ts",
+    "run-script:dev": "NODE_ENV=development dotenv -e ./.env -- ts-node --transpile-only -r tsconfig-paths/register",
+    "lint": "eslint . --max-warnings=0"
+  },
+  "dependencies": {
+    "@aws-sdk/client-cognito-identity-provider": "^3.576.0",
+    "@types/fs-extra": "^11.0.4",
+    "@types/inquirer": "^9.0.7",
+    "@types/uuid": "^9.0.8",
+    "at-least-node": "^1.0.0",
+    "aws-sdk": "^2.1582.0",
+    "color-convert": "^2.0.1",
+    "dotenv": "^16.4.5",
+    "dotenv-cli": "^7.4.2",
+    "fs-extra": "^11.2.0",
+    "inquirer": "^10.2.0",
+    "serverless": "^3.0.0",
+    "sharp": "^0.33.5",
+    "stripe": "^15.4.0",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.134",
+    "@types/color-convert": "^2.0.3",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^20.11.24",
+    "js-yaml": "^4.1.0",
+    "serverless-offline": "^13.8.0",
+    "serverless-plugin-common-excludes": "^4.0.0",
+    "serverless-plugin-include-dependencies": "^6.0.0",
+    "typescript": "^5.3.3",
+    "serverless-plugin-typescript": "^2.1.5",
+    "serverless-prune-plugin": "^2.0.2",
+    "ts-node": "^10.9.2"
+  }
 }
