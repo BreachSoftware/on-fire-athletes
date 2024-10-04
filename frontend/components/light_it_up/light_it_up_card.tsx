@@ -78,7 +78,7 @@ function LightItUpCard({
                             src={image}
                             alt={`${title} Image`}
                             h={{ base: "336px", md: "256px", xl: "450px" }}
-                            objectFit="cover"
+                            objectFit="contain"
                             w={"auto"}
                         />
                     )}
