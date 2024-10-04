@@ -1,13 +1,6 @@
 "use client";
 
-import {
-    FC,
-    ReactNode,
-    createContext,
-    useContext,
-    useEffect,
-    useState,
-} from "react";
+import { FC, ReactNode, createContext, useContext, useState } from "react";
 import CheckoutInfo from "@/hooks/CheckoutInfo";
 
 // The properties of the useCurrentCheckout hook

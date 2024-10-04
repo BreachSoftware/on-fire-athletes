@@ -1,17 +1,18 @@
-import { Box, Text, Flex, Heading } from '@chakra-ui/react'
-import InTheNewsArticle from './article'
-import InTheNewsCarousel from './carousel'
+import React from "react";
+import { Box, Text, Flex, Heading } from "@chakra-ui/react";
+import InTheNewsArticle from "./article";
+import InTheNewsCarousel from "./carousel";
 
 interface InTheNewsProps {
-    showBackground: boolean
-    title: string
+    showBackground: boolean;
+    title: string;
     data: {
-        id: number
-        imageUrl: string
-        headline: string
-        description: string
-    }[]
-    articleHeader?: boolean
+        id: number;
+        imageUrl: string;
+        headline: string;
+        description: string;
+    }[];
+    articleHeader?: boolean;
 }
 
 /**
@@ -26,35 +27,35 @@ export default function InTheNews(props: InTheNewsProps) {
     return (
         <Box
             position="relative"
-            minH={{ base: 'none', md: '100dvh' }}
+            minH={{ base: "none", md: "100dvh" }}
             h="fit-content"
         >
             {props.showBackground && <BackgroundComponent />}
             <Flex
-                px={{ base: '24px', md: '64px', xl: '100px' }}
+                px={{ base: "12px", md: "64px", xl: "100px" }}
                 py={{ base: 12, md: 16 }}
                 position="relative"
-                minH={{ base: 'none', md: '100dvh' }}
+                minH={{ base: "none", md: "100dvh" }}
                 h="fit-content"
-                flexDir={'column'}
-                justifyContent={'center'}
-                alignItems={'center'}
+                flexDir={"column"}
+                justifyContent={"center"}
+                alignItems={"center"}
             >
                 {/* If we are showing the header on the News Articles or not */}
                 {props.articleHeader ? (
                     <Text
-                        width={'80%'}
+                        width={"80%"}
                         fontSize={{
-                            base: '28px',
-                            sm: '32px',
-                            md: '36px',
-                            lg: '40px',
+                            base: "28px",
+                            sm: "32px",
+                            md: "36px",
+                            lg: "40px",
                         }}
                         mb={4}
                         textAlign="center"
-                        fontFamily={'Barlow Condensed'}
+                        fontFamily={"Barlow Condensed"}
                         fontStyle="italic"
-                        textColor={'green.100'}
+                        textColor={"green.100"}
                         fontWeight={600}
                         letterSpacing={1}
                     >
@@ -68,9 +69,9 @@ export default function InTheNews(props: InTheNewsProps) {
                         fontFamily={"'Barlow Condensed', sans-serif"}
                         fontWeight={700}
                         lineHeight="70px"
-                        fontSize={{ base: '48px', xl: '60px' }}
-                        fontStyle={'normal'}
-                        color={'green.100'}
+                        fontSize={{ base: "48px", xl: "60px" }}
+                        fontStyle={"normal"}
+                        color={"green.100"}
                         letterSpacing="3px"
                         textTransform="uppercase"
                         mb={{ base: 8, md: 12 }}
@@ -80,35 +81,35 @@ export default function InTheNews(props: InTheNewsProps) {
                 )}
                 <InTheNewsCarousel items={props.data} />
                 <Flex
-                    display={{ base: 'none', lg: 'flex' }}
+                    display={{ base: "none", lg: "flex" }}
                     justifyContent="space-around"
                     gridGap={12}
-                    flexDir={{ base: 'column', md: 'row' }}
+                    flexDir={{ base: "column", md: "row" }}
                 >
                     {props.data.map((item) => {
-                        return <InTheNewsArticle key={item.id} item={item} />
+                        return <InTheNewsArticle key={item.id} item={item} />;
                     })}
                 </Flex>
             </Flex>
         </Box>
-    )
+    );
 }
 
 function BackgroundComponent() {
     return (
         <>
             <Box
-                position={'absolute'}
-                top={'0'}
-                left={'0'}
-                right={'0'}
-                bottom={'0'}
+                position={"absolute"}
+                top={"0"}
+                left={"0"}
+                right={"0"}
+                bottom={"0"}
                 backgroundImage="url('crinkled-paper.png')"
                 backgroundRepeat="no-repeat"
                 backgroundSize="cover"
-                backgroundPosition={'center top'}
+                backgroundPosition={"center top"}
             />
-            <Box
+            {/* <Box
                 position="absolute"
                 top={0}
                 left={0}
@@ -131,7 +132,7 @@ function BackgroundComponent() {
                 backgroundImage="url('news-desktop-right.png')"
                 backgroundRepeat="no-repeat"
                 backgroundPosition="right bottom"
-            />
+            /> */}
         </>
-    )
+    );
 }
