@@ -1,4 +1,4 @@
-service: dev-gamechangers-backend
+service: gamechangers-backend-dev
 frameworkVersion: "3"
 useDotenv: true
 
@@ -13,7 +13,7 @@ custom:
 provider:
     name: aws
     runtime: nodejs18.x
-    stage: dev
+    stage: development
     versionFunctions: false
     httpApi:
         cors: true

@@ -73,8 +73,11 @@ export const generatePresignedURL: Handler = async (
 		};
 	}
 
-	const { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION } =
-		process.env;
+	const {
+		ACCESS_KEY_ID: AWS_ACCESS_KEY_ID,
+		SECRET_ACCESS_KEY: AWS_SECRET_ACCESS_KEY,
+		REGION: AWS_REGION,
+	} = process.env;
 
 	const s3 = new S3({
 		region: AWS_REGION,
