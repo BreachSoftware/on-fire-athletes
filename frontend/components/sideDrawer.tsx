@@ -7,7 +7,6 @@ import {
     Text,
     Grid,
     Flex,
-    useBreakpointValue,
     Divider,
     Box,
     Button,
@@ -110,20 +109,12 @@ function SideDrawer(props: SideDrawerProps) {
     const leftHeaderColor = "green.100";
     const headerFont = "Barlow Condensed";
     const headerWeight = 600;
-    const headerFontSize =
-        useBreakpointValue({ base: "16px", lg: "20px" }) || "20px";
     const headerSpacing = "0.4px";
-    const headerLineHeight =
-        useBreakpointValue({ base: "18px", lg: "24px" }) || "20px";
 
     const subHeaderColor = "white";
     const subHeaderFont = "Barlow Semi Condensed";
     const subHeaderSpacing = "1.68px";
     const subHeaderWeight = 600;
-    const subHeaderFontSize =
-        useBreakpointValue({ base: "18px", lg: "28px" }) || "20px";
-    const subHeaderLineHeight =
-        useBreakpointValue({ base: "20px", lg: "34px" }) || "24px";
 
     const primaryBackgroundColor = "green.100"; // Background color for drawer right
     const secondaryBackgroundColor = "#171C1B"; // Linear gradient for drawer left
@@ -170,7 +161,7 @@ function SideDrawer(props: SideDrawerProps) {
                                 <Text
                                     color={leftHeaderColor}
                                     fontFamily={headerFont}
-                                    fontSize={headerFontSize}
+                                    fontSize={{ base: "16px", lg: "20px" }}
                                     letterSpacing={headerSpacing}
                                     fontWeight={headerWeight}
                                     textTransform={"uppercase"}
@@ -215,7 +206,7 @@ function SideDrawer(props: SideDrawerProps) {
                         overflowY="scroll"
                         w="100%"
                     >
-                        <DrawerBody h="100%">
+                        <DrawerBody px="40px" h="100%">
                             {/* Nav Menu */}
                             <Flex
                                 flexDirection={"column"}
@@ -228,7 +219,7 @@ function SideDrawer(props: SideDrawerProps) {
                                     alignSelf={"center"}
                                     height={"100%"}
                                     py={{ base: "32px", md: "80px" }}
-                                    w="90%"
+                                    w="100%"
                                 >
                                     {/* Smaller groupings of each nav section */}
                                     {navItems.map((navItem, index) => {
@@ -249,15 +240,19 @@ function SideDrawer(props: SideDrawerProps) {
                                                 <Text
                                                     color={rightHeaderColor}
                                                     fontFamily={headerFont}
-                                                    fontSize={headerFontSize}
+                                                    fontSize={{
+                                                        base: "16px",
+                                                        lg: "20px",
+                                                    }}
                                                     letterSpacing={
                                                         headerSpacing
                                                     }
                                                     fontWeight={headerWeight}
                                                     textTransform={"uppercase"}
-                                                    lineHeight={
-                                                        headerLineHeight
-                                                    }
+                                                    lineHeight={{
+                                                        base: "18px",
+                                                        lg: "24px",
+                                                    }}
                                                 >
                                                     {navItem.header}
                                                 </Text>
@@ -296,9 +291,10 @@ function SideDrawer(props: SideDrawerProps) {
                                                                         fontFamily={
                                                                             subHeaderFont
                                                                         }
-                                                                        fontSize={
-                                                                            subHeaderFontSize
-                                                                        }
+                                                                        fontSize={{
+                                                                            base: "18px",
+                                                                            lg: "28px",
+                                                                        }}
                                                                         fontWeight={
                                                                             subHeaderWeight
                                                                         }
@@ -308,9 +304,10 @@ function SideDrawer(props: SideDrawerProps) {
                                                                         textTransform={
                                                                             "uppercase"
                                                                         }
-                                                                        lineHeight={
-                                                                            subHeaderLineHeight
-                                                                        }
+                                                                        lineHeight={{
+                                                                            base: "20px",
+                                                                            lg: "34px",
+                                                                        }}
                                                                         // fancy underline animation on hover
                                                                         transition={
                                                                             "all 0.2s ease-in-out"
