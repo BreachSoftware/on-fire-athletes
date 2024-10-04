@@ -120,7 +120,12 @@ export default function CreationOverview() {
         >
             <HStack w="100%" h="100%" align="top">
                 <VStack w="100%" flexGrow={1} height="100%">
-                    <Flex w="100%" direction={"column"} h={"100px"}>
+                    <Flex
+                        w="100%"
+                        direction={"column"}
+                        h={"100px"}
+                        mb={{ base: 0, md: "48px" }}
+                    >
                         <NavBar />
                     </Flex>
                     <HStack
