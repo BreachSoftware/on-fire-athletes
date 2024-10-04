@@ -1,5 +1,5 @@
 "use client";
-
+import React from "react";
 import BuiltForAthletes from "@/components/built_for_athletes";
 import { Flex } from "@chakra-ui/react";
 import { Box } from "@chakra-ui/react";
@@ -27,24 +27,24 @@ export default function Index() {
     const inTheNewsData = [
         {
             id: 1,
-            imageUrl: "in_the_news/news1.jpeg",
-            headline: "Headline Here",
+            imageUrl: "in_the_news/news1.png",
+            headline: "ONFIRE Athletes Launches!",
             description:
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                "ONFIRE Athletes, Powered by Game Coin, Revolutionizes Sports Legacy.",
         },
         {
             id: 2,
-            imageUrl: "in_the_news/news2.jpeg",
-            headline: "Headline Here",
+            imageUrl: "in_the_news/news2.png",
+            headline: "What are “AR” Cards?",
             description:
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                "ONFIRE Athletes uses Augmented Reality (AR) to bring your sports card to life!",
         },
         {
             id: 3,
-            imageUrl: "in_the_news/news3.jpeg",
-            headline: "Headline Here",
+            imageUrl: "in_the_news/news3.png",
+            headline: "What sparked ONFIRE?",
             description:
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                "Eliminate barriers. Level the playing field. Set the current sports narrative on fire!",
         },
         // ...other news items
     ];
