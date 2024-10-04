@@ -398,7 +398,7 @@ export default function ProfileAlbumTab(props: ProfileAlbumProps) {
                                         w={{ base: "100%", md: "331px" }}
                                         aspectRatio={2 / 3}
                                         borderRadius="20px"
-                                        gridGap={{ base: "8px", md: "24px" }}
+                                        gridGap={{ base: "8px", md: "16px" }}
                                         direction="column"
                                         align="center"
                                         mt={{ sm: "50px" }}
