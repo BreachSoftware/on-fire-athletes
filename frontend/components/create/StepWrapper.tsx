@@ -89,15 +89,35 @@ class CardSubmissionError extends Error {
 async function generateCardImage(
     ref: React.RefObject<HTMLDivElement>,
     mask: string,
+    label?: string,
 ): Promise<string> {
     if (!ref.current) {
         throw new CardSubmissionError("Card reference is null");
     }
 
-    const canvas = await html2canvas(ref.current, {
-        backgroundColor: null,
+    // Create an off-screen container
+    const offScreen = document.createElement("div");
+    offScreen.style.position = "absolute";
+    offScreen.style.left = "-9999px";
+    offScreen.style.width = "350px";
+    offScreen.style.height = label === "cardBack" ? "527px" : "525px";
+
+    // Clone the content into the off-screen container
+    const clonedContent = ref.current.cloneNode(true) as HTMLElement;
+    offScreen.appendChild(clonedContent);
+    document.body.appendChild(offScreen);
+
+    const canvas = await html2canvas(offScreen, {
+        width: 350,
+        height: 525,
         scale: 2,
+        useCORS: true,
+        logging: true,
     });
+
+    // Restore original styles
+    // div.style.cssText = originalStyles;
+
     const imageBase64 = canvas.toDataURL("image/png", 1.0);
     const resizedMask = await resize(mask, 700, null);
     return maskImageToCard(imageBase64, resizedMask);
@@ -129,14 +149,14 @@ async function generateCardImages(
         cardBackgroundImageBase64,
         cardBackImageBase64,
     ] = await Promise.all([
-        generateCardImage(entireCardRef, CardMask.src),
+        generateCardImage(entireCardRef, CardMask.src, "entireCard"),
         foregroundRef.current
-            ? generateCardImage(foregroundRef, CardMask.src)
+            ? generateCardImage(foregroundRef, CardMask.src, "foreground")
             : Promise.resolve(""),
         backgroundRef.current
-            ? generateCardImage(backgroundRef, CardMask.src)
+            ? generateCardImage(backgroundRef, CardMask.src, "background")
             : Promise.resolve(""),
-        generateCardImage(cardBackRef, CardMaskReverse.src),
+        generateCardImage(cardBackRef, CardMaskReverse.src, "cardBack"),
     ]);
 
     return {
