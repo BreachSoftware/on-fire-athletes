@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
+    Box,
     Flex,
     IconButton,
     Text,
@@ -228,7 +229,7 @@ export default function TrendingCard({
     return (
         <VStack flex={1}>
             {onProfilePage ? (
-                <>
+                <Box h="full" width="full">
                     <Link
                         activeClass="active"
                         to="cardElement"
@@ -247,7 +248,7 @@ export default function TrendingCard({
                             onFireCardRef={onFireCardRef}
                         />
                     </Link>
-                </>
+                </Box>
             ) : (
                 <>
                     {/* Locker Room Trading cards will have slightly bigger backgrounds. */}
