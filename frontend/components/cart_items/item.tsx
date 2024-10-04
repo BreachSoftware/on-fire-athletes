@@ -88,6 +88,7 @@ export default function Item({
 								<OnFireCard
 									key={card!.uuid}
 									card={card!}
+									slim
 									showButton={false}
 								/>
 							</Box> :
