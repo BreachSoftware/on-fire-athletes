@@ -380,12 +380,7 @@ export default function ProfileAlbumTab(props: ProfileAlbumProps) {
                 <Box w="full">
                     <Collapse in={viewCardClicked} animateOpacity>
                         <Box w="full">
-                            <Flex
-                                direction="column"
-                                w="full"
-                                align="center"
-                                mt="-50px"
-                            >
+                            <Flex direction="column" w="full" align="center">
                                 <Flex
                                     w="max-content"
                                     borderRadius="10px"
@@ -395,20 +390,15 @@ export default function ProfileAlbumTab(props: ProfileAlbumProps) {
                                 >
                                     {/* Container for the Card */}
                                     <Flex
-                                        w={{ base: "100%", md: "331px" }}
+                                        w={{ base: "100%", md: "324px" }}
                                         aspectRatio={2 / 3}
                                         borderRadius="20px"
                                         gridGap={{ base: "8px", md: "16px" }}
                                         direction="column"
                                         align="center"
-                                        mt={{ sm: "50px" }}
-                                        mb="24px"
+                                        mb={{ base: "24px", md: "none" }}
                                         position="relative"
                                     >
-                                        <Element
-                                            name="cardElement"
-                                            className="element"
-                                        />
                                         <Box
                                             position="relative"
                                             w="full"
@@ -418,6 +408,10 @@ export default function ProfileAlbumTab(props: ProfileAlbumProps) {
                                                 md: "none",
                                             }}
                                         >
+                                            <Element
+                                                name="cardElement"
+                                                className="element"
+                                            />
                                             <OnFireCard
                                                 key={currentCard.uuid}
                                                 slim
