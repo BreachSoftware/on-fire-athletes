@@ -7,7 +7,6 @@ import {
     ModalCloseButton,
     ModalContent,
     ModalOverlay,
-    VStack,
     useToast,
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
@@ -145,42 +144,41 @@ export default function LoginModal(props: LoginModalProps) {
             onClose={props.onClose}
             size="4xl"
             isCentered
+            scrollBehavior="inside"
         >
             <ModalOverlay backdropFilter="blur(5px) hue-rotate(10deg)" />
             <ModalContent
                 borderRadius={"1rem"}
-                w={{ base: "90%", sm: "90%", md: "37%" }}
                 bgColor="#171C1B"
+                w={{ base: "95%", md: "auto" }}
             >
-                <ModalCloseButton />
-                <ModalBody>
-                    <VStack borderRadius={"1rem"} w={"100%"} padding={3}>
-                        {showSignIn ? (
-                            <>
-                                <LoginUI
-                                    signInClicked={signInClicked}
-                                    onClick={() => {
-                                        setShowSignIn(false);
-                                    }}
-                                    router={router}
-                                    onProfile={true}
-                                    modal
-                                />
-                            </>
-                        ) : (
-                            <>
-                                <SignUpUI
-                                    onClick={() => {
-                                        setShowSignIn(true);
-                                    }}
-                                    confirmEmail={confirmEmail}
-                                    auth={auth}
-                                    onProfile={true}
-                                    modal
-                                />
-                            </>
-                        )}
-                    </VStack>
+                <ModalCloseButton color="white" />
+                <ModalBody pt={{ base: "24px", md: "48px" }}>
+                    {showSignIn ? (
+                        <>
+                            <LoginUI
+                                signInClicked={signInClicked}
+                                onClick={() => {
+                                    setShowSignIn(false);
+                                }}
+                                router={router}
+                                onProfile={true}
+                                modal
+                            />
+                        </>
+                    ) : (
+                        <>
+                            <SignUpUI
+                                onClick={() => {
+                                    setShowSignIn(true);
+                                }}
+                                confirmEmail={confirmEmail}
+                                auth={auth}
+                                onProfile={true}
+                                modal
+                            />
+                        </>
+                    )}
                 </ModalBody>
             </ModalContent>
         </Modal>

@@ -34,6 +34,7 @@ export default function LoginUI({
     signInClicked,
     onClick,
     router,
+    modal,
     onProfile,
 }: LoginUIProps) {
     const [email, setEmail] = useState("");
@@ -96,7 +97,7 @@ export default function LoginUI({
             w="100%"
             alignItems="center"
             h="full"
-            px="24px"
+            px={modal ? "0px" : "24px"}
         >
             {/* Centering the child login modal */}
             <Flex width={"100%"} justifyContent={"center"} mb={6}>
@@ -104,8 +105,8 @@ export default function LoginUI({
                 <VStack
                     backgroundColor={"gray.1000"}
                     borderRadius={13}
-                    p={{ base: "20px", md: onProfile ? "4px" : "52px" }}
-                    pb={{ base: "20px", md: onProfile ? "4px" : "63px" }}
+                    p={{ base: "20px", md: onProfile ? "16px" : "52px" }}
+                    pb={{ base: "20px", md: onProfile ? "16px" : "63px" }}
                     style={{
                         filter: onProfile
                             ? ""

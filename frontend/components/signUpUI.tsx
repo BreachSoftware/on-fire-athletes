@@ -44,6 +44,7 @@ interface SignUpUIProps {
 export default function SignUpUI({
     onClick,
     confirmEmail,
+    modal,
     auth,
     onProfile,
 }: SignUpUIProps) {
@@ -295,17 +296,17 @@ export default function SignUpUI({
             direction="column"
             w="100%"
             h="full"
-            px="24px"
+            px={modal ? "0px" : "24px"}
             alignItems="center"
         >
             {/* Centering the child sign up modal */}
-            <Flex width={"100%"} justifyContent={"center"} mb={6}>
+            <Flex width={"100%"} justifyContent={"center"} mb={modal ? 0 : 6}>
                 {/* The sign up modal */}
                 <VStack
                     backgroundColor={"gray.1000"}
                     borderRadius={13}
-                    p={{ base: "20px", md: onProfile ? "4px" : "52px" }}
-                    pb={{ base: "20px", md: onProfile ? "4px" : "63px" }}
+                    p={{ base: "20px", md: onProfile ? "16px" : "52px" }}
+                    pb={{ base: "20px", md: onProfile ? "16px" : "63px" }}
                     style={{
                         filter: onProfile
                             ? ""
