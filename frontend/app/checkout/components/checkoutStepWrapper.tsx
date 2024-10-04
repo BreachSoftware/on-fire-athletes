@@ -375,26 +375,6 @@ export default function CheckoutStepWrapper({
                                                     },
                                                 );
 
-                                                // create an event listener to wait for the button to be clicked so the next button can stop loading
-                                                addEventListener(
-                                                    "savedDetailsSuccess",
-                                                    () => {
-                                                        setIsLoading(false);
-                                                        // Go to the end of the checkout process after it gets processed
-                                                        curCheckout.setCheckout(
-                                                            {
-                                                                ...checkout,
-                                                                stepNum:
-                                                                    checkoutSteps.length -
-                                                                    1,
-                                                                visitedSteps:
-                                                                    checkoutSteps.length -
-                                                                    1,
-                                                            },
-                                                        );
-                                                    },
-                                                );
-
                                                 setHasAddedListeners(true);
                                             }
                                         } else {

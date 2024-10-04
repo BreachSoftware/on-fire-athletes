@@ -1,12 +1,19 @@
 "use client";
 
-import { FC, ReactNode, createContext, useContext, useState } from "react";
+import {
+    FC,
+    ReactNode,
+    createContext,
+    useContext,
+    useEffect,
+    useState,
+} from "react";
 import CheckoutInfo from "@/hooks/CheckoutInfo";
 
 // The properties of the useCurrentCheckout hook
 export interface useCheckoutProperties {
-	checkout: CheckoutInfo;
-	setCheckout: (newCheckout: CheckoutInfo) => void;
+    checkout: CheckoutInfo;
+    setCheckout: (newCheckout: CheckoutInfo) => void;
 }
 
 type Props = {
@@ -21,16 +28,15 @@ const currentCheckoutContext = createContext({} as useCheckoutProperties);
  * @returns The data to be used by the useCurrentCheckoutInfo hook
  */
 export function useCurrentCheckout() {
-	return useContext(currentCheckoutContext);
+    return useContext(currentCheckoutContext);
 }
-
 
 /**
  * The useCheckout hook is used to provide the data to the useCurrentCheckoutInfo hook
  * @returns The data to be used by the useCurrentCheckoutInfo hook
  */
 function useCheckout(): useCheckoutProperties {
-	const [ checkout, setCheckout ] = useState<CheckoutInfo>(new CheckoutInfo());
+    const [checkout, setCheckout] = useState<CheckoutInfo>(new CheckoutInfo());
 
 	return {
 		checkout: checkout,
@@ -38,6 +44,11 @@ function useCheckout(): useCheckoutProperties {
 	};
 }
 
+    return {
+        checkout: checkout,
+        setCheckout: setCheckout,
+    };
+}
 
 /**
  * The ProvideCheckout component is used to provide the data to the useCurrentCheckoutInfo hook
@@ -46,10 +57,10 @@ function useCheckout(): useCheckoutProperties {
  */
 // eslint-disable-next-line func-style
 export const ProvideCheckout: FC<Props> = ({ children }) => {
-	const checkoutData = useCheckout();
-	return(
-		<currentCheckoutContext.Provider value={checkoutData}>
-			{children}
-		</currentCheckoutContext.Provider>
-	);
+    const checkoutData = useCheckout();
+    return (
+        <currentCheckoutContext.Provider value={checkoutData}>
+            {children}
+        </currentCheckoutContext.Provider>
+    );
 };

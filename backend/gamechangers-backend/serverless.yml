@@ -1,4 +1,4 @@
-service: gamechangers-backend
+service: dev-gamechangers-backend
 frameworkVersion: "3"
 useDotenv: true
 
