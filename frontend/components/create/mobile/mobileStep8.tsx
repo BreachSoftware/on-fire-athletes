@@ -75,7 +75,7 @@ export default function MobileStep8() {
     return (
         <HStack key="20" width={"100%"} overflowX="auto" paddingBottom={"10px"}>
             {/* Using a map function to generate 6 vertical photo placeholders */}
-            {Array.from({ length: 20 }, (_, i) => {
+            {Array.from({ length: CARD_BACKGROUNDS.length }, (_, i) => {
                 return backgroundSelector(i);
             })}
         </HStack>
