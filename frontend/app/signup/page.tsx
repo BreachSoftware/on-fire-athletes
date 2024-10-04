@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 "use client";
-
+import React from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { Flex, useBreakpointValue, useToast } from "@chakra-ui/react";
 import { useEffect, useState } from "react";

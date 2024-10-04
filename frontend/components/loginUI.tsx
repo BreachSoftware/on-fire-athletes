@@ -34,7 +34,6 @@ export default function LoginUI({
     signInClicked,
     onClick,
     router,
-    modal,
     onProfile,
 }: LoginUIProps) {
     const [email, setEmail] = useState("");

@@ -1,4 +1,5 @@
 /* eslint-disable no-undef */
+import React from "react";
 // This disable is needed for the React.KeyboardEvent<HTMLInputElement> type
 import { useAuthProps } from "@/hooks/useAuth";
 import {
