@@ -398,23 +398,35 @@ export default function ProfileAlbumTab(props: ProfileAlbumProps) {
                                         w={{ base: "100%", md: "331px" }}
                                         aspectRatio={2 / 3}
                                         borderRadius="20px"
-                                        gridGap="24px"
+                                        gridGap={{ base: "8px", md: "24px" }}
                                         direction="column"
                                         align="center"
                                         mt={{ sm: "50px" }}
+                                        mb="24px"
+                                        position="relative"
                                     >
                                         <Element
                                             name="cardElement"
                                             className="element"
                                         />
-                                        <OnFireCard
-                                            key={currentCard.uuid}
-                                            slim
-                                            card={currentCard}
-                                            showButton={false}
-                                            ref={onFireCardRef}
-                                            shouldFlipOnClick
-                                        />
+                                        <Box
+                                            position="relative"
+                                            w="full"
+                                            h="full"
+                                            transform={{
+                                                base: "scale(0.775)",
+                                                md: "none",
+                                            }}
+                                        >
+                                            <OnFireCard
+                                                key={currentCard.uuid}
+                                                slim
+                                                card={currentCard}
+                                                showButton={false}
+                                                ref={onFireCardRef}
+                                                shouldFlipOnClick
+                                            />
+                                        </Box>
                                         <CardDropShadow />
                                     </Flex>
                                     <Flex w="100px" h="100%" />
