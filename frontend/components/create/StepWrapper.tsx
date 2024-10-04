@@ -298,20 +298,24 @@ export async function submitCardWithAuth({
 
         console.log("cardImages", cardImages);
 
-        currentInfo.setCurCard({
+        const newCardData = {
             ...currentInfo.curCard,
             ...cardUrls,
+            cardImage: cardUrls.cardS3URL,
+            cardBackS3URL: cardUrls.cardBackS3URL,
             submitted: true,
             paymentStatus: PaymentStatus.PENDING,
             tradeStatus: TradeStatus.TRADE_ONLY,
-        });
+        };
+
+        currentInfo.setCurCard(newCardData);
 
         if (userID) {
-            await updateUserProfile(userID, currentInfo.curCard);
-            await TradingCardInfo.submitCard(currentInfo.curCard, userID);
+            await updateUserProfile(userID, newCardData);
+            await TradingCardInfo.submitCard(newCardData, userID);
             return SubmitResult.GoToCheckout;
         }
-        TradingCardInfo.saveCard(currentInfo.curCard);
+        TradingCardInfo.saveCard(newCardData);
         return SubmitResult.GoToSignup;
     } catch (error) {
         console.error("Card submission failed:", error);

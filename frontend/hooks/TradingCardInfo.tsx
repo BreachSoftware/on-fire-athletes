@@ -316,27 +316,13 @@ export default class TradingCardInfo {
         myHeaders.append("Content-Type", "application/json");
 
         // Check if the front photo S3 URL is empty, if it is, use the front photo URL
-        if (
-            cardInfo.frontPhotoS3URL === undefined ||
-            cardInfo.frontPhotoS3URL === ""
-        ) {
-            if (
-                cardInfo.frontPhotoURL !== undefined &&
-                cardInfo.frontPhotoURL !== ""
-            ) {
-                cardInfo.frontPhotoS3URL = cardInfo.frontPhotoURL;
-            }
+        if (!cardInfo.frontPhotoS3URL && cardInfo.frontPhotoURL) {
+            cardInfo.frontPhotoS3URL = cardInfo.frontPhotoURL;
         }
 
         // Check if the back video S3 URL is empty, if it is, use the back video URL
-        if (
-            cardInfo.backVideoS3URL === undefined ||
-            cardInfo.backVideoS3URL === ""
-        ) {
-            if (
-                cardInfo.backVideoURL !== undefined &&
-                cardInfo.backVideoURL !== ""
-            ) {
+        if (!cardInfo.backVideoS3URL) {
+            if (cardInfo.backVideoURL) {
                 cardInfo.backVideoS3URL = cardInfo.backVideoURL;
             } else {
                 cardInfo.backVideoS3URL =
@@ -345,16 +331,8 @@ export default class TradingCardInfo {
         }
 
         // Check if the card back image S3 URL is empty, if it is, use the card back image URL
-        if (
-            cardInfo.cardBackS3URL === undefined ||
-            cardInfo.cardBackS3URL === ""
-        ) {
-            if (
-                cardInfo.cardBackS3URL !== undefined &&
-                cardInfo.cardBackS3URL !== ""
-            ) {
-                cardInfo.cardBackS3URL = cardInfo.cardBackS3URL;
-            }
+        if (!cardInfo.cardBackS3URL && cardInfo.cardBackS3URL) {
+            cardInfo.cardBackS3URL = cardInfo.cardBackS3URL;
         }
 
         let frontPhotoS3URL = cardInfo.frontPhotoS3URL;
@@ -382,20 +360,17 @@ export default class TradingCardInfo {
             );
 
             // replace image url with the new url the update succeeded
-            if (newURLs.cardImage !== undefined && newURLs.cardImage !== "") {
+            if (newURLs.cardImage) {
                 frontPhotoS3URL = `https://onfireathletes-media-uploads.s3.amazonaws.com/${newURLs.cardImage}`;
             }
 
             // replace video url with the new url the update succeeded
-            if (newURLs.video !== undefined && newURLs.video !== "") {
+            if (newURLs.video) {
                 backVideoS3URL = `https://onfireathletes-media-uploads.s3.amazonaws.com/${newURLs.video}`;
             }
 
             // replace card back image url with the new url the update succeeded
-            if (
-                newURLs.cardBackImage !== undefined &&
-                newURLs.cardBackImage !== ""
-            ) {
+            if (newURLs.cardBackImage) {
                 cardBackImageS3URL = `https://onfireathletes-media-uploads.s3.amazonaws.com/${newURLs.cardBackImage}`;
             }
         }
@@ -511,10 +486,10 @@ export default class TradingCardInfo {
                 })
                 .then((result) => {
                     returnVal.cardImage =
-                        result.cardImage !== "" ? result.cardImage : "";
-                    returnVal.video = result.video !== "" ? result.video : "";
+                        result.cardImage || returnVal.cardImage;
+                    returnVal.video = result.video || returnVal.video;
                     returnVal.cardBackImage =
-                        result.cardBackImage !== "" ? result.cardBackImage : "";
+                        result.cardBackImage || returnVal.cardBackImage;
 
                     return returnVal;
                 })
