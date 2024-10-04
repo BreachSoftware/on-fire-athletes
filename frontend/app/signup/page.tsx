@@ -247,7 +247,7 @@ export default function SignUp() {
             {/* Main content layout */}
             <Flex
                 w="100%"
-                h={{ base: "100%", md: "100vh" }}
+                h={{ base: "100dvh", md: "100vh" }}
                 justify="flex-start"
                 direction="row-reverse"
                 bgImage="darkpaper.png"

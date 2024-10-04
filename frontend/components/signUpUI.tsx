@@ -290,21 +290,28 @@ export default function SignUpUI({
 
     return (
         // Ensure the entire page is a flex column
-        <Flex direction="column" w="100%">
+        <Flex
+            direction="column"
+            w="100%"
+            h="full"
+            px="24px"
+            alignItems="center"
+        >
             {/* Centering the child sign up modal */}
-            <Flex width={"100%"} justifyContent={"center"}>
+            <Flex width={"100%"} justifyContent={"center"} mb={6}>
                 {/* The sign up modal */}
                 <VStack
                     backgroundColor={"gray.1000"}
                     borderRadius={13}
-                    p={{ md: onProfile ? "4px" : "52px" }}
-                    pb={{ base: "24px", md: onProfile ? "4px" : "63px" }}
+                    p={{ base: "20px", md: onProfile ? "4px" : "52px" }}
+                    pb={{ base: "20px", md: onProfile ? "4px" : "63px" }}
                     style={{
                         filter: onProfile
                             ? ""
                             : "drop-shadow(0px 3px 16px #000000C7)",
                     }}
-                    w="calc(100% - 48px)"
+                    w="full"
+                    h="fit-content"
                     maxW="964px"
                 >
                     {!showCode ? (
@@ -321,7 +328,7 @@ export default function SignUpUI({
                                 marginBottom={5}
                                 fontStyle="italic"
                             >
-                                Create an Account
+                                Create Account
                             </Heading>
                             {/* Grid for the input boxes */}
                             <Grid
@@ -526,27 +533,29 @@ export default function SignUpUI({
             {!showCode && (
                 <Flex
                     width="100%"
-                    height={{ base: "100%", md: "20%" }}
+                    maxW="964px"
+                    h="fit-content"
                     justifyContent="center"
                     marginTop={{ md: "46px" }}
                     marginBottom={onProfile ? 1 : 5}
-                    _hover={{ cursor: "pointer" }}
-                    onClick={onClick}
                 >
                     <Flex
                         backgroundColor="gray.1000"
                         borderColor={"#171C1B"}
                         borderRadius={13}
                         align={"center"}
+                        w="full"
                         justifyContent={"center"}
                         gap="18px"
-                        px={{ md: "50px" }}
-                        py={{ md: "24px" }}
+                        px={{ base: "24px", md: "50px" }}
+                        py={{ base: "16px", md: "24px" }}
                         style={{
                             filter: onProfile
                                 ? ""
                                 : "drop-shadow(0px 3px 16px #000000C7)",
                         }}
+                        _hover={{ cursor: "pointer" }}
+                        onClick={onClick}
                     >
                         <Text
                             fontWeight="bold"
