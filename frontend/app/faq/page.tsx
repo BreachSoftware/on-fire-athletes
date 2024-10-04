@@ -1,15 +1,15 @@
-'use client'
+"use client";
 
-import { Flex, Box } from '@chakra-ui/react'
-import NavBar from '../navbar'
-import Sidebar from '@/components/sidebar'
-import FAQAccordion from './components/faq_accordion'
-import { useEffect, useState } from 'react'
-import { BackToCheckoutModal } from '../components/BackToCheckoutModal'
-import Footer from '../components/footer'
-import SharedStack from '@/components/shared/wrappers/shared-stack'
-import { FAQ_CATEGORIES } from './components/faq_constants'
-import FAQHeader from './components/faq_header'
+import { Flex, Box } from "@chakra-ui/react";
+import NavBar from "../navbar";
+import Sidebar from "@/components/sidebar";
+import FAQAccordion from "./components/faq_accordion";
+import { useEffect, useRef, useState } from "react";
+import { BackToCheckoutModal } from "../components/BackToCheckoutModal";
+import Footer from "../components/footer";
+import SharedStack from "@/components/shared/wrappers/shared-stack";
+import { FAQ_CATEGORIES } from "./components/faq_constants";
+import FAQHeader from "./components/faq_header";
 
 /**
  * FAQ page component.
@@ -17,32 +17,34 @@ import FAQHeader from './components/faq_header'
  */
 export default function FAQPage() {
     // state variable for selected category and item
-    const [selectedCategory, setSelectedCategory] = useState('The Platform')
+    const [selectedCategory, setSelectedCategory] = useState("The Platform");
     const [activeIndex, setActiveIndex] = useState<number | undefined>(
         undefined,
-    )
+    );
+
+    const faqAccordionContainerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const urlParams = new URLSearchParams(window.location.search)
-            const categoryParam = urlParams.get('category')
-            const itemParam = parseInt(urlParams.get('item') ?? '', 10)
+        if (typeof window !== "undefined") {
+            const urlParams = new URLSearchParams(window.location.search);
+            const categoryParam = urlParams.get("category");
+            const itemParam = parseInt(urlParams.get("item") ?? "", 10);
 
             const matchingCategory = categoryParam
                 ? Object.keys(FAQ_CATEGORIES).find((cat) => {
-                      return cat.toLowerCase() === categoryParam.toLowerCase()
+                      return cat.toLowerCase() === categoryParam.toLowerCase();
                   })
-                : undefined
+                : undefined;
 
             if (matchingCategory) {
-                setSelectedCategory(matchingCategory)
+                setSelectedCategory(matchingCategory);
             }
 
             if (!isNaN(itemParam)) {
-                setActiveIndex(itemParam)
+                setActiveIndex(itemParam);
             }
         }
-    }, [])
+    }, []);
 
     return (
         <SharedStack
@@ -50,9 +52,9 @@ export default function FAQPage() {
             h="100vh"
             overflowY="hidden"
             w="100%"
-            backgroundColor={'black'}
+            backgroundColor={"black"}
             backgroundImage={"url('/darkpaper.png')"}
-            backgroundRepeat={'repeat'}
+            backgroundRepeat={"repeat"}
         >
             <BackToCheckoutModal />
             {/* Main content */}
@@ -64,64 +66,64 @@ export default function FAQPage() {
                     justify="space-between"
                     gap={0}
                 >
-                    <Flex w="100%" direction={'column'} h="fit-content">
+                    <Flex w="100%" direction={"column"} h="fit-content">
                         <NavBar />
                     </Flex>
                     <FAQHeader
                         selectedCategory={selectedCategory}
                         setSelectedCategory={setSelectedCategory}
-                        display={{ base: 'flex', lg: 'none' }}
+                        display={{ base: "flex", lg: "none" }}
                         px="24px"
                         mt="24px"
                     />
                     <SharedStack
                         overflowY="scroll"
                         gap={0}
-                        px={{ base: '24px', lg: '72px' }}
-                        mt={{ base: '24px', lg: '40px' }}
+                        px={{ base: "24px", lg: "72px" }}
+                        mt={{ base: "24px", lg: "40px" }}
                         pb="40px"
                         h="full"
-                        __css={{ '::-webkit-scrollbar': { display: 'none' } }}
+                        __css={{ "::-webkit-scrollbar": { display: "none" } }}
+                        ref={faqAccordionContainerRef}
                     >
                         {/* Main FAQ content */}
                         <Flex
-                            direction={{ base: 'column', lg: 'row' }}
-                            alignItems={{ base: 'center', lg: 'flex-start' }}
-                            justifyContent={'center'}
-                            wrap={'wrap'}
-                            userSelect={'none'}
+                            direction={{ base: "column", lg: "row" }}
+                            alignItems={{ base: "center", lg: "flex-start" }}
+                            justifyContent={"center"}
+                            wrap={"wrap"}
+                            userSelect={"none"}
                             w="full"
-                            gap={{ lg: '168px' }}
+                            gap={{ lg: "168px" }}
                         >
                             <FAQHeader
                                 selectedCategory={selectedCategory}
                                 setSelectedCategory={setSelectedCategory}
-                                display={{ base: 'none', lg: 'flex' }}
+                                display={{ base: "none", lg: "flex" }}
                             />
                             {/* FAQ */}
                             <Flex
                                 w="full"
                                 flex={1}
-                                transition={'all 0.3s ease-in-out'}
-                                overflowY={'auto'}
+                                transition={"all 0.3s ease-in-out"}
                                 css={{
                                     // Getting rid of default scrollbar
-                                    msOverflowStyle: 'none',
+                                    msOverflowStyle: "none",
                                     // Creating custom scrollbar.
                                     // Unfortunately the colors from themes don't work here so you have to hard code
-                                    '&::-webkit-scrollbar': {
-                                        width: '0.75rem',
+                                    "&::-webkit-scrollbar": {
+                                        width: "0.75rem",
                                     },
-                                    '&::-webkit-scrollbar-track': {
-                                        backgroundColor: '#1E2423',
-                                        borderRadius: '5rem',
+                                    "&::-webkit-scrollbar-track": {
+                                        backgroundColor: "#1E2423",
+                                        borderRadius: "5rem",
                                     },
-                                    '&::-webkit-scrollbar-thumb': {
-                                        backgroundColor: '#2A302F',
-                                        borderRadius: '5rem',
+                                    "&::-webkit-scrollbar-thumb": {
+                                        backgroundColor: "#2A302F",
+                                        borderRadius: "5rem",
                                     },
-                                    '&::-webkit-scrollbar-thumb:hover': {
-                                        backgroundColor: '#363C3B',
+                                    "&::-webkit-scrollbar-thumb:hover": {
+                                        backgroundColor: "#363C3B",
                                     },
                                 }}
                             >
@@ -133,16 +135,34 @@ export default function FAQPage() {
                                     }
                                     activeIndex={activeIndex}
                                     setActiveIndex={setActiveIndex}
+                                    onBtnClick={(btn: HTMLElement) => {
+                                        setTimeout(
+                                            () =>
+                                                faqAccordionContainerRef.current?.scrollTo(
+                                                    {
+                                                        top: Math.max(
+                                                            btn.offsetTop -
+                                                                faqAccordionContainerRef
+                                                                    .current
+                                                                    ?.offsetTop,
+                                                            0,
+                                                        ),
+                                                        behavior: "smooth",
+                                                    },
+                                                ),
+                                            250, // Wait for the expanding animation to finish
+                                        );
+                                    }}
                                 />
                             </Flex>
                         </Flex>
                     </SharedStack>
                     <Footer />
                 </SharedStack>
-                <Box h="full" display={{ base: 'none', lg: 'initial' }}>
+                <Box h="full" display={{ base: "none", lg: "initial" }}>
                     <Sidebar />
                 </Box>
             </SharedStack>
         </SharedStack>
-    )
+    );
 }

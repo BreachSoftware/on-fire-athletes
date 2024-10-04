@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import { AddIcon, MinusIcon } from '@chakra-ui/icons'
+import { AddIcon, MinusIcon } from "@chakra-ui/icons";
 import {
     Accordion,
     AccordionButton,
@@ -10,26 +10,28 @@ import {
     Box,
     Flex,
     useBreakpointValue,
-} from '@chakra-ui/react'
+} from "@chakra-ui/react";
+import { useRef } from "react";
 
 // Props for the FAQ component
 interface FAQProps extends AccordionProps {
     data: {
-        title: string
-        content: string | string[]
-    }[]
-    activeIndex?: number
-    setActiveIndex: (index: number | undefined) => void
+        title: string;
+        content: string | string[];
+    }[];
+    activeIndex?: number;
+    setActiveIndex: (index: number | undefined) => void;
+    onBtnClick: (btn: HTMLElement) => void;
 }
 
 // Styling for the accordion
 const styling = {
-    backgroundColor: 'gray.800',
-    limeGreen: 'green.100',
-    buttonColor: 'white',
-    buttonExpandedColor: 'white',
-    textColor: 'white',
-}
+    backgroundColor: "gray.800",
+    limeGreen: "green.100",
+    buttonColor: "white",
+    buttonExpandedColor: "white",
+    textColor: "white",
+};
 
 /**
  * Accordion component containing the FAQ items.
@@ -37,58 +39,80 @@ const styling = {
  * @returns {JSX.Element} The FAQ accordion component.
  */
 export default function FAQAccordion(props: FAQProps) {
-    const { data, activeIndex, setActiveIndex, ...rest } = props
+    const { data, activeIndex, setActiveIndex, onBtnClick, ...rest } = props;
 
     // Check if the user is on a mobile device
-    const isMobile = useBreakpointValue({ base: true, lg: false })
+    const isMobile = useBreakpointValue({ base: true, lg: false });
+
+    const accRef = useRef<HTMLDivElement>(null);
 
     return (
         <>
             {/* Entire Accordion */}
             <Accordion
-                variant={'faq'}
+                ref={accRef}
+                variant={"faq"}
+                id="faq-accordion"
                 allowToggle
-                w={'100%'}
-                h={'100%'}
+                w={"100%"}
+                h={"100%"}
                 index={activeIndex}
                 onChange={(index) => {
                     setActiveIndex(
-                        typeof index === 'number' ? index : undefined,
-                    )
+                        typeof index === "number" ? index : undefined,
+                    );
                 }}
                 {...rest}
             >
                 {/* Seperate the Buttons */}
-                <Flex direction={'column'} gap={5}>
+                <Flex direction={"column"} gap={5}>
                     {data.map((item, index) => {
                         return (
-                            <AccordionItem key={index} border={'none'} w="full">
+                            <AccordionItem key={index} border={"none"} w="full">
                                 {({ isExpanded }) => {
+                                    const title = slugify(item.title);
+
                                     return (
                                         <>
-                                            <h2>
+                                            <h2
+                                                id={title}
+                                                // scroll to where the button is at the top of the page:
+                                                onClick={() => {
+                                                    const element =
+                                                        document.getElementById(
+                                                            title,
+                                                        );
+                                                    accRef.current?.scrollTo({
+                                                        top: element?.offsetTop,
+                                                        behavior: "smooth",
+                                                    });
+                                                    if (element) {
+                                                        onBtnClick(element);
+                                                    }
+                                                }}
+                                            >
                                                 {/* Each accordion button */}
                                                 <AccordionButton
                                                     position="relative"
-                                                    border={'solid'}
+                                                    border={"solid"}
                                                     borderWidth={5}
                                                     borderColor={
                                                         isExpanded
                                                             ? styling.limeGreen
                                                             : styling.backgroundColor
                                                     }
-                                                    borderBottom={'none'}
+                                                    borderBottom={"none"}
                                                     textColor={
                                                         isExpanded
                                                             ? styling.limeGreen
                                                             : styling.buttonColor
                                                     }
-                                                    padding={'15px'}
+                                                    padding={"15px"}
                                                     paddingLeft={{
-                                                        base: '20px',
-                                                        lg: '45px',
+                                                        base: "20px",
+                                                        lg: "45px",
                                                     }}
-                                                    minH={'75px'}
+                                                    minH={"75px"}
                                                     // if expanded, change hover styling
                                                     _hover={
                                                         isExpanded
@@ -104,8 +128,8 @@ export default function FAQAccordion(props: FAQProps) {
                                                                           : styling.buttonColor,
                                                                   fontWeight:
                                                                       isMobile
-                                                                          ? 'bold'
-                                                                          : 'normal',
+                                                                          ? "bold"
+                                                                          : "normal",
                                                               }
                                                             : {
                                                                   // Button is not expanded
@@ -115,28 +139,28 @@ export default function FAQAccordion(props: FAQProps) {
                                                                           : styling.limeGreen,
                                                                   fontWeight:
                                                                       isMobile
-                                                                          ? 'normal'
-                                                                          : 'bold',
+                                                                          ? "normal"
+                                                                          : "bold",
                                                                   borderColor:
                                                                       isMobile
                                                                           ? styling.backgroundColor
                                                                           : styling.limeGreen,
                                                               }
                                                     }
-                                                    transition={'all .3s ease'}
+                                                    transition={"all .3s ease"}
                                                 >
                                                     <Flex
-                                                        width={'100%'}
-                                                        align={'center'}
+                                                        width={"100%"}
+                                                        align={"center"}
                                                     >
                                                         <Box
                                                             flex="1"
                                                             textAlign="left"
                                                             fontWeight="bold"
                                                             paddingRight={
-                                                                '60px'
+                                                                "60px"
                                                             }
-                                                            fontSize={'18px'}
+                                                            fontSize={"18px"}
                                                         >
                                                             {item.title}
                                                         </Box>
@@ -145,20 +169,20 @@ export default function FAQAccordion(props: FAQProps) {
                                                         <Flex
                                                             position={
                                                                 isExpanded
-                                                                    ? 'absolute'
-                                                                    : 'relative'
+                                                                    ? "absolute"
+                                                                    : "relative"
                                                             }
                                                             top={0}
                                                             right={0}
-                                                            align={'center'}
-                                                            justify={'center'}
+                                                            align={"center"}
+                                                            justify={"center"}
                                                             backgroundColor={
                                                                 styling.limeGreen
                                                             }
                                                             width={10}
                                                             height={10}
                                                             transition={
-                                                                'all .3s ease'
+                                                                "all .3s ease"
                                                             }
                                                         >
                                                             {isExpanded ? (
@@ -183,26 +207,27 @@ export default function FAQAccordion(props: FAQProps) {
 
                                             {/* Accordion content */}
                                             <AccordionPanel
+                                                id={`${title}-panel`}
                                                 paddingLeft={{
-                                                    base: '20px',
-                                                    lg: '45px',
+                                                    base: "20px",
+                                                    lg: "45px",
                                                 }}
                                                 paddingRight={{
-                                                    base: '20px',
-                                                    lg: '60px',
+                                                    base: "20px",
+                                                    lg: "60px",
                                                 }}
                                                 paddingBottom={{
-                                                    base: '20px',
-                                                    lg: '40px',
+                                                    base: "20px",
+                                                    lg: "40px",
                                                 }}
-                                                border={'solid'}
+                                                border={"solid"}
                                                 borderWidth={5}
                                                 borderColor={styling.limeGreen}
-                                                borderTop={'none'}
+                                                borderTop={"none"}
                                                 color={styling.buttonColor}
                                             >
                                                 {typeof item.content ===
-                                                'string'
+                                                "string"
                                                     ? item.content
                                                     : item.content.map(
                                                           (content, index) => {
@@ -215,18 +240,26 @@ export default function FAQAccordion(props: FAQProps) {
                                                                   >
                                                                       {content}
                                                                   </Box>
-                                                              )
+                                                              );
                                                           },
                                                       )}
                                             </AccordionPanel>
                                         </>
-                                    )
+                                    );
                                 }}
                             </AccordionItem>
-                        )
+                        );
                     })}
                 </Flex>
             </Accordion>
         </>
-    )
+    );
+}
+
+function slugify(text: string) {
+    return text
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-zA-Z0-9]/g, "-")
+        .toLowerCase();
 }
