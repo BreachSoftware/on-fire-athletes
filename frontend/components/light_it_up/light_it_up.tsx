@@ -1,11 +1,11 @@
 /* eslint-disable max-len */
-import { Fragment } from 'react';
-import { Flex, Grid, Heading, GridItem, VStack } from '@chakra-ui/react';
-import LightItUpCard from './light_it_up_card';
-import { useAuth } from '@/hooks/useAuth';
-import LightItUpDivider from './divider';
-import { LightItUpSection } from './types';
-import LightItUpCarousel from './light_it_up_carousel';
+import { Fragment } from "react";
+import { Flex, Grid, Heading, GridItem, VStack } from "@chakra-ui/react";
+import LightItUpCard from "./light_it_up_card";
+import { useAuth } from "@/hooks/useAuth";
+import LightItUpDivider from "./divider";
+import { LightItUpSection } from "./types";
+import LightItUpCarousel from "./light_it_up_carousel";
 
 /**
  * LightItUpComponent displays a list of interactive sections, each with an image, overlay text,
@@ -23,36 +23,36 @@ export default function LightItUp() {
         // Array of interactive sections, each would typically have an id, image, imageOverlayText, title, description, buttonTitle, and buttonLink
         {
             id: 1,
-            videoUrl: 'ForAthletesPlayingCard.mp4',
-            imageOverlaySubtitle: 'FOR',
-            imageOverlayTitle: 'ATHLETES',
-            title: 'Create a Custom Card',
+            videoUrl: "ForAthletesPlayingCard.mp4",
+            imageOverlaySubtitle: "FOR",
+            imageOverlayTitle: "ATHLETES",
+            title: "Create a Custom Card",
             description:
-                'Create your custom Digital & Physical AR sports cards to Capture, Showcase, Trade & Sell your favorite sports moments.',
-            buttonTitle: 'START CREATING',
-            buttonLink: '/create',
+                "Create your custom Digital & Physical AR sports cards to Capture, Showcase, Trade & Sell your favorite sports moments.",
+            buttonTitle: "START CREATING",
+            buttonLink: "/create",
         },
         {
             id: 2,
-            videoUrl: 'ForFansLockerRoomonLaptopandPhone.mp4',
-            imageOverlaySubtitle: 'FOR',
-            imageOverlayTitle: 'FANS',
-            title: 'Shop the Marketplace',
+            videoUrl: "ForFansLockerRoomonLaptopandPhone.mp4",
+            imageOverlaySubtitle: "FOR",
+            imageOverlayTitle: "FANS",
+            title: "Shop the Marketplace",
             description:
                 "Find tomorrow's stars today in our “Locker Room.” Follow their journey and build a collection of sports cards which helps fund each athletes dreams.",
-            buttonTitle: 'START COLLECTING',
-            buttonLink: '/lockerroom',
+            buttonTitle: "START COLLECTING",
+            buttonLink: "/lockerroom",
         },
         {
             id: 3,
-            image: 'ForEveryoneFaninCirclev1.jpg',
-            imageOverlaySubtitle: 'FOR',
-            imageOverlayTitle: 'EVERYONE',
-            title: 'Win Prizes & Experiences',
+            videoUrl: "ForEveryoneFaninCircleFlashingLights.mp4",
+            imageOverlaySubtitle: "FOR",
+            imageOverlayTitle: "EVERYONE",
+            title: "Win Prizes & Experiences",
             description:
-                'Create and Collect for chances to win one-of-a-kind prizes such as memorabilia, apparel, gear, game tickets, exclusive experiences.',
-            buttonTitle: 'CREATE PROFILE',
-            buttonLink: auth.isAuthenticated ? '/profile' : '/signup',
+                "Create and Collect for chances to win one-of-a-kind prizes such as memorabilia, apparel, gear, game tickets, exclusive experiences.",
+            buttonTitle: "CREATE PROFILE",
+            buttonLink: auth.isAuthenticated ? "/profile" : "/signup",
         },
     ];
 
@@ -60,7 +60,7 @@ export default function LightItUp() {
         <Flex
             bgImage="darker-crinkled-paper.png"
             bgColor="gray.1300"
-            px={{ base: '24px', lg: '64px', '2xl': '100px' }}
+            px={{ base: "24px", lg: "64px", "2xl": "100px" }}
             minH="100vh"
             h="fit-content"
             flexDir="column"
@@ -68,7 +68,7 @@ export default function LightItUp() {
             alignItems="center"
             py="64px"
         >
-            <VStack gap={0} alignItems={'center'} mb={6}>
+            <VStack gap={0} alignItems={"center"} mb={6}>
                 <Heading
                     as="b"
                     size="xxl"
@@ -76,9 +76,9 @@ export default function LightItUp() {
                     textAlign="center"
                     fontFamily={"'Barlow Condensed', sans-serif"}
                     fontWeight={700}
-                    letterSpacing={'2.5px'}
-                    fontSize={{ base: '30px', lg: '38px', xl: '50px' }}
-                    lineHeight={{ base: '32px', lg: '42px', xl: '70px' }}
+                    letterSpacing={"2.5px"}
+                    fontSize={{ base: "30px", lg: "38px", xl: "50px" }}
+                    lineHeight={{ base: "32px", lg: "42px", xl: "70px" }}
                     textTransform="uppercase"
                 >
                     EVERY SPORT, ATHLETE, LEVEL, AND FAN
@@ -89,11 +89,11 @@ export default function LightItUp() {
                     textAlign="center"
                     fontFamily={"'Brotherhood', sans-serif"}
                     fontWeight={100}
-                    fontSize={{ base: '48px', xl: '80px' }}
-                    fontStyle={'normal'}
-                    lineHeight={{ base: 'auto', md: '66px', xl: '113px' }}
+                    fontSize={{ base: "48px", xl: "80px" }}
+                    fontStyle={"normal"}
+                    lineHeight={{ base: "auto", md: "66px", xl: "113px" }}
                     letterSpacing="4px"
-                    color={'green.100'}
+                    color={"green.100"}
                     height="100%"
                 >
                     LIGHT IT UP
@@ -104,10 +104,10 @@ export default function LightItUp() {
             {/* Grid of interactive sections for the desktop view */}
             <Grid
                 minW="100dvh"
-                display={{ base: 'none', lg: 'grid' }}
+                display={{ base: "none", lg: "grid" }}
                 gridTemplateColumns={{
-                    lg: '1fr 60px 1fr 60px 1fr',
-                    xl: '1fr 100px 1fr 100px 1fr',
+                    lg: "1fr 60px 1fr 60px 1fr",
+                    xl: "1fr 100px 1fr 100px 1fr",
                 }}
             >
                 {gameSections.map((section, index) => {
@@ -115,8 +115,8 @@ export default function LightItUp() {
                         <Fragment key={index}>
                             <GridItem>
                                 <LightItUpCard
-                                    image={section.image || ''}
-                                    videoUrl={section.videoUrl || ''}
+                                    image={section.image || ""}
+                                    videoUrl={section.videoUrl || ""}
                                     imageOverlayTitle={
                                         section.imageOverlayTitle
                                     }
@@ -134,7 +134,7 @@ export default function LightItUp() {
                             {index < gameSections.length - 1 && (
                                 <GridItem
                                     key={index + 1}
-                                    display={{ base: 'none', md: 'inline' }}
+                                    display={{ base: "none", md: "inline" }}
                                 >
                                     <LightItUpDivider />
                                 </GridItem>
