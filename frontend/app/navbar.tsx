@@ -435,6 +435,11 @@ export default function NavBar({
             >
                 <Flex
                     pt={{ base: "22px", md: "32px" }}
+                    pb={
+                        windowLocation === "/create/card_creation"
+                            ? "20px"
+                            : "0"
+                    }
                     align={"center"}
                     justify={"space-between"}
                     width={"100%"}
