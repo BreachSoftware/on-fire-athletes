@@ -12,18 +12,18 @@ import ContactForm from "./contactForm";
  */
 export default function Contact() {
     return (
-        <>
+        <Flex
+            w="full"
+            minH="100dvh"
+            justify="flex-start"
+            bgImage="darkpaper.png"
+            bgPosition="center"
+            bgRepeat="no-repeat"
+            bgSize="cover"
+        >
             {/* Main content layout */}
-            <Flex
-                w="full"
-                minH="100dvh"
-                justify="flex-start"
-                bgImage="darkpaper.png"
-                bgPosition="center"
-                bgRepeat="no-repeat"
-                bgSize="cover"
-            >
-                <Box flex={1} paddingBottom={{ base: 8, md: 16 }}>
+            <Flex w="100%" h="100%" flexDir="column">
+                <Box minH="100dvh" flex={1} paddingBottom={{ base: 8, md: 16 }}>
                     <NavBar />
                     <Flex
                         px={{ base: "24px", md: "72px" }}
@@ -48,14 +48,17 @@ export default function Contact() {
                         <ContactForm />
                     </Flex>
                 </Box>
-
-                <Box display={{ base: "none", lg: "inline" }}>
-                    <Sidebar />
-                </Box>
+                <Footer />
             </Flex>
-            {/* <Flex bgImage="crinkled-paper.png" bgPos="center" > */}
-            <Footer />
-            {/* </Flex> */}
-        </>
+            <Box
+                position="sticky"
+                top={0}
+                w="140px"
+                h="100dvh"
+                display={{ base: "none", md: "inline" }}
+            >
+                <Sidebar height="100dvh" />
+            </Box>
+        </Flex>
     );
 }
