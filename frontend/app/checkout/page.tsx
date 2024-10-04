@@ -1,14 +1,7 @@
 "use client";
-import {
-    Box,
-    Flex,
-    Grid,
-    GridItem,
-    HStack,
-    Spinner,
-    useBreakpointValue,
-    VStack,
-} from "@chakra-ui/react";
+import React from "react";
+
+import { Box, Flex, Grid, GridItem, Spinner, VStack } from "@chakra-ui/react";
 import NavBar from "../navbar";
 import Sidebar from "@/components/sidebar";
 import CheckoutHeader from "./components/checkoutHeader";
@@ -41,8 +34,6 @@ const STRIPE_PUBLIC_KEY =
  * @returns JSX.Element
  */
 export default function CheckoutPage() {
-    const screenTooSmall = useBreakpointValue({ base: true, lg: false });
-
     const [onFireCard, setOnFireCard] = useState<TradingCardInfo | null>(null);
     const [cardObtained, setCardObtained] = useState(false);
     const [showSpinner, setShowSpinner] = useState(false);
@@ -269,35 +260,25 @@ export default function CheckoutPage() {
 
     return (
         <RainbowKitProvider theme={darkTheme()}>
+            {/* The stepNum code is to account for running out of space in the large screen orientation */}
             <Flex
-                w={"100vw"}
-                minH={{ sm: "100vh" }}
+                flexDir="row"
+                w="100dvw"
+                minH="100dvh"
+                h={{ base: "fit-content", md: "100dvh" }}
                 bgGradient={
                     "linear(180deg, gray.1200 0%, gray.1300 100%) 0% 0% no-repeat padding-box;"
                 }
             >
-                {/* The stepNum code is to account for running out of space in the large screen orientation */}
-                <HStack
-                    w="100%"
-                    h={{
-                        base: "100%",
-                        lg: checkout.stepNum === 0 ? "145vh" : "100vh",
-                        xl: "100vh",
-                    }}
-                    align="top"
-                >
-                    <VStack
+                <Box w="full">
+                    <Flex
                         w="100%"
-                        h="100%"
-                        align="center"
-                        overflowX="hidden"
-                        overflowY="auto"
+                        direction={"column"}
+                        mb={{ base: "32px", md: "48px" }}
                     >
-                        <Flex w="100%" direction={"column"}>
-                            <NavBar
-                                cryptoWalletConnected={cryptoWalletConnected}
-                            />
-                        </Flex>
+                        <NavBar cryptoWalletConnected={cryptoWalletConnected} />
+                    </Flex>
+                    <Box>
                         {showSpinner ? (
                             <Box
                                 w="100%"
@@ -310,65 +291,78 @@ export default function CheckoutPage() {
                             </Box>
                         ) : checkout.stepNum === 0 ? (
                             // Placeholder for Select Your package Page
-                            <VStack width={"100%"}>
+                            <Box pb={{ base: "32px", md: "0" }}>
                                 <SelectYourPackage />
-                            </VStack>
+                            </Box>
                         ) : checkout.stepNum === 1 ? (
-                            <AllStarPrice />
-                        ) : screenTooSmall ? (
-                            <VStack
-                                w="100%"
-                                h="100%"
-                                gap="25px"
-                                align="top"
-                                paddingX={{ base: "25px", lg: "50px" }}
-                            >
-                                <CheckoutHeader />
-                                <CheckoutItemsInCart
-                                    items={itemsInCart}
-                                    buyingOtherCard={buyingOtherCard}
-                                />
-                                <Elements stripe={stripePromise}>
-                                    <CheckoutStepWrapper
-                                        onFireCard={onFireCard}
-                                        buyingOtherCard={buyingOtherCard}
-                                    />
-                                </Elements>
-                            </VStack>
+                            <Box w="full">
+                                <AllStarPrice />
+                            </Box>
                         ) : (
-                            <Grid
-                                templateAreas={`"header header" 
-													"itemsInCart stepWrapper"`}
-                                gridTemplateColumns={"0.4fr 1fr"}
-                                gap="6"
-                                fontWeight="bold"
-                                paddingX="50px"
-                                width={"100%"}
-                            >
-                                <GridItem area={"header"}>
+                            <>
+                                <VStack
+                                    w="100%"
+                                    h="100%"
+                                    gap="25px"
+                                    align="top"
+                                    color="white"
+                                    display={{ base: "flex", lg: "none" }}
+                                    px="24px"
+                                    pb="32px"
+                                >
                                     <CheckoutHeader />
-                                </GridItem>
-                                <GridItem area={"itemsInCart"}>
                                     <CheckoutItemsInCart
                                         items={itemsInCart}
                                         buyingOtherCard={buyingOtherCard}
                                     />
-                                </GridItem>
-                                <GridItem area={"stepWrapper"} w="100%">
                                     <Elements stripe={stripePromise}>
                                         <CheckoutStepWrapper
                                             onFireCard={onFireCard}
                                             buyingOtherCard={buyingOtherCard}
                                         />
                                     </Elements>
-                                </GridItem>
-                            </Grid>
+                                </VStack>
+                                <Grid
+                                    display={{ base: "none", lg: "grid" }}
+                                    templateAreas={`"header header" 
+													"itemsInCart stepWrapper"`}
+                                    gridTemplateColumns={"0.4fr 1fr"}
+                                    color="white"
+                                    gap="6"
+                                    fontWeight="bold"
+                                    paddingX="72px"
+                                    width={"100%"}
+                                >
+                                    <GridItem area={"header"}>
+                                        <CheckoutHeader />
+                                    </GridItem>
+                                    <GridItem area={"itemsInCart"}>
+                                        <CheckoutItemsInCart
+                                            items={itemsInCart}
+                                            buyingOtherCard={buyingOtherCard}
+                                        />
+                                    </GridItem>
+                                    <GridItem area={"stepWrapper"} w="100%">
+                                        <Elements stripe={stripePromise}>
+                                            <CheckoutStepWrapper
+                                                onFireCard={onFireCard}
+                                                buyingOtherCard={
+                                                    buyingOtherCard
+                                                }
+                                            />
+                                        </Elements>
+                                    </GridItem>
+                                </Grid>
+                            </>
                         )}
-                    </VStack>
-                    <Box display={{ base: "none", sm: "none", md: "inherit" }}>
-                        <Sidebar backgroundPresent />
                     </Box>
-                </HStack>
+                </Box>
+                <Box
+                    h="full"
+                    display={{ base: "none", sm: "none", md: "inherit" }}
+                >
+                    <Sidebar height="full" backgroundPresent />
+                </Box>
             </Flex>
         </RainbowKitProvider>
     );

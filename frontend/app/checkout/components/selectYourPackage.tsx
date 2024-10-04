@@ -1,3 +1,4 @@
+import React from "react";
 import { Button, Divider, Flex, Text } from "@chakra-ui/react";
 import { CheckIcon } from "@chakra-ui/icons";
 import { useCurrentCheckout } from "@/hooks/useCheckout";
@@ -77,7 +78,7 @@ export default function SelectYourPackage() {
             alignItems={"center"}
             flexDirection={"column"}
             userSelect={"none"}
-            paddingX={"40px"}
+            paddingX={{ base: "24px", md: "72px" }}
             marginTop={"-12.5px"}
         >
             {/* Header */}
@@ -95,10 +96,10 @@ export default function SelectYourPackage() {
 
             {/* Package Options */}
             <Flex
-                width={"100%"}
-                justifyContent={"center"}
-                marginTop={"10px"}
-                wrap={"wrap"}
+                width="100%"
+                wrap="wrap"
+                justifyContent="center"
+                marginTop="16px"
             >
                 {/* Package Box Component */}
                 {[RookieInfo, AllStarInfo, MVPInfo].map((pkg, index) => {
@@ -170,8 +171,7 @@ export default function SelectYourPackage() {
                                     fontFamily="Barlow Condensed"
                                     color="white"
                                     fontSize={{
-                                        base: "20px",
-                                        sm: "25px",
+                                        base: "24px",
                                         md: "30px",
                                         xl: "40px",
                                     }}
@@ -184,8 +184,7 @@ export default function SelectYourPackage() {
                                     fontFamily="Barlow Condensed"
                                     color="green.100"
                                     fontSize={{
-                                        base: "15px",
-                                        sm: "20px",
+                                        base: "24px",
                                         md: "25px",
                                         lg: "30px",
                                     }}
@@ -233,6 +232,7 @@ export default function SelectYourPackage() {
                                 {pkg.details.map((detail, index) => {
                                     return (
                                         <Flex
+                                            color="white"
                                             key={index}
                                             alignItems={"center"}
                                             gap={"10px"}
