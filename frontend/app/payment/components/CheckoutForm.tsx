@@ -19,7 +19,7 @@ export default function CheckoutForm({ buyCard }: CheckoutFormProps) {
     const elements = useElements();
     const curCheckout = useCurrentCheckout();
 
-    const { checkout, setCheckout } = curCheckout;
+    const { setCheckout } = curCheckout;
 
     // dispatch the Event on an interval to ensure that the button is never stuck perpetually loading
     setInterval(() => {
@@ -102,7 +102,6 @@ export default function CheckoutForm({ buyCard }: CheckoutFormProps) {
                     stepNum: checkoutSteps.length - 1,
                     visitedSteps: checkoutSteps.length - 1,
                 });
-                dispatchEvent(new Event("savedDetailsSuccess"));
             }
 
             // if (result === "success") {

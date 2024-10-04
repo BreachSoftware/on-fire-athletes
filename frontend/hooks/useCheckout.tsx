@@ -38,12 +38,6 @@ export function useCurrentCheckout() {
 function useCheckout(): useCheckoutProperties {
     const [checkout, setCheckout] = useState<CheckoutInfo>(new CheckoutInfo());
 
-	return {
-		checkout: checkout,
-		setCheckout: setCheckout,
-	};
-}
-
     return {
         checkout: checkout,
         setCheckout: setCheckout,

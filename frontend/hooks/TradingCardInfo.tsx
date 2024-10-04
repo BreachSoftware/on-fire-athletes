@@ -410,6 +410,9 @@ export default class TradingCardInfo {
 
         // Stringify the card info
         const raw = JSON.stringify(cardInfo);
+
+        console.log("RAW", raw);
+
         const requestOptions = {
             method: "POST",
             headers: myHeaders,

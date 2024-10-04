@@ -4,7 +4,6 @@ import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
 import { useToast } from "@chakra-ui/react";
 import { useElements } from "@stripe/react-stripe-js";
 import { Stripe } from "@stripe/stripe-js";
-import { Dispatch, SetStateAction } from "react";
 
 /**
  * Handles the setup of the payment details.
