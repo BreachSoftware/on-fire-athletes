@@ -308,6 +308,11 @@ function SideDrawer(props: SideDrawerProps) {
                                                                             base: "20px",
                                                                             lg: "34px",
                                                                         }}
+                                                                        noOfLines={
+                                                                            1
+                                                                        }
+                                                                        whiteSpace="nowrap"
+                                                                        overflow="visible"
                                                                         // fancy underline animation on hover
                                                                         transition={
                                                                             "all 0.2s ease-in-out"
