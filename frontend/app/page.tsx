@@ -31,6 +31,7 @@ export default function Index() {
             headline: "ONFIRE Athletes Launches!",
             description:
                 "ONFIRE Athletes, Powered by Game Coin, Revolutionizes Sports Legacy.",
+            link: "/newsroom/onfire-athletes-launches",
         },
         {
             id: 2,
@@ -38,6 +39,7 @@ export default function Index() {
             headline: "What are “AR” Cards?",
             description:
                 "ONFIRE Athletes uses Augmented Reality (AR) to bring your sports card to life!",
+            link: "/newsroom/what-are-ar-cards",
         },
         {
             id: 3,
@@ -45,6 +47,7 @@ export default function Index() {
             headline: "What sparked ONFIRE?",
             description:
                 "Eliminate barriers. Level the playing field. Set the current sports narrative on fire!",
+            link: "/newsroom/what-sparked-onfire",
         },
         // ...other news items
     ];

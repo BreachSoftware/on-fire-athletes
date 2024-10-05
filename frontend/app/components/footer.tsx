@@ -3,6 +3,10 @@
 import ResponsiveBlock from "@/components/shared/wrappers/responsive-block";
 import { Divider, Flex, Image, Link } from "@chakra-ui/react";
 
+import MobileBackground from "@/images/backgrounds/mobileFooterBackground.png";
+import DesktopBackground from "@/images/backgrounds/desktopFooterBackground.png";
+import FullLogo from "@/images/logos/on-fire-athletes-full-logo.png";
+
 /**
  * Footer
  * This is the footer component for all the pages of the app.
@@ -12,8 +16,8 @@ export default function Footer() {
     return (
         <ResponsiveBlock
             bgImage={{
-                base: "mobileFooterBackground.png",
-                md: "desktopFooterBackground.png",
+                base: MobileBackground.src,
+                md: DesktopBackground.src,
             }}
             w="full"
             zIndex={11}
@@ -33,7 +37,7 @@ export default function Footer() {
                 pt={{ base: "24px", md: "48px" }}
             >
                 <Image
-                    src="on-fire-athletes-full-logo.png"
+                    src={FullLogo.src}
                     alt="Game Coin Logo"
                     w="250px"
                     h="auto"

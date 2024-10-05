@@ -9,6 +9,7 @@ interface Props {
         imageUrl: string;
         headline: string;
         description: string;
+        link: string;
     };
 }
 
@@ -56,7 +57,7 @@ export default function InTheNewsArticle({ item }: Props) {
                 fontFamily="'Barlow Condensed', sans-serif"
                 letterSpacing="2px"
                 onClick={() => {
-                    router.push("/newsroom");
+                    router.push(item.link);
                 }}
             >
                 Learn More

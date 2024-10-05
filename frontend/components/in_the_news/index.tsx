@@ -2,6 +2,7 @@ import React from "react";
 import { Box, Text, Flex, Heading } from "@chakra-ui/react";
 import InTheNewsArticle from "./article";
 import InTheNewsCarousel from "./carousel";
+import CrinkledPaper from "@/images/backgrounds/crinkled-paper.png";
 
 interface InTheNewsProps {
     showBackground: boolean;
@@ -11,6 +12,7 @@ interface InTheNewsProps {
         imageUrl: string;
         headline: string;
         description: string;
+        link: string;
     }[];
     articleHeader?: boolean;
 }
@@ -104,7 +106,7 @@ function BackgroundComponent() {
                 left={"0"}
                 right={"0"}
                 bottom={"0"}
-                backgroundImage="url('crinkled-paper.png')"
+                backgroundImage={CrinkledPaper.src}
                 backgroundRepeat="no-repeat"
                 backgroundSize="cover"
                 backgroundPosition={"center top"}

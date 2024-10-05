@@ -7,6 +7,8 @@ import LightItUpDivider from "./divider";
 import { LightItUpSection } from "./types";
 import LightItUpCarousel from "./light_it_up_carousel";
 
+import DarkerCrinkledPaper from "@/images/backgrounds/darker-crinkled-paper.png";
+
 /**
  * LightItUpComponent displays a list of interactive sections, each with an image, overlay text,
  * title, description, and a button to perform an action. This component encourages users to get involved or partake
@@ -58,7 +60,7 @@ export default function LightItUp() {
 
     return (
         <Flex
-            bgImage="darker-crinkled-paper.png"
+            bgImage={DarkerCrinkledPaper.src}
             bgColor="gray.1300"
             px={{ base: "24px", lg: "64px", "2xl": "100px" }}
             minH="100vh"

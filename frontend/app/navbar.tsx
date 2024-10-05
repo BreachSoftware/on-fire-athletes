@@ -1,4 +1,5 @@
 "use client";
+import React from "react";
 /* eslint-disable quote-props */
 import {
     Box,
@@ -17,7 +18,7 @@ import {
     useBreakpointValue,
 } from "@chakra-ui/react";
 import { ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
-import OnFireLogo from "../app/favicon.ico";
+import OnFireLogo from "@/images/logos/small-logo.png";
 import { useAuth } from "@/hooks/useAuth";
 import { useEffect, useState } from "react";
 import SideDrawer from "@/components/sideDrawer";
