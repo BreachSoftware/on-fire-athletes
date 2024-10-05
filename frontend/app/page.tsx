@@ -47,7 +47,7 @@ export default function Index() {
             headline: "What sparked ONFIRE?",
             description:
                 "Eliminate barriers. Level the playing field. Set the current sports narrative on fire!",
-            link: "/newsroom/what-sparked-onfire",
+            link: "/our-story",
         },
         // ...other news items
     ];
