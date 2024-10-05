@@ -12,7 +12,9 @@ import { assignCardEmailBody } from "../utils/assignCardEmailBody";
  * @param {APIGatewayProxyEvent} event - The API Gateway proxy event.
  * @returns {Promise<APIGatewayProxyResult | undefined>} The API Gateway proxy result.
  */
-export async function assignCardEmail(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult | undefined> {
+export async function assignCardEmail(
+	event: APIGatewayProxyEvent,
+): Promise<APIGatewayProxyResult | undefined> {
 	try {
 		// Check if the event body exists
 		if (!event.body) {
@@ -44,10 +46,11 @@ export async function assignCardEmail(event: APIGatewayProxyEvent): Promise<APIG
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify(
-					{ error: "The request body must contain the uuids for the creator, the card, the sender, the recepient's first name," +
-						" as well as the card's first name, last name, and image" }
-				),
+				body: JSON.stringify({
+					error:
+						"The request body must contain the uuids for the creator, the card, the sender, the recepient's first name," +
+						" as well as the card's first name, last name, and image",
+				}),
 			};
 		}
 
@@ -67,7 +70,9 @@ export async function assignCardEmail(event: APIGatewayProxyEvent): Promise<APIG
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify({ error: "None of the properties can be empty" }),
+				body: JSON.stringify({
+					error: "None of the properties can be empty",
+				}),
 			};
 		}
 
@@ -87,31 +92,42 @@ export async function assignCardEmail(event: APIGatewayProxyEvent): Promise<APIG
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify({ error: "All properties must be of type string" }),
+				body: JSON.stringify({
+					error: "All properties must be of type string",
+				}),
 			};
 		}
 
 		// This checks that if the recepient has an email
-		if (
-			(data.recepientEmail === undefined || data.recepientEmail === "")
-		) {
+		if (data.recepientEmail === undefined || data.recepientEmail === "") {
 			return {
 				statusCode: 400,
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify({ error: "The request body must contain either the recepient's email" }),
+				body: JSON.stringify({
+					error: "The request body must contain either the recepient's email",
+				}),
 			};
 		}
 
 		// Supply the email template with its body
-		const emailBody = assignCardEmailBody(data.recepientUUID, data.generatedByUUID, data.cardUUID, data.cardFirstName, data.cardLastName, data.cardImage, data.fromEmail, data.senderFirstName, data.fromUUID);
-
+		const emailBody = assignCardEmailBody(
+			data.recepientUUID,
+			data.generatedByUUID,
+			data.cardUUID,
+			data.cardFirstName,
+			data.cardLastName,
+			data.cardImage,
+			data.fromEmail,
+			data.senderFirstName,
+			data.fromUUID,
+		);
 
 		// Set up the email parameters
 		const params = {
 			Destination: {
-				ToAddresses: [ data.recepientEmail ],
+				ToAddresses: [data.recepientEmail],
 			},
 			Message: {
 				Body: {
@@ -122,21 +138,26 @@ export async function assignCardEmail(event: APIGatewayProxyEvent): Promise<APIG
 				},
 				Subject: {
 					Charset: "UTF-8",
-					Data: "You've been sent a Gamechangers trading card!",
+					Data: "You've been sent an OnFire Athletes trading card!",
 				},
 			},
-			Source: "Gamechangers Team <mail@zenithsoftware.dev>",
-			ReplyToAddresses: [ "blake@zenithsoftware.dev" ],
+			Source: "OnFire Athletes Team <colin@breachsoftware.com>",
+			ReplyToAddresses: ["mail@onfireathletes.com"],
 		};
 
 		console.log("Sending email to: ", data.toEmail);
 
 		// Create the promise and SES service object
-		const sendPromise = new SES({ apiVersion: "2010-12-01" }).sendEmail(params).promise();
+		const sendPromise = new SES({ apiVersion: "2010-12-01" })
+			.sendEmail(params)
+			.promise();
 
 		try {
 			// Send the email
-			await sendPromise;
+			const res = await sendPromise;
+
+			console.log(res);
+
 			console.log("Email sent successfully");
 			return {
 				statusCode: 200,
@@ -147,7 +168,9 @@ export async function assignCardEmail(event: APIGatewayProxyEvent): Promise<APIG
 			};
 		} catch (error) {
 			// Log the error if an exception occurs when sending the email
-			console.error("The following error occurred when sending the email: ");
+			console.error(
+				"The following error occurred when sending the email: ",
+			);
 			console.error(error);
 
 			return {
@@ -172,4 +195,4 @@ export async function assignCardEmail(event: APIGatewayProxyEvent): Promise<APIG
 			body: JSON.stringify({ error: error }),
 		};
 	}
-};
+}
