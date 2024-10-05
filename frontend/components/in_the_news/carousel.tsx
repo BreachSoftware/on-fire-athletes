@@ -8,6 +8,7 @@ interface Props {
         imageUrl: string;
         headline: string;
         description: string;
+        link: string;
     }[];
 }
 
