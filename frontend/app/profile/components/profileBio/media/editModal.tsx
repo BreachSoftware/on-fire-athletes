@@ -2,13 +2,14 @@ import { b64toBlob, uploadAssetToS3 } from "@/components/create/Step3";
 import CropModal from "@/components/shared/modals/crop-modal";
 import { useAuth } from "@/hooks/useAuth";
 import { MediaType } from "@/hooks/useMediaProcessing";
+import { ProfileMediaType } from "../types";
 
 interface Props {
-    media: string;
+    media: ProfileMediaType | string;
     mediaType: MediaType;
     isOpen: boolean;
     onClose: () => void;
-    onComplete: (oldMedia: string, newMedia: string) => void;
+    onComplete: (mediaToUpdate: ProfileMediaType) => void;
 }
 
 export default function ProfileMediaEditModal({
@@ -20,7 +21,11 @@ export default function ProfileMediaEditModal({
 }: Props) {
     const { currentAuthenticatedUser } = useAuth();
 
-    async function handleUploadCroppedMedia(image: string) {
+    async function handleUploadCroppedMedia(
+        image: string,
+        crop: { x: number; y: number },
+        zoom: number,
+    ) {
         const resizedPhotoBlob = await b64toBlob(image);
 
         const user = await currentAuthenticatedUser();
@@ -35,10 +40,22 @@ export default function ProfileMediaEditModal({
             "image/png",
         );
 
-        onComplete(
-            media,
-            `https://onfireathletes-media-uploads.s3.amazonaws.com/profile_media/${filename}`,
-        );
+        const mediaToUpdate =
+            typeof media === "string"
+                ? {
+                      url: media,
+                      type: mediaType,
+                  }
+                : media;
+
+        onComplete({
+            ...mediaToUpdate,
+            cropped: `https://onfireathletes-media-uploads.s3.amazonaws.com/profile_media/${filename}`,
+            cropDimensions: {
+                crop,
+                zoom,
+            },
+        });
     }
 
     if (mediaType !== MediaType.PHOTO) {
@@ -47,10 +64,18 @@ export default function ProfileMediaEditModal({
 
     return (
         <CropModal
-            image={media}
-            aspect={undefined}
+            image={typeof media === "string" ? media : media.url}
+            startCrop={
+                typeof media !== "string"
+                    ? media.cropDimensions?.crop
+                    : undefined
+            }
+            startZoom={
+                typeof media !== "string"
+                    ? media.cropDimensions?.zoom
+                    : undefined
+            }
             cropShape="rect"
-            allowResize
             isOpen={isOpen}
             onClose={onClose}
             onSave={handleUploadCroppedMedia}

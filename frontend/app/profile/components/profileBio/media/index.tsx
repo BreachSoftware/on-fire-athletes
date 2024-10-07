@@ -10,12 +10,13 @@ import ProfileMediaViewModal from "./viewModal";
 import ProfileMediaDeleteModal from "./deleteModal";
 import { useRef } from "react";
 import ProfileMediaEditModal from "./editModal";
+import { ProfileMediaType } from "../types";
 
 interface Props {
-    media: string;
+    media: ProfileMediaType | string;
     isEditable: boolean;
-    handleEdit: (oldMedia: string, newMedia: string) => void;
-    handleDelete: (media: string) => void;
+    handleEdit: (updatedMedia: ProfileMediaType) => Promise<void>;
+    handleDelete: (mediaToDelete: ProfileMediaType) => Promise<void>;
 }
 
 /**
@@ -47,9 +48,14 @@ export default function ProfileBioMedia({
     } = useDisclosure();
 
     const mediaType =
-        media.includes(".mp4") || media.includes(".mov")
-            ? MediaType.VIDEO
-            : MediaType.PHOTO;
+        typeof media === "string"
+            ? media.includes(".mp4") || media.includes(".mov")
+                ? MediaType.VIDEO
+                : MediaType.PHOTO
+            : media.type;
+
+    const mediaUrl =
+        typeof media === "string" ? media : media.cropped || media.url;
 
     return (
         <>
@@ -69,7 +75,7 @@ export default function ProfileBioMedia({
                     {mediaType === MediaType.PHOTO ? (
                         <ChakraImage
                             alt="Bio Image"
-                            src={media}
+                            src={mediaUrl}
                             _groupHover={{ transform: "scale(1.05)" }}
                             transition="transform 0.1s ease-out"
                             style={{
@@ -86,7 +92,7 @@ export default function ProfileBioMedia({
                             transition="transform 0.1s ease-out"
                         >
                             <video
-                                src={media}
+                                src={mediaUrl}
                                 style={{
                                     width: "100%",
                                     height: "100%",
@@ -146,7 +152,7 @@ export default function ProfileBioMedia({
                     {mediaType === MediaType.PHOTO ? (
                         <ChakraImage
                             alt="Bio Image"
-                            src={media}
+                            src={mediaUrl}
                             _groupHover={{ transform: "scale(1.025)" }}
                             transition="transform 0.1s ease-out"
                             style={{
@@ -177,7 +183,7 @@ export default function ProfileBioMedia({
                         >
                             <video
                                 ref={videoRef}
-                                src={media}
+                                src={mediaUrl}
                                 style={{
                                     width: "100%",
                                     height: "100%",
@@ -192,7 +198,7 @@ export default function ProfileBioMedia({
                 </AspectRatio>
             </Box>
             <ProfileMediaViewModal
-                media={media}
+                mediaUrl={typeof media === "string" ? media : media.url}
                 mediaType={mediaType}
                 isOpen={isViewOpen}
                 onClose={onCloseView}
@@ -212,7 +218,10 @@ export default function ProfileBioMedia({
                 mediaType={mediaType}
                 isOpen={isEditOpen}
                 onClose={onCloseEdit}
-                onComplete={handleEdit}
+                onComplete={async (media: ProfileMediaType) => {
+                    await handleEdit(media);
+                    onCloseView();
+                }}
             />
         </>
     );

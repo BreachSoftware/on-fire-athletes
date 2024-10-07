@@ -30,6 +30,7 @@ import ProfileHeaderBackground from "./components/header/header-background";
 import ProfileAvatar from "./components/header/avatar";
 import SharedStack from "@/components/shared/wrappers/shared-stack";
 import UserSocialLinks from "./components/header/social-links";
+import { ProfileMediaType } from "./components/profileBio/types";
 
 export interface ProfileInfo {
     first_name: string;
@@ -38,7 +39,7 @@ export interface ProfileInfo {
     position: string;
     bio: string;
     avatar: string;
-    media: string[];
+    media: (ProfileMediaType | string)[];
     facebookLink: string;
     xLink: string;
     instagramLink: string;

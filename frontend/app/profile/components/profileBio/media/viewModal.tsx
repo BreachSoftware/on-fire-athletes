@@ -14,7 +14,7 @@ import { Image as ChakraImage } from "@chakra-ui/image";
 import { MediaType } from "@/hooks/useMediaProcessing";
 
 interface Props {
-    media: string;
+    mediaUrl: string;
     mediaType: MediaType;
     isOpen: boolean;
     onClose: () => void;
@@ -29,7 +29,7 @@ interface Props {
  * @returns {JSX.Element}
  */
 export default function ProfileMediaViewModal({
-    media,
+    mediaUrl,
     mediaType,
     isOpen,
     onClose,
@@ -61,7 +61,7 @@ export default function ProfileMediaViewModal({
                                 w="full"
                                 maxW={{ base: "none", lg: "50dvw" }}
                                 alt="Bio Image"
-                                src={media}
+                                src={mediaUrl}
                                 objectFit={{
                                     base: "contain",
                                     lg: "scale-down",
@@ -74,7 +74,7 @@ export default function ProfileMediaViewModal({
                             >
                                 <AspectRatio w="full" ratio={16 / 9}>
                                     <video
-                                        src={media}
+                                        src={mediaUrl}
                                         style={{
                                             width: "100%",
                                             height: "100%",

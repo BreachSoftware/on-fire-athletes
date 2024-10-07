@@ -6,18 +6,19 @@ import {
     ModalContent,
     ModalOverlay,
     ModalCloseButton,
-} from '@chakra-ui/modal'
-import { Button } from '@chakra-ui/button'
-import { Image as ChakraImage } from '@chakra-ui/image'
+} from "@chakra-ui/modal";
+import { Button } from "@chakra-ui/button";
+import { Image as ChakraImage } from "@chakra-ui/image";
 
-import { MediaType } from '@/hooks/useMediaProcessing'
+import { MediaType } from "@/hooks/useMediaProcessing";
+import { ProfileMediaType } from "../types";
 
 interface Props {
-    media: string
-    mediaType: MediaType
-    isOpen: boolean
-    onClose: () => void
-    handleDelete: (media: string) => void
+    media: ProfileMediaType | string;
+    mediaType: MediaType;
+    isOpen: boolean;
+    onClose: () => void;
+    handleDelete: (media: ProfileMediaType) => void;
 }
 
 /**
@@ -37,28 +38,28 @@ export default function ProfileMediaDeleteModal({
             isOpen={isOpen}
             onClose={onClose}
             isCentered
-            size={mediaType === MediaType.PHOTO ? 'lg' : 'none'}
+            size={mediaType === MediaType.PHOTO ? "lg" : "none"}
         >
             <ModalOverlay backdropFilter="blur(5px) hue-rotate(10deg)" />
             <ModalContent
                 rounded="xl"
                 bg="#1B1B1B"
                 color="white"
-                maxW={{ base: '95vw', md: '60vw' }}
+                maxW={{ base: "95vw", md: "60vw" }}
                 maxH="90vh"
-                height={'auto'}
-                width={'auto'}
+                height={"auto"}
+                width={"auto"}
             >
                 <ModalCloseButton zIndex={1} />
                 <ModalHeader width="90%">
-                    Are you sure you want to delete this{' '}
-                    {mediaType === MediaType.PHOTO ? 'photo' : 'video'}?
+                    Are you sure you want to delete this{" "}
+                    {mediaType === MediaType.PHOTO ? "photo" : "video"}?
                 </ModalHeader>
                 <ModalBody display="flex" justifyContent="center">
                     {mediaType === MediaType.PHOTO ? (
                         <ChakraImage
                             alt="Bio Image"
-                            src={media!}
+                            src={typeof media === "string" ? media : media.url}
                             borderRadius="10px"
                             mb="10px"
                             objectFit="scale-down"
@@ -75,9 +76,9 @@ export default function ProfileMediaDeleteModal({
                 >
                     <Button
                         bgColor="#323232"
-                        _hover={{ bgColor: '#2B2B2B' }}
+                        _hover={{ bgColor: "#2B2B2B" }}
                         onClick={() => {
-                            onClose()
+                            onClose();
                         }}
                     >
                         Cancel
@@ -85,8 +86,15 @@ export default function ProfileMediaDeleteModal({
                     <Button
                         background="red.600"
                         onClick={() => {
-                            handleDelete(media)
-                            onClose()
+                            handleDelete(
+                                typeof media === "string"
+                                    ? {
+                                          url: media,
+                                          type: mediaType,
+                                      }
+                                    : media,
+                            );
+                            onClose();
                         }}
                     >
                         Delete
@@ -94,5 +102,5 @@ export default function ProfileMediaDeleteModal({
                 </ModalFooter>
             </ModalContent>
         </Modal>
-    )
+    );
 }
