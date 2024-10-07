@@ -45,6 +45,8 @@ import RepeatingPetch from "./repeating_petch";
 import FlipCardIcon from "./flip_card_button";
 import { useMediaProcessing } from "@/hooks/useMediaProcessing";
 import OnFireCardSliders from "./OnFireCardSliders";
+import CardMaskImage from "@/public/card_assets/card-mask.png";
+import CardMaskReverseImage from "@/public/card_assets/card-mask-reverse.png";
 
 // Use this enum to determine the zIndex of the elements on the card
 enum zIndex {
@@ -989,7 +991,10 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
             h: "490px",
             marginBottom: !showButton ? "0" : "100px",
             minW: "350px",
-            style: { transformStyle: "preserve-3d", perspective: "1000px" },
+            style: {
+                transformStyle: "preserve-3d",
+                perspective: "1000px",
+            },
         };
         if (slim) {
             outerBoxStyling.onClick = handleClick;
@@ -1064,7 +1069,14 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
             },
             position: "relative",
             overflow: "hidden",
-            style: { transformStyle: "preserve-3d" },
+            style: {
+                transformStyle: "preserve-3d",
+                // White is visible, black is not
+                maskImage: `url(${CardMaskReverseImage.src})`,
+                maskMode: "luminance",
+                maskSize: "contain",
+                maskRepeat: "no-repeat",
+            },
         };
 
         const heroRef = useRef(null);
@@ -1109,6 +1121,13 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                     width={"100%"}
                                     position={"relative"}
                                     height={"100%"}
+                                    style={{
+                                        // White is visible, black is not
+                                        maskImage: `url(${CardMaskImage.src})`,
+                                        maskMode: "luminance",
+                                        maskSize: "contain",
+                                        maskRepeat: "no-repeat",
+                                    }}
                                 >
                                     {slim ? (
                                         <PrerenderedGamecardFrontImage />
@@ -1327,7 +1346,7 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                             <CardBottomLayer flipped />
                                         </Box>
                                     )}
-                                    {/* Smol OnFire Logo at Bottom Right Corner */}
+                                    {/* Small OnFire Logo at Bottom Right Corner */}
                                     {BackCardLogoImage}
 
                                     {/* The back video */}
