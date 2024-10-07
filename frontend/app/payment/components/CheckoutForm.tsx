@@ -1,10 +1,12 @@
 /* eslint-disable no-undef */
 import { PaymentElement } from "@stripe/react-stripe-js";
 import { useStripe, useElements } from "@stripe/react-stripe-js";
-import { Button, useToast } from "@chakra-ui/react";
-import { handleSetup } from "@/app/checkout/components/completeOrder/stripeHandleSetup";
+import { Text, Button, Flex, useToast } from "@chakra-ui/react";
 import { useCurrentCheckout } from "@/hooks/useCheckout";
 import { checkoutSteps } from "@/app/checkout/components/checkoutSteps";
+import { useState } from "react";
+import { ChevronRightIcon } from "@chakra-ui/icons";
+import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
 
 interface CheckoutFormProps {
     buyCard?: boolean;
@@ -19,7 +21,12 @@ export default function CheckoutForm({ buyCard }: CheckoutFormProps) {
     const elements = useElements();
     const curCheckout = useCurrentCheckout();
 
-    const { setCheckout } = curCheckout;
+    const { checkout, setCheckout } = curCheckout;
+
+    const buyingPhysicalCards = checkout.physicalCardCount > 0;
+    const stepNumber = checkout.stepNum;
+
+    const [isLoading, setIsLoading] = useState(false);
 
     // dispatch the Event on an interval to ensure that the button is never stuck perpetually loading
     setInterval(() => {
@@ -78,53 +85,201 @@ export default function CheckoutForm({ buyCard }: CheckoutFormProps) {
         }
     }
 
-    /**
-     * setting the processing state and calling the handleSetup function
-     */
-    async function processHandleSetup() {
-        console.log("IN PROCESSING HANDLE SETUP");
-
-        await handleSetup(
-            stripe,
-            elements,
-            toast,
-            curCheckout,
-            setCheckout,
-        ).then((result) => {
-            console.log("SETUP RESULT: ", result);
-            if (result === "error") {
-                // Just tell the checkoutStepWrapper to reset the button
-                dispatchEvent(new Event("resetLoadingButton"));
-            } else {
-                setCheckout({
-                    ...curCheckout.checkout,
-                    ...result, // Payment method ID along with other payment details
-                    stepNum: checkoutSteps.length - 1,
-                    visitedSteps: checkoutSteps.length - 1,
-                });
-            }
-
-            // if (result === "success") {
-            //     // Broadcast the event to update the checkout so checkoutStepWrapper can make the next button not loading
-            //     dispatchEvent(new Event("savedDetailsSuccess"));
-            // } else {
-            //     // Just tell the checkoutStepWrapper to reset the button
-            //     dispatchEvent(new Event("resetLoadingButton"));
-            // }
-        });
+    function totalPriceInCart() {
+        let total = 0;
+        for (let i = 0; i < checkout.cart.length; i++) {
+            total =
+                total +
+                checkout.cart[i].price * checkout.cart[i].numberOfOrders;
+        }
+        if (buyingPhysicalCards) {
+            total = total + checkout.shippingCost;
+        }
+        return total;
     }
 
     return (
         <form id="payment-form" onSubmit={handleSubmit}>
             <PaymentElement id="payment-element" />
             {/* Invisible button that gets clicked by the checkoutStepWrapper */}
-            <Button
-                id="save-details-button"
-                onClick={processHandleSetup}
-                visibility={"hidden"}
-                width={"0px"}
-                height={"0px"}
-            />
+            <Flex
+                justifyContent={{
+                    base: "center",
+                    lg: stepNumber === 4 ? "space-between" : "flex-end",
+                }}
+                flexDirection={{ base: "column", lg: "row" }}
+                alignItems="center"
+                gap="25px"
+                w="100%"
+                mt={{ base: "15px", md: "40px" }}
+            >
+                {/* Bottom left element rendering at the beginning of this HStack */}
+                {checkoutSteps[stepNumber].cornerElement}
+                <Flex
+                    direction={{ base: "column", lg: "row" }}
+                    gap={{ base: "25px", lg: "31px" }}
+                    alignItems={"center"}
+                >
+                    {/* total price of all items in cart */}
+                    <Text
+                        fontFamily={"Barlow"}
+                        transform={"skewX(-6deg)"}
+                        fontSize={"2xl"}
+                        fontWeight={"bold"}
+                    >
+                        Total: ${totalPriceInCart().toFixed(2)}
+                        {buyingPhysicalCards ? "*" : ""}
+                    </Text>
+                    <Flex gap="10%">
+                        <Button
+                            variant={"back"}
+                            width="100px"
+                            onClick={() => {
+                                if (!buyingPhysicalCards) {
+                                    curCheckout.setCheckout({
+                                        ...checkout,
+                                        stepNum: stepNumber - 2,
+                                    });
+                                } else {
+                                    curCheckout.setCheckout({
+                                        ...checkout,
+                                        stepNum: stepNumber - 1,
+                                    });
+                                }
+                            }}
+                        >
+                            Back
+                        </Button>
+                        <Button
+                            variant="next"
+                            w="115px"
+                            _hover={{
+                                md: {
+                                    filter: "drop-shadow(0px 0px 5px #27CE00)",
+                                    width: "115px",
+                                },
+                            }}
+                            isLoading={isLoading}
+                            onClick={async () => {
+                                setIsLoading(true);
+                                // Call elements.submit() to trigger the form submission
+                                const { error: submitError } =
+                                    await elements!.submit();
+
+                                if (submitError) {
+                                    toast({
+                                        title: "Error",
+                                        description:
+                                            submitError.message ??
+                                            "An unknown error occurred.",
+                                        status: "error",
+                                        duration: 5000,
+                                        isClosable: true,
+                                    });
+                                    setIsLoading(false);
+                                    return;
+                                }
+
+                                const clientSecret =
+                                    curCheckout.checkout.clientSecret;
+                                // Confirm the setup without redirecting
+                                const result = await stripe!.confirmSetup({
+                                    elements: elements!,
+                                    clientSecret: clientSecret,
+                                    redirect: "if_required",
+                                });
+
+                                if (result.error) {
+                                    toast({
+                                        title: "Error",
+                                        description:
+                                            result.error.message ??
+                                            "An unknown error occurred.",
+                                        status: "error",
+                                        duration: 5000,
+                                        isClosable: true,
+                                    });
+                                } else {
+                                    toast({
+                                        title: "Success",
+                                        description: "Payment method saved.",
+                                        status: "success",
+                                        duration: 3000,
+                                        isClosable: true,
+                                    });
+                                }
+
+                                console.log("result", result);
+
+                                // Retrieve the payment method details
+                                const paymentMethodId = result.setupIntent
+                                    ?.payment_method as string | undefined;
+
+                                console.log("paymentMethodId", paymentMethodId);
+
+                                setCheckout({
+                                    ...curCheckout.checkout,
+                                    clientSecret: clientSecret,
+                                    paymentMethodId: paymentMethodId,
+                                    paymentInfoEntered: true,
+                                });
+
+                                // check if paymentMethodId is undefined
+                                if (!paymentMethodId) {
+                                    setIsLoading(false);
+                                    return;
+                                }
+
+                                const paymentMethodResponse = await fetch(
+                                    apiEndpoints.retrievePaymentMethod(),
+                                    {
+                                        method: "POST",
+                                        headers: {
+                                            "Content-Type": "application/json",
+                                        },
+                                        body: JSON.stringify({
+                                            paymentMethodId: paymentMethodId,
+                                        }),
+                                    },
+                                );
+                                const { paymentMethod } =
+                                    await paymentMethodResponse.json();
+
+                                const capitalizedBrand =
+                                    paymentMethod.card.brand
+                                        .charAt(0)
+                                        .toUpperCase() +
+                                    paymentMethod.card.brand.slice(1);
+
+                                console.log("setting checkout info");
+
+                                setCheckout({
+                                    ...curCheckout.checkout,
+                                    paymentMethodId,
+                                    clientSecret,
+                                    paymentCardBrand: capitalizedBrand,
+                                    paymentCardLastFour:
+                                        paymentMethod.card.last4,
+                                    paymentInfoEntered: true,
+                                    stepNum: checkoutSteps.length - 1,
+                                    visitedSteps: checkoutSteps.length - 1,
+                                });
+                            }}
+                        >
+                            <Flex alignItems={"center"}>
+                                {/* Change button text based on whether it's the last step */}
+                                {stepNumber !== checkoutSteps.length - 1
+                                    ? "Next"
+                                    : "Purchase"}
+                                <ChevronRightIcon
+                                    boxSize={"30px"}
+                                    mr={"-10px"}
+                                />
+                            </Flex>
+                        </Button>
+                    </Flex>
+                </Flex>
+            </Flex>
         </form>
     );
 }

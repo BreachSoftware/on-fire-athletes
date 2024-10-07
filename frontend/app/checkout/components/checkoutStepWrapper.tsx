@@ -255,184 +255,189 @@ export default function CheckoutStepWrapper({
                 {checkoutSteps[stepNumber].bodyElement}
 
                 {/* Footer section with the Next or Purchase button and optional bot-left element */}
-                <Flex
-                    justifyContent={{
-                        base: "center",
-                        lg: stepNumber === 4 ? "space-between" : "flex-end",
-                    }}
-                    flexDirection={{ base: "column", lg: "row" }}
-                    alignItems="center"
-                    gap="25px"
-                    w="100%"
-                    mt={"15px"}
-                >
-                    {/* Bottom left element rendering at the beginning of this HStack */}
-                    {checkoutSteps[stepNumber].cornerElement}
-
+                {stepNumber !== 4 && (
                     <Flex
-                        direction={{ base: "column", lg: "row" }}
-                        gap={{ base: "25px", lg: "31px" }}
-                        alignItems={"center"}
+                        justifyContent={{
+                            base: "center",
+                            lg: stepNumber === 4 ? "space-between" : "flex-end",
+                        }}
+                        flexDirection={{ base: "column", lg: "row" }}
+                        alignItems="center"
+                        gap="25px"
+                        w="100%"
+                        mt={"15px"}
                     >
-                        {/* total price of all items in cart */}
-                        <Text
-                            fontFamily={"Barlow"}
-                            transform={"skewX(-6deg)"}
-                            fontSize={"2xl"}
-                            fontWeight={"bold"}
+                        {/* Bottom left element rendering at the beginning of this HStack */}
+                        {checkoutSteps[stepNumber].cornerElement}
+
+                        <Flex
+                            direction={{ base: "column", lg: "row" }}
+                            gap={{ base: "25px", lg: "31px" }}
+                            alignItems={"center"}
                         >
-                            Total: ${totalPriceInCart().toFixed(2)}
-                            {buyingPhysicalCards ? "*" : ""}
-                        </Text>
-                        <Flex gap="10%">
-                            <Button
-                                variant={"back"}
-                                width="100px"
-                                isDisabled={
-                                    stepNumber === 0 ||
-                                    (stepNumber === 2 && buyingOtherCard)
-                                } // Disable the button if it's the first step
-                                onClick={() => {
-                                    if (
-                                        checkout.packageName === "rookie" &&
-                                        stepNumber == 2
-                                    ) {
-                                        curCheckout.setCheckout({
-                                            ...checkout,
-                                            stepNum: stepNumber - 2,
-                                        });
-                                    } else if (
-                                        !buyingPhysicalCards &&
-                                        stepNumber == 4
-                                    ) {
-                                        curCheckout.setCheckout({
-                                            ...checkout,
-                                            stepNum: stepNumber - 2,
-                                        });
-                                    } else {
-                                        curCheckout.setCheckout({
-                                            ...checkout,
-                                            stepNum: stepNumber - 1,
-                                        });
-                                    }
-                                }}
+                            {/* total price of all items in cart */}
+                            <Text
+                                fontFamily={"Barlow"}
+                                transform={"skewX(-6deg)"}
+                                fontSize={"2xl"}
+                                fontWeight={"bold"}
                             >
-                                Back
-                            </Button>
-                            <Button
-                                variant="next"
-                                w="115px"
-                                _hover={{
-                                    md: {
-                                        filter: "drop-shadow(0px 0px 5px #27CE00)",
-                                        width: "115px",
-                                    },
-                                }}
-                                isDisabled={stepIsIncomplete()}
-                                isLoading={isLoading}
-                                onClick={() => {
-                                    // Increment the step number to go to the next step, up to the last step
-                                    // Skipping the shipping details step if the user is not buying physical cards
-                                    if (
-                                        !buyingPhysicalCards &&
-                                        stepNumber == 2
-                                    ) {
-                                        const lastVisitedStep =
-                                            stepNumber + 2 > visitedSteps
-                                                ? stepNumber + 2
-                                                : visitedSteps;
-                                        curCheckout.setCheckout({
-                                            ...checkout,
-                                            stepNum: stepNumber + 2,
-                                            visitedSteps: lastVisitedStep,
-                                        });
-                                        // Advancing like normal
-                                    } else if (
-                                        stepNumber >= 0 &&
-                                        stepNumber < checkoutSteps.length - 1
-                                    ) {
-                                        let advance = false;
-                                        // Special next button logic for the payment details step
-                                        if (stepNumber === 4) {
-                                            // Click the button on the screen with id "save-details-button"
-                                            // This button is within the CheckoutForm, and it seems like the easier option for the short-term
-                                            const saveDetailsButton =
-                                                document.getElementById(
-                                                    "save-details-button",
-                                                );
-                                            if (saveDetailsButton) {
-                                                saveDetailsButton.click();
-                                                setIsLoading(true);
-                                            }
-
-                                            if (!hasAddedListeners) {
-                                                // Bug fix event listener to stop loading button from always being loading
-                                                // Also gets triggered if the checkout process fails
-                                                addEventListener(
-                                                    "resetLoadingButton",
-                                                    () => {
-                                                        setIsLoading(false);
-                                                    },
-                                                );
-
-                                                setHasAddedListeners(true);
-                                            }
+                                Total: ${totalPriceInCart().toFixed(2)}
+                                {buyingPhysicalCards ? "*" : ""}
+                            </Text>
+                            <Flex gap="10%">
+                                <Button
+                                    variant={"back"}
+                                    width="100px"
+                                    isDisabled={
+                                        stepNumber === 0 ||
+                                        (stepNumber === 2 && buyingOtherCard)
+                                    } // Disable the button if it's the first step
+                                    onClick={() => {
+                                        if (
+                                            checkout.packageName === "rookie" &&
+                                            stepNumber == 2
+                                        ) {
+                                            curCheckout.setCheckout({
+                                                ...checkout,
+                                                stepNum: stepNumber - 2,
+                                            });
+                                        } else if (
+                                            !buyingPhysicalCards &&
+                                            stepNumber == 4
+                                        ) {
+                                            curCheckout.setCheckout({
+                                                ...checkout,
+                                                stepNum: stepNumber - 2,
+                                            });
                                         } else {
-                                            advance = true;
+                                            curCheckout.setCheckout({
+                                                ...checkout,
+                                                stepNum: stepNumber - 1,
+                                            });
                                         }
-                                        if (advance) {
+                                    }}
+                                >
+                                    Back
+                                </Button>
+                                <Button
+                                    variant="next"
+                                    w="115px"
+                                    _hover={{
+                                        md: {
+                                            filter: "drop-shadow(0px 0px 5px #27CE00)",
+                                            width: "115px",
+                                        },
+                                    }}
+                                    isDisabled={stepIsIncomplete()}
+                                    isLoading={isLoading}
+                                    onClick={() => {
+                                        // Increment the step number to go to the next step, up to the last step
+                                        // Skipping the shipping details step if the user is not buying physical cards
+                                        if (
+                                            !buyingPhysicalCards &&
+                                            stepNumber == 2
+                                        ) {
                                             const lastVisitedStep =
-                                                stepNumber + 1 > visitedSteps
-                                                    ? stepNumber + 1
+                                                stepNumber + 2 > visitedSteps
+                                                    ? stepNumber + 2
                                                     : visitedSteps;
                                             curCheckout.setCheckout({
                                                 ...checkout,
-                                                stepNum: stepNumber + 1,
+                                                stepNum: stepNumber + 2,
                                                 visitedSteps: lastVisitedStep,
                                             });
-                                        }
-                                    } else if (
-                                        stepNumber ===
-                                        checkoutSteps.length - 1
-                                    ) {
-                                        setIsLoading(true);
-                                        handlePurchase(
-                                            checkout,
-                                            onFireCard,
-                                            stripe,
-                                            router,
-                                            buyingOtherCard,
-                                            auth,
-                                        ).then((result) => {
-                                            if (!result) {
-                                                setIsLoading(false);
-                                                toast({
-                                                    title: "Error",
-                                                    description:
-                                                        "An error occurred during the purchase.",
-                                                    status: "error",
-                                                    duration: 3000,
-                                                    isClosable: true,
+                                            // Advancing like normal
+                                        } else if (
+                                            stepNumber >= 0 &&
+                                            stepNumber <
+                                                checkoutSteps.length - 1
+                                        ) {
+                                            let advance = false;
+                                            // Special next button logic for the payment details step
+                                            if (stepNumber === 4) {
+                                                // Click the button on the screen with id "save-details-button"
+                                                // This button is within the CheckoutForm, and it seems like the easier option for the short-term
+                                                const saveDetailsButton =
+                                                    document.getElementById(
+                                                        "save-details-button",
+                                                    );
+                                                if (saveDetailsButton) {
+                                                    saveDetailsButton.click();
+                                                    setIsLoading(true);
+                                                }
+
+                                                if (!hasAddedListeners) {
+                                                    // Bug fix event listener to stop loading button from always being loading
+                                                    // Also gets triggered if the checkout process fails
+                                                    addEventListener(
+                                                        "resetLoadingButton",
+                                                        () => {
+                                                            setIsLoading(false);
+                                                        },
+                                                    );
+
+                                                    setHasAddedListeners(true);
+                                                }
+                                            } else {
+                                                advance = true;
+                                            }
+                                            if (advance) {
+                                                const lastVisitedStep =
+                                                    stepNumber + 1 >
+                                                    visitedSteps
+                                                        ? stepNumber + 1
+                                                        : visitedSteps;
+                                                curCheckout.setCheckout({
+                                                    ...checkout,
+                                                    stepNum: stepNumber + 1,
+                                                    visitedSteps:
+                                                        lastVisitedStep,
                                                 });
                                             }
-                                        });
-                                    }
-                                }}
-                            >
-                                <Flex alignItems={"center"}>
-                                    {/* Change button text based on whether it's the last step */}
-                                    {stepNumber !== checkoutSteps.length - 1
-                                        ? "Next"
-                                        : "Purchase"}
-                                    <ChevronRightIcon
-                                        boxSize={"30px"}
-                                        mr={"-10px"}
-                                    />
-                                </Flex>
-                            </Button>
+                                        } else if (
+                                            stepNumber ===
+                                            checkoutSteps.length - 1
+                                        ) {
+                                            setIsLoading(true);
+                                            handlePurchase(
+                                                checkout,
+                                                onFireCard,
+                                                stripe,
+                                                router,
+                                                buyingOtherCard,
+                                                auth,
+                                            ).then((result) => {
+                                                if (!result) {
+                                                    setIsLoading(false);
+                                                    toast({
+                                                        title: "Error",
+                                                        description:
+                                                            "An error occurred during the purchase.",
+                                                        status: "error",
+                                                        duration: 3000,
+                                                        isClosable: true,
+                                                    });
+                                                }
+                                            });
+                                        }
+                                    }}
+                                >
+                                    <Flex alignItems={"center"}>
+                                        {/* Change button text based on whether it's the last step */}
+                                        {stepNumber !== checkoutSteps.length - 1
+                                            ? "Next"
+                                            : "Purchase"}
+                                        <ChevronRightIcon
+                                            boxSize={"30px"}
+                                            mr={"-10px"}
+                                        />
+                                    </Flex>
+                                </Button>
+                            </Flex>
                         </Flex>
                     </Flex>
-                </Flex>
+                )}
             </Flex>
         </Flex>
     );
