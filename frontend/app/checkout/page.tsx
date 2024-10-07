@@ -263,9 +263,9 @@ export default function CheckoutPage() {
             {/* The stepNum code is to account for running out of space in the large screen orientation */}
             <Flex
                 flexDir="row"
-                w="100dvw"
+                w="full"
                 minH="100dvh"
-                h={{ base: "fit-content", md: "100dvh" }}
+                h={{ base: "fit-content", md: "110dvh" }}
                 bgGradient={
                     "linear(180deg, gray.1200 0%, gray.1300 100%) 0% 0% no-repeat padding-box;"
                 }
@@ -358,10 +358,13 @@ export default function CheckoutPage() {
                     </Box>
                 </Box>
                 <Box
-                    h="full"
-                    display={{ base: "none", sm: "none", md: "inherit" }}
+                    position="sticky"
+                    top={0}
+                    w="140px"
+                    h="100dvh"
+                    display={{ base: "none", md: "inline" }}
                 >
-                    <Sidebar height="full" backgroundPresent />
+                    <Sidebar height="100dvh" backgroundPresent />
                 </Box>
             </Flex>
         </RainbowKitProvider>

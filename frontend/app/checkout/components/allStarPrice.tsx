@@ -104,7 +104,7 @@ export default function AllStarPrice() {
                         {/* Image of the card, with various size adjustments for different screen sizes */}
                         {card ? (
                             <Box display={{ base: "none", md: "inline" }}>
-                                <OnFireCard card={card} />
+                                <OnFireCard card={card} slim />
                             </Box>
                         ) : (
                             <Image
