@@ -111,6 +111,10 @@ export async function assignCardEmail(
 			};
 		}
 
+		const baseUrl = (
+			process.env.BASE_URL || "https://on-fire-athletes.netlify.app"
+		).replace(/\/$/, "");
+
 		// Supply the email template with its body
 		const emailBody = assignCardEmailBody(
 			data.recepientUUID,
@@ -122,6 +126,7 @@ export async function assignCardEmail(
 			data.fromEmail,
 			data.senderFirstName,
 			data.fromUUID,
+			baseUrl,
 		);
 
 		// Set up the email parameters
