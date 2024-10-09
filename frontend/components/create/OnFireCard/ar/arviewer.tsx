@@ -255,12 +255,12 @@ function ARViewer() {
                         src={""}
                         type="video/mp4"
                     ></video>
-                    {/* <img
+                    <img
                         id="card-image"
                         src={imgSource}
                         crossOrigin="anonymous"
                         alt="The OnFire card"
-                    /> */}
+                    />
                     <img
                         id="play-image"
                         src={PlayImage.src}
