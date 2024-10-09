@@ -48,6 +48,53 @@ function ARViewer() {
     const sceneRef = useRef<HTMLElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
 
+    let found = false;
+    let readCard = new TradingCardInfo();
+
+    function setScannersDisplay(shouldShow: boolean) {
+        const scanners = document.getElementsByClassName("mindar-ui-scanning");
+        for (let i = 0; i < scanners.length; i++) {
+            scanners[i].setAttribute(
+                "style",
+                `display: ${shouldShow ? "flex" : "none"};`,
+            );
+        }
+    }
+
+    // Listeners for controlling the UI of multiple scanners
+    useEffect(() => {
+        const frontEntity = document.querySelector("#front-entity");
+        frontEntity.addEventListener("targetFound", () =>
+            setScannersDisplay(false),
+        );
+        frontEntity.addEventListener("targetLost", () =>
+            setScannersDisplay(true),
+        );
+
+        const backEntity = document.querySelector("#back-entity");
+        backEntity.addEventListener("targetFound", () =>
+            setScannersDisplay(false),
+        );
+        backEntity.addEventListener("targetLost", () =>
+            setScannersDisplay(true),
+        );
+
+        return () => {
+            frontEntity.removeEventListener("targetFound", () =>
+                setScannersDisplay(false),
+            );
+            frontEntity.removeEventListener("targetLost", () =>
+                setScannersDisplay(true),
+            );
+            backEntity.removeEventListener("targetFound", () =>
+                setScannersDisplay(false),
+            );
+            backEntity.removeEventListener("targetLost", () =>
+                setScannersDisplay(true),
+            );
+        };
+    }, []);
+
     /**
      * A callback function that is called when a QR code is scanned.
      * This sets the cardUUID and generatedByUUID states, then
@@ -70,10 +117,11 @@ function ARViewer() {
         setQRResult(cardUUID);
 
         // Find the OnFire card that matches the UUID of the QR code
-        let found = false;
-        let readCard = new TradingCardInfo();
+        found = false;
+        readCard = new TradingCardInfo();
         cards.forEach((fetchedCard) => {
             if (fetchedCard.uuid === cardUUID) {
+                console.log("FOUND!");
                 readCard = fetchedCard;
                 setImgSource(fetchedCard.cardImage);
                 console.log(imgSource);
@@ -123,8 +171,8 @@ function ARViewer() {
             window.addEventListener("click", () => {
                 if (videoRef.current) {
                     console.log(videoRef.current.src);
-                    videoRef.current.src = card.curCard.backVideoURL;
-                    console.log("Playing: ", card.curCard.backVideoURL);
+                    videoRef.current.src = readCard.backVideoURL;
+                    console.log("Playing: ", readCard.backVideoURL);
                     videoRef.current.play();
                 }
             });
@@ -157,12 +205,12 @@ function ARViewer() {
      * A function to determine which mindFile to use for the given card.
      * @returns the URL of the correct mind file
      */
-    function determineMindFile() {
+    function determineMindFile(useBack: boolean = false): string {
         // Get the query parameters from the URL (if any).
         const queryParams = new URLSearchParams(window.location.search);
         const cardUUID = queryParams.get("card");
 
-        if (cardUUID) {
+        if (cardUUID && !useBack) {
             // This should eventually have guardrails in case the card is not found
             return `https://onfireathletes-media-uploads.s3.amazonaws.com/mind-ar/${cardUUID}.mind`;
         }
@@ -226,10 +274,61 @@ function ARViewer() {
                 </Center>
             )}
 
-            {/* Render the AR scene */}
+            {/* Render the AR scene for Front Image */}
             <a-scene
                 ref={sceneRef}
-                mindar-image={`imageTargetSrc: ${determineMindFile()};`} // Also have front and back
+                mindar-image={`imageTargetSrc: ${determineMindFile(false)};`} // Also have front and back
+                renderer="colorManagement: true, physicallyCorrectLights"
+                vr-mode-ui="enabled: false"
+                filterMinCF=".01"
+                filterBeta=".001"
+                missTolerance="40" // warmupTolerance="100" missTolerance="1000"
+                xr-mode-ui="enabled: false"
+                device-orientation-permission-ui="enabled: false"
+            >
+                {/* Define assets */}
+                <a-assets>
+                    <img
+                        id="card-image"
+                        src={imgSource}
+                        crossOrigin="anonymous"
+                        alt="The OnFire card"
+                    />
+                    <img
+                        id="play-image"
+                        src={PlayImage.src}
+                        alt="Play button"
+                    />
+                </a-assets>
+
+                {/* Define the camera */}
+                <a-camera
+                    position="0 0 0"
+                    look-controls="enabled: false"
+                ></a-camera>
+
+                {/* Front Image (targetIndex 0) */}
+                <a-entity
+                    mindar-image-target="targetIndex: 0"
+                    id="front-entity"
+                >
+                    {/* Render the video if the video source is set */}
+                    {isVideoSourceSet && (
+                        <a-plane src="#card-image" height="1.5"></a-plane>
+                    )}
+                    <a-entity
+                        obj-model="obj: url(/ar/gcmask.obj); mtl: #obj-mtl"
+                        rotation="0 0 -90"
+                        position="0 0 0.001"
+                        scale="0.058 0.058 0.058"
+                        cloak
+                    ></a-entity>
+                </a-entity>
+            </a-scene>
+            {/* Render the AR scene for Video */}
+            <a-scene
+                ref={sceneRef}
+                mindar-image={`imageTargetSrc: ${determineMindFile(true)}; uiScanning:no`} // Also have front and back
                 renderer="colorManagement: true, physicallyCorrectLights"
                 vr-mode-ui="enabled: false"
                 filterMinCF=".01"
@@ -255,17 +354,6 @@ function ARViewer() {
                         src={""}
                         type="video/mp4"
                     ></video>
-                    <img
-                        id="card-image"
-                        src={imgSource}
-                        crossOrigin="anonymous"
-                        alt="The OnFire card"
-                    />
-                    <img
-                        id="play-image"
-                        src={PlayImage.src}
-                        alt="Play button"
-                    />
                 </a-assets>
 
                 {/* Define the camera */}
@@ -275,7 +363,7 @@ function ARViewer() {
                 ></a-camera>
 
                 {/* Back Video (targetIndex 1) */}
-                <a-entity mindar-image-target="targetIndex: 1">
+                <a-entity mindar-image-target="targetIndex: 0" id="back-entity">
                     {/* Render the video if the video source is set */}
                     {isVideoSourceSet && (
                         <a-video src="#card-video" height="1.5"></a-video>
@@ -283,21 +371,6 @@ function ARViewer() {
                     )}
                     <a-entity
                         obj-model="obj: url(/ar/gcmask-rev.obj); mtl: #obj-mtl"
-                        rotation="0 0 -90"
-                        position="0 0 0.001"
-                        scale="0.058 0.058 0.058"
-                        cloak
-                    ></a-entity>
-                </a-entity>
-
-                {/* Front Image (targetIndex 0) */}
-                <a-entity mindar-image-target="targetIndex: 0">
-                    {/* Render the video if the video source is set */}
-                    {isVideoSourceSet && (
-                        <a-plane src="#card-image" height="1.5"></a-plane>
-                    )}
-                    <a-entity
-                        obj-model="obj: url(/ar/gcmask.obj); mtl: #obj-mtl"
                         rotation="0 0 -90"
                         position="0 0 0.001"
                         scale="0.058 0.058 0.058"
