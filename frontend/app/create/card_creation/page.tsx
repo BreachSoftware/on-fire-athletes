@@ -1,5 +1,11 @@
 "use client";
-import { Box, Flex, HStack, VStack } from "@chakra-ui/react";
+import {
+    Box,
+    Flex,
+    HStack,
+    useBreakpointValue,
+    VStack,
+} from "@chakra-ui/react";
 import StepWrapper from "@/components/create/StepWrapper";
 import Step1 from "@/components/create/Step1";
 import Step2 from "@/components/create/Step2";
@@ -29,14 +35,7 @@ export default function CreationOverview() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    let isMobile = false;
-    if (typeof window !== "undefined") {
-        const userAgent = window.navigator.userAgent.toLowerCase();
-        isMobile =
-            /mobile|android|iphone|ipod|blackberry|iemobile|opera mini/i.test(
-                userAgent,
-            );
-    }
+    const isMobile = useBreakpointValue({ base: true, md: false });
 
     /**
      * Calculates the scale factor for the OnFire card on mobile screens
@@ -118,7 +117,7 @@ export default function CreationOverview() {
             }
             overflowX={"hidden"}
         >
-            <HStack w="100%" h="100%" align="top">
+            <HStack w="100%" h="100%" align="top" spacing={0}>
                 <VStack w="100%" flexGrow={1} height="100%">
                     <Flex
                         w="100%"
@@ -190,7 +189,7 @@ export default function CreationOverview() {
                     h={{ base: "0vh", md: "100vh" }}
                     display={{ base: "none", sm: "none", md: "inherit" }}
                 >
-                    <Sidebar height={"auto"} backgroundPresent={false} />
+                    <Sidebar height={"auto"} />
                 </Box>
             </HStack>
         </Box>

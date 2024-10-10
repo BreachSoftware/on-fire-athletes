@@ -208,7 +208,7 @@ export default function ProfileAlbumTab(props: ProfileAlbumProps) {
         const sharedData = {
             title: "OnFire Trading Card",
             text: "Click here to accept my OnFire Trading trading card!",
-            url: `https://gamechangers.zenithsoftware.dev/signup?generatedByUUID=${generatedByUUID}&fromUUID=${senderUUID}&cardUUID=${cardUUID}`,
+            url: `https://on-fire-athletes.netlify.app/signup?generatedByUUID=${generatedByUUID}&fromUUID=${senderUUID}&cardUUID=${cardUUID}`,
         };
 
         try {
@@ -396,13 +396,16 @@ export default function ProfileAlbumTab(props: ProfileAlbumProps) {
                                     {/* Container for the Card */}
                                     <Flex
                                         w={{ base: "100%", md: "331px" }}
-                                        aspectRatio={2 / 3}
+                                        aspectRatio={{
+                                            base: "auto",
+                                            md: 2 / 3,
+                                        }}
                                         borderRadius="20px"
-                                        gridGap={{ base: "8px", md: "16px" }}
+                                        gridGap={{ base: "0px", md: "16px" }}
                                         direction="column"
                                         align="center"
                                         mt={{ sm: "50px" }}
-                                        mb="24px"
+                                        mb={{ base: "16px", md: "24px" }}
                                         position="relative"
                                     >
                                         <Element
@@ -413,6 +416,7 @@ export default function ProfileAlbumTab(props: ProfileAlbumProps) {
                                             position="relative"
                                             w="full"
                                             h="full"
+                                            mb={{ base: "-12px", md: 0 }}
                                             transform={{
                                                 base: "scale(0.775)",
                                                 md: "none",
@@ -459,19 +463,21 @@ export default function ProfileAlbumTab(props: ProfileAlbumProps) {
                                             fontStyle="italic"
                                             fontWeight="semibold"
                                             letterSpacing={"0.48px"}
-                                            mb="8px"
+                                            mb="16px"
                                         >
                                             {currentCard.sport},{" "}
                                             {currentCard.position} /{" "}
                                             {currentCard.teamName}
                                         </Text>
-                                        <Text
-                                            lineHeight="30px"
-                                            letterSpacing="0.25px"
-                                            mb="30px"
-                                        >
-                                            {currentCard.NFTDescription}
-                                        </Text>
+                                        {currentCard.NFTDescription && (
+                                            <Text
+                                                lineHeight="30px"
+                                                letterSpacing="0.25px"
+                                                mb="30px"
+                                            >
+                                                {currentCard.NFTDescription}
+                                            </Text>
+                                        )}
                                         <Grid
                                             templateColumns="3fr 3fr"
                                             templateRows="repeat(1, 1fr)"

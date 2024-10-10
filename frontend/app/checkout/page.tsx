@@ -265,12 +265,12 @@ export default function CheckoutPage() {
                 flexDir="row"
                 w="full"
                 minH="100dvh"
-                h={{ base: "fit-content", md: "110dvh" }}
+                h={{ base: "fit-content", md: "100dvh" }}
                 bgGradient={
                     "linear(180deg, gray.1200 0%, gray.1300 100%) 0% 0% no-repeat padding-box;"
                 }
             >
-                <Box w="full">
+                <Flex flexDir="column" flex={1}>
                     <Flex
                         w="100%"
                         direction={"column"}
@@ -278,7 +278,7 @@ export default function CheckoutPage() {
                     >
                         <NavBar cryptoWalletConnected={cryptoWalletConnected} />
                     </Flex>
-                    <Box>
+                    <Box w="full" flex={1}>
                         {showSpinner ? (
                             <Box
                                 w="100%"
@@ -291,13 +291,9 @@ export default function CheckoutPage() {
                             </Box>
                         ) : checkout.stepNum === 0 ? (
                             // Placeholder for Select Your package Page
-                            <Box pb={{ base: "32px", md: "0" }}>
-                                <SelectYourPackage />
-                            </Box>
+                            <SelectYourPackage />
                         ) : checkout.stepNum === 1 ? (
-                            <Box w="full">
-                                <AllStarPrice />
-                            </Box>
+                            <AllStarPrice />
                         ) : (
                             <>
                                 <VStack
@@ -356,7 +352,7 @@ export default function CheckoutPage() {
                             </>
                         )}
                     </Box>
-                </Box>
+                </Flex>
                 <Box
                     position="sticky"
                     top={0}

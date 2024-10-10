@@ -177,7 +177,7 @@ export default function CropModal({
                 <ModalCloseButton color="white" />
                 <ModalHeader color="white">Crop Image</ModalHeader>
                 <ModalBody p={0} display="flex">
-                    <Box position="relative" flex={1} h="calc(100vh - 172px)">
+                    <Box position="relative" flex={1} h="calc(100dvh - 172px)">
                         {/* Cropper */}
                         <Cropper
                             image={image}
@@ -259,7 +259,8 @@ function CropControls({
             bgColor="gray.500"
             borderBottomRightRadius="10px"
             borderBottomLeftRadius="10px"
-            padding="10px"
+            px={6}
+            py={{ base: 6, md: 4 }}
             justifyContent="space-between"
             alignItems="center"
         >

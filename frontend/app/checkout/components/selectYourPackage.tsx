@@ -74,12 +74,13 @@ export default function SelectYourPackage() {
     return (
         <Flex
             width={"100%"}
-            justifyContent={"center"}
+            h="full"
+            justifyContent={"flex-start"}
             alignItems={"center"}
             flexDirection={"column"}
             userSelect={"none"}
             paddingX={{ base: "24px", md: "72px" }}
-            marginTop={"-12.5px"}
+            py={{ base: "24px", md: "64px" }}
         >
             {/* Header */}
             <Text

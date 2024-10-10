@@ -1,12 +1,16 @@
 // eslint-disable-next-line no-use-before-define
 import React from "react";
 import {
-    Box,
     Icon,
     InputGroup,
     Input,
     InputRightElement,
-    Tooltip,
+    Popover,
+    PopoverTrigger,
+    Text,
+    PopoverContent,
+    PopoverAnchor,
+    useBreakpointValue,
 } from "@chakra-ui/react";
 import { FaExclamationCircle, FaCheckCircle } from "react-icons/fa";
 
@@ -25,40 +29,44 @@ interface SocialMediaInputProps {
 export default function SocialMediaInput(
     props: SocialMediaInputProps,
 ): React.ReactElement {
+    const popoverTrigger = useBreakpointValue({ base: "click", md: "hover" });
+
     return (
-        <InputGroup>
-            <Input
-                variant={"basicInput"}
-                rounded="md"
-                backgroundColor="#2B2B2B"
-                border={"solid 1px #323232"}
-                placeholder={`${props.name}`}
-                value={props.editableSocialMediaLink}
-                onChange={(e) => {
-                    props.setEditableSocialMediaLink(e.target.value);
-                }}
-                pr="32px"
-            />
-            <InputRightElement>
-                {props.editableSocialMediaLink === "" ||
-                !props.validateSocialLink(
-                    props.editableSocialMediaLink,
-                    props.validSocialMediaPrefix,
-                ) ? (
-                    <Tooltip
-                        variant="warning"
-                        label={`Your link must start with "${props.validSocialMediaPrefix}"`}
-                        w="230px"
-                        placement="right"
-                    >
-                        <Box>
+        <Popover placement="top" trigger={popoverTrigger as "click" | "hover"}>
+            <InputGroup>
+                <PopoverAnchor>
+                    <Input
+                        variant={"basicInput"}
+                        rounded="md"
+                        backgroundColor="#2B2B2B"
+                        border={"solid 1px #323232"}
+                        placeholder={`${props.name}`}
+                        value={props.editableSocialMediaLink}
+                        onChange={(e) => {
+                            props.setEditableSocialMediaLink(e.target.value);
+                        }}
+                        pr="32px"
+                    />
+                </PopoverAnchor>
+                <InputRightElement>
+                    {props.editableSocialMediaLink === "" ||
+                    !props.validateSocialLink(
+                        props.editableSocialMediaLink,
+                        props.validSocialMediaPrefix,
+                    ) ? (
+                        <PopoverTrigger>
                             <Icon as={FaExclamationCircle} color="orange" />
-                        </Box>
-                    </Tooltip>
-                ) : (
-                    <Icon as={FaCheckCircle} color="#27CE00" />
-                )}
-            </InputRightElement>
-        </InputGroup>
+                        </PopoverTrigger>
+                    ) : (
+                        <Icon as={FaCheckCircle} color="#27CE00" />
+                    )}
+                </InputRightElement>
+            </InputGroup>
+            <PopoverContent bg="orange" p={2} zIndex={99999999}>
+                <Text>
+                    Your link must start with "{props.validSocialMediaPrefix}"
+                </Text>
+            </PopoverContent>
+        </Popover>
     );
 }

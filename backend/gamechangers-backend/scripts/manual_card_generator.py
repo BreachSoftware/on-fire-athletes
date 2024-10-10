@@ -18,7 +18,7 @@ for card in sorted_cards[:num_cards]:
     generated_by = card["generatedBy"]
     
     # Construct the URL for the trading card
-    url = f"https://gamechangers.zenithsoftware.dev/generate_card_asset?generatedBy={generated_by}&uuid={uuid}"
+    url = f"https://on-fire-athletes.netlify.app/generate_card_asset?generatedBy={generated_by}&uuid={uuid}"
     
     # Open the URL in the default browser
     webbrowser.open(url)

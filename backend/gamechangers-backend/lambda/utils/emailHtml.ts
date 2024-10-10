@@ -11,8 +11,7 @@
  * @returns The HTML for the email
  */
 export function emailTemplate(body: string) {
-
-	return (`<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+	return `<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 	<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 	<head>
 	<!--[if gte mso 9]>
@@ -158,7 +157,7 @@ export function emailTemplate(body: string) {
 		<tr>
 			<td class="v-text-align" style="padding-right: 0px;padding-left: 0px;" align="left">
 			
-			<img align="left" border="0" src="https://gamechangers.zenithsoftware.dev/on-fire-athletes-full-logo.png" alt="image" title="image" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none; width: 100%; max-width: 222px;"/>
+			<img align="left" border="0" src="https://on-fire-athletes.netlify.app/on-fire-athletes-full-logo.png" alt="image" title="image" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none; width: 100%; max-width: 222px;"/>
 			
 			</td>
 		</tr>
@@ -173,5 +172,5 @@ export function emailTemplate(body: string) {
 
 	</body>
 
-	</html>`);
+	</html>`;
 }

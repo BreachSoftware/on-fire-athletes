@@ -74,7 +74,7 @@ export default function AllStarPrice() {
             <Flex
                 bgColor={{ base: "transparent", sm: "transparent" }}
                 w="100%"
-                h="calc(100dvh - 94px)"
+                h="full"
                 justifyContent="center"
                 alignItems="center"
                 flexDir="column"
@@ -90,15 +90,14 @@ export default function AllStarPrice() {
                     alignItems={{ base: "top", md: "center" }}
                     flexDirection="column"
                     paddingX={{ base: "15px", md: "50px", xl: "100px" }}
-                    paddingTop={{ base: "20px" }}
+                    paddingY={{ base: "20px", md: "64px" }}
                 >
                     <Flex
-                        h="full"
+                        flex={1}
                         w="full"
                         flexDirection={{ base: "column", lg: "row" }}
                         alignItems="center"
                         justifyContent="center"
-                        mb="32px"
                         gap={{ base: "30px", md: "50px", xl: "100px" }}
                     >
                         {/* Image of the card, with various size adjustments for different screen sizes */}
@@ -272,8 +271,8 @@ export default function AllStarPrice() {
                         <Flex
                             justifyContent={"center"}
                             gap="20px"
-                            marginBottom={"80px"}
                             mr={{ md: "40px" }}
+                            pb={{ base: "32px", md: 0 }}
                         >
                             {/* Back button to go to the previous step */}
                             <Button
@@ -332,7 +331,11 @@ export default function AllStarPrice() {
                     </Flex>
                 </Flex>
 
-                <Box w="full" display={{ base: "inline", md: "none" }}>
+                <Box
+                    w="full"
+                    justifySelf="flex-end"
+                    display={{ base: "inline", md: "none" }}
+                >
                     <Footer />
                 </Box>
             </Flex>

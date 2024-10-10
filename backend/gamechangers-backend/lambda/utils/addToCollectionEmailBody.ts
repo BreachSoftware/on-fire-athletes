@@ -14,17 +14,24 @@
  * @param requesterEmail - the email of the requester
  * @returns the email body
  */
-export function addToCollectionEmailBody(requesterUUID: string, generatedByUUID: string, cardUUID: string, cardFirstName: string, cardLastName: string, cardImage: string, requesterEmail: string, recipientFirstName: string): string {
-
-	const messageToReturn =
-		`<table id="u_content_text_10" style="font-family: Arial, sans-serif; font-size: 18px; background: #12171E; padding: 20px 0;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
+export function addToCollectionEmailBody(
+	requesterUUID: string,
+	generatedByUUID: string,
+	cardUUID: string,
+	cardFirstName: string,
+	cardLastName: string,
+	cardImage: string,
+	requesterEmail: string,
+	recipientFirstName: string,
+): string {
+	const messageToReturn = `<table id="u_content_text_10" style="font-family: Arial, sans-serif; font-size: 18px; background: #12171E; padding: 20px 0;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
 		<tbody>
 			<tr>
 				<td class="v-container-padding-padding" style="overflow-wrap:break-word;word-break:break-word;padding:10px 20px 10px 20px;font-family: Arial, sans-serif; font-size: 18px;" align="left">
 					<table role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
 						<tr>
 							<td colspan="2" style="vertical-align: top;">
-								<img border="0" src="https://gamechangers.zenithsoftware.dev/youre-on-fire-logo.png"  alt="You're On Fire" style=" width: 425px; height: 75px; padding-left: 15px; padding-top: 30px; padding-bottom: 15px">
+								<img border="0" src="https://on-fire-athletes.netlify.app/youre-on-fire-logo.png"  alt="You're On Fire" style=" width: 425px; height: 75px; padding-left: 15px; padding-top: 30px; padding-bottom: 15px">
 							</td>
 						</tr>
 						<tr>
@@ -37,7 +44,7 @@ export function addToCollectionEmailBody(requesterUUID: string, generatedByUUID:
 									<br>
 									<p style="line-height:140%;"></p>
 									<p style="padding-left: 15px;">Click the link below and sign into your account to allow them to receive a copy of this card.</p>
-									<a href="https://gamechangers.zenithsoftware.dev/login?generatedByUUID=${generatedByUUID}&cardUUID=${cardUUID}&toUUID=${requesterUUID}&fromUUID=${generatedByUUID}&requested=true">
+									<a href="https://on-fire-athletes.netlify.app/login?generatedByUUID=${generatedByUUID}&cardUUID=${cardUUID}&toUUID=${requesterUUID}&fromUUID=${generatedByUUID}&requested=true">
 									<button class="button" style="font-family: 'Barlow', sans-serif; letter-spacing: 2px; font-size: 20px;">CONFIRM TRADE NOW</button></a>
 									<br>
 									<p style="line-height: 140%; padding-left: 15px;">Thanks!</p>
