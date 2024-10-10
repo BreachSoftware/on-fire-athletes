@@ -212,10 +212,10 @@ function ARViewer() {
 
         if (cardUUID && !useBack) {
             // This should eventually have guardrails in case the card is not found
-            return `https://onfireathletes-media-uploads.s3.amazonaws.com/mind-ar/${cardUUID}.mind`;
+            return `https://onfireathletes-media-uploads.s3.amazonaws.com/mind-ar/${cardUUID}-front.mind`;
         }
         // Something that we just know works. Not really the correct URL.
-        return "https://onfireathletes-media-uploads.s3.amazonaws.com/mind-ar/magback.mind";
+        return `https://onfireathletes-media-uploads.s3.amazonaws.com/mind-ar/${cardUUID}-back.mind`;
     }
 
     /**
