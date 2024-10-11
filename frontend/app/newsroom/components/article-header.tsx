@@ -48,19 +48,9 @@ export default function ArticleHeader({ title, image }: Props) {
                 <ArticleTitle textAlign="center" mb={0}>
                     {title}
                 </ArticleTitle>
-                {/* <AspectRatio ratio={2} w={{ base: "full", xl: "864px" }}> */}
                 <Box maxW="732px" w="full">
                     <PhotoFrame src={image} alt={title} />
                 </Box>
-                {/* <Image
-                        zIndex={2}
-                        src={image}
-                        alt="title"
-                        w="full"
-                        h="full"
-                        objectFit="cover"
-                    /> */}
-                {/* </AspectRatio> */}
             </Flex>
         </Flex>
     );
