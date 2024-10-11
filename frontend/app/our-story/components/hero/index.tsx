@@ -28,7 +28,7 @@ export default function OurStoryHero() {
                     <Image
                         src={LargeLogo.src}
                         alt="On Fire Athletes Full Logo"
-                        w={{ base: "100%", lg: "641px" }}
+                        w={{ base: "100%", lg: "624px" }}
                         objectFit="contain"
                     />
                     <Box>
@@ -50,7 +50,7 @@ export default function OurStoryHero() {
                             textAlign="center"
                             filter="drop-shadow(0 0 15px #00000049)"
                         >
-                            Set the current sports narrative ON FIRE!
+                            Set the current sports narrative ONFiRE!
                         </Text>
                     </Box>
                 </Flex>
@@ -86,12 +86,12 @@ export default function OurStoryHero() {
                         SCROLL TO LEARN MORE
                     </Text>
                     <Box
-                        h={{ base: "124px", lg: "256px" }}
+                        h={{ base: "124px", lg: "164px" }}
                         w="5px"
                         bg="#27CE01"
                         rounded="full"
                         filter="drop-shadow(0 0 15px #44FF19)"
-                        mb={{ base: "-60px", lg: "-128px" }}
+                        mb={{ base: "-60px", lg: "-82px" }}
                         zIndex={2}
                     />
                 </Flex>

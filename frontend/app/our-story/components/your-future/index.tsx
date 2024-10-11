@@ -72,7 +72,7 @@ export default function YourFutureSection() {
                         textAlign="center"
                         mb={{ base: 8, lg: 1 }}
                     >
-                        EVERY SPORT, ATHLETE, LEVEL, COUNTRY, AND FAN
+                        EVERY SPORT, ATHLETE, LEVEL, AND FAN
                     </Text>
                     <Box
                         w={{ base: "80%", lg: "full" }}
