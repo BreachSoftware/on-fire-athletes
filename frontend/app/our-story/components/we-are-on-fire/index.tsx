@@ -22,7 +22,7 @@ export default function WeAreOnFireSection() {
                             textAlign="center"
                             color="#27CE01"
                         >
-                            WE ARE ONFIRE!
+                            WE ARE ONFiRE!
                         </Text>
                         <Text
                             fontFamily="Barlow Condensed"
