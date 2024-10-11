@@ -4,7 +4,7 @@ export default function ArticleTitle({ children, ...rest }: HeadingProps) {
     return (
         <Heading
             as="h1"
-            size="2xl"
+            size={{ base: "xl", lg: "2xl" }}
             color="green.600"
             textTransform="uppercase"
             fontFamily="Barlow Semi Condensed"

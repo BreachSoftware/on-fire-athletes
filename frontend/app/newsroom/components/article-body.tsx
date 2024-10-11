@@ -25,7 +25,8 @@ export default function ArticleBody({ children, ...rest }: BoxProps) {
             />
             <Box
                 position="relative"
-                py={20}
+                pb={20}
+                pt={{ base: "calc(120px + 48px)", xl: "calc(240px + 48px)" }}
                 mx="auto"
                 maxW="864px"
                 color="black"
