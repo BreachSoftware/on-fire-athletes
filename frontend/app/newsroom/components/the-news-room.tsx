@@ -32,7 +32,7 @@ export default function TheNewsRoomTitle() {
                     textShadow: "0px 0px 10px #27CE00BF",
                 }}
             >
-                NEWS ROOM
+                NEWSROOM
             </Text>
         </HStack>
     );
