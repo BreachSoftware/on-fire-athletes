@@ -282,7 +282,7 @@ function ARViewer() {
                 vr-mode-ui="enabled: false"
                 filterMinCF=".01"
                 filterBeta=".001"
-                missTolerance="40" // warmupTolerance="100" missTolerance="1000"
+                missTolerance="10" // warmupTolerance="100" missTolerance="1000"
                 xr-mode-ui="enabled: false"
                 device-orientation-permission-ui="enabled: false"
             >
@@ -345,7 +345,7 @@ function ARViewer() {
                         autoPlay
                         style={{
                             "webkit-playsinline": "true",
-                            objectFit: "cover",
+                            // objectFit: "cover",
                         }}
                         muted
                         playsInline
