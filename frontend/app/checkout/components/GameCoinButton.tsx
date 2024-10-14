@@ -128,8 +128,6 @@ export default function GameCoinButton() {
                         {({ openConnectModal }) => {
                             return (
                                 <Button
-                                    id="submit"
-                                    type="submit"
                                     disabled={
                                         transferContext.isFetching ||
                                         transferContext.isPending
