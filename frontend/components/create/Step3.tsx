@@ -5,6 +5,7 @@ import {
     VStack,
     Spacer,
     Spinner,
+    useToast,
 } from "@chakra-ui/react";
 import DropzoneButton from "@/components/create/dropzoneButton";
 import { useCurrentCardInfo } from "@/hooks/useCurrentCardInfo";
@@ -53,41 +54,52 @@ export async function uploadAssetToS3(
     asset: File | Blob,
     mediatype: string,
     filetype: string,
-) {
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
+): Promise<{ status: "success" | "error" }> {
+    try {
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
 
-    const raw = JSON.stringify({
-        mediatype: mediatype,
-        filename: filename,
-        filetype: filetype,
-    });
+        const raw = JSON.stringify({
+            mediatype: mediatype,
+            filename: filename,
+            filetype: filetype,
+        });
 
-    const requestOptions = {
-        method: "PUT",
-        headers: myHeaders,
-        body: raw,
-        redirect: "follow" as RequestRedirect,
-    };
+        const requestOptions = {
+            method: "PUT",
+            headers: myHeaders,
+            body: raw,
+            redirect: "follow" as RequestRedirect,
+        };
 
-    const presignedURL = await fetch(
-        apiEndpoints.media_generatePresignedURL(),
-        requestOptions,
-    );
+        const presignedURL = await fetch(
+            apiEndpoints.media_generatePresignedURL(),
+            requestOptions,
+        );
 
-    const presignedURLJSON = await presignedURL.json();
+        const presignedURLJSON = await presignedURL.json();
 
-    const presignedURLString = presignedURLJSON.url;
+        const presignedURLString = presignedURLJSON.url;
 
-    // If the asset is a File, convert it to a Blob
-    if (asset instanceof File) {
-        // eslint-disable-next-line no-param-reassign
-        asset = new Blob([asset], { type: filetype });
+        // If the asset is a File, convert it to a Blob
+        if (asset instanceof File) {
+            // eslint-disable-next-line no-param-reassign
+            asset = new Blob([asset], { type: filetype });
+        }
+        const response = await fetch(presignedURLString, {
+            method: "PUT",
+            body: asset,
+        });
+
+        if (!response.ok) {
+            throw new Error(`Request failed with status ${response.status}`);
+        }
+
+        return { status: "success" };
+    } catch (error) {
+        console.error("Error:", error);
+        return { status: "error" };
     }
-    await fetch(presignedURLString, {
-        method: "PUT",
-        body: asset,
-    });
 }
 
 /**
@@ -96,6 +108,7 @@ export async function uploadAssetToS3(
  * @returns the content of Step 3 in the card creation process
  */
 export default function Step3() {
+    const toast = useToast();
     const card = useCurrentCardInfo();
 
     const auth = useAuth();
@@ -107,6 +120,16 @@ export default function Step3() {
 
     const { startProcessing, stopProcessing, setMediaType } =
         useMediaProcessing();
+
+    function showErrorToast() {
+        toast({
+            title: "Error",
+            description: "Failed to upload file",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+        });
+    }
 
     /**
      * This function processes the photo selection
@@ -170,24 +193,33 @@ export default function Step3() {
                 photoFileName.current = filename;
 
                 // Upload the image to S3
-                await uploadAssetToS3(filename, blob, "image", "image/png");
+                const result = await uploadAssetToS3(
+                    filename,
+                    blob,
+                    "image",
+                    "image/png",
+                );
 
-                card.setCurCard({
-                    ...card.curCard,
-                    frontPhotoURL: base64data as string,
-                    frontPhotoS3URL: `https://onfireathletes-media-uploads.s3.amazonaws.com/image/${filename}`,
-                    frontPhotoWidth: parseInt(imageWidth!),
-                    frontPhotoHeight: parseInt(imageHeight!),
-                    frontIsShowing: true,
-                    partsToRecolor: [CardPart.INTERIOR_BORDER], // Hack to force card re-render
-                });
+                if (result.status === "success") {
+                    card.setCurCard({
+                        ...card.curCard,
+                        frontPhotoURL: base64data as string,
+                        frontPhotoS3URL: `https://onfireathletes-media-uploads.s3.amazonaws.com/image/${filename}`,
+                        frontPhotoWidth: parseInt(imageWidth!),
+                        frontPhotoHeight: parseInt(imageHeight!),
+                        frontIsShowing: true,
+                        partsToRecolor: [CardPart.INTERIOR_BORDER], // Hack to force card re-render
+                    });
+                    setMediaType(MediaType.PHOTO);
+                } else {
+                    showErrorToast();
+                }
                 setPhotoIsLoading(false);
                 stopProcessing();
-                setMediaType(MediaType.PHOTO);
             };
         } catch (error) {
-            console.error("Error:", error);
             stopProcessing();
+            showErrorToast();
         }
     }
 

@@ -22,9 +22,10 @@ import OnFireLogo from "@/images/logos/small-logo.png";
 import { useAuth } from "@/hooks/useAuth";
 import { useEffect, useState } from "react";
 import SideDrawer from "@/components/sideDrawer";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
+// import { ConnectButton } from "@rainbow-me/rainbowkit";
 import ResponsiveBlock from "@/components/shared/wrappers/responsive-block";
 import SideBarHamburger from "@/components/sidebarHamburger";
+import { ConnectButton, WalletButton } from "@rainbow-me/rainbowkit";
 
 // Optional params
 interface NavBarProps extends BoxProps {
@@ -289,6 +290,7 @@ function DesktopNav(props: NavBarProps) {
             <Spacer />
 
             <Flex justifyContent="flex-end" width="100%" direction="row">
+                {props.cryptoWalletConnected && <ConnectButton />}
                 {NAV_ITEMS.slice(3).map((navItem) => {
                     return (
                         <Box
@@ -361,8 +363,6 @@ function DesktopNav(props: NavBarProps) {
                         </Box>
                     );
                 })}
-                {/* If a crypto wallet is connected, their account information and balance will be shown */}
-                {props.cryptoWalletConnected && <ConnectButton />}
             </Flex>
         </Flex>
     );
