@@ -14,7 +14,7 @@ const appEnv = process.env.NEXT_PUBLIC_APP_ENV;
 /**
  * Prefixes for AWS API Gateway URLs.
  */
-const AWS_DEVELOPMENT_API_PREFIX = "7dbmxoegac"; // "uxt0zaw7b0";
+const AWS_DEVELOPMENT_API_PREFIX = "327o42g0u4" // "7dbmxoegac";
 const AWS_PRODUCTION_API_PREFIX = "dlzd38qso6";
 
 /**
