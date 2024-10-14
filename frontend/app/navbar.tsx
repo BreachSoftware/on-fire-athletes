@@ -25,7 +25,7 @@ import SideDrawer from "@/components/sideDrawer";
 // import { ConnectButton } from "@rainbow-me/rainbowkit";
 import ResponsiveBlock from "@/components/shared/wrappers/responsive-block";
 import SideBarHamburger from "@/components/sidebarHamburger";
-import { ConnectButton, WalletButton } from "@rainbow-me/rainbowkit";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 // Optional params
 interface NavBarProps extends BoxProps {
