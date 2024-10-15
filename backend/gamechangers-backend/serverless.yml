@@ -254,6 +254,12 @@ functions:
             - httpApi:
                   path: /createCustomer
                   method: post
+    requestNILVerification:
+        handler: lambda/handlers/requestNILVerification.requestNILVerification
+        events:
+            - httpApi:
+                  path: /requestNILVerification
+                  method: post
 
     ### RIVALS ENDPOINTS ###
     rivalsAuthenticate:

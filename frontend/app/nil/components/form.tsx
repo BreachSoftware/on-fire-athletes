@@ -1,11 +1,123 @@
 "use client";
 import React from "react";
+import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
 import { Button } from "@chakra-ui/button";
 import { Input, type InputProps } from "@chakra-ui/input";
 import { Box, Flex, Text, SimpleGrid } from "@chakra-ui/layout";
 import ChevronRightIcon from "@/components/icons/chevron-right";
+import { useToast } from "@chakra-ui/react";
+import { CheckIcon } from "@chakra-ui/icons";
 
 export default function NILApplicationForm() {
+    const toast = useToast();
+    const [isLoading, setIsLoading] = React.useState(false);
+    const [sentSuccessfully, setSentSuccessfully] = React.useState(false);
+
+    const [firstName, setFirstName] = React.useState("");
+    const [firstNameError, setFirstNameError] = React.useState(false);
+    const [lastName, setLastName] = React.useState("");
+    const [lastNameError, setLastNameError] = React.useState(false);
+    const [email, setEmail] = React.useState("");
+    const [emailError, setEmailError] = React.useState(false);
+    const [schoolName, setSchoolName] = React.useState("");
+    const [schoolNameError, setSchoolNameError] = React.useState(false);
+    const [instagram, setInstagram] = React.useState("");
+    const [instagramError, setInstagramError] = React.useState(false);
+    const [twitter, setTwitter] = React.useState("");
+    const [twitterError, setTwitterError] = React.useState(false);
+
+    function verifyInputs() {
+        let isInvalid = false;
+
+        if (!firstName) {
+            setFirstNameError(true);
+            isInvalid = true;
+        }
+        if (!lastName) {
+            setLastNameError(true);
+            isInvalid = true;
+        }
+        if (!email) {
+            setEmailError(true);
+            isInvalid = true;
+        }
+        if (!schoolName) {
+            setSchoolNameError(true);
+            isInvalid = true;
+        }
+        if (!instagram) {
+            setInstagramError(true);
+            isInvalid = true;
+        }
+        if (!twitter) {
+            setTwitterError(true);
+            isInvalid = true;
+        }
+        return isInvalid;
+    }
+
+    async function handleSendApplication() {
+        setIsLoading(true);
+        if (verifyInputs()) {
+            setIsLoading(false);
+            return;
+        }
+        const emailHeaders = new Headers();
+        emailHeaders.append("Content-Type", "application/json");
+
+        const rawBody = JSON.stringify({
+            firstName,
+            lastName,
+            email,
+            schoolName,
+            instagram,
+            twitter,
+        });
+
+        const requestOptions = {
+            method: "POST",
+            headers: emailHeaders,
+            body: rawBody,
+            redirect: "follow" as RequestRedirect,
+        };
+
+        const requestVerificationResponse = await fetch(
+            apiEndpoints.requestNILVerification(),
+            requestOptions,
+        );
+
+        if (requestVerificationResponse.status === 200) {
+            toast({
+                title: "Verification email sent",
+                description:
+                    "Please allow 1-2 business days for verification process and to receive your unique link via email.",
+                status: "success",
+                duration: 9000,
+                isClosable: true,
+            });
+            setSentSuccessfully(true);
+        } else {
+            toast({
+                title: "Failed to send verification email",
+                description:
+                    "An error occurred while sending the verification email. Please try again later.",
+                status: "error",
+                duration: 9000,
+                isClosable: true,
+            });
+            console.error("Failed to send verification email");
+        }
+        setIsLoading(false);
+    }
+
+    const hasError =
+        firstNameError ||
+        lastNameError ||
+        emailError ||
+        schoolNameError ||
+        instagramError ||
+        twitterError;
+
     return (
         <Box w="full" px={{ base: "24px", lg: "32px", "2xl": 0 }}>
             <Flex
@@ -50,12 +162,52 @@ export default function NILApplicationForm() {
                     columnGap="42px"
                     rowGap="20px"
                 >
-                    <FormInput label="Name" placeholder="First Name" />
-                    <FormInput placeholder="Last Name" />
-                    <FormInput label="Email" placeholder="Email Address" />
-                    <FormInput label="School Name" placeholder="School Name" />
-                    <FormInput label="Social Media" placeholder="Instagram" />
-                    <FormInput placeholder="X (Twitter)" />
+                    <FormInput
+                        label="Name"
+                        placeholder="First Name"
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        onBlur={() => setFirstNameError(false)}
+                        isInvalid={!!firstNameError}
+                    />
+                    <FormInput
+                        placeholder="Last Name"
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        onBlur={() => setLastNameError(false)}
+                        isInvalid={!!lastNameError}
+                    />
+                    <FormInput
+                        label="Email"
+                        placeholder="Email Address"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        onBlur={() => setEmailError(false)}
+                        isInvalid={!!emailError}
+                    />
+                    <FormInput
+                        label="School Name"
+                        placeholder="School Name"
+                        value={schoolName}
+                        onChange={(e) => setSchoolName(e.target.value)}
+                        onBlur={() => setSchoolNameError(false)}
+                        isInvalid={!!schoolNameError}
+                    />
+                    <FormInput
+                        label="Social Media"
+                        placeholder="Instagram"
+                        value={instagram}
+                        onChange={(e) => setInstagram(e.target.value)}
+                        onBlur={() => setInstagramError(false)}
+                        isInvalid={!!instagramError}
+                    />
+                    <FormInput
+                        placeholder="X (Twitter)"
+                        value={twitter}
+                        onChange={(e) => setTwitter(e.target.value)}
+                        onBlur={() => setTwitterError(false)}
+                        isInvalid={!!twitterError}
+                    />
                 </SimpleGrid>
                 <Flex alignItems="center" flexDir="column">
                     <Button
@@ -66,10 +218,23 @@ export default function NILApplicationForm() {
                         textTransform="uppercase"
                         fontWeight="medium"
                         letterSpacing="1.6px"
-                        rightIcon={<ChevronRightIcon />}
+                        rightIcon={
+                            sentSuccessfully ? (
+                                <CheckIcon />
+                            ) : (
+                                <ChevronRightIcon />
+                            )
+                        }
+                        onClick={handleSendApplication}
+                        isLoading={isLoading}
+                        loadingText="Submitting"
+                        isDisabled={sentSuccessfully}
                     >
-                        Submit
+                        {sentSuccessfully ? "Submitted!" : "Submit"}
                     </Button>
+                    {hasError && (
+                        <Text color="red">Missing Required Fields</Text>
+                    )}
                     <Text
                         mt="16px"
                         fontFamily="Barlow Condensed"

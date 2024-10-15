@@ -40,6 +40,7 @@ export const API_ENDPOINTS = [
 	"updateTotalCards",
 	"updateCardPrice",
 	"createCustomer",
+	"requestNILVerification",
 	"authenticate",
 	"users_disconnect",
 	"users_media",
