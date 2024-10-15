@@ -8,6 +8,7 @@ import {
     AccordionButton,
     AccordionItem,
     AccordionPanel,
+    useBreakpointValue,
 } from "@chakra-ui/react";
 import Item from "@/components/cart_items/item";
 import TradingCardInfo from "@/hooks/TradingCardInfo";
@@ -69,6 +70,8 @@ export function ItemsInCartComponent({
  */
 export default function CheckoutItemsInCart(props: CheckoutItemsInCartProps) {
     const curCheckout = useCurrentCheckout();
+
+    const isMobile = useBreakpointValue({ base: true, lg: false });
 
     /**
      * thin Accordion Icon
@@ -138,7 +141,7 @@ export default function CheckoutItemsInCart(props: CheckoutItemsInCartProps) {
                     borderTop={"2px"}
                     allowToggle
                     display={{ base: "block", lg: "none" }}
-                    defaultIndex={[0]}
+                    defaultIndex={isMobile ? undefined : 0}
                 >
                     <AccordionItem>
                         {({ isExpanded }) => {
@@ -155,7 +158,7 @@ export default function CheckoutItemsInCart(props: CheckoutItemsInCartProps) {
                                             flex="1"
                                             textAlign="left"
                                         >
-                                            Items in Cart
+                                            Items in Cart ({props.items.length})
                                         </Text>
                                         <Box
                                             as={ThinChevronIcon}
