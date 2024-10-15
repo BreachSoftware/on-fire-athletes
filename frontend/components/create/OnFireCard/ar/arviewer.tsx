@@ -51,50 +51,6 @@ function ARViewer() {
     let found = false;
     let readCard = new TradingCardInfo();
 
-    function setScannersDisplay(shouldShow: boolean) {
-        const scanners = document.getElementsByClassName("mindar-ui-scanning");
-        for (let i = 0; i < scanners.length; i++) {
-            scanners[i].setAttribute(
-                "style",
-                `display: ${shouldShow ? "flex" : "none"};`,
-            );
-        }
-    }
-
-    // Listeners for controlling the UI of multiple scanners
-    useEffect(() => {
-        const frontEntity = document.querySelector("#front-entity");
-        frontEntity.addEventListener("targetFound", () =>
-            setScannersDisplay(false),
-        );
-        frontEntity.addEventListener("targetLost", () =>
-            setScannersDisplay(true),
-        );
-
-        const backEntity = document.querySelector("#back-entity");
-        backEntity.addEventListener("targetFound", () =>
-            setScannersDisplay(false),
-        );
-        backEntity.addEventListener("targetLost", () =>
-            setScannersDisplay(true),
-        );
-
-        return () => {
-            frontEntity.removeEventListener("targetFound", () =>
-                setScannersDisplay(false),
-            );
-            frontEntity.removeEventListener("targetLost", () =>
-                setScannersDisplay(true),
-            );
-            backEntity.removeEventListener("targetFound", () =>
-                setScannersDisplay(false),
-            );
-            backEntity.removeEventListener("targetLost", () =>
-                setScannersDisplay(true),
-            );
-        };
-    }, []);
-
     /**
      * A callback function that is called when a QR code is scanned.
      * This sets the cardUUID and generatedByUUID states, then
@@ -205,17 +161,17 @@ function ARViewer() {
      * A function to determine which mindFile to use for the given card.
      * @returns the URL of the correct mind file
      */
-    function determineMindFile(useBack: boolean = false): string {
+    function determineMindFile(): string {
         // Get the query parameters from the URL (if any).
         const queryParams = new URLSearchParams(window.location.search);
         const cardUUID = queryParams.get("card");
 
-        if (cardUUID && !useBack) {
+        if (cardUUID) {
             // This should eventually have guardrails in case the card is not found
-            return `https://onfireathletes-media-uploads.s3.amazonaws.com/mind-ar/${cardUUID}-front.mind`;
+            return `https://onfireathletes-media-uploads.s3.amazonaws.com/mind-ar/${cardUUID}.mind`;
         }
         // Something that we just know works. Not really the correct URL.
-        return `https://onfireathletes-media-uploads.s3.amazonaws.com/mind-ar/${cardUUID}-back.mind`;
+        return `https://onfireathletes-media-uploads.s3.amazonaws.com/mind-ar/magback.mind`;
     }
 
     /**
@@ -277,12 +233,12 @@ function ARViewer() {
             {/* Render the AR scene for Front Image */}
             <a-scene
                 ref={sceneRef}
-                mindar-image={`imageTargetSrc: ${determineMindFile(false)};`} // Also have front and back
+                mindar-image={`imageTargetSrc: ${determineMindFile()};`} // Also have front and back
                 renderer="colorManagement: true, physicallyCorrectLights"
                 vr-mode-ui="enabled: false"
                 filterMinCF=".01"
                 filterBeta=".001"
-                missTolerance="10" // warmupTolerance="100" missTolerance="1000"
+                missTolerance="40" // warmupTolerance="100" missTolerance="1000"
                 xr-mode-ui="enabled: false"
                 device-orientation-permission-ui="enabled: false"
             >
@@ -299,6 +255,21 @@ function ARViewer() {
                         src={PlayImage.src}
                         alt="Play button"
                     />
+                    <video
+                        ref={videoRef}
+                        id="card-video"
+                        autoPlay
+                        style={{
+                            "webkit-playsinline": "true",
+                            objectFit: "cover",
+                        }}
+                        muted
+                        playsInline
+                        loop
+                        crossOrigin="anonymous"
+                        src={""}
+                        type="video/mp4"
+                    ></video>
                 </a-assets>
 
                 {/* Define the camera */}
@@ -324,46 +295,8 @@ function ARViewer() {
                         cloak
                     ></a-entity>
                 </a-entity>
-            </a-scene>
-            {/* Render the AR scene for Video */}
-            <a-scene
-                ref={sceneRef}
-                mindar-image={`imageTargetSrc: ${determineMindFile(true)}; uiScanning:no`} // Also have front and back
-                renderer="colorManagement: true, physicallyCorrectLights"
-                vr-mode-ui="enabled: false"
-                filterMinCF=".01"
-                filterBeta=".001"
-                missTolerance="40" // warmupTolerance="100" missTolerance="1000"
-                xr-mode-ui="enabled: false"
-                device-orientation-permission-ui="enabled: false"
-            >
-                {/* Define assets */}
-                <a-assets>
-                    <video
-                        ref={videoRef}
-                        id="card-video"
-                        autoPlay
-                        style={{
-                            "webkit-playsinline": "true",
-                            objectFit: "cover",
-                        }}
-                        muted
-                        playsInline
-                        loop
-                        crossOrigin="anonymous"
-                        src={""}
-                        type="video/mp4"
-                    ></video>
-                </a-assets>
-
-                {/* Define the camera */}
-                <a-camera
-                    position="0 0 0"
-                    look-controls="enabled: false"
-                ></a-camera>
-
                 {/* Back Video (targetIndex 1) */}
-                <a-entity mindar-image-target="targetIndex: 0" id="back-entity">
+                <a-entity mindar-image-target="targetIndex: 1" id="back-entity">
                     {/* Render the video if the video source is set */}
                     {isVideoSourceSet && (
                         <a-video src="#card-video" height="1.5"></a-video>
