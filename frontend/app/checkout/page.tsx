@@ -262,7 +262,6 @@ export default function CheckoutPage() {
             flexDir="row"
             w="full"
             minH="100dvh"
-            h={{ base: "fit-content", md: "100dvh" }}
             bgGradient={
                 "linear(180deg, gray.1200 0%, gray.1300 100%) 0% 0% no-repeat padding-box;"
             }
