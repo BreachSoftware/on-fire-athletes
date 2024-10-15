@@ -47,6 +47,7 @@ function ARViewer() {
     const [qrResult, setQRResult] = useState<string>("");
     const sceneRef = useRef<HTMLElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
+    const [videoWidth, setVideoWidth] = useState(1.5);
 
     let found = false;
     let readCard = new TradingCardInfo();
@@ -80,6 +81,13 @@ function ARViewer() {
                 console.log("FOUND!");
                 readCard = fetchedCard;
                 setImgSource(fetchedCard.cardImage);
+                const videoH = fetchedCard.backVideoHeight;
+                const videoW = fetchedCard.backVideoWidth;
+
+                // Make width ratio of height, normalized as height = 1.5
+                const newWidth = (1.5 * videoW) / videoH;
+                setVideoWidth(newWidth);
+
                 console.log(imgSource);
                 found = true;
             }
@@ -299,7 +307,11 @@ function ARViewer() {
                 <a-entity mindar-image-target="targetIndex: 1" id="back-entity">
                     {/* Render the video if the video source is set */}
                     {isVideoSourceSet && (
-                        <a-video src="#card-video" height="1.5"></a-video>
+                        <a-video
+                            src="#card-video"
+                            height="1.5"
+                            width={videoWidth}
+                        ></a-video>
                         // Potentially show a spinner if not loaded or something
                     )}
                     <a-entity
