@@ -1069,13 +1069,18 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
             },
             position: "relative",
             overflow: "hidden",
-            style: {
-                transformStyle: "preserve-3d",
-                // White is visible, black is not
+            css: {
                 maskImage: `url(${CardMaskReverseImage.src})`,
+                // White is visible, black is not
                 maskMode: "luminance",
                 maskSize: "contain",
                 maskRepeat: "no-repeat",
+                transformStyle: "preserve-3d",
+                // Webkit
+                WebkitMaskImage: `url(${CardMaskReverseImage.src})`,
+                WebkitMaskMode: "luminance",
+                WebkitMaskSize: "contain",
+                WebkitMaskRepeat: "no-repeat",
             },
         };
 
@@ -1121,12 +1126,17 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                     width={"100%"}
                                     position={"relative"}
                                     height={"100%"}
-                                    style={{
+                                    css={{
                                         // White is visible, black is not
                                         maskImage: `url(${CardMaskImage.src})`,
                                         maskMode: "luminance",
                                         maskSize: "contain",
                                         maskRepeat: "no-repeat",
+                                        // Webkit
+                                        WebkitMaskImage: `url(${CardMaskImage.src})`,
+                                        WebkitMaskMode: "luminance",
+                                        WebkitMaskSize: "contain",
+                                        WebkitMaskRepeat: "no-repeat",
                                     }}
                                 >
                                     {slim ? (
