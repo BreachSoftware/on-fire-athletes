@@ -1834,6 +1834,11 @@
     ethereum-cryptography "^2.0.0"
     micro-ftch "^0.3.1"
 
+"@fontsource-variable/roboto-condensed@^5.1.0":
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@fontsource-variable/roboto-condensed/-/roboto-condensed-5.1.0.tgz#57551ada7d8ad3c9da9dc5d7f716da6d84b28b22"
+  integrity sha512-zNEi0EwZY3pQemc6CHCGr/UnP1nBGurPx2SnYy/lyt/8JWdxvz2dOsTQNLdnKQooO45rSCHf7ye3pHzqsUPrUA==
+
 "@fontsource/barlow-condensed@^5.1.0":
   version "5.1.0"
   resolved "https://registry.npmjs.org/@fontsource/barlow-condensed/-/barlow-condensed-5.1.0.tgz#f3ff694f61212e42de306acab5cde3a8606fc1a4"
@@ -1844,9 +1849,9 @@
   resolved "https://registry.npmjs.org/@fontsource/barlow-semi-condensed/-/barlow-semi-condensed-5.1.0.tgz#35bb6123804822c5be812355bc4ca46dd79667bf"
   integrity sha512-hTlARiOlj43hAOm17jUhjlfQxS+UXetZiqN0aHkNiADXJTgtRuMIBmoIvFq+YoSj6mj9U4cC/KuA/xpuIL+BdQ==
 
-"@fontsource/barlow@^5.0.14":
+"@fontsource/barlow@^5.1.0":
   version "5.1.0"
-  resolved "https://registry.npmjs.org/@fontsource/barlow/-/barlow-5.1.0.tgz#29b368ddc53db4f14441590f7e6af2fc6a788250"
+  resolved "https://registry.yarnpkg.com/@fontsource/barlow/-/barlow-5.1.0.tgz#29b368ddc53db4f14441590f7e6af2fc6a788250"
   integrity sha512-HXpoWJQX3RzVrUOpuZUBfWaoruLJ69B7Z3T9lZCWySEiEjvJ1FEwLz6BDJXx0lCrW8dEIf4UMq/xFs5IEn09ag==
 
 "@fontsource/chakra-petch@^5.0.19":
