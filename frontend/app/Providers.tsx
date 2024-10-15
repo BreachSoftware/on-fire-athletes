@@ -32,7 +32,7 @@ const queryClient = new QueryClient();
 
 export function Providers({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
-    const isCardPage = pathname.includes("ar?card=");
+    const isCardPage = pathname === "/ar";
 
     return (
         <ChakraProvider theme={theme}>
