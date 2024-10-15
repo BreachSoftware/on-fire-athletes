@@ -345,7 +345,7 @@ function ARViewer() {
                         autoPlay
                         style={{
                             "webkit-playsinline": "true",
-                            // objectFit: "cover",
+                            objectFit: "cover",
                         }}
                         muted
                         playsInline
