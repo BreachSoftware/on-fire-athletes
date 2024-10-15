@@ -14,8 +14,25 @@ import "@fontsource/roboto/700-italic.css";
 import "@fontsource/roboto/900-italic.css";
 
 // Roboto Condensed
-import "@fontsource-variable/roboto-condensed";
-import "@fontsource-variable/roboto-condensed/wght-italic.css";
+import "@fontsource/roboto-condensed/100.css";
+import "@fontsource/roboto-condensed/200.css";
+import "@fontsource/roboto-condensed/300.css";
+import "@fontsource/roboto-condensed/400.css";
+import "@fontsource/roboto-condensed/500.css";
+import "@fontsource/roboto-condensed/600.css";
+import "@fontsource/roboto-condensed/700.css";
+import "@fontsource/roboto-condensed/800.css";
+import "@fontsource/roboto-condensed/900.css";
+
+import "@fontsource/roboto-condensed/100-italic.css";
+import "@fontsource/roboto-condensed/200-italic.css";
+import "@fontsource/roboto-condensed/300-italic.css";
+import "@fontsource/roboto-condensed/400-italic.css";
+import "@fontsource/roboto-condensed/500-italic.css";
+import "@fontsource/roboto-condensed/600-italic.css";
+import "@fontsource/roboto-condensed/700-italic.css";
+import "@fontsource/roboto-condensed/800-italic.css";
+import "@fontsource/roboto-condensed/900-italic.css";
 
 // Barlow
 import "@fontsource/barlow/100.css";
