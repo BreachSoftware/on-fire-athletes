@@ -238,7 +238,7 @@ function ARViewer() {
                 vr-mode-ui="enabled: false"
                 filterMinCF=".01"
                 filterBeta=".001"
-                missTolerance="40" // warmupTolerance="100" missTolerance="1000"
+                missTolerance="20" // warmupTolerance="100" missTolerance="1000"
                 xr-mode-ui="enabled: false"
                 device-orientation-permission-ui="enabled: false"
             >

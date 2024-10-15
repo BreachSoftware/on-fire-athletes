@@ -21,6 +21,7 @@ import { WagmiProvider } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ProvideTransfer } from "@/hooks/useTransfer";
 import "../node_modules/@rainbow-me/rainbowkit/dist/index.css";
+import { usePathname } from "next/navigation";
 
 export const rainbowKitConfig = getDefaultConfig({
     appName: "OnFire Athletes",
@@ -30,11 +31,14 @@ export const rainbowKitConfig = getDefaultConfig({
 const queryClient = new QueryClient();
 
 export function Providers({ children }: { children: React.ReactNode }) {
+    const pathname = usePathname();
+    const isCardPage = pathname.includes("ar?card=");
+
     return (
         <ChakraProvider theme={theme}>
             <WagmiProvider config={rainbowKitConfig}>
                 <QueryClientProvider client={queryClient}>
-                    <RainbowKitProvider theme={darkTheme()}>
+                    <MaybeRainbowKitProvider shouldUse={isCardPage}>
                         <ProvideAuth>
                             <ProvideCurrentCardInfo>
                                 <ProvideCurrentFilterInfo>
@@ -50,9 +54,23 @@ export function Providers({ children }: { children: React.ReactNode }) {
                                 </ProvideCurrentFilterInfo>
                             </ProvideCurrentCardInfo>
                         </ProvideAuth>
-                    </RainbowKitProvider>
+                    </MaybeRainbowKitProvider>
                 </QueryClientProvider>
             </WagmiProvider>
         </ChakraProvider>
+    );
+}
+
+function MaybeRainbowKitProvider({
+    shouldUse,
+    children,
+}: {
+    shouldUse: boolean;
+    children: React.ReactNode;
+}) {
+    return shouldUse ? (
+        <RainbowKitProvider theme={darkTheme()}>{children}</RainbowKitProvider>
+    ) : (
+        children
     );
 }
