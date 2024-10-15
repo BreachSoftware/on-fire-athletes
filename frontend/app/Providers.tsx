@@ -38,7 +38,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         <ChakraProvider theme={theme}>
             <WagmiProvider config={rainbowKitConfig}>
                 <QueryClientProvider client={queryClient}>
-                    <MaybeRainbowKitProvider shouldUse={isCardPage}>
+                    <MaybeRainbowKitProvider shouldUse={!isCardPage}>
                         <ProvideAuth>
                             <ProvideCurrentCardInfo>
                                 <ProvideCurrentFilterInfo>
