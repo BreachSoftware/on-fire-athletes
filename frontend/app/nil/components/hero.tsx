@@ -1,4 +1,7 @@
-import React from "react";
+"use client";
+import React, { PropsWithChildren } from "react";
+import { Keyframes } from "@emotion/react";
+import { keyframes } from "@chakra-ui/react";
 import { Box, Flex, Text } from "@chakra-ui/layout";
 
 export default function NILHero() {
@@ -57,17 +60,7 @@ export default function NILHero() {
                     justifyContent="center"
                     flexDir="column"
                 >
-                    <Text
-                        textAlign="center"
-                        fontFamily="Brotherhood"
-                        fontWeight="regular"
-                        fontSize={{ base: "40px", lg: "60px" }}
-                        letterSpacing="0.8px"
-                        lineHeight="85px"
-                        color="#27CE01"
-                    >
-                        Build Your Brand
-                    </Text>
+                    <LoopingText />
                     <Box w="80%" h="2px" bg="#27CE01" rounded="full" />
                 </Flex>
             </Box>
@@ -106,5 +99,85 @@ export default function NILHero() {
                 every sale of your cards.
             </Text>
         </Flex>
+    );
+}
+
+function LoopingText() {
+    function SplashText({
+        children,
+        animation,
+        isAbsoluted,
+    }: PropsWithChildren<{ animation: string; isAbsoluted?: boolean }>) {
+        return (
+            <Text
+                position={isAbsoluted ? "absolute" : "relative"}
+                top={0}
+                left={0}
+                w="full"
+                opacity={0}
+                textAlign="center"
+                fontFamily="Brotherhood"
+                fontWeight="regular"
+                fontSize={{ base: "40px", lg: "60px" }}
+                letterSpacing="0.8px"
+                lineHeight="85px"
+                color="#27CE01"
+                animation={animation}
+            >
+                {children}
+            </Text>
+        );
+    }
+
+    const captureAnim = keyframes`
+        0% {opacity: 0;}
+        6.25% {opacity: 1;}
+        31.25% {opacity: 1;}
+        37.5% {opacity: 0;}
+        62.5% {opacity: 0;}
+        68.75% {opacity: 0;}
+        93.75% {opacity: 0}
+        100%% {opacity: 0;}
+    `;
+
+    const createAnim = keyframes`
+        0% {opacity: 0;}
+        6.25% {opacity: 0;}
+        31.25% {opacity: 0;}
+        37.5% {opacity: 1;}
+        62.5% {opacity: 1;}
+        68.75% {opacity: 0;}
+        93.75% {opacity: 0}
+        100% {opacity: 0;}
+    `;
+
+    const customizeAnim = keyframes`
+        0% {opacity: 0;}
+        6.25% {opacity: 0;}
+        31.25% {opacity: 0;}
+        37.5% {opacity: 0;}
+        62.5% {opacity: 0;}
+        68.75% {opacity: 1;}
+        93.75% {opacity: 1;}
+        100%% {opacity: 0;}
+    `;
+
+    function getAnimString(keyframe: Keyframes) {
+        return `${keyframe} 4s ease-in infinite;`;
+    }
+
+    return (
+        <Box position="relative" height="fit-content" width="full" zIndex={2}>
+            {/* One of the text components is position="relative" so that the parent and conform to the height of the text */}
+            <SplashText animation={getAnimString(captureAnim)}>
+                Build Your Brand
+            </SplashText>
+            <SplashText animation={getAnimString(createAnim)} isAbsoluted>
+                Grow Your Hype
+            </SplashText>
+            <SplashText animation={getAnimString(customizeAnim)} isAbsoluted>
+                Fuel Your NIL
+            </SplashText>
+        </Box>
     );
 }

@@ -81,22 +81,35 @@ export default function NILApplicationForm() {
             redirect: "follow" as RequestRedirect,
         };
 
-        const requestVerificationResponse = await fetch(
-            apiEndpoints.requestNILVerification(),
-            requestOptions,
-        );
+        try {
+            const requestVerificationResponse = await fetch(
+                apiEndpoints.requestNILVerification(),
+                requestOptions,
+            );
 
-        if (requestVerificationResponse.status === 200) {
-            toast({
-                title: "Verification email sent",
-                description:
-                    "Please allow 1-2 business days for verification process and to receive your unique link via email.",
-                status: "success",
-                duration: 9000,
-                isClosable: true,
-            });
-            setSentSuccessfully(true);
-        } else {
+            if (requestVerificationResponse.status === 200) {
+                toast({
+                    title: "Verification email sent",
+                    description:
+                        "Please allow 1-2 business days for verification process and to receive your unique link via email.",
+                    status: "success",
+                    duration: 9000,
+                    isClosable: true,
+                });
+                setSentSuccessfully(true);
+            } else {
+                toast({
+                    title: "Failed to send verification email",
+                    description:
+                        "An error occurred while sending the verification email. Please try again later.",
+                    status: "error",
+                    duration: 9000,
+                    isClosable: true,
+                });
+                console.error("Failed to send verification email");
+            }
+        } catch (e) {
+            console.error(e);
             toast({
                 title: "Failed to send verification email",
                 description:
@@ -105,7 +118,6 @@ export default function NILApplicationForm() {
                 duration: 9000,
                 isClosable: true,
             });
-            console.error("Failed to send verification email");
         }
         setIsLoading(false);
     }

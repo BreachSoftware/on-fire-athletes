@@ -20,6 +20,8 @@ export default function YourFutureSection() {
                 px={{ base: "24px", lg: "264px" }}
                 pt={{ base: "96px", lg: "124px" }}
                 pb="48px"
+                maxW={{ "2xl": "1920px" }}
+                mx={{ "2xl": "auto" }}
             >
                 <Box>
                     <Text

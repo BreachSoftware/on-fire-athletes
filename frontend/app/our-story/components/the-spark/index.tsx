@@ -15,6 +15,8 @@ export default function TheSparkSection() {
                 py={{ base: "72px", lg: "156px" }}
                 alignItems="center"
                 gridGap="48px"
+                maxW={{ "2xl": "1468px" }}
+                mx={{ "2xl": "auto" }}
             >
                 <Box px={{ base: 0, lg: "112px" }}>
                     <Text

@@ -61,6 +61,7 @@ export default function OurStoryHero() {
                     flexDir="column"
                     alignItems="center"
                     gridGap={{ base: "32px", lg: "40px" }}
+                    maxW={{ "2xl": "1468px" }}
                 >
                     <Text
                         fontFamily="Barlow Condensed"
