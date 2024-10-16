@@ -1077,6 +1077,8 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
             };
         }
 
+        const hasBackVideo = card?.backVideoURL?.split("com/").at(1);
+
         useImperativeHandle(ref, () => {
             return {
                 handleClick: handleClick,
@@ -1312,6 +1314,7 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                 overflow="hidden"
                                 maxWidth="350px"
                                 maxHeight="527px"
+                                h="527px"
                                 display="grid"
                                 gridTemplateColumns="1fr"
                                 gridTemplateRows="1fr"
@@ -1340,12 +1343,13 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
 
                                     {/* The back video */}
                                     <Box
-                                        gridColumn="1"
-                                        gridRow="1"
                                         zIndex={zIndex.cardBackVideo}
                                         width="350px"
                                         height="527px"
                                         overflow="hidden"
+                                        display={
+                                            hasBackVideo ? "block" : "none"
+                                        }
                                     >
                                         <Draggable
                                             defaultPosition={{
@@ -1381,6 +1385,9 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                                     url={curCard.backVideoURL}
                                                     style={{
                                                         rotate: `${curCard.backVideoRotation}deg`,
+                                                        objectFit: "cover",
+                                                        objectPosition:
+                                                            "center",
                                                     }}
                                                 />
                                             </Box>
