@@ -21,6 +21,8 @@ import {
     Environment,
     environmentManager,
 } from "@backend/EnvironmentManager/EnvironmentManager";
+import "../../node_modules/@rainbow-me/rainbowkit/dist/index.css";
+import { darkTheme, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 
 // OnFire keys
 const STRIPE_PUBLIC_KEY =
@@ -258,104 +260,108 @@ export default function CheckoutPage() {
     }, [transferContext.address, co.checkout.stepNum]);
 
     return (
-        <Flex
-            flexDir="row"
-            w="full"
-            minH="100dvh"
-            bgGradient={
-                "linear(180deg, gray.1200 0%, gray.1300 100%) 0% 0% no-repeat padding-box;"
-            }
-        >
-            <Flex flexDir="column" flex={1}>
-                <Flex
-                    w="100%"
-                    direction={"column"}
-                    mb={{ base: "32px", md: "48px" }}
-                >
-                    <NavBar cryptoWalletConnected={cryptoWalletConnected} />
-                </Flex>
-                <Box w="full" flex={1}>
-                    {showSpinner ? (
-                        <Box
-                            w="100%"
-                            h="100%"
-                            display="flex"
-                            justifyContent="center"
-                            alignItems="center"
-                        >
-                            <Spinner w="150px" h="150px" />
-                        </Box>
-                    ) : checkout.stepNum === 0 ? (
-                        // Placeholder for Select Your package Page
-                        <SelectYourPackage />
-                    ) : checkout.stepNum === 1 ? (
-                        <AllStarPrice />
-                    ) : (
-                        <>
-                            <VStack
+        <RainbowKitProvider theme={darkTheme()}>
+            <Flex
+                flexDir="row"
+                w="full"
+                minH="100dvh"
+                bgGradient={
+                    "linear(180deg, gray.1200 0%, gray.1300 100%) 0% 0% no-repeat padding-box;"
+                }
+            >
+                <Flex flexDir="column" flex={1}>
+                    <Flex
+                        w="100%"
+                        direction={"column"}
+                        mb={{ base: "32px", md: "48px" }}
+                    >
+                        <NavBar cryptoWalletConnected={cryptoWalletConnected} />
+                    </Flex>
+                    <Box w="full" flex={1}>
+                        {showSpinner ? (
+                            <Box
                                 w="100%"
                                 h="100%"
-                                gap="25px"
-                                align="top"
-                                color="white"
-                                display={{ base: "flex", lg: "none" }}
-                                px="24px"
-                                pb="32px"
+                                display="flex"
+                                justifyContent="center"
+                                alignItems="center"
                             >
-                                <CheckoutHeader />
-                                <CheckoutItemsInCart
-                                    items={itemsInCart}
-                                    buyingOtherCard={buyingOtherCard}
-                                />
-                                <Elements stripe={stripePromise}>
-                                    <CheckoutStepWrapper
-                                        onFireCard={onFireCard}
-                                        buyingOtherCard={buyingOtherCard}
-                                    />
-                                </Elements>
-                            </VStack>
-                            <Grid
-                                display={{ base: "none", lg: "grid" }}
-                                templateAreas={`"header header" 
-													"itemsInCart stepWrapper"`}
-                                gridTemplateColumns={"0.4fr 1fr"}
-                                color="white"
-                                gap="6"
-                                fontWeight="bold"
-                                paddingX="72px"
-                                width={"100%"}
-                            >
-                                <GridItem area={"header"}>
+                                <Spinner w="150px" h="150px" />
+                            </Box>
+                        ) : checkout.stepNum === 0 ? (
+                            // Placeholder for Select Your package Page
+                            <SelectYourPackage />
+                        ) : checkout.stepNum === 1 ? (
+                            <AllStarPrice />
+                        ) : (
+                            <>
+                                <VStack
+                                    w="100%"
+                                    h="100%"
+                                    gap="25px"
+                                    align="top"
+                                    color="white"
+                                    display={{ base: "flex", lg: "none" }}
+                                    px="24px"
+                                    pb="32px"
+                                >
                                     <CheckoutHeader />
-                                </GridItem>
-                                <GridItem area={"itemsInCart"}>
                                     <CheckoutItemsInCart
                                         items={itemsInCart}
                                         buyingOtherCard={buyingOtherCard}
                                     />
-                                </GridItem>
-                                <GridItem area={"stepWrapper"} w="100%">
                                     <Elements stripe={stripePromise}>
                                         <CheckoutStepWrapper
                                             onFireCard={onFireCard}
                                             buyingOtherCard={buyingOtherCard}
                                         />
                                     </Elements>
-                                </GridItem>
-                            </Grid>
-                        </>
-                    )}
+                                </VStack>
+                                <Grid
+                                    display={{ base: "none", lg: "grid" }}
+                                    templateAreas={`"header header" 
+													"itemsInCart stepWrapper"`}
+                                    gridTemplateColumns={"0.4fr 1fr"}
+                                    color="white"
+                                    gap="6"
+                                    fontWeight="bold"
+                                    paddingX="72px"
+                                    width={"100%"}
+                                >
+                                    <GridItem area={"header"}>
+                                        <CheckoutHeader />
+                                    </GridItem>
+                                    <GridItem area={"itemsInCart"}>
+                                        <CheckoutItemsInCart
+                                            items={itemsInCart}
+                                            buyingOtherCard={buyingOtherCard}
+                                        />
+                                    </GridItem>
+                                    <GridItem area={"stepWrapper"} w="100%">
+                                        <Elements stripe={stripePromise}>
+                                            <CheckoutStepWrapper
+                                                onFireCard={onFireCard}
+                                                buyingOtherCard={
+                                                    buyingOtherCard
+                                                }
+                                            />
+                                        </Elements>
+                                    </GridItem>
+                                </Grid>
+                            </>
+                        )}
+                    </Box>
+                </Flex>
+                <Box
+                    position="sticky"
+                    top={0}
+                    w="140px"
+                    h="100dvh"
+                    display={{ base: "none", md: "inline" }}
+                >
+                    <Sidebar height="100dvh" backgroundPresent />
                 </Box>
             </Flex>
-            <Box
-                position="sticky"
-                top={0}
-                w="140px"
-                h="100dvh"
-                display={{ base: "none", md: "inline" }}
-            >
-                <Sidebar height="100dvh" backgroundPresent />
-            </Box>
-        </Flex>
+        </RainbowKitProvider>
     );
 }

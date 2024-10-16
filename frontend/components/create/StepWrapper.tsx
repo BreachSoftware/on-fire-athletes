@@ -120,7 +120,9 @@ async function generateCardImage(
 
     const imageBase64 = canvas.toDataURL("image/png", 1.0);
     const resizedMask = await resize(mask, 700, null);
-    return maskImageToCard(imageBase64, resizedMask);
+    const resultingImage = await maskImageToCard(imageBase64, resizedMask);
+    document.body.removeChild(offScreen);
+    return resultingImage;
 }
 
 /**
