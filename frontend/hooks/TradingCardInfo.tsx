@@ -206,7 +206,7 @@ export default class TradingCardInfo {
         this.backVideoWidth = options?.backVideoWidth || 1500; // Leaving the original values here as a reference - 350;
         this.backVideoHeight = options?.backVideoHeight || 843.75; // Leaving the original values here as a reference - 196.875;
         this.backVideoRotation = options?.backVideoRotation || 0;
-        this.borderColor = options?.borderColor || "#67ca3c";
+        this.borderColor = options?.borderColor || "#27CE00";
         // Found a bug in backgroundAccentColor: the initial color in the card creation is significantly darker than the color configured here.
         this.backgroundAccentColor =
             options?.backgroundAccentColor || "#2a2a2a";

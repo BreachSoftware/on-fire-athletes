@@ -52,7 +52,8 @@ provider:
                 - Effect: Allow
                   Action:
                       - ses:SendEmail
-                  Resource: "arn:aws:ses:us-east-1:372797063233:identity/zenithsoftware.dev"
+                  Resource:
+                      - "*"
 
 functions:
     resize:
