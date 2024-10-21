@@ -947,7 +947,6 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
             position: "relative",
             w: "100%",
             h: "490px",
-            marginBottom: !showButton ? "0" : "100px",
             minW: "350px",
             style: {
                 transformStyle: "preserve-3d",
@@ -1107,7 +1106,7 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                         w="100%"
                                         h="100%"
                                         bgImage={CardOutlineShine.src}
-                                        backgroundSize="contain"
+                                        backgroundSize="cover"
                                         opacity="0.25"
                                         pointerEvents="none"
                                     />
@@ -1119,7 +1118,7 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                         w="100%"
                                         h="100%"
                                         bgImage={CardInteriorShineA.src}
-                                        backgroundSize="contain"
+                                        backgroundSize="cover"
                                         opacity="0.4"
                                         pointerEvents="none"
                                     />
