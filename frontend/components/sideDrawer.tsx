@@ -83,6 +83,14 @@ const navItems: Array<MobileNavSection> = [
         header: "About",
         children: [
             {
+                title: "Our Story",
+                href: "/our-story",
+            },
+            {
+                title: "NIL Partnerships",
+                href: "/nil",
+            },
+            {
                 title: "FAQs",
                 href: "/faq",
             },
@@ -266,6 +274,7 @@ function SideDrawer(props: SideDrawerProps) {
                                                             return (
                                                                 <Box
                                                                     key={index}
+                                                                    w="fit-content"
                                                                     display={displayTabs(
                                                                         child.title,
                                                                         auth.isAuthenticated,

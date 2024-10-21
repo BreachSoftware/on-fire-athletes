@@ -59,6 +59,14 @@ const NAV_ITEMS: Array<NavItem> = [
         href: "#",
         children: [
             {
+                label: "Our Story",
+                href: "/our-story",
+            },
+            {
+                label: "NIL Partnerships",
+                href: "/nil",
+            },
+            {
                 label: "FAQs",
                 href: "/faq",
             },
