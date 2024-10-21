@@ -4,6 +4,7 @@ import TradingCardInfo from "@/hooks/TradingCardInfo";
 import { useToast } from "@chakra-ui/react";
 import { CardActionModal } from "./cardActionModal";
 import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
+import { useState } from "react";
 
 interface AddToCollectionModalProps {
     isOpen: boolean;
@@ -18,6 +19,7 @@ interface AddToCollectionModalProps {
  * The component for requesting a card to be added to your collection
  */
 export function AddToCollectionModal(props: AddToCollectionModalProps) {
+    const [isLoading, setIsLoading] = useState(false);
     const toast = useToast();
 
     /**
@@ -25,6 +27,10 @@ export function AddToCollectionModal(props: AddToCollectionModalProps) {
      */
     async function requestCardEmail() {
         try {
+            if (isLoading) return;
+
+            setIsLoading(true);
+
             const myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/json");
 
@@ -104,6 +110,8 @@ export function AddToCollectionModal(props: AddToCollectionModalProps) {
                 isClosable: true,
             });
         }
+
+        setIsLoading(false);
     }
 
     return (
