@@ -11,7 +11,7 @@ export function imagePaths(curCard: TradingCardInfo): string[] {
         "/card_assets/card-outline.png", // Exterior
         `/card_assets/card-interior-border-${curCard.cardType}.png`, // Interior
         "/card_assets/card-backdrop.png", // Solid Background
-        `/card_backgrounds/${CARD_BACKGROUNDS[curCard.selectedBackground].src}`,
+        `/backgrounds/${CARD_BACKGROUNDS[curCard.selectedBackground].src}`,
         curCard.signature ? curCard.signature : "",
     ];
 }
