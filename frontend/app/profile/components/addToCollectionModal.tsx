@@ -2,7 +2,6 @@ import emailjs from "@emailjs/browser";
 
 import TradingCardInfo from "@/hooks/TradingCardInfo";
 import { useToast } from "@chakra-ui/react";
-import { RequestRedirect } from "node-fetch";
 import { CardActionModal } from "./cardActionModal";
 import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
 
@@ -52,18 +51,6 @@ export function AddToCollectionModal(props: AddToCollectionModalProps) {
             // Send the request to the creator of the card for thier card to be added to the user's collection
             const emailHeaders = new Headers();
             emailHeaders.append("Content-Type", "application/json");
-
-            const raw = JSON.stringify({
-                toEmail: generatedByEmail,
-                requesterUUID: props.currentUserId,
-                generatedByUUID: props.currentCard.generatedBy,
-                cardUUID: props.currentCard.uuid,
-                cardFirstName: props.currentCard.firstName,
-                cardLastName: props.currentCard.lastName,
-                cardImage: props.currentCard.cardImage,
-                requesterEmail: requesterEmail,
-                recipientFirstName: generatedByProfileData.first_name,
-            });
 
             const { currentCard, currentUserId } = props;
             const { generatedBy, uuid, cardImage, firstName, lastName } =
