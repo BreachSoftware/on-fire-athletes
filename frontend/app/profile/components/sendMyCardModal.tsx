@@ -110,7 +110,7 @@ export default function SendMyCardModal(props: SendMyCardModalProps) {
                     toEmail: email,
                     tradeUrl: tradeURL,
                     cardImage,
-                    senderName: `${senderProfileData.firstName} ${senderProfileData.lastName}`,
+                    senderName: `${senderProfileData.first_name} ${senderProfileData.last_name}`,
                     cardFirstName: firstName,
                     cardLastName: lastName,
                     toName: email,
