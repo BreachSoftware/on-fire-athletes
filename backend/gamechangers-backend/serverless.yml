@@ -213,6 +213,12 @@ functions:
             - httpApi:
                   path: /retrievePaymentMethod
                   method: post
+    applyCouponCode:
+        handler: lambda/handlers/applyCouponCode.applyCouponCode
+        events:
+            - httpApi:
+                  path: /applyCouponCode
+                  method: post
     createOrder:
         handler: lambda/handlers/createOrder.createOrder
         events:

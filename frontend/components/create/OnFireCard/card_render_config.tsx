@@ -50,7 +50,14 @@ export function cardRenderOrder(
 
     if (cardSide === "front") {
         if (cardType === "a") {
-            const consistentElements = [
+            const consistentElements: (
+                | string
+                | {
+                      src: string;
+                      x?: number;
+                      y?: number;
+                  }
+            )[] = [
                 { src: "/card_assets/onfire-logo-year.png" },
                 {
                     src: gamecardImages[CardPart.INTERIOR_BORDER],
