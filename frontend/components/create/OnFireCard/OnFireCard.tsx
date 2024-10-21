@@ -1055,7 +1055,9 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
             };
         }
 
-        const hasBackVideo = card?.backVideoURL?.split("com/").at(1);
+        const hasBackVideo =
+            curCard?.backVideoURL?.split("com/").at(1) ||
+            curCard?.backVideoS3URL?.split("com/").at(1);
 
         useImperativeHandle(ref, () => {
             return {
@@ -1260,7 +1262,8 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                                         alt="Player Signature"
                                                         maxWidth={`${curCard.signatureWidth}px`}
                                                         position="absolute"
-                                                        top={"250px"}
+                                                        top={"380px"}
+                                                        left={"75px"}
                                                         draggable={false}
                                                         alignSelf="center"
                                                         justifySelf="center"
@@ -1356,6 +1359,9 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                         zIndex={zIndex.cardBackVideo}
                                         width="350px"
                                         height="490px"
+                                        position="absolute"
+                                        top={0}
+                                        left={0}
                                         overflow="hidden"
                                         display={
                                             hasBackVideo ? "block" : "none"
