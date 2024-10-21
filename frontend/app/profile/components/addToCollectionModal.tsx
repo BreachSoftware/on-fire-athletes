@@ -52,6 +52,7 @@ export function AddToCollectionModal(props: AddToCollectionModalProps) {
                 uuidrequestOptions,
             );
             const requesterProfileData = await requesterProfile.json();
+
             const requesterEmail = requesterProfileData.email;
 
             // Send the request to the creator of the card for thier card to be added to the user's collection
@@ -68,8 +69,8 @@ export function AddToCollectionModal(props: AddToCollectionModalProps) {
                 "template_65hpqx8",
                 {
                     from_name: requesterEmail,
-                    requesterEmail: requesterEmail,
-                    recepientName: generatedByProfileData.first_name,
+                    requesterName: `${requesterProfileData.first_name} ${requesterProfileData.last_name}`,
+                    recipientName: generatedByProfileData.first_name,
                     toEmail: generatedByEmail,
                     tradeUrl: tradeURL,
                     cardImage: cardImage,
