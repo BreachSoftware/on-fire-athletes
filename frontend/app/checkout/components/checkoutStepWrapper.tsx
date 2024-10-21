@@ -17,6 +17,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import TradingCardInfo from "@/hooks/TradingCardInfo";
 import { useAuth } from "@/hooks/useAuth";
+import { totalPriceInCart } from "@/utils/utils";
 
 interface CheckoutStepWrapperProps {
     onFireCard: TradingCardInfo | null;
@@ -106,28 +107,13 @@ export default function CheckoutStepWrapper({
     }
 
     /**
-     *  Function to calculate the total price of all items in the cart
-     * @returns {number} - The total price of all items in the cart
-     */
-    function totalPriceInCart() {
-        let total = 0;
-        for (let i = 0; i < checkout.cart.length; i++) {
-            total =
-                total +
-                checkout.cart[i].price * checkout.cart[i].numberOfOrders;
-        }
-        if (buyingPhysicalCards) {
-            total = total + checkout.shippingCost;
-        }
-        return total;
-    }
-
-    /**
      *  Function to calculate the total price of all items in the cart in cents
      * @returns {number} - The total price of all items in the cart in cents
      */
     function totalPriceInCartInCents() {
-        return parseInt((totalPriceInCart() * 100).toFixed(2));
+        return parseInt(
+            (totalPriceInCart(checkout, buyingPhysicalCards) * 100).toFixed(2),
+        );
     }
 
     /**
@@ -141,13 +127,14 @@ export default function CheckoutStepWrapper({
 
     //  useEffect to update the total price in the cart when the cart changes
     useEffect(() => {
+        console.log("UPDATING TOTAL");
         curCheckout.setCheckout({
             ...checkout,
             total: totalPriceInCartInCents(),
             shippingCost: calculateShippingCost(),
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [checkout.cart, checkout.stepNum]);
+    }, [checkout.cart, checkout.stepNum, checkout.couponCode]);
 
     return (
         <Flex width={"100%"} bg="#171C1B" h={"100%"} borderRadius={"8px"}>
@@ -282,7 +269,11 @@ export default function CheckoutStepWrapper({
                                 fontSize={"2xl"}
                                 fontWeight={"bold"}
                             >
-                                Total: ${totalPriceInCart().toFixed(2)}
+                                Total: $
+                                {totalPriceInCart(
+                                    checkout,
+                                    buyingPhysicalCards,
+                                ).toFixed(2)}
                                 {buyingPhysicalCards ? "*" : ""}
                             </Text>
                             <Flex gap="10%">

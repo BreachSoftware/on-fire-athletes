@@ -74,9 +74,9 @@ export const createPaymentIntent: Handler = async (
         return sendResponse(400, {
             error: 'The paymentMethodId and customerId properties cannot be empty',
         })
-    } else if (data.cost <= 0) {
+    } else if (data.cost < 0) {
         return sendResponse(400, {
-            error: 'The cost property must be greater than 0',
+            error: 'The cost property must be greater or equal to 0',
         })
     } else if (
         typeof data.paymentMethodId !== 'string' ||
@@ -101,6 +101,14 @@ export const createPaymentIntent: Handler = async (
             data.paymentMethodId,
             data.customerId
         )
+
+        if (data.cost < 100) {
+            // Send publishable key to client
+            return sendResponse(200, {
+                publishableKey: STRIPE_PUBLIC_KEY,
+                byPassPayment: true,
+            })
+        }
 
         const paymentIntent = await stripe.paymentIntents.create({
             currency: 'USD',

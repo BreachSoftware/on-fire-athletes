@@ -31,6 +31,7 @@ export async function handlePurchase(
         // Get the current user's ID
         const currentUserId = (await auth.currentAuthenticatedUser()).userId;
         let paymentIntent: PaymentIntent | null = null;
+        let shouldByPassPayment = false;
 
         // If Stripe is provided, process the payment using Stripe
         if (stripe) {
@@ -65,29 +66,34 @@ export async function handlePurchase(
 
             const data = await paymentIntentResponse.json();
             console.log("Payment intent response:", data);
-            const clientSecret = data.paymentIntent.client_secret;
 
-            // Confirm the card payment
-            const {
-                error: confirmError,
-                paymentIntent: confirmedPaymentIntent,
-            } = await stripe.confirmCardPayment(clientSecret, {
-                payment_method: paymentMethodId,
-            });
+            shouldByPassPayment = data.byPassPayment;
 
-            if (confirmError) {
-                console.error(
-                    confirmError.message ?? "An unknown error occurred.",
-                );
-                return false;
-            } else if (
-                confirmedPaymentIntent &&
-                confirmedPaymentIntent.status === "succeeded"
-            ) {
-                paymentIntent = confirmedPaymentIntent;
-            } else {
-                console.error("Payment failed.");
-                return false;
+            if (!shouldByPassPayment) {
+                const clientSecret = data.paymentIntent.client_secret;
+
+                // Confirm the card payment
+                const {
+                    error: confirmError,
+                    paymentIntent: confirmedPaymentIntent,
+                } = await stripe.confirmCardPayment(clientSecret, {
+                    payment_method: paymentMethodId,
+                });
+
+                if (confirmError) {
+                    console.error(
+                        confirmError.message ?? "An unknown error occurred.",
+                    );
+                    return false;
+                } else if (
+                    confirmedPaymentIntent &&
+                    confirmedPaymentIntent.status === "succeeded"
+                ) {
+                    paymentIntent = confirmedPaymentIntent;
+                } else {
+                    console.error("Payment failed.");
+                    return false;
+                }
             }
         }
 
@@ -207,7 +213,10 @@ export async function handlePurchase(
 
         // Construct the success URL with appropriate query parameters
         let successUrl = "/checkout/success?";
-        if (stripe && paymentIntent) {
+        if (shouldByPassPayment) {
+            // Add flag if payment was bypassed
+            successUrl = `${successUrl}paymentBypassed=true`;
+        } else if (stripe && paymentIntent) {
             // Add Stripe payment intent ID if Stripe was used
             successUrl = `${successUrl}payment_intent=${paymentIntent.id}`;
         } else if (hash) {
