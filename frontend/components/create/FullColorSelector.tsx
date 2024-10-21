@@ -11,7 +11,7 @@ import {
 import { HexColorPicker } from "react-colorful";
 import { useState, Fragment, createRef, ChangeEvent } from "react";
 import { useCurrentCardInfo } from "@/hooks/useCurrentCardInfo";
-import TradingCardInfo, { CardPart } from "@/hooks/TradingCardInfo";
+import TradingCardInfo from "@/hooks/TradingCardInfo";
 
 export interface FullColorPickerProps {
     type: keyof TradingCardInfo;
@@ -63,59 +63,7 @@ export default function FullColorPicker({
                 setColor(newColor);
             } else {
                 // Determine which part of the card to recolor
-                const partToRecolor = [];
-                switch (type) {
-                    case "borderColor":
-                        partToRecolor.push(
-                            CardPart.EXTERIOR_BORDER,
-                            CardPart.INTERIOR_BORDER,
-                        );
-                        break;
-                    case "signatureColor":
-                        partToRecolor.push(CardPart.SIGNATURE);
-                        break;
-                    case "backgroundMainColor":
-                        partToRecolor.push(CardPart.BACKGROUND);
-                        break;
-                    case "backgroundAccentColor":
-                        partToRecolor.push(CardPart.ACCENT);
-                        break;
-                    case "numberColor":
-                        break;
-                    case "nameColor":
-                        break;
-                    default:
-                        console.error("Invalid color type: ", type);
-                        break;
-                }
-
-                if (partToRecolor.length > 0) {
-                    // Add the part to recolor to the list of parts to recolor
-                    const myArr = card.curCard.partsToRecolor;
-                    for (const part of partToRecolor) {
-                        if (!myArr.includes(part)) {
-                            myArr.push(part);
-                        }
-                    }
-                    if (type === "nameColor") {
-                        card.setCurCard({
-                            ...card.curCard,
-                            partsToRecolor: myArr,
-                            [type]: newColor,
-                            ["topCardTextColor"]: newColor,
-                        });
-                    } else {
-                        card.setCurCard({
-                            ...card.curCard,
-                            partsToRecolor: myArr,
-                            [type]: newColor,
-                        });
-                    }
-                    // IGNORE THIS https://t4.ftcdn.net/jpg/05/60/35/17/360_F_560351726_9mSpgIAQ9M72jd3qNMEsLETEe64ioZvV.jpg
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    // @ts-ignore
-                    card.curCard[type] = newColor;
-                } else if (type === "nameColor") {
+                if (type === "nameColor") {
                     card.setCurCard({
                         ...card.curCard,
                         [type]: newColor,
