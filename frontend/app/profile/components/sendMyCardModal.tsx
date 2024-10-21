@@ -73,6 +73,22 @@ export default function SendMyCardModal(props: SendMyCardModalProps) {
             headers: myHeaders,
         };
 
+        const uuidrequestOptions = {
+            method: "POST",
+            headers: myHeaders,
+            body: JSON.stringify({ email: email }),
+        };
+
+        const response = await fetch(
+            apiEndpoints.getUUID(),
+            uuidrequestOptions,
+        ); // change to prod
+        const res = await response.json();
+        const fetcheduuid = res.uuid;
+
+        const prenewOwnUUID: string = await fetcheduuid;
+        const newOwnUUID = prenewOwnUUID;
+
         const senderProfile = await fetch(
             `${apiEndpoints.getUser()}?uuid=${(await auth.currentAuthenticatedUser()).userId}`,
             senderProfileRequestOptions,
@@ -84,7 +100,7 @@ export default function SendMyCardModal(props: SendMyCardModalProps) {
         const { generatedBy, uuid, cardImage, firstName, lastName } =
             props.currentCard;
 
-        const tradeURL = `https://onfireathletes.com/signup?generatedBy=${generatedBy}&cardUUID=${uuid}&fromUUID=${accountUUID}`;
+        const tradeURL = `https://onfireathletes.com/signup?generatedByUUID=${generatedBy}&cardUUID=${uuid}&toUUID=${newOwnUUID}&fromUUID=${accountUUID}`;
 
         await emailjs
             .send(
