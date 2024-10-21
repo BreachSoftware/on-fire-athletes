@@ -1,3 +1,5 @@
+import emailjs from "@emailjs/browser";
+
 import TradingCardInfo from "@/hooks/TradingCardInfo";
 import { useToast } from "@chakra-ui/react";
 import { RequestRedirect } from "node-fetch";
@@ -63,19 +65,28 @@ export function AddToCollectionModal(props: AddToCollectionModalProps) {
                 recipientFirstName: generatedByProfileData.first_name,
             });
 
-            const requestOptions = {
-                method: "POST",
-                headers: emailHeaders,
-                body: raw,
-                redirect: "follow" as RequestRedirect,
-            };
+            const { currentCard, currentUserId } = props;
+            const { generatedBy, uuid, cardImage, firstName, lastName } =
+                currentCard;
+            const tradeURL = `https://onfireathletes.com/login?generatedByUUID=${generatedBy}&cardUUID=${uuid}&toUUID=${currentUserId}&fromUUID=${generatedBy}&requested=true`;
 
-            const addToCollectionResponse = await fetch(
-                apiEndpoints.addToCollectionEmail(),
-                requestOptions,
+            const sendResponse = await emailjs.send(
+                "service_8rtflzq",
+                "template_65hpqx8",
+                {
+                    from_name: requesterEmail,
+                    requesterEmail: requesterEmail,
+                    recepientName: generatedByProfileData.first_name,
+                    toEmail: generatedByEmail,
+                    tradeUrl: tradeURL,
+                    cardImage: cardImage,
+                    cardFirstName: firstName,
+                    cardLastName: lastName,
+                },
+                { publicKey: "nOgMf7N2DopnucmPc" },
             );
 
-            if (addToCollectionResponse.status === 200) {
+            if (sendResponse.status === 200) {
                 toast({
                     title: "Request Sent",
                     description:

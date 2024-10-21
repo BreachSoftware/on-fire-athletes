@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+
 import BuiltForAthletes from "@/components/built_for_athletes";
 import { Flex } from "@chakra-ui/react";
 import { Box } from "@chakra-ui/react";
