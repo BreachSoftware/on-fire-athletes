@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
-import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
+import emailjs from "@emailjs/browser";
+
 import { Button } from "@chakra-ui/button";
 import { Input, type InputProps } from "@chakra-ui/input";
 import { Box, Flex, Text, SimpleGrid } from "@chakra-ui/layout";
@@ -62,32 +63,23 @@ export default function NILApplicationForm() {
             setIsLoading(false);
             return;
         }
-        const emailHeaders = new Headers();
-        emailHeaders.append("Content-Type", "application/json");
-
-        const rawBody = JSON.stringify({
-            firstName,
-            lastName,
-            email,
-            schoolName,
-            instagram,
-            twitter,
-        });
-
-        const requestOptions = {
-            method: "POST",
-            headers: emailHeaders,
-            body: rawBody,
-            redirect: "follow" as RequestRedirect,
-        };
 
         try {
-            const requestVerificationResponse = await fetch(
-                apiEndpoints.requestNILVerification(),
-                requestOptions,
+            const sendResponse = await emailjs.send(
+                "service_8rtflzq",
+                "template_urcs7yf",
+                {
+                    firstName,
+                    lastName,
+                    email,
+                    schoolName,
+                    instagram,
+                    twitter,
+                },
+                { publicKey: "nOgMf7N2DopnucmPc" },
             );
 
-            if (requestVerificationResponse.status === 200) {
+            if (sendResponse.status === 200) {
                 toast({
                     title: "Verification email sent",
                     description:
