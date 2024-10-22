@@ -244,6 +244,9 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
         },
         ref,
     ) => {
+        const DEFAULT_BACK_VIDEO_URL =
+            "https://onfireathletes-media-uploads.s3.amazonaws.com/onfire-athletes-back-default.mov";
+
         // usingHook should be true only if you are not slim and you did not put in a card.
         const usingHook = card === undefined;
         const cardHook = useCurrentCardInfo();
@@ -1055,15 +1058,15 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
             };
         }
 
-        const hasBackVideo =
-            curCard?.backVideoURL?.split("com/").at(1) ||
-            curCard?.backVideoS3URL?.split("com/").at(1);
-
         useImperativeHandle(ref, () => {
             return {
                 handleClick: handleClick,
             };
         });
+
+        const hasBackVideo =
+            curCard?.backVideoURL?.split("com/").at(1) ||
+            curCard?.backVideoS3URL?.split("com/").at(1);
 
         return (
             <div>
@@ -1363,9 +1366,7 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                         top={0}
                                         left={0}
                                         overflow="hidden"
-                                        display={
-                                            hasBackVideo ? "block" : "none"
-                                        }
+                                        display={"block"}
                                     >
                                         <Draggable
                                             defaultPosition={{
@@ -1392,13 +1393,25 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                             >
                                                 <ReactPlayer
                                                     pip={false}
-                                                    width={`${curCard.backVideoWidth}px`}
-                                                    height={`${curCard.backVideoHeight}px`}
+                                                    width={
+                                                        hasBackVideo
+                                                            ? `${curCard.backVideoWidth}px`
+                                                            : "100%"
+                                                    }
+                                                    height={
+                                                        hasBackVideo
+                                                            ? `${curCard.backVideoHeight}px`
+                                                            : "100%"
+                                                    }
                                                     playing={true}
                                                     playsinline
                                                     muted={true}
                                                     loop={true}
-                                                    url={curCard.backVideoURL}
+                                                    url={
+                                                        hasBackVideo
+                                                            ? curCard.backVideoURL
+                                                            : DEFAULT_BACK_VIDEO_URL
+                                                    }
                                                     style={{
                                                         rotate: `${curCard.backVideoRotation}deg`,
                                                         objectFit: "cover",
