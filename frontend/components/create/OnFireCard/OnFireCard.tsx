@@ -1458,26 +1458,25 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                         </Box>
                     )}
 
-                    {!slim && mobileFlipButton && (
-                        <VStack>
-                            <IconButton
-                                onClick={handleClick}
-                                aria-label="Flip Card"
-                                bottom={"-265px"}
-                                right={"-225px"}
-                                width={"12"}
-                                height={"12"}
-                                background={"white"}
-                                icon={<FlipCardIcon boxSize={30} />}
-                                style={{
-                                    opacity:
-                                        gamecardTopLayer && gamecardBottomLayer
-                                            ? 1
-                                            : 0,
-                                    transition: "opacity 1s ease-in",
-                                }}
-                            />
-                        </VStack>
+                    {mobileFlipButton && (
+                        <Center
+                            rounded="full"
+                            tabIndex={0}
+                            pos="absolute"
+                            bottom="-50px"
+                            right="-30px"
+                            onClick={handleClick}
+                            aria-label="Flip Card"
+                            background={"white"}
+                            width="32px"
+                            height="32px"
+                            style={{
+                                opacity: 1,
+                                transition: "opacity 1s ease-in",
+                            }}
+                        >
+                            <FlipCardIcon boxSize={5} />
+                        </Center>
                     )}
                 </Center>
             </div>
