@@ -45,6 +45,7 @@ import RepeatingPetch from "./repeating_petch";
 import FlipCardIcon from "./flip_card_button";
 import { useMediaProcessing } from "@/hooks/useMediaProcessing";
 import OnFireCardSliders from "./OnFireCardSliders";
+import CardOutline from "@/public/card_assets/card-outline.png";
 import CardMaskImage from "@/public/card_assets/card-mask.png";
 import CardMaskReverseImage from "@/public/card_assets/card-mask-reverse.png";
 import CardOutlineShine from "@/public/card_assets/card-outline-shine.png";
@@ -1422,6 +1423,10 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                             </Box>
                                         </Draggable>
                                     </Box>
+                                    <ExteriorBorder
+                                        color={curCard.borderColor}
+                                        mirrored
+                                    />
                                 </>
                             </Box>
                         </VStack>
@@ -1483,3 +1488,53 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
 OnFireCard.displayName = "GamechangersCard";
 
 export default OnFireCard;
+
+function ExteriorBorder({
+    color,
+    mirrored,
+}: {
+    color: string;
+    mirrored: boolean;
+}) {
+    return (
+        <Box
+            // mirror
+            transform={mirrored ? "scaleX(-1)" : "scaleX(1)"}
+            position="absolute"
+            zIndex={zIndex.cardBackVideo + 1}
+            top={0}
+            left={0}
+            w="100%"
+            h="100%"
+        >
+            <Box
+                position="absolute"
+                top={0}
+                left={0}
+                w="100%"
+                h="100%"
+                bg={color}
+                css={{
+                    maskImage: `url(${CardOutline.src})`,
+                    maskSize: "cover",
+                    maskRepeat: "no-repeat",
+                    WebkitMaskImage: `url(${CardOutline.src})`,
+                    WebkitMaskSize: "cover",
+                    WebkitMaskRepeat: "no-repeat",
+                }}
+            />
+            <Box
+                position="absolute"
+                top={0}
+                left={0}
+                w="100%"
+                h="100%"
+                // shine
+                bgImage={CardOutlineShine.src}
+                bgPos="center"
+                bgSize="cover"
+                opacity="0.25"
+            />
+        </Box>
+    );
+}
