@@ -1506,6 +1506,8 @@ function ExteriorBorder({
             left={0}
             w="100%"
             h="100%"
+            pointerEvents="none"
+            userSelect="none"
         >
             <Box
                 position="absolute"
