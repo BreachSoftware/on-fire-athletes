@@ -13,7 +13,6 @@ import {
     BoxProps,
     StackProps,
     ImageProps,
-    IconButton,
     useToast,
 } from "@chakra-ui/react";
 import mergeImages, { ImageSource } from "merge-images";
