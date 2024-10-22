@@ -11,8 +11,8 @@ import Footer from "../components/footer";
 import CreateBackground from "./components/background";
 import SharedStack from "@/components/shared/wrappers/shared-stack";
 import { InfoItemProps } from "./components/info-card/item";
-import StartCreatingButton from "./components/start-creating-button";
 import SideBarHamburger from "@/components/sidebarHamburger";
+import LightItUpCTAButton from "../components/buttons/light-it-up-button";
 
 /**
  * Main page for the creation process
@@ -66,8 +66,10 @@ export default function CreationOverview() {
                                     justifyContent="space-between"
                                 >
                                     <CreateYourCardText />
-                                    <Box>
-                                        <StartCreatingButton />
+                                    <Box color="white">
+                                        <LightItUpCTAButton link="/create/card_creation">
+                                            START CREATING
+                                        </LightItUpCTAButton>
                                     </Box>
                                 </Flex>
                                 <Box
