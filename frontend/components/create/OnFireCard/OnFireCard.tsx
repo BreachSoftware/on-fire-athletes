@@ -228,6 +228,7 @@ type OnFireCardProps = {
     slim?: boolean;
     shouldFlipOnClick?: boolean;
     mobileFlipButton?: boolean;
+    isOnProfile?: boolean;
 };
 
 /**
@@ -245,6 +246,7 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
             slim = false,
             shouldFlipOnClick = false,
             mobileFlipButton = false,
+            isOnProfile = false,
         },
         ref,
     ) => {
@@ -1467,31 +1469,51 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                         </Box>
                     )}
 
-                    {isMobile && mobileFlipButton && (
-                        <IconButton
-                            onClick={handleClick}
-                            aria-label="Flip Card"
-                            pos="absolute"
-                            bottom="-50px"
-                            right="-30px"
-                            minW="32px"
-                            maxW="32px"
-                            minH="32px"
-                            maxH="32px"
-                            background="#D5D5D5"
-                            marginLeft={5}
-                            icon={
-                                <Icon
-                                    as={FaRotate}
-                                    color="#121212"
-                                    style={{
-                                        width: "22px",
-                                        height: "22px",
-                                    }}
-                                />
-                            }
-                        />
-                    )}
+                    {mobileFlipButton &&
+                        (isOnProfile ? (
+                            <IconButton
+                                onClick={handleClick}
+                                aria-label="Flip Card"
+                                pos="absolute"
+                                bottom="-50px"
+                                right="-30px"
+                                minW="32px"
+                                maxW="32px"
+                                minH="32px"
+                                maxH="32px"
+                                background="#D5D5D5"
+                                marginLeft={5}
+                                icon={
+                                    <Icon
+                                        as={FaRotate}
+                                        color="#121212"
+                                        style={{
+                                            width: "22px",
+                                            height: "22px",
+                                        }}
+                                    />
+                                }
+                            />
+                        ) : (
+                            <Center
+                                rounded="full"
+                                tabIndex={0}
+                                pos="absolute"
+                                bottom="-50px"
+                                right="-30px"
+                                onClick={handleClick}
+                                aria-label="Flip Card"
+                                background={"white"}
+                                width="32px"
+                                height="32px"
+                                style={{
+                                    opacity: 1,
+                                    transition: "opacity 1s ease-in",
+                                }}
+                            >
+                                <FlipCardIcon boxSize={5} />
+                            </Center>
+                        ))}
                 </Center>
             </div>
         );

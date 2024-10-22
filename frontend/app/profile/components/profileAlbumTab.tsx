@@ -429,7 +429,8 @@ export default function ProfileAlbumTab(props: ProfileAlbumProps) {
                                                 showButton={false}
                                                 ref={onFireCardRef}
                                                 shouldFlipOnClick
-                                                mobileFlipButton
+                                                mobileFlipButton={isMobile}
+                                                isOnProfile
                                             />
                                         </Box>
                                         <CardDropShadow />
