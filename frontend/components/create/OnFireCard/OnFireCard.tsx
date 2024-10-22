@@ -13,7 +13,10 @@ import {
     BoxProps,
     StackProps,
     ImageProps,
+    IconButton,
     useToast,
+    Icon,
+    useBreakpointValue,
 } from "@chakra-ui/react";
 import mergeImages, { ImageSource } from "merge-images";
 import {
@@ -49,6 +52,7 @@ import CardMaskImage from "@/public/card_assets/card-mask.png";
 import CardMaskReverseImage from "@/public/card_assets/card-mask-reverse.png";
 import CardOutlineShine from "@/public/card_assets/card-outline-shine.png";
 import CardInteriorShineA from "@/public/card_assets/card-inner-border-shine.png";
+import { FaRotate } from "react-icons/fa6";
 
 // Use this enum to determine the zIndex of the elements on the card
 enum zIndex {
@@ -311,6 +315,10 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
         function handleClick() {
             handleFlip(!isFlipped);
         }
+
+        useEffect(() => {
+            console.log({ isFlipped });
+        }, [isFlipped]);
 
         useEffect(() => {
             setIsFlipped(cardHook.curCard.frontIsShowing);
@@ -1048,8 +1056,10 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
         const signatureRef = useRef(null);
         const videoRef = useRef(null);
 
+        const isMobile = useBreakpointValue({ base: true, md: false });
+
         // If the slim card is hovered over, the card will flip
-        if (slim) {
+        if (slim && !isMobile) {
             outerBoxStyling.onMouseEnter = () => {
                 handleFlip(false);
             };
@@ -1457,25 +1467,30 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                         </Box>
                     )}
 
-                    {mobileFlipButton && (
-                        <Center
-                            rounded="full"
-                            tabIndex={0}
+                    {isMobile && mobileFlipButton && (
+                        <IconButton
+                            onClick={handleClick}
+                            aria-label="Flip Card"
                             pos="absolute"
                             bottom="-50px"
                             right="-30px"
-                            onClick={handleClick}
-                            aria-label="Flip Card"
-                            background={"white"}
-                            width="32px"
-                            height="32px"
-                            style={{
-                                opacity: 1,
-                                transition: "opacity 1s ease-in",
-                            }}
-                        >
-                            <FlipCardIcon boxSize={5} />
-                        </Center>
+                            minW="32px"
+                            maxW="32px"
+                            minH="32px"
+                            maxH="32px"
+                            background="#D5D5D5"
+                            marginLeft={5}
+                            icon={
+                                <Icon
+                                    as={FaRotate}
+                                    color="#121212"
+                                    style={{
+                                        width: "22px",
+                                        height: "22px",
+                                    }}
+                                />
+                            }
+                        />
                     )}
                 </Center>
             </div>
