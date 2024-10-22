@@ -84,6 +84,7 @@ export default function MobileStep6() {
                             cursor: "not-allowed",
                         }}
                         alignItems={"center"}
+                        row
                     >
                         <FullColorPicker
                             type="numberColor"
@@ -99,13 +100,13 @@ export default function MobileStep6() {
                 <Text>Name</Text>
             </SharedStack>
             {card.curCard.signature && (
-                <>
+                <SharedStack row>
                     <FullColorPicker
                         type="signatureColor"
                         setColor={setSignatureColor}
                     />
                     <Text>Signature</Text>
-                </>
+                </SharedStack>
             )}
         </SimpleGrid>
     );
