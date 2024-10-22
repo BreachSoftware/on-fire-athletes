@@ -99,7 +99,7 @@ function ParagraphText({ children }: PropsWithChildren) {
         <Text
             fontFamily="Barlow"
             fontSize="18px"
-            fontWeight="Medium"
+            fontWeight="medium"
             letterSpacing="0.36px"
         >
             {children}
