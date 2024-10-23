@@ -1,4 +1,5 @@
 import { Box, Flex } from "@chakra-ui/layout";
+import CreateCardArray from "@/images/backgrounds/create-card-array.png";
 
 export default function CreateBackground() {
     return (
@@ -8,13 +9,13 @@ export default function CreateBackground() {
             top={0}
             left={0}
             right={0}
-            bg="red.500"
+            bg="black"
             minH="100vh"
             h="100%"
         >
             {/* Top Background Image */}
             <Box
-                bgImage="young-athletes-card-array-bw.png"
+                bgImage={CreateCardArray.src}
                 bgPosition="center"
                 bgRepeat="no-repeat"
                 filter={"grayscale(0%)"}

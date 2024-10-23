@@ -2,7 +2,7 @@
 import React from "react";
 
 import BuiltForAthletes from "@/components/built_for_athletes";
-import { Flex } from "@chakra-ui/react";
+import { Flex, useBreakpointValue } from "@chakra-ui/react";
 import { Box } from "@chakra-ui/react";
 import Navbar from "@/app/navbar";
 import Sidebar from "@/components/sidebar";
@@ -23,6 +23,10 @@ import SideBarHamburger from "@/components/sidebarHamburger";
  */
 export default function Index() {
     // Data for the "In The News" section. This array would typically come from props or be fetched from an API
+    const backgroundSource = useBreakpointValue({
+        base: "HomepageBackgroundMobile.mp4",
+        md: "HomepageBackgroundDesktop.mp4",
+    });
 
     /* Array of news items, each item would have an id, imageUrl, headline, and description */
     const inTheNewsData = [
@@ -60,7 +64,7 @@ export default function Index() {
                     <Box w="full">
                         <Box
                             as="video"
-                            src="HomepageBackgroundVideo.mp4"
+                            src={backgroundSource}
                             loop={false}
                             muted={true}
                             controls={false}

@@ -10,6 +10,7 @@ interface HeadlineProps {
     url?: string;
     width?: string;
     height?: string;
+    background: string;
 }
 
 /**
@@ -32,7 +33,7 @@ export default function Headline(props: HeadlineProps) {
             maxWidth={{ base: "300px", md: "500px" }}
             h={props.height || { base: "45vh", lg: "50vh" }}
             maxHeight={{ base: "300px", md: "500px" }}
-            backgroundImage="/young-athletes-card-array-bw.png"
+            backgroundImage={props.background}
             backgroundSize={"cover"}
             backgroundPosition={"center"}
             role="group"
