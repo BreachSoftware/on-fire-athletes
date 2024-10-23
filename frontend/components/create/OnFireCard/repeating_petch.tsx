@@ -11,17 +11,19 @@ const chakraPetchProps = {
     top: "38px",
     left: "80px",
     fontWeight: "400",
+    letterSpacing: "4.4px",
 };
 
 const brotherhoodProps = {
     fontFam: "'Brotherhood', sans-serif",
     spaceBetweenText: 4,
     textWallHeight: 312,
-    maxWidth: 240,
-    minWidth: 230,
+    maxWidth: 222,
+    minWidth: 220,
     top: "44px",
     left: "86px",
     fontWeight: "400",
+    letterSpacing: "0px",
 };
 
 type RepeatingPetchProps = TextProps & {
@@ -100,6 +102,7 @@ export default function RepeatingPetch({
         fontWeight: fontProps.fontWeight,
         fontSize: fontFam === "Chakra Petch" ? fontSize : fontSize * 0.9,
         width: fontFam === "Chakra Petch" ? "100%" : "105%",
+        letterSpacing: fontProps.letterSpacing,
         lineHeight: "0.74em",
         fontStyle: "center",
         fontFamily: fontFam,

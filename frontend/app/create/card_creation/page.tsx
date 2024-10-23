@@ -35,7 +35,7 @@ export default function CreationOverview() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const isMobile = useBreakpointValue({ base: true, md: false });
+    const isMobile = useBreakpointValue({ base: true, lg: false });
 
     /**
      * Calculates the scale factor for the OnFire card on mobile screens

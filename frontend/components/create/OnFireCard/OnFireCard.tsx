@@ -468,6 +468,19 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [partsToRecolor.length]);
 
+        const nameLength =
+            curCard.firstName.length + curCard.lastName.length + 1;
+        const minNameLength = 12;
+        const maxNameLength = 24;
+
+        // Calculate the ratio, clamped between 0 and 1
+        let ratio =
+            (maxNameLength - nameLength) / (maxNameLength - minNameLength);
+        ratio = Math.max(0, Math.min(ratio, 1));
+
+        // Compute the letter spacing based on the ratio
+        const letterSpacing = ratio * 4 - 2;
+
         const nameSolidStyle: CSSProperties = {
             color: curCard.nameColor,
             pointerEvents: "none",
@@ -476,16 +489,18 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
             userSelect: "none",
             WebkitUserSelect: "none",
             MozUserSelect: "none",
+            letterSpacing: `${letterSpacing}px`,
         };
 
         const nameOutlineStyle: CSSProperties = {
             color: "transparent",
             pointerEvents: "none",
-            WebkitTextStrokeWidth: "0.5px",
+            WebkitTextStrokeWidth: "1px",
             WebkitTextStrokeColor: curCard.nameColor,
             userSelect: "none",
             WebkitUserSelect: "none",
             MozUserSelect: "none",
+            letterSpacing: `${letterSpacing}px`,
         };
 
         const petchOutlineStyle: CSSProperties = {
@@ -1058,7 +1073,7 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
         const signatureRef = useRef(null);
         const videoRef = useRef(null);
 
-        const isMobile = useBreakpointValue({ base: true, md: false });
+        const isMobile = useBreakpointValue({ base: true, lg: false });
 
         // If the slim card is hovered over, the card will flip
         if (slim && !isMobile) {
