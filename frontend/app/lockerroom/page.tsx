@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react";
 import {
     Box,
     HStack,
-    VStack,
     Image as ChakraImage,
     Spinner,
     useToast,
