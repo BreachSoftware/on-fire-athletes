@@ -1,3 +1,4 @@
+"use client";
 import { Stack, Center, Heading, VStack, useToast } from "@chakra-ui/react";
 import { fetchAllCards } from "@/app/lockerroom/components/FetchAllCards";
 import { useEffect, useState } from "react";

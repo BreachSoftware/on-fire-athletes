@@ -1,3 +1,4 @@
+"use client";
 /* eslint-disable max-len */
 import { Fragment } from "react";
 import { Flex, Grid, Heading, GridItem, VStack } from "@chakra-ui/react";

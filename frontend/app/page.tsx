@@ -1,4 +1,3 @@
-"use client";
 import React from "react";
 
 import BuiltForAthletes from "@/components/built_for_athletes";

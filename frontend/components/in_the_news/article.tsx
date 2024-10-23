@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@chakra-ui/button";
 import { Box, Text } from "@chakra-ui/layout";
 import PhotoFrame from "./photo_frame";

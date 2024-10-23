@@ -1,3 +1,4 @@
+"use client";
 import { Box, BoxProps } from "@chakra-ui/layout";
 import { useState, ReactElement } from "react";
 import { Carousel } from "react-responsive-carousel";
