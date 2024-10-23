@@ -14,6 +14,8 @@ import { InfoItemProps } from "./components/info-card/item";
 import SideBarHamburger from "@/components/sidebarHamburger";
 import LightItUpCTAButton from "../components/buttons/light-it-up-button";
 
+import DemarioCard from "@/images/mockups/demario-card.png";
+
 /**
  * Main page for the creation process
  * @returns the creation overview page
@@ -98,7 +100,7 @@ export default function CreationOverview() {
                                 >
                                     <Image
                                         maxH={{ base: "500px", md: "unset" }}
-                                        src="step_one_template_cards/demario_a.png"
+                                        src={DemarioCard.src}
                                         alt="Your Card"
                                         objectFit="contain"
                                         transform="rotate(12deg) scale(0.75)"
@@ -106,7 +108,7 @@ export default function CreationOverview() {
                                     />
                                 </Box>
                                 <Box
-                                    mt={{ base: "16px", lg: "64px" }}
+                                    mt={{ base: "16px", lg: "32px" }}
                                     width="100%"
                                 >
                                     <CardDropShadow />

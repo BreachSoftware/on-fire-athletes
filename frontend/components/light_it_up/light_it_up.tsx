@@ -25,7 +25,7 @@ export default function LightItUp() {
         // Array of interactive sections, each would typically have an id, image, imageOverlayText, title, description, buttonTitle, and buttonLink
         {
             id: 1,
-            videoUrl: "ForAthletesPlayingCard.mp4",
+            videoUrl: "ForAthletesPlayingCardv2.mp4",
             imageOverlaySubtitle: "FOR",
             imageOverlayTitle: "ATHLETES",
             title: "Create a Custom Card",
@@ -36,7 +36,7 @@ export default function LightItUp() {
         },
         {
             id: 2,
-            videoUrl: "ForFansLockerRoomonLaptopandPhone.mp4",
+            videoUrl: "ForFansLockerRoomonLaptopandPhonev2.mp4",
             imageOverlaySubtitle: "FOR",
             imageOverlayTitle: "FANS",
             title: "Shop the Marketplace",
@@ -47,7 +47,7 @@ export default function LightItUp() {
         },
         {
             id: 3,
-            videoUrl: "ForEveryoneFaninCircleFlashingLights.mp4",
+            videoUrl: "ForEveryoneFaninCircleFlashingLightsv2.mp4",
             imageOverlaySubtitle: "FOR",
             imageOverlayTitle: "EVERYONE",
             title: "Win Prizes & Experiences",

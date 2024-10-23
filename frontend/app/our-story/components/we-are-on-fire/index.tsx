@@ -1,7 +1,7 @@
 import { Image } from "@chakra-ui/image";
 import { Box, Center, Text, SimpleGrid } from "@chakra-ui/layout";
 
-import PhoneAndCard from "@/images/mockups/phone-and-card.png";
+import PhoneAndCard from "@/images/mockups/phone-and-card-2.png";
 
 export default function WeAreOnFireSection() {
     return (
