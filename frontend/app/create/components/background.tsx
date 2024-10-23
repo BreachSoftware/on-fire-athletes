@@ -1,5 +1,5 @@
 import { Box, Flex } from "@chakra-ui/layout";
-import CreateCardArray from "@/images/backgrounds/create-card-array.png";
+import CreateCardArray from "@/images/backgrounds/create-card-background.png";
 
 export default function CreateBackground() {
     return (
@@ -24,11 +24,11 @@ export default function CreateBackground() {
                 h={{ base: "65vh", lg: "47%", xl: "47%", "2xl": "500px" }}
                 w="full"
             >
-                <Box
+                {/* <Box
                     bgGradient="linear(#000C, #17760BC3, #058D05C3)"
                     h="100%"
                     w="100%"
-                />
+                /> */}
             </Box>
             {/* Bottom Part of the Background */}
             <Box
