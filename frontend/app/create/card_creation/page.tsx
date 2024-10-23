@@ -109,7 +109,7 @@ export default function CreationOverview() {
                     ? "none"
                     : "linear(180deg, gray.1200 0%, gray.1300 100%) 0% 0% no-repeat padding-box;"
             }
-            minH={typeof window == "undefined" ? "89vh" : window.innerHeight} // making sure that the whole page is on screen at the same time
+            minH={typeof window == "undefined" ? "100vh" : window.innerHeight} // making sure that the whole page is on screen at the same time
             overflowY={
                 isMobile && currentInfo.curCard.stepNumber == 1
                     ? "hidden"
