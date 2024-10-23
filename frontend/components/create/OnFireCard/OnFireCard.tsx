@@ -892,7 +892,11 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                             "-webkit-text-stroke-width 0.5s ease-in-out"
                         }
                     >
-                        {curCard.firstName.toUpperCase()}
+                        {curCard.nameFont.includes("Brotherhood")
+                            ? curCard.firstName
+                                  .toUpperCase()
+                                  .replaceAll("I", "i")
+                            : curCard.firstName.toUpperCase()}
                     </Text>
                     <Text
                         {...textAttributes}
@@ -908,7 +912,11 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                             "-webkit-text-stroke-width 0.5s ease-in-out"
                         }
                     >
-                        {curCard.lastName.toUpperCase()}
+                        {curCard.nameFont.includes("Brotherhood")
+                            ? curCard.lastName
+                                  .toUpperCase()
+                                  .replaceAll("I", "i")
+                            : curCard.lastName.toUpperCase()}
                     </Text>
                 </>
             );

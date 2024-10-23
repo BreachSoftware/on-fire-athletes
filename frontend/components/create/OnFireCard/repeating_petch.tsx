@@ -46,7 +46,10 @@ export default function RepeatingPetch({
 }: RepeatingPetchProps) {
     const [fontSize, setFontSize] = useState<number>(100);
     const [numLines, setNumLines] = useState<number>(0);
-    const textToShow = text.toUpperCase();
+    const textToShow =
+        fontFam !== "Chakra Petch"
+            ? text.toUpperCase().replaceAll("I", "i")
+            : text.toUpperCase();
 
     const fontPropsMapper: Record<string, typeof chakraPetchProps> = {
         "Chakra Petch": chakraPetchProps,
