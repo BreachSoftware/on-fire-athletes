@@ -1504,14 +1504,14 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                 onClick={handleClick}
                                 aria-label="Flip Card"
                                 background={"white"}
-                                width="32px"
-                                height="32px"
+                                width="48px"
+                                height="48px"
                                 style={{
                                     opacity: 1,
                                     transition: "opacity 1s ease-in",
                                 }}
                             >
-                                <FlipCardIcon boxSize={5} />
+                                <FlipCardIcon boxSize={7} />
                             </Center>
                         ))}
                 </Center>
