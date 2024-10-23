@@ -144,7 +144,7 @@ export default function Step1() {
                                         // If no card is clicked or hovered, set scale to 1
                                         clickedIndex === null &&
                                         hoveredIndex === null
-                                            ? "scale(1)"
+                                            ? "scale(1.1)"
                                             : // If a card is hovered or clicked, set scale to 1.1. If not, set scale to 1
                                               hoveredIndex === index ||
                                                 clickedIndex === index
