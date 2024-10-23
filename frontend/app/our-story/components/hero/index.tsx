@@ -17,7 +17,7 @@ export default function OurStoryHero() {
                 alignItems="center"
                 justifyContent="flex-end"
                 gridGap={{ base: "52px", lg: "72px" }}
-                px={{ base: "24px", lg: "156px" }}
+                px={{ base: "20px", lg: "156px" }}
             >
                 <Flex
                     w="full"
@@ -34,7 +34,7 @@ export default function OurStoryHero() {
                     <Box>
                         <Text
                             fontFamily="Barlow Condensed"
-                            fontSize={{ base: "26px", lg: "56px" }}
+                            fontSize={{ base: "24px", lg: "56px" }}
                             fontWeight="medium"
                             textAlign="center"
                             filter="drop-shadow(0 0 15px #00000029)"
