@@ -15,6 +15,8 @@ import SignUpUI from "@/components/signUpUI";
 import LoginHeader from "../components/loginHeader";
 import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
 
+import DarkPaper from "@/images/backgrounds/darkpaper.png";
+
 /**
  * SignUp component for user registration
  * @returns JSX.Element
@@ -250,7 +252,7 @@ export default function SignUp() {
                 h={{ base: "100dvh", md: "100vh" }}
                 justify="flex-start"
                 direction="row-reverse"
-                bgImage="darkpaper.png"
+                bgImage={DarkPaper.src}
                 bgColor="#000000DD"
                 bgPosition="center"
                 bgRepeat="no-repeat"

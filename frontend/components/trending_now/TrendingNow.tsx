@@ -6,6 +6,8 @@ import TrendingCard from "./TrendingCard";
 import LightItUpCTAButton from "@/app/components/buttons/light-it-up-button";
 // import TrendingNowCarousel from "./TrendingCarousel";
 
+import DarkPaper from "@/images/backgrounds/darkpaper.png";
+
 /**
  * Section of the home page that displays the cards that are currently trending.
  *
@@ -38,7 +40,7 @@ export default function TrendingNow() {
         <>
             <Center
                 flexDir="column"
-                backgroundImage={"url('/darkpaper.png')"}
+                backgroundImage={DarkPaper.src}
                 backgroundRepeat="no-repeat"
                 backgroundSize="cover"
                 backgroundPosition={"center center"}
