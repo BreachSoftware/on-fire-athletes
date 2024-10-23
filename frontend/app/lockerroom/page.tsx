@@ -206,14 +206,14 @@ export default function LockerRoom() {
                 bgGradient={
                     "linear(180deg, gray.1200 0%, gray.1300 100%) 0% 0% no-repeat padding-box;"
                 }
-                minH={"100vh"}
+                minH={"100dvh"}
             >
                 <HStack alignItems={"top"} width={"100%"} gap={0}>
-                    <Box w="full">
+                    <Flex flexDir="column" w="full" h="full" minH="100dvh">
                         <Box width={"100%"}>
                             <NavBar />
                         </Box>
-                        <VStack width={"100%"}>
+                        <Box width={"100%"} flex={1}>
                             {/* The Locker Room Title */}
                             <HStack
                                 fontFamily={"'Brotherhood', sans-serif"}
@@ -342,6 +342,7 @@ export default function LockerRoom() {
                                         width={"100%"}
                                         justify={"space-between"}
                                         mt={{ base: 0, lg: -14 }}
+                                        pb="32px"
                                     >
                                         {/* Sort By Dropdown */}
                                         <Flex
@@ -436,10 +437,10 @@ export default function LockerRoom() {
                                     </Flex>
                                 )}
                             </HStack>
-                        </VStack>
+                        </Box>
 
                         <Footer />
-                    </Box>
+                    </Flex>
                     <Box
                         position="sticky"
                         top={0}
