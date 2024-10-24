@@ -304,7 +304,7 @@ function ARViewer() {
                         <a-plane src="#card-image" height="1.5"></a-plane>
                     )}
                     <a-entity
-                        obj-model="obj: url(/ar/gcmask.obj); mtl: #obj-mtl"
+                        obj-model="obj: url(/ar/gcmask-edited.obj); mtl: #obj-mtl"
                         rotation="0 0 -90"
                         position="0 0 0.001"
                         scale="0.058 0.058 0.058"
@@ -324,7 +324,7 @@ function ARViewer() {
                         // Potentially show a spinner if not loaded or something
                     )}
                     <a-entity
-                        obj-model="obj: url(/ar/gcmask-rev.obj); mtl: #obj-mtl"
+                        obj-model="obj: url(/ar/gcmask-rev-edited.obj); mtl: #obj-mtl"
                         rotation="0 0 -90"
                         position={`0 0 0.01`}
                         scale="0.058 0.058 0.058"
