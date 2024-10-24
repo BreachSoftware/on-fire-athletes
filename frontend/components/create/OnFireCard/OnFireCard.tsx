@@ -53,6 +53,7 @@ import CardMaskReverseImage from "@/public/card_assets/card-mask-reverse.png";
 import CardOutlineShine from "@/public/card_assets/card-outline-shine.png";
 import CardInteriorShineA from "@/public/card_assets/card-inner-border-shine.png";
 import { FaRotate } from "react-icons/fa6";
+import { CardFonts } from "../create-helpers";
 
 // Use this enum to determine the zIndex of the elements on the card
 enum zIndex {
@@ -479,7 +480,14 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
         ratio = Math.max(0, Math.min(ratio, 1));
 
         // Compute the letter spacing based on the ratio
-        const letterSpacing = ratio * 4 - 2;
+        const computedLetterSpacing = ratio * 4 - 2;
+
+        const letterSpacing =
+            curCard.cardType === "a"
+                ? computedLetterSpacing
+                : curCard.nameFont === CardFonts.UniserBold
+                  ? 5
+                  : 0;
 
         const nameSolidStyle: CSSProperties = {
             color: curCard.nameColor,
@@ -794,8 +802,7 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                     shouldAnimate && (cardHover || firstTimeAnimation)
                         ? cardTopAnimation
                         : "translate(0);",
-                fontFamily: "Uniser-Bold",
-                letterSpacing: "4.4px",
+                fontFamily: CardFonts.UniserBold,
                 fontSize: "45px",
                 style: curCard.firstNameSolid
                     ? nameSolidStyle
@@ -873,7 +880,6 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                 top: "334px",
                 left: "42px",
                 fontFamily: curCard.nameFont,
-                letterSpacing: "5px",
                 fontSize: "55px",
             };
 
@@ -1197,9 +1203,9 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                                     style={petchOutlineStyle}
                                                     fontFam={
                                                         curCard.nameFont ===
-                                                        "Uniser-Bold"
-                                                            ? "Chakra Petch"
-                                                            : "'Brotherhood', sans-serif"
+                                                        CardFonts.UniserBold
+                                                            ? CardFonts.ChakraPetch
+                                                            : CardFonts.BrotherhoodSansSerif
                                                     }
                                                     zIndex={zIndex.petch}
                                                 />
