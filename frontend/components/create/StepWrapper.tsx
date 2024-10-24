@@ -100,7 +100,7 @@ async function generateCardImage(
     offScreen.style.position = "absolute";
     offScreen.style.left = "-9999px";
     offScreen.style.width = "350px";
-    offScreen.style.height = label === "cardBack" ? "527px" : "525px";
+    offScreen.style.height = label === "cardBack" ? "490px" : "490px";
 
     // Clone the content into the off-screen container
     const clonedContent = ref.current.cloneNode(true) as HTMLElement;
@@ -109,7 +109,7 @@ async function generateCardImage(
 
     const canvas = await html2canvas(offScreen, {
         width: 350,
-        height: 525,
+        height: 490,
         scale: 2,
         useCORS: true,
         logging: true,
@@ -120,7 +120,9 @@ async function generateCardImage(
 
     const imageBase64 = canvas.toDataURL("image/png", 1.0);
     const resizedMask = await resize(mask, 700, null);
-    return maskImageToCard(imageBase64, resizedMask);
+    const resultingImage = await maskImageToCard(imageBase64, resizedMask);
+    document.body.removeChild(offScreen);
+    return resultingImage;
 }
 
 /**

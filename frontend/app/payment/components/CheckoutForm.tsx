@@ -7,6 +7,8 @@ import { checkoutSteps } from "@/app/checkout/components/checkoutSteps";
 import { useState } from "react";
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
+import CouponInput from "./coupon-input";
+import { totalPriceInCart } from "@/utils/utils";
 
 interface CheckoutFormProps {
     buyCard?: boolean;
@@ -85,22 +87,10 @@ export default function CheckoutForm({ buyCard }: CheckoutFormProps) {
         }
     }
 
-    function totalPriceInCart() {
-        let total = 0;
-        for (let i = 0; i < checkout.cart.length; i++) {
-            total =
-                total +
-                checkout.cart[i].price * checkout.cart[i].numberOfOrders;
-        }
-        if (buyingPhysicalCards) {
-            total = total + checkout.shippingCost;
-        }
-        return total;
-    }
-
     return (
         <form id="payment-form" onSubmit={handleSubmit}>
             <PaymentElement id="payment-element" />
+            <CouponInput />
             {/* Invisible button that gets clicked by the checkoutStepWrapper */}
             <Flex
                 justifyContent={{
@@ -127,7 +117,11 @@ export default function CheckoutForm({ buyCard }: CheckoutFormProps) {
                         fontSize={"2xl"}
                         fontWeight={"bold"}
                     >
-                        Total: ${totalPriceInCart().toFixed(2)}
+                        Total: $
+                        {totalPriceInCart(
+                            checkout,
+                            buyingPhysicalCards,
+                        ).toFixed(2)}
                         {buyingPhysicalCards ? "*" : ""}
                     </Text>
                     <Flex gap="10%">

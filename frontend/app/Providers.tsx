@@ -11,17 +11,11 @@ import { ChakraProvider } from "@chakra-ui/react";
 import "./fonts";
 import { ProvideMediaProcessing } from "@/hooks/useMediaProcessing";
 import { ProvideCheckout } from "@/hooks/useCheckout";
-import {
-    darkTheme,
-    getDefaultConfig,
-    RainbowKitProvider,
-} from "@rainbow-me/rainbowkit";
+import { getDefaultConfig } from "@rainbow-me/rainbowkit";
 import { bsc } from "wagmi/chains";
 import { WagmiProvider } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ProvideTransfer } from "@/hooks/useTransfer";
-import "../node_modules/@rainbow-me/rainbowkit/dist/index.css";
-import { usePathname } from "next/navigation";
 
 export const rainbowKitConfig = getDefaultConfig({
     appName: "OnFire Athletes",
@@ -31,46 +25,27 @@ export const rainbowKitConfig = getDefaultConfig({
 const queryClient = new QueryClient();
 
 export function Providers({ children }: { children: React.ReactNode }) {
-    const pathname = usePathname();
-    const isCardPage = pathname === "/ar";
-
     return (
         <ChakraProvider theme={theme}>
             <WagmiProvider config={rainbowKitConfig}>
                 <QueryClientProvider client={queryClient}>
-                    <MaybeRainbowKitProvider shouldUse={!isCardPage}>
-                        <ProvideAuth>
-                            <ProvideCurrentCardInfo>
-                                <ProvideCurrentFilterInfo>
-                                    <ProvideCompletedMobileSteps>
-                                        <ProvideMediaProcessing>
-                                            <ProvideCheckout>
-                                                <ProvideTransfer>
-                                                    {children}
-                                                </ProvideTransfer>
-                                            </ProvideCheckout>
-                                        </ProvideMediaProcessing>
-                                    </ProvideCompletedMobileSteps>
-                                </ProvideCurrentFilterInfo>
-                            </ProvideCurrentCardInfo>
-                        </ProvideAuth>
-                    </MaybeRainbowKitProvider>
+                    <ProvideAuth>
+                        <ProvideCurrentCardInfo>
+                            <ProvideCurrentFilterInfo>
+                                <ProvideCompletedMobileSteps>
+                                    <ProvideMediaProcessing>
+                                        <ProvideCheckout>
+                                            <ProvideTransfer>
+                                                {children}
+                                            </ProvideTransfer>
+                                        </ProvideCheckout>
+                                    </ProvideMediaProcessing>
+                                </ProvideCompletedMobileSteps>
+                            </ProvideCurrentFilterInfo>
+                        </ProvideCurrentCardInfo>
+                    </ProvideAuth>
                 </QueryClientProvider>
             </WagmiProvider>
         </ChakraProvider>
-    );
-}
-
-function MaybeRainbowKitProvider({
-    shouldUse,
-    children,
-}: {
-    shouldUse: boolean;
-    children: React.ReactNode;
-}) {
-    return shouldUse ? (
-        <RainbowKitProvider theme={darkTheme()}>{children}</RainbowKitProvider>
-    ) : (
-        children
     );
 }

@@ -45,7 +45,7 @@ export default function MobileStep8() {
             >
                 <Box position="relative" height="100%" width="100%">
                     <Image
-                        src={`/card_backgrounds/${background.src}`}
+                        src={`/backgrounds/${background.src}`}
                         bg={"#888"}
                         objectFit={"cover"}
                         height={"100%"}

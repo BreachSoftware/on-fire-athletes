@@ -10,7 +10,7 @@ const headerImage = "crinkled-paper.png";
 
 // the data in the article. complete with an image, header, subheader, main text, youtube link
 const data = {
-    image: "in_the_news/news4.png",
+    image: "in_the_news/news3.png",
     header: "Game Coin Donates to Mater Academy East Las Vegas",
     subheader:
         "We’re happy to announce our donation to Mater Academy in East Las Vegas. Watch the video below to see our Technical Director Frederick Lenna explain our platform and our donation to Mater Academy East Las Vegas with GMEX Ambassador Kyle Meade.",

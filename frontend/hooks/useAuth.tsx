@@ -2,44 +2,68 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable object-shorthand */
 /* eslint-disable func-style */
-import { FC, ReactNode, createContext, useContext, useState, useEffect } from "react";
+"use client";
+import {
+    FC,
+    ReactNode,
+    createContext,
+    useContext,
+    useState,
+    useEffect,
+} from "react";
 import { Amplify } from "aws-amplify";
 import config from "../app/amplifyconfiguration.json";
-import { signUp, signIn, signOut, fetchAuthSession, getCurrentUser, confirmSignUp, AuthUser, resetPassword, confirmResetPassword } from "aws-amplify/auth";
+import {
+    signUp,
+    signIn,
+    signOut,
+    fetchAuthSession,
+    getCurrentUser,
+    confirmSignUp,
+    AuthUser,
+    resetPassword,
+    confirmResetPassword,
+} from "aws-amplify/auth";
 import profileInfo from "@/interfaces/profileInfo";
 import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
 
 Amplify.configure(config);
 
 interface Result {
-	success: boolean;
-	message: string;
-
+    success: boolean;
+    message: string;
 }
 
 export interface useAuthProps {
     isLoading: boolean;
     isAuthenticated: boolean;
-    signIn: (username: string, password: string, profile: profileInfo) => Promise<Result>;
+    signIn: (
+        username: string,
+        password: string,
+        profile: profileInfo,
+    ) => Promise<Result>;
     signOut: () => Promise<void>;
     signUp: (email: string, password: string) => Promise<Result>;
-	confirm: (username: string, confirmationCode: string) => Promise<boolean>;
-	reset: (username: string) => Promise<Result>;
-	confirmReset: (username: string, code: string, password:string) => Promise<Result>;
-	currentSession: () => void;
-	currentAuthenticatedUser: () => Promise<AuthUser>;
+    confirm: (username: string, confirmationCode: string) => Promise<boolean>;
+    reset: (username: string) => Promise<Result>;
+    confirmReset: (
+        username: string,
+        code: string,
+        password: string,
+    ) => Promise<Result>;
+    currentSession: () => void;
+    currentAuthenticatedUser: () => Promise<AuthUser>;
 }
 
-
 type Props = {
-	children?: ReactNode;
+    children?: ReactNode;
 };
 
 const authContext = createContext({} as useAuthProps);
 
 // setting the useAuth hook that will be accessed in other files to call auth functions
 export const useAuth = () => {
-	return useContext(authContext);
+    return useContext(authContext);
 };
 
 /**
@@ -47,259 +71,300 @@ export const useAuth = () => {
  * @returns The data to be used by the useAuth hook
  */
 function useProvideAuth(): useAuthProps {
-	const [ isLoading, setIsLoading ] = useState(true);
-	const [ isAuthenticated, setIsAuthenticated ] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+    /**
+     * Uses aws-amplify sdk to get the auth session for the current user
+     */
+    async function currentAuthenticatedUser() {
+        try {
+            const { username, userId, signInDetails } = await getCurrentUser();
+            return { username, userId, signInDetails };
+        } catch (err) {
+            if (
+                (err as Error).name !== "UserUnAuthenticatedException" &&
+                (err as Error).message !== "Network error"
+            ) {
+                console.error(err);
+            }
+            return { username: "", userId: "" };
+        }
+    }
 
-	/**
-	 * Uses aws-amplify sdk to get the auth session for the current user
-	*/
-	async function currentAuthenticatedUser() {
-		try {
-			const { username, userId, signInDetails } = await getCurrentUser();
-			return { username, userId, signInDetails };
-		} catch (err) {
-			if ((err as Error).name !== "UserUnAuthenticatedException" && (err as Error).message !== "Network error") {
-				console.error(err);
-			}
-			return { username: "", userId: "" };
-		}
-	}
+    /**
+     * Checks if a profile already exists for the given user
+     * @param uuid - the uuid of the user
+     */
+    async function checkForPreExistingProfile(uuid: string) {
+        const requestOptions: RequestInit = {
+            method: "GET",
+            redirect: "follow",
+        };
 
-	/**
-	 * Checks if a profile already exists for the given user
-	 * @param uuid - the uuid of the user
-	 */
-	async function checkForPreExistingProfile(uuid: string) {
-		const requestOptions: RequestInit = {
-			method: "GET",
-			redirect: "follow"
-		};
+        const response = await fetch(
+            `${apiEndpoints.getUser()}?uuid=${encodeURIComponent(uuid)}`,
+            requestOptions,
+        );
 
-		const response = await fetch(`${apiEndpoints.getUser()}?uuid=${encodeURIComponent(uuid)}`, requestOptions);
+        return response.ok;
+    }
 
+    /**
+     * Uses aws-amplify sdk to call the sign in function for the given user information
+     * Handles the sign out function
+     * @param void
+     */
+    async function handleSignOut() {
+        try {
+            setIsAuthenticated(false);
+            await signOut();
+        } catch (error) {
+            console.error("error signing out: ", error);
+        }
+    }
 
-		return response.ok;
-	}
+    /**
+     * Uses aws-amplify sdk to call the sign in function for the given user information
+     * @param username 		the username for the user
+     * @param password 		the password for the user
+     */
+    async function handleSignIn(
+        username: string,
+        password: string,
+        profile: profileInfo,
+    ): Promise<Result> {
+        try {
+            const { nextStep } = await signIn({ username, password });
 
-	/**
-	 * Uses aws-amplify sdk to call the sign in function for the given user information
-	* Handles the sign out function
-	* @param void
-	*/
-	async function handleSignOut() {
-		try {
-			setIsAuthenticated(false);
-			await signOut();
-		} catch (error) {
-			console.error("error signing out: ", error);
-		}
-	}
+            setIsAuthenticated(true);
 
+            if (nextStep) {
+                const userId = await currentAuthenticatedUser();
 
-	/**
-	 * Uses aws-amplify sdk to call the sign in function for the given user information
-	 * @param username 		the username for the user
-	 * @param password 		the password for the user
-	 */
-	async function handleSignIn(username: string, password: string, profile: profileInfo): Promise<Result> {
-		try {
-			const { nextStep } = await signIn({ username, password });
+                const myHeaders = new Headers();
+                myHeaders.append("Content-Type", "application/json");
 
-			setIsAuthenticated(true);
+                let profileAlreadyExists = true;
+                try {
+                    profileAlreadyExists = await checkForPreExistingProfile(
+                        userId.userId,
+                    );
+                } catch (error) {
+                    console.error(
+                        "error checking for pre-existing profile:",
+                        error,
+                    );
+                    return {
+                        success: true,
+                        message:
+                            "Successful sign in but unsuccessful profile check",
+                    };
+                }
 
-			if (nextStep) {
-				const userId = await currentAuthenticatedUser();
+                if (!profileAlreadyExists) {
+                    const requestOptions: RequestInit = {
+                        method: "POST",
+                        headers: myHeaders,
+                        body: JSON.stringify({
+                            uuid: userId.userId,
+                            email: username,
+                            team_hometown: profile.teamName,
+                            socials: null,
+                            position: profile.position,
+                            media: [],
+                            last_name: profile.lastName,
+                            generated: Math.floor(Date.now() / 1000),
+                            first_name: profile.firstName,
+                            bio: profile.NFTDescription,
+                            avatar: null,
+                        }),
+                        redirect: "follow",
+                    };
 
-				const myHeaders = new Headers();
-				myHeaders.append("Content-Type", "application/json");
+                    const request = await fetch(
+                        apiEndpoints.createUser(),
+                        requestOptions,
+                    );
+                    if (!request.ok) {
+                        console.error(
+                            "error creating user profile:",
+                            request.statusText,
+                        );
+                        return {
+                            success: true,
+                            message:
+                                "Successful sign in but unsuccessful profile creation",
+                        };
+                    }
+                }
 
-				let profileAlreadyExists = true;
-				try {
-					profileAlreadyExists = await checkForPreExistingProfile(userId.userId);
-				} catch (error) {
-					console.error("error checking for pre-existing profile:", error);
-					return { success: true, message: "Successful sign in but unsuccessful profile check" };
-				}
+                return { success: true, message: "sent code" };
+            }
+        } catch (error: unknown) {
+            console.error("error signing in:", error);
+            const code = (error as Error).name;
+            console.error("code here", code);
+            if (code === "NotAuthorizedException") {
+                return { success: false, message: "User is not authorized" };
+            } else if (code === "UserAlreadyAuthenticatedException") {
+                return {
+                    success: false,
+                    message: "There is already a signed in user",
+                };
+            }
+            return { success: false, message: "Unsuccessful sign in" };
+        }
+        return { success: false, message: "unsuccessful sign in" };
+    }
 
-				if (!profileAlreadyExists) {
-					const requestOptions : RequestInit = {
-						method: "POST",
-						headers: myHeaders,
-						body: JSON.stringify({
-							uuid: userId.userId,
-							email: username,
-							team_hometown: profile.teamName,
-							socials: null,
-							position: profile.position,
-							media: [],
-							last_name: profile.lastName,
-							generated: Math.floor(Date.now() / 1000),
-							first_name: profile.firstName,
-							bio: profile.NFTDescription,
-							avatar: null,
-						}),
-						redirect: "follow"
-					};
+    /**
+     * Uses aws-amplify sdk to call the confirmSignUp function for the given user information
+     * @param email
+     * @param code
+     */
+    async function confirmEmail(
+        username: string,
+        confirmationCode: string,
+    ): Promise<boolean> {
+        try {
+            const { isSignUpComplete } = await confirmSignUp({
+                username,
+                confirmationCode,
+            });
+            if (isSignUpComplete) {
+                return true;
+            }
+        } catch (error) {
+            console.error("error confirming sign up", error);
+        }
 
-					const request = await fetch(apiEndpoints.createUser(), requestOptions);
-					if (!request.ok) {
-						console.error("error creating user profile:", request.statusText);
-						return { success: true, message: "Successful sign in but unsuccessful profile creation" };
-					}
-				}
+        return false;
+    }
 
-				return { success: true, message: "sent code" };
-			}
-		} catch (error: unknown) {
-			console.error("error signing in:", error);
-			const code = (error as Error).name;
-			console.error("code here", code);
-			if(code === "NotAuthorizedException") {
-				return { success: false, message: "User is not authorized" };
-			} else if(code === "UserAlreadyAuthenticatedException") {
-				return { success: false, message: "There is already a signed in user" };
-			}
-			return { success: false, message: "Unsuccessful sign in" };
-		}
-		return { success: false, message: "unsuccessful sign in" };
-	}
+    /**
+     * Uses aws-amplify sdk to call the signup function for the given user information
+     * Adds this user to the cognito user pool
+     * @param {string}  email - the email for the new user
+     * @param {string}  password - the password for the new user
+     */
+    async function signUpUser(
+        email: string,
+        password: string,
+    ): Promise<Result> {
+        try {
+            const { isSignUpComplete, nextStep } = await signUp({
+                username: email,
+                password: password,
+                options: {
+                    userAttributes: {
+                        email: email,
+                    },
+                    autoSignIn: true,
+                },
+            });
+        } catch (error) {
+            return { success: false, message: "account exists" };
+        }
+        return { success: true, message: "Message sent" };
+    }
 
-	/**
-	 * Uses aws-amplify sdk to call the confirmSignUp function for the given user information
-	 * @param email
-	 * @param code
-	 */
-	async function confirmEmail(username: string, confirmationCode: string): Promise<boolean> {
-		try {
-			const { isSignUpComplete } = await confirmSignUp({ username, confirmationCode });
-			if (isSignUpComplete) {
-				return true;
-			}
-		} catch (error) {
-			console.error("error confirming sign up", error);
-		}
+    useEffect(() => {
+        const fetchSession = async () => {
+            try {
+                const { accessToken, idToken } =
+                    (await fetchAuthSession()).tokens ?? {};
+                if (accessToken && idToken) {
+                    setIsAuthenticated(true);
+                }
+            } catch (err) {
+                // Based on our current implementation, we can surpress these errors
+                if (
+                    (err as Error).name !== "NotAuthorizedException" &&
+                    (err as Error).message !== "Network error"
+                ) {
+                    console.error(err);
+                }
+            }
+            setIsLoading(false);
+        };
+        fetchSession();
+    }, [isAuthenticated]);
 
-		return false;
+    /**
+     * Uses aws-amplify sdk to call the fetchAuthSession function for the current user
+     */
+    async function currentSession() {
+        try {
+            const { accessToken, idToken } =
+                (await fetchAuthSession()).tokens ?? {};
+        } catch (err) {
+            console.error(err);
+        }
+    }
 
-	}
+    /**
+     *  Uses aws-amplify sdk to call the resetPassword function for the given user information
+     * @param username
+     */
+    async function handleResetPassword(username: string) {
+        try {
+            const output = await resetPassword({ username });
+            const { nextStep } = output;
+            if (
+                nextStep.resetPasswordStep == "CONFIRM_RESET_PASSWORD_WITH_CODE"
+            ) {
+                // Collect the confirmation code from the user and pass to confirmResetPassword.
+                return { success: true, message: "Message sent" };
+            }
+            return { success: false, message: "account doesn't exists" };
+        } catch (error) {
+            console.error(error);
+        }
+        return { success: false, message: "Message not sent" };
+    }
 
+    /**
+     * Uses aws-amplify sdk to call the confirmResetPassword function for the given user information
+     * @param ConfirmResetPasswordInput
+     */
+    async function handleConfirmResetPassword(
+        username: string,
+        confirmationCode: string,
+        newPassword: string,
+    ) {
+        try {
+            await confirmResetPassword({
+                username,
+                confirmationCode,
+                newPassword,
+            });
+        } catch (error) {
+            const code = (error as Error).name;
+            if (code === "CodeMismatchException") {
+                return { success: false, message: "Invalid Code" };
+            } else if (code === "ConfirmForgotPasswordException") {
+                return { success: false, message: "Invalid Password" };
+            }
+        }
+        return { success: true, message: "Password reset" }; // not sure about this one
+    }
 
-	/**
-	 * Uses aws-amplify sdk to call the signup function for the given user information
-	 * Adds this user to the cognito user pool
-	 * @param {string}  email - the email for the new user
-	 * @param {string}  password - the password for the new user
-	 */
-	async function signUpUser(email: string, password: string): Promise<Result> {
-		try {
-			const { isSignUpComplete, nextStep } = await signUp({
-				username: email,
-				password: password,
-				options: {
-					userAttributes: {
-						email: email,
-					},
-					autoSignIn: true
-				}
-			});
-
-
-		} catch (error) {
-			return { success: false, message: "account exists" };
-		}
-		return { success: true, message: "Message sent" };
-	};
-
-	useEffect(() => {
-		const fetchSession = async() => {
-
-			try {
-				const { accessToken, idToken } = (await fetchAuthSession()).tokens ?? {};
-				if (accessToken && idToken) {
-					setIsAuthenticated(true);
-				}
-			} catch (err) {
-				// Based on our current implementation, we can surpress these errors
-				if ((err as Error).name !== "NotAuthorizedException" && (err as Error).message !== "Network error") {
-					console.error(err);
-				}
-			}
-			setIsLoading(false);
-		};
-		fetchSession();
-	}, [ isAuthenticated ]);
-
-	/**
-	 * Uses aws-amplify sdk to call the fetchAuthSession function for the current user
-	*/
-	async function currentSession() {
-		try {
-			const { accessToken, idToken } = (await fetchAuthSession()).tokens ?? {};
-
-
-		} catch (err) {
-			console.error(err);
-		}
-	}
-
-	/**
-	 *  Uses aws-amplify sdk to call the resetPassword function for the given user information
-	 * @param username
-	 */
-	async function handleResetPassword(username: string) {
-		try {
-			const output = await resetPassword({ username });
-			const { nextStep } = output;
-			if(nextStep.resetPasswordStep == "CONFIRM_RESET_PASSWORD_WITH_CODE") {
-				// Collect the confirmation code from the user and pass to confirmResetPassword.
-				return { success: true, message: "Message sent" };
-
-			}
-			return { success: false, message: "account doesn't exists" };
-
-		} catch (error) {
-			console.error(error);
-		}
-		return { success: false, message: "Message not sent" };
-	}
-
-	/**
-	 * Uses aws-amplify sdk to call the confirmResetPassword function for the given user information
-	 * @param ConfirmResetPasswordInput
-	 */
-	async function handleConfirmResetPassword(username: string, confirmationCode: string, newPassword: string) {
-		try {
-
-			await confirmResetPassword({ username, confirmationCode, newPassword });
-		} catch (error) {
-			const code = (error as Error).name;
-			if(code === "CodeMismatchException") {
-				return { success: false, message: "Invalid Code" };
-			} else if(code === "ConfirmForgotPasswordException") {
-				return { success: false, message: "Invalid Password" };
-			}
-
-		}
-		return { success: true, message: "Password reset" }; // not sure about this one
-	}
-
-
-	return {
-		isLoading,
-		isAuthenticated,
-		signIn: handleSignIn,
-		signOut: handleSignOut,
-		signUp: signUpUser,
-		confirm: confirmEmail,
-		reset: handleResetPassword,
-		confirmReset: handleConfirmResetPassword,
-		currentSession: currentSession,
-		currentAuthenticatedUser: currentAuthenticatedUser
-	};
-};
+    return {
+        isLoading,
+        isAuthenticated,
+        signIn: handleSignIn,
+        signOut: handleSignOut,
+        signUp: signUpUser,
+        confirm: confirmEmail,
+        reset: handleResetPassword,
+        confirmReset: handleConfirmResetPassword,
+        currentSession: currentSession,
+        currentAuthenticatedUser: currentAuthenticatedUser,
+    };
+}
 
 export const ProvideAuth: FC<Props> = ({ children }) => {
-	const auth = useProvideAuth();
-	return <authContext.Provider value={auth}>{children}</authContext.Provider>;
+    const auth = useProvideAuth();
+    return <authContext.Provider value={auth}>{children}</authContext.Provider>;
 };

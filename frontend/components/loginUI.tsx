@@ -197,8 +197,8 @@ export default function LoginUI({
                     {/* Sign Up Button */}
                     <Flex justifyContent={"flex-end"} width={"100%"}>
                         <Button
-                            width={{ base: "40%", md: "20%" }}
-                            _hover={{ md: { width: "40%" } }}
+                            width={{ base: "40%", md: "50%" }}
+                            _hover={{ md: { width: "60%" } }}
                             isLoading={isLoading}
                             onClick={checkIfButtonShouldBeLoading}
                             variant="next"
