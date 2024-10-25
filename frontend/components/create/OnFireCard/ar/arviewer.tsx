@@ -303,13 +303,13 @@ function ARViewer() {
                     {isVideoSourceSet && (
                         <a-plane src="#card-image" height="1.5"></a-plane>
                     )}
-                    {/* <a-entity
+                    <a-entity
                         obj-model="obj: url(/ar/gcmask-edited-4.obj); mtl: #obj-mtl"
                         rotation="0 0 -90"
                         position="0 0 0.001"
                         scale="0.058 0.0576 0.058"
                         cloak
-                    ></a-entity> */}
+                    ></a-entity>
                 </a-entity>
                 {/* Back Video (targetIndex 1) */}
                 <a-entity mindar-image-target="targetIndex: 1" id="back-entity">
