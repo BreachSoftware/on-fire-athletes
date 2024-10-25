@@ -187,44 +187,22 @@ export default function CheckoutPage() {
                 }
 
                 let includedPhysicalAddOn = null;
-                let physicalAddOn = null;
-                // Check if the user has selected the All-Star or MVP packages and has ordered more than five physical card
-                if (
-                    co.checkout.packageName === "allStar" ||
-                    co.checkout.packageName === "mvp"
-                ) {
-                    includedPhysicalAddOn = {
-                        title: "Included Physical Card",
-                        card: onFireCard,
-                        numberOfCards: 1,
-                        numberOfOrders:
-                            co.checkout.packageName === "allStar" ? 1 : 5,
-                        price: 0.0,
-                    };
 
-                    // If there are additional physical cards beyond the free ones, set the physical card add-on
-                    if (
-                        co.checkout.packageName === "mvp" &&
-                        co.checkout.physicalCardCount >= 6
-                    ) {
-                        physicalAddOn = {
-                            title: "Physical Card Add-On",
-                            card: onFireCard,
-                            numberOfCards: 1,
-                            numberOfOrders: co.checkout.physicalCardCount - 5,
-                            price: co.checkout.physicalCardPrice,
-                        };
-                    }
-                } else if (co.checkout.physicalCardCount > 0) {
-                    // If not All-Star package or only one physical card, check if there are any physical cards
-                    physicalAddOn = {
-                        title: "Physical Card Add-On",
-                        card: onFireCard,
-                        numberOfCards: 1,
-                        numberOfOrders: co.checkout.physicalCardCount,
-                        price: co.checkout.physicalCardPrice,
-                    };
-                }
+                includedPhysicalAddOn = {
+                    title:
+                        co.checkout.packageName === "rookie"
+                            ? "Included Physical Card"
+                            : "Included Physical Cards",
+                    card: onFireCard,
+                    numberOfCards: 1,
+                    numberOfOrders:
+                        co.checkout.packageName === "rookie"
+                            ? 1
+                            : co.checkout.packageName === "allStar"
+                              ? 5
+                              : 10,
+                    price: 0.0,
+                };
 
                 // Add all items to the cart
                 co.setCheckout({
@@ -233,7 +211,6 @@ export default function CheckoutPage() {
                         mainPackage,
                         includedPhysicalAddOn,
                         digitalAddOn,
-                        physicalAddOn,
                     ].filter((item) => {
                         return item !== null;
                     }),
