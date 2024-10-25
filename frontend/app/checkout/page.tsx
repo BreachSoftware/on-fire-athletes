@@ -17,18 +17,12 @@ import AllStarPrice from "./components/allStarPrice";
 import { getCard } from "../generate_card_asset/cardFunctions";
 import TradingCardInfo from "@/hooks/TradingCardInfo";
 import { useTransferContext } from "@/hooks/useTransfer";
-import {
-    Environment,
-    environmentManager,
-} from "@backend/EnvironmentManager/EnvironmentManager";
 import "../../node_modules/@rainbow-me/rainbowkit/dist/index.css";
 import { darkTheme, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 
 // OnFire keys
 const STRIPE_PUBLIC_KEY =
-    environmentManager.getApiStage() == Environment.Production
-        ? "pk_live_51PssXyCEBFOTy6pM9DfyGbI7JZUqMoClqRVuFCEAVamp10DYl2O48SqCjiw7vSbeiv8CCmYPZwSgguOTCcJzbY0u00cwKkUFDZ"
-        : "pk_test_51PssXyCEBFOTy6pMtubViKDQwVSljNAJRQAk5SkRyexPECtx4w8R3IHLQtI7CSNG1g7hSFk044Pc0STSYtxEWmSW00Y4VLvPII";
+    "pk_live_51PssXyCEBFOTy6pM9DfyGbI7JZUqMoClqRVuFCEAVamp10DYl2O48SqCjiw7vSbeiv8CCmYPZwSgguOTCcJzbY0u00cwKkUFDZ";
 
 /**
  * The Checkout page when purchasing a card
