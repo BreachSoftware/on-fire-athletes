@@ -11,7 +11,7 @@ export default function OurStoryHero() {
             <OurStoryHeroBackground />
             <Flex
                 pt={{ base: "120px", lg: 0 }}
-                minH="100dvh"
+                minH="100vh"
                 position="relative"
                 flexDir="column"
                 alignItems="center"

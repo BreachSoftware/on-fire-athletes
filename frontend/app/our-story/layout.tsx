@@ -12,7 +12,7 @@ export default function OurStoryLayout({ children }: PropsWithChildren) {
             flexDir="row"
             w="100dvw"
             h="fit-content"
-            minH="100dvh"
+            minH="100vh"
             bgGradient="linear(to-b, black, #121212)"
             color="white"
         >
