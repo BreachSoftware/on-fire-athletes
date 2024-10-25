@@ -1151,6 +1151,18 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                         left="0"
                                         w="100%"
                                         h="100%"
+                                        bgImage={CardOutline.src}
+                                        backgroundSize="cover"
+                                        opacity="0.25"
+                                        pointerEvents="none"
+                                    />
+                                    <Box
+                                        pos="absolute"
+                                        zIndex="10"
+                                        top="0"
+                                        left="0"
+                                        w="100%"
+                                        h="100%"
                                         bgImage={CardOutlineShine.src}
                                         backgroundSize="cover"
                                         opacity="0.25"
