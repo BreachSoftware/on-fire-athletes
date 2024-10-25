@@ -110,7 +110,7 @@ export default function OrderCompleteContent(props: OrderCompleteContentProps) {
                     <Text
                         textColor="green.100"
                         fontFamily={"Barlow Condensed"}
-                        fontWeight={"light"}
+                        fontWeight={"semibold"}
                         fontStyle={"italic"}
                         fontSize={{
                             base: "20px",
