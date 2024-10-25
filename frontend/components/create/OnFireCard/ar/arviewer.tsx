@@ -308,7 +308,7 @@ function ARViewer() {
                         rotation="0 0 -90"
                         position="0 0 0.002"
                         // scale="0.058 0.0576 0.058"
-                        scale="0.0585 0.0576 0.0585"
+                        scale="0.058 0.0576 0.058"
                         cloak
                     ></a-entity>
                 </a-entity>
