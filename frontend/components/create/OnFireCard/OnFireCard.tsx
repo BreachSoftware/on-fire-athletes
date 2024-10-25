@@ -1072,7 +1072,7 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                 maskImage: `url(${CardMaskReverseImage.src})`,
                 // White is visible, black is not
                 maskMode: "luminance",
-                maskSize: "contain",
+                maskSize: "cover",
                 maskRepeat: "no-repeat",
                 transformStyle: "preserve-3d",
                 // Webkit
@@ -1135,7 +1135,7 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                         // White is visible, black is not
                                         maskImage: `url(${CardMaskImage.src})`,
                                         maskMode: "luminance",
-                                        maskSize: "contain",
+                                        maskSize: "cover",
                                         maskRepeat: "no-repeat",
                                         // Webkit
                                         WebkitMaskImage: `url(${CardMaskImage.src})`,
@@ -1219,7 +1219,7 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                                 position={"absolute"}
                                                 style={{
                                                     maskImage: `url(${gamecardBottomLayer})`,
-                                                    maskSize: "contain",
+                                                    maskSize: "cover",
                                                     maskRepeat: "no-repeat",
                                                 }}
                                             >

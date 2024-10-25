@@ -107,10 +107,14 @@ async function generateCardImage(
     offScreen.appendChild(clonedContent);
     document.body.appendChild(offScreen);
 
+    const scale = 2;
+    const width = 350;
+    const height = 490;
+
     const canvas = await html2canvas(offScreen, {
-        width: 350,
-        height: 490,
-        scale: 2,
+        width: width,
+        height: height,
+        scale: scale,
         useCORS: true,
         logging: true,
     });
@@ -119,7 +123,7 @@ async function generateCardImage(
     // div.style.cssText = originalStyles;
 
     const imageBase64 = canvas.toDataURL("image/png", 1.0);
-    const resizedMask = await resize(mask, 700, null);
+    const resizedMask = await resize(mask, width * scale, height * scale);
     const resultingImage = await maskImageToCard(imageBase64, resizedMask);
     document.body.removeChild(offScreen);
     return resultingImage;
