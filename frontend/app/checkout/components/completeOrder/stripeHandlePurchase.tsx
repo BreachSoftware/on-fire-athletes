@@ -185,8 +185,8 @@ export async function handlePurchase(
             }
 
             // Update card price for "allStar" package
-            if (checkout.packageName === "allStar") {
-                const newCardPrice = parseFloat(checkout.cardPrice);
+            if (checkout.packageName !== "rookie") {
+                const newCardPrice = parseFloat(checkout.cardPrice) + 3.0;
 
                 const updatePriceOptions = {
                     method: "POST",

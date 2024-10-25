@@ -250,7 +250,8 @@ export default function AllStarPrice() {
                                     mb="15px"
                                 >
                                     *Digital cards must be priced at a minimum
-                                    of $20.00.
+                                    of $20.00. Shipping & Handling fee of $3.00
+                                    will be added.
                                 </Text>
                             </Flex>
                         </Flex>

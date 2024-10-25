@@ -35,7 +35,7 @@ export default function SelectYourPackage() {
         title: "ALL-STAR",
         databaseName: "allStar",
         subtitle: "",
-        price: 49.99,
+        price: 59.99,
         details: [
             {
                 text: "Receive 5 Physical Cards With 3D and A/R Interactivity",
@@ -54,7 +54,7 @@ export default function SelectYourPackage() {
         title: "MVP",
         databaseName: "mvp",
         subtitle: "",
-        price: 79.99,
+        price: 99.99,
         details: [
             {
                 text: "Receive 10 Physical Cards With 3D and A/R Interactivity",
