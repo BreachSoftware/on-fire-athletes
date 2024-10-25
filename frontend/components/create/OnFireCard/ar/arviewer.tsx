@@ -307,7 +307,8 @@ function ARViewer() {
                         obj-model="obj: url(/ar/gcmask-edited-4.obj); mtl: #obj-mtl"
                         rotation="0 0 -90"
                         position="0 0 0.001"
-                        scale="0.058 0.0576 0.058"
+                        // scale="0.058 0.0576 0.058"
+                        scale="0.059 0.0576 0.059"
                         cloak
                     ></a-entity>
                 </a-entity>
