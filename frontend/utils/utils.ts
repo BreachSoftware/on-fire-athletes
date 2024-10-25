@@ -36,5 +36,5 @@ export function totalPriceInCart(
         total = total + checkout.shippingCost;
     }
 
-    return applyDiscount(total, couponCentsOff, couponPercentOff);
+    return applyDiscount(total, couponCentsOff / 100, couponPercentOff);
 }
