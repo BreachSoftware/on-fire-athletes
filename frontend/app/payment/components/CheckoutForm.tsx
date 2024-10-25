@@ -9,6 +9,7 @@ import { ChevronRightIcon } from "@chakra-ui/icons";
 import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
 import CouponInput from "./coupon-input";
 import { totalPriceInCart } from "@/utils/utils";
+import { useRouter } from "next/navigation";
 
 interface CheckoutFormProps {
     buyCard?: boolean;
@@ -18,6 +19,7 @@ interface CheckoutFormProps {
  * The CheckoutForm component
  */
 export default function CheckoutForm({ buyCard }: CheckoutFormProps) {
+    const router = useRouter();
     const stripe = useStripe();
     const toast = useToast();
     const elements = useElements();
@@ -44,6 +46,17 @@ export default function CheckoutForm({ buyCard }: CheckoutFormProps) {
      */
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
+
+        const total = totalPriceInCart(checkout, buyingPhysicalCards).toFixed(
+            2,
+        );
+
+        console.log("total", total);
+
+        if (total === "0.00") {
+            router.push(buyCard ? "/transfer" : "/lockerroom");
+            return;
+        }
 
         if (!stripe || !elements) {
             // Stripe.js has not yet loaded.
@@ -156,6 +169,26 @@ export default function CheckoutForm({ buyCard }: CheckoutFormProps) {
                             isLoading={isLoading}
                             onClick={async () => {
                                 setIsLoading(true);
+
+                                const total = totalPriceInCart(
+                                    checkout,
+                                    buyingPhysicalCards,
+                                ).toFixed(2);
+
+                                console.log("total 2", total);
+
+                                if (total === "0.00") {
+                                    setCheckout({
+                                        ...curCheckout.checkout,
+                                        paymentInfoEntered: true,
+                                        stepNum: checkoutSteps.length - 1,
+                                        visitedSteps: checkoutSteps.length - 1,
+                                    });
+
+                                    setIsLoading(false);
+                                    return;
+                                }
+
                                 // Call elements.submit() to trigger the form submission
                                 const { error: submitError } =
                                     await elements!.submit();
