@@ -33,8 +33,15 @@ export async function handlePurchase(
         let paymentIntent: PaymentIntent | null = null;
         let shouldByPassPayment = false;
 
+        console.log("checkout total", checkout.total);
+
+        if (checkout.total === 0) {
+            // If the total is 0, bypass payment and create the order
+            shouldByPassPayment = true;
+        }
+
         // If Stripe is provided, process the payment using Stripe
-        if (stripe) {
+        if (stripe && !shouldByPassPayment) {
             // Extract payment method and customer ID from checkout info
             const paymentMethodId = checkout.paymentMethodId;
             const customerId = checkout.customerId;
