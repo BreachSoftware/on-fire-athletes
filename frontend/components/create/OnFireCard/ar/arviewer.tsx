@@ -301,7 +301,7 @@ function ARViewer() {
                 >
                     {/* Render the video if the video source is set */}
                     {isVideoSourceSet && (
-                        <a-plane src="#card-image" height="1.55"></a-plane>
+                        <a-plane src="#card-image" height="1.5"></a-plane>
                     )}
                     <a-entity
                         obj-model="obj: url(/ar/gcmask-edited-4.obj); mtl: #obj-mtl"
