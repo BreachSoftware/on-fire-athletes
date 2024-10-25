@@ -60,7 +60,7 @@ export default function SelectYourPackage() {
                 text: "Receive 10 Physical Cards With 3D and A/R Interactivity",
                 indent: false,
             },
-            { text: "Receive 25 Digital Cards", indent: false },
+            { text: "Receive 50 Digital Cards", indent: false },
             { text: "Ability to SELL and/or Trade Your Cards", indent: false },
             { text: "Athlete Receives 75% of Profits*", indent: true },
             { text: "Ability to Collect Cards", indent: false },
