@@ -30,6 +30,7 @@ export default function OurStoryHero() {
                         alt="On Fire Athletes Full Logo"
                         w={{ base: "100%", lg: "624px" }}
                         objectFit="contain"
+                        mb={4}
                     />
                     <Box>
                         <Text
