@@ -1144,29 +1144,9 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                         WebkitMaskRepeat: "no-repeat",
                                     }}
                                 >
-                                    <Box
-                                        pos="absolute"
-                                        zIndex="10"
-                                        top="0"
-                                        left="0"
-                                        w="100%"
-                                        h="100%"
-                                        bgImage={CardOutline.src}
-                                        backgroundSize="cover"
-                                        opacity="0.25"
-                                        pointerEvents="none"
-                                    />
-                                    <Box
-                                        pos="absolute"
-                                        zIndex="10"
-                                        top="0"
-                                        left="0"
-                                        w="100%"
-                                        h="100%"
-                                        bgImage={CardOutlineShine.src}
-                                        backgroundSize="cover"
-                                        opacity="0.25"
-                                        pointerEvents="none"
+                                    <ExteriorBorder
+                                        color={curCard.borderColor}
+                                        mirrored={false}
                                     />
                                     <Box
                                         pos="absolute"
@@ -1478,18 +1458,6 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                     <ExteriorBorder
                                         color={curCard.borderColor}
                                         mirrored
-                                    />
-                                    <Box
-                                        pos="absolute"
-                                        zIndex="10"
-                                        top="0"
-                                        left="0"
-                                        w="100%"
-                                        h="100%"
-                                        bgImage={CardOutlineShine.src}
-                                        backgroundSize="cover"
-                                        opacity="0.25"
-                                        pointerEvents="none"
                                     />
                                 </>
                             </Box>
