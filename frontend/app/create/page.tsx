@@ -28,7 +28,7 @@ export default function CreationOverview() {
         },
         {
             number: 2,
-            description: "Pick a digital and/or physical AR package!",
+            description: "Pick a tradable and/or sellable package!",
         },
         {
             number: 3,

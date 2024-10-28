@@ -150,7 +150,7 @@ export default function NILApplicationForm() {
                         fontFamily="Barlow Semi Condensed"
                         color="#27CE01"
                     >
-                        GET VERIFIED, THEN CREATE YOUR CARD FOR FREE!
+                        GET VERIFIED, THEN CREATE YOUR CARDS FOR FREE!
                     </Text>
                     <Box
                         mt="16px"
