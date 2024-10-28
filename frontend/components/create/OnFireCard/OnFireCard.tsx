@@ -1479,6 +1479,18 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                         color={curCard.borderColor}
                                         mirrored
                                     />
+                                    <Box
+                                        pos="absolute"
+                                        zIndex="10"
+                                        top="0"
+                                        left="0"
+                                        w="100%"
+                                        h="100%"
+                                        bgImage={CardOutlineShine.src}
+                                        backgroundSize="cover"
+                                        opacity="0.25"
+                                        pointerEvents="none"
+                                    />
                                 </>
                             </Box>
                         </VStack>
@@ -1602,16 +1614,16 @@ function ExteriorBorder({
                 }}
             />
             <Box
-                position="absolute"
-                top={0}
-                left={0}
+                pos="absolute"
+                zIndex="10"
+                top="0"
+                left="0"
                 w="100%"
                 h="100%"
-                // shine
                 bgImage={CardOutlineShine.src}
-                bgPos="center"
-                bgSize="cover"
+                backgroundSize="cover"
                 opacity="0.25"
+                pointerEvents="none"
             />
         </Box>
     );
