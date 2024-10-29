@@ -68,19 +68,19 @@ export default function NILBenefits() {
                     <BenefitStep
                         stepNum={1}
                         label="SET IT OFF"
-                        description="Create your one of a kind digital and physical AR card using our proprietary creator."
+                        description="Create your one of a kind digital and physical AR cards using our proprietary creator."
                     />
                     <Divider />
                     <BenefitStep
                         stepNum={2}
                         label="LIGHT IT UP"
-                        description="Launch your card in our Locker Room Marketplace and promote it on your social media platforms."
+                        description="Launch your cards in our Locker Room and promote it on your social media platforms."
                     />
                     <Divider />
                     <BenefitStep
                         stepNum={3}
                         label="CATCH FIRE"
-                        description="Sell your card to fans and make 75% of EVERY sale from the Locker Room Marketplace."
+                        description="Sell your cards and receive 75% of the profits on EVERY sale from the Locker Room."
                     />
                 </SharedStack>
             </Flex>
