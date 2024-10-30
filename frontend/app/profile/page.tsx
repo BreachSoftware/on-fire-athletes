@@ -663,9 +663,9 @@ export default function Profile() {
                                                 base: "14px",
                                                 lg: "16px",
                                             }}
-                                            fontWeight="700"
+                                            fontWeight="medium"
                                             color="white"
-                                            fontFamily="Helvetica Neue"
+                                            fontFamily="Barlow"
                                         >
                                             {profileInfo?.position || ""}
                                             {profileInfo?.position

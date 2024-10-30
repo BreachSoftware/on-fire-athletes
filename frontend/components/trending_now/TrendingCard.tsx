@@ -320,8 +320,8 @@ export default function TrendingCard({
                             <Text
                                 textTransform={"uppercase"}
                                 fontSize={18}
-                                fontFamily={"Helvetica"}
-                                fontWeight={"bolder"}
+                                fontFamily={"Barlow"}
+                                fontWeight={"semibold"}
                             >
                                 {`${card.firstName} ${card.lastName}`}
                             </Text>
