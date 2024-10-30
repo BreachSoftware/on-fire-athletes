@@ -487,7 +487,8 @@ export default function StepWrapper({
                             <NextButton
                                 text={stepNumber === 5 ? "submit" : "next"}
                                 onClick={async () => {
-                                    if (stepNumber !== 5) {
+                                    if (false) {
+                                        //(stepNumber !== 5) {
                                         currentInfo.setCurCard({
                                             ...currentInfo.curCard,
                                             stepNumber: stepNumber + 1,
@@ -538,7 +539,7 @@ export default function StepWrapper({
                                         }
                                     }
                                 }}
-                                isDisabled={stepIsIncomplete()}
+                                // isDisabled={stepIsIncomplete()}
                                 isLoading={submitButtonLoading}
                             />
                         </HStack>
