@@ -251,6 +251,8 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
         },
         ref,
     ) => {
+        // console.log({ card });
+
         const DEFAULT_BACK_VIDEO_URL =
             "https://onfireathletes-media-uploads.s3.amazonaws.com/onfire-athletes-back-default.mov";
 
@@ -658,7 +660,7 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                     fontSize={"12px"}
                     fontWeight="500"
                     style={{
-                        color: curCard.topCardTextColor,
+                        // color: curCard.topCardTextColor,
                         pointerEvents: "none",
                     }}
                     transition={"color 0.5s ease-in-out"}
@@ -691,7 +693,7 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                     fontSize={"12px"}
                     fontWeight="500"
                     style={{
-                        color: curCard.topCardTextColor,
+                        // color: curCard.topCardTextColor,`
                         pointerEvents: "none",
                     }}
                     transition={"color 0.5s ease-in-out"}
