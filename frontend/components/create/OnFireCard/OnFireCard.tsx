@@ -1144,39 +1144,48 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                         WebkitMaskRepeat: "no-repeat",
                                     }}
                                 >
-                                    <ExteriorBorder
-                                        color={curCard.borderColor}
-                                        mirrored={false}
-                                    />
-                                    <Box
-                                        pos="absolute"
-                                        zIndex="10"
-                                        top="0"
-                                        left="0"
-                                        w="100%"
-                                        h="100%"
-                                        bgImage={CardInteriorShineA.src}
-                                        backgroundSize="cover"
-                                        opacity="0.4"
-                                        pointerEvents="none"
-                                    />
-                                    {/* <Box
-                                        pos="absolute"
-                                        zIndex="10"
-                                        top="0"
-                                        left="0"
-                                        w="100%"
-                                        h="100%"
-                                        bgGradient="linear(80deg, rgba(0,0,0,0), rgba(255,255,255,1), rgba(0,0,0,0), rgba(255,255,255,1), rgba(0,0,0,0))"
-                                        backgroundSize="contain"
-                                        opacity="0.25"
-                                        pointerEvents="none"
-                                    /> */}
                                     {slim ? (
                                         <PrerenderedGamecardFrontImage />
                                     ) : (
                                         <>
                                             <CardBottomLayer position="absolute" />
+
+                                            {/* <Box
+                                                pos="absolute"
+                                                zIndex="10"
+                                                top="0"
+                                                left="0"
+                                                w="100%"
+                                                h="100%"
+                                                bgImage={CardOutline.src}
+                                                backgroundSize="cover"
+                                                opacity="0"
+                                                pointerEvents="none"
+                                            /> */}
+                                            <Box
+                                                pos="absolute"
+                                                zIndex="10"
+                                                top="0"
+                                                left="0"
+                                                w="100%"
+                                                h="100%"
+                                                bgImage={CardOutlineShine.src}
+                                                backgroundSize="cover"
+                                                opacity="0.25"
+                                                pointerEvents="none"
+                                            />
+                                            <Box
+                                                pos="absolute"
+                                                zIndex="10"
+                                                top="0"
+                                                left="0"
+                                                w="100%"
+                                                h="100%"
+                                                bgImage={CardInteriorShineA.src}
+                                                backgroundSize="cover"
+                                                opacity="0.4"
+                                                pointerEvents="none"
+                                            />
 
                                             {/* Not its own element because it causes Petch text to jump around */}
                                             {curCard.cardType === "a" && (
