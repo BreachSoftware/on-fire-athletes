@@ -57,7 +57,7 @@ export default function Index() {
                     <Box w="full">
                         <Box
                             as="video"
-                            src="HomepageBackgroundDesktop.mp4"
+                            src="https://onfireathletes-media-uploads.s3.us-east-1.amazonaws.com/homepage/HomepageBackgroundVideoDesktop.m4v"
                             display={{ base: "none", md: "block" }}
                             loop={false}
                             muted={true}
@@ -76,7 +76,7 @@ export default function Index() {
                         />
                         <Box
                             as="video"
-                            src="HomepageBackgroundMobile.mp4"
+                            src="https://onfireathletes-media-uploads.s3.us-east-1.amazonaws.com/homepage/HomepageBackgroundVideoMobile.m4v"
                             display={{ base: "block", md: "none" }}
                             loop={false}
                             muted={true}
