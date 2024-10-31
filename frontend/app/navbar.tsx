@@ -63,6 +63,10 @@ const NAV_ITEMS: Array<NavItem> = [
                 href: "/our-story",
             },
             {
+                label: "AR Cards",
+                href: "/newsroom/what-are-ar-cards",
+            },
+            {
                 label: "NIL Partnerships",
                 href: "/nil",
             },
@@ -219,10 +223,10 @@ function DesktopNav(props: NavBarProps) {
                                             navItem.label === "Sign Out"
                                                 ? undefined
                                                 : props.hreffunc
-                                                  ? props.hreffunc(
-                                                        navItem.href || "",
-                                                    )
-                                                  : undefined
+                                                ? props.hreffunc(
+                                                      navItem.href || "",
+                                                  )
+                                                : undefined
                                         }
                                         style={{
                                             textDecoration: "none",
@@ -327,8 +331,8 @@ function DesktopNav(props: NavBarProps) {
                                     navItem.label === "Sign Out"
                                         ? undefined
                                         : props.hreffunc
-                                          ? props.hreffunc(navItem.href || "")
-                                          : undefined
+                                        ? props.hreffunc(navItem.href || "")
+                                        : undefined
                                 }
                                 style={{
                                     textDecoration: "none",
