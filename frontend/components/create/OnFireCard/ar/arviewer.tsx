@@ -48,6 +48,8 @@ function ARViewer() {
     const sceneRef = useRef<HTMLElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
     const [videoWidth, setVideoWidth] = useState(1.5);
+    const [videoXOffset, setVideoXOffset] = useState(0);
+    const [videoYOffset, setVideoYOffset] = useState(0);
 
     let found = false;
     let readCard = new TradingCardInfo();
@@ -83,12 +85,18 @@ function ARViewer() {
                 setImgSource(fetchedCard.cardImage);
                 const videoH = fetchedCard.backVideoHeight;
                 const videoW = fetchedCard.backVideoWidth;
+                const videoX = fetchedCard.backVideoXOffset / 1000;
+                const videoY = fetchedCard.backVideoYOffset / 1000;
 
                 // Make width ratio of height, normalized as height = 1.5
                 const newWidth = (1.5 * videoW) / videoH;
-                setVideoWidth(newWidth);
 
-                console.log(imgSource);
+                // Normalize the pixel offsets to a height of 1.5
+                setVideoWidth(newWidth);
+                setVideoXOffset(videoX * newWidth);
+                setVideoYOffset(videoY * 1.5);
+
+                console.log("IMG SOURCE:", fetchedCard.cardImage);
                 found = true;
             }
         });
@@ -296,10 +304,11 @@ function ARViewer() {
                         <a-plane src="#card-image" height="1.5"></a-plane>
                     )}
                     <a-entity
-                        obj-model="obj: url(/ar/gcmask.obj); mtl: #obj-mtl"
+                        obj-model="obj: url(/ar/gcmask-edited-4.obj); mtl: #obj-mtl"
                         rotation="0 0 -90"
-                        position="0 0 0.001"
-                        scale="0.058 0.058 0.058"
+                        position="0 0 0.002"
+                        // scale="0.058 0.0576 0.058"
+                        scale="0.058 0.0576 0.058"
                         cloak
                     ></a-entity>
                 </a-entity>
@@ -311,13 +320,14 @@ function ARViewer() {
                             src="#card-video"
                             height="1.5"
                             width={videoWidth}
+                            position={`${videoXOffset} ${videoYOffset} 0`}
                         ></a-video>
                         // Potentially show a spinner if not loaded or something
                     )}
                     <a-entity
-                        obj-model="obj: url(/ar/gcmask-rev.obj); mtl: #obj-mtl"
+                        obj-model="obj: url(/ar/gcmask-rev-edited.obj); mtl: #obj-mtl"
                         rotation="0 0 -90"
-                        position="0 0 0.001"
+                        position={`0 0 0.01`}
                         scale="0.058 0.058 0.058"
                         cloak
                     ></a-entity>

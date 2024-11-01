@@ -25,11 +25,15 @@ export default function SuccessfulCardCreationPage() {
     async function checkForSubmittedCard() {
         if (typeof window !== "undefined") {
             const queryParams = new URLSearchParams(window.location.search);
+            const paymentBypassed =
+                queryParams.get("paymentBypassed") === "true";
             const paymentIntentID = queryParams.get("payment_intent");
             const boughtOtherCard = queryParams.get("boughtOtherCard");
             const boughtWithGMEX = queryParams.get("paymentWithGMEX");
-            if (paymentIntentID) {
-                const status = await retrievePaymentStatus(paymentIntentID);
+            if (paymentIntentID || paymentBypassed) {
+                const status = paymentBypassed
+                    ? "succeeded"
+                    : await retrievePaymentStatus(paymentIntentID);
                 if (status === "succeeded") {
                     // Load the card and update the payment status
                     const { uuid, generatedBy } = TradingCardInfo.loadCard();

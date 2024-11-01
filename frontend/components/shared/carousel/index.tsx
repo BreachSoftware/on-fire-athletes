@@ -1,19 +1,20 @@
-import { Box, BoxProps } from '@chakra-ui/layout'
-import { useState, ReactElement } from 'react'
-import { Carousel } from 'react-responsive-carousel'
-import 'react-responsive-carousel/lib/styles/carousel.min.css' // requires a loader
+"use client";
+import { Box, BoxProps } from "@chakra-ui/layout";
+import { useState, ReactElement } from "react";
+import { Carousel } from "react-responsive-carousel";
+import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 
-import CarouselDots from './dots'
-import CarouselArrow from './arrow'
-import CarouselLeftIcon from '@/components/icons/carousel-left'
-import CarouselRightIcon from '@/components/icons/carousel-right'
+import CarouselDots from "./dots";
+import CarouselArrow from "./arrow";
+import CarouselLeftIcon from "@/components/icons/carousel-left";
+import CarouselRightIcon from "@/components/icons/carousel-right";
 
 interface Props {
-    children: ReactElement[]
-    isLightMode?: boolean
-    containerOverrides?: BoxProps
-    arrowTopPosition?: string
-    hideDots?: boolean
+    children: ReactElement[];
+    isLightMode?: boolean;
+    containerOverrides?: BoxProps;
+    arrowTopPosition?: string;
+    hideDots?: boolean;
 }
 
 /**
@@ -29,7 +30,7 @@ export default function SharedCarousel({
     arrowTopPosition,
     children,
 }: Props) {
-    const [selectedIndex, setSelectedIndex] = useState(0) // State to track the active slide
+    const [selectedIndex, setSelectedIndex] = useState(0); // State to track the active slide
 
     return (
         <Box {...containerOverrides}>
@@ -40,10 +41,11 @@ export default function SharedCarousel({
                 showIndicators={false}
                 showThumbs={false}
                 swipeable={true}
+                emulateTouch={true}
                 swipeScrollTolerance={10}
                 preventMovementUntilSwipeScrollTolerance={true}
                 onChange={(index) => {
-                    setSelectedIndex(index)
+                    setSelectedIndex(index);
                 }}
                 renderArrowPrev={(onClick, hasPrev) => {
                     return (
@@ -55,7 +57,7 @@ export default function SharedCarousel({
                             onClick={onClick}
                             isDisabled={!hasPrev}
                         />
-                    )
+                    );
                 }}
                 renderArrowNext={(onClick, hasNext) => {
                     return (
@@ -66,7 +68,7 @@ export default function SharedCarousel({
                             onClick={onClick}
                             isDisabled={!hasNext}
                         />
-                    )
+                    );
                 }}
             >
                 {children}
@@ -79,5 +81,5 @@ export default function SharedCarousel({
                 />
             )}
         </Box>
-    )
+    );
 }

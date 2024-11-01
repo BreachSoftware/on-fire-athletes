@@ -37,6 +37,7 @@ interface PaginatedListProps {
     setCurrentPage: (page: number) => void;
     profilePage?: boolean;
     profilePageProps?: ProfilePageProps;
+    hideMobilePadding?: boolean;
 }
 
 /**
@@ -67,6 +68,7 @@ export default function PaginatedList({
     setCurrentPage,
     profilePage = false,
     profilePageProps,
+    hideMobilePadding,
 }: PaginatedListProps) {
     const [isPageFlipping, setIsPageFlipping] = useState(false);
 
@@ -140,8 +142,7 @@ export default function PaginatedList({
     return (
         <Box
             minWidth="100%"
-            paddingBottom={{ base: "32px", lg: "151px" }}
-            px={{ base: "23px", md: "0px" }}
+            px={{ base: hideMobilePadding ? 0 : "23px", md: "0px" }}
         >
             <SimpleGrid
                 ref={parentStackRef}
@@ -164,7 +165,7 @@ export default function PaginatedList({
             >
                 {currentItems.map((card, index) => {
                     return (
-                        <GridItem key={index} flex={1}>
+                        <GridItem key={index} px={0} flex={1}>
                             <TrendingCard
                                 isPageFlipping={isPageFlipping}
                                 passedInCard={card}

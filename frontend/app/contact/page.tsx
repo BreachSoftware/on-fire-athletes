@@ -6,6 +6,8 @@ import Footer from "../components/footer";
 import Sidebar from "@/components/sidebar";
 import ContactForm from "./contactForm";
 
+import DarkPaper from "@/images/backgrounds/darkpaper.png";
+
 /**
  * Contact page component.
  * @returns {JSX.Element} The Contact page component.
@@ -16,7 +18,7 @@ export default function Contact() {
             w="full"
             minH="100dvh"
             justify="flex-start"
-            bgImage="darkpaper.png"
+            bgImage={DarkPaper.src}
             bgPosition="center"
             bgRepeat="no-repeat"
             bgSize="cover"

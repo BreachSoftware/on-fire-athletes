@@ -1,34 +1,32 @@
-import ChevronRightIcon from '@/components/icons/chevron-right'
-import { Button } from '@chakra-ui/button'
-import Link from 'next/link'
+import ChevronRightIcon from "@/components/icons/chevron-right";
+import { Button } from "@chakra-ui/button";
+import Link from "next/link";
 
 export default function StartCreatingButton() {
     return (
         <Link href="/create/card_creation">
             <Button
-                h={{ base: '50px', lg: '56px', '2xl': '60px' }}
-                w="fit-content"
-                px={{ base: '24px', lg: '32px', '2xl': '32px' }}
+                h={{ base: "44px", lg: "50px", "2xl": "56px" }}
+                w={{ base: "233px", md: "196px", xl: "233px" }}
+                px={{ base: "22px", lg: "22px", "2xl": "22px" }}
+                variant="infoButton"
+                justifyContent="space-between"
                 bg="green.600"
                 color="white"
                 fontFamily="Roboto"
-                fontSize={{ base: '20px', md: '18px', '2xl': '18px' }}
                 letterSpacing="1.4px"
                 fontWeight="medium"
                 textTransform="uppercase"
+                fontSize={{ base: "16px", md: "16px", "2xl": "16px" }}
                 _hover={{
-                    bg: '#20A500',
-                    boxShadow: '0 0 5px rgba(0,0,0,0.3)',
-                    fontStyle: 'italic',
+                    bg: "#20A500",
+                    boxShadow: "0 0 5px rgba(0,0,0,0.3)",
+                    fontStyle: "italic",
                 }}
-                rightIcon={
-                    <ChevronRightIcon
-                        fontSize={{ base: '24px', md: '22px', '2xl': '24px' }}
-                    />
-                }
             >
-                Start Creating
+                START CREATING
+                <ChevronRightIcon />
             </Button>
         </Link>
-    )
+    );
 }

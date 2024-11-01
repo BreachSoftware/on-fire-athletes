@@ -23,7 +23,7 @@ import { ProvideTransfer } from "@/hooks/useTransfer";
 import "../node_modules/@rainbow-me/rainbowkit/dist/index.css";
 
 export const rainbowKitConfig = getDefaultConfig({
-    appName: 'onfire-athletes',
+    appName: "onfire-athletes",
     projectId: "04b034b039d6732f839163fef760fee6",
     chains: [bsc],
 });

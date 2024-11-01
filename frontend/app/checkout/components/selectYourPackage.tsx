@@ -35,7 +35,7 @@ export default function SelectYourPackage() {
         title: "ALL-STAR",
         databaseName: "allStar",
         subtitle: "",
-        price: 49.99,
+        price: 59.99,
         details: [
             {
                 text: "Receive 5 Physical Cards With 3D and A/R Interactivity",
@@ -54,13 +54,13 @@ export default function SelectYourPackage() {
         title: "MVP",
         databaseName: "mvp",
         subtitle: "",
-        price: 79.99,
+        price: 99.99,
         details: [
             {
                 text: "Receive 10 Physical Cards With 3D and A/R Interactivity",
                 indent: false,
             },
-            { text: "Receive 25 Digital Cards", indent: false },
+            { text: "Receive 50 Digital Cards", indent: false },
             { text: "Ability to SELL and/or Trade Your Cards", indent: false },
             { text: "Athlete Receives 75% of Profits*", indent: true },
             { text: "Ability to Collect Cards", indent: false },
@@ -408,8 +408,7 @@ export default function SelectYourPackage() {
                                                 ...checkout,
                                                 packagePrice: RookieInfo.price,
                                                 packageCardCount: 15,
-                                                // There are no digital card add-ons for the Rookie package
-                                                digitalCardCount: 0,
+                                                physicalCardCount: 1,
                                                 stepNum: checkout.stepNum + 2,
                                             });
                                         } else if (
@@ -418,21 +417,21 @@ export default function SelectYourPackage() {
                                             curCheckout.setCheckout({
                                                 ...checkout,
                                                 packagePrice: AllStarInfo.price,
-                                                packageCardCount: 15,
-                                                physicalCardCount: 1,
+                                                packageCardCount: 25,
+                                                physicalCardCount: 5,
                                                 stepNum: checkout.stepNum + 1,
+                                                digitalCardCount:
+                                                    checkout.digitalCardCount,
                                             });
                                         } else {
                                             curCheckout.setCheckout({
                                                 ...checkout,
                                                 packagePrice: MVPInfo.price,
-                                                packageCardCount: 25,
+                                                packageCardCount: 50,
                                                 digitalCardCount:
                                                     checkout.digitalCardCount,
                                                 // This accounts for the 5 physical cards that come with the MVP package
-                                                physicalCardCount:
-                                                    checkout.physicalCardCount +
-                                                    5,
+                                                physicalCardCount: 10,
                                                 stepNum: checkout.stepNum + 1,
                                             });
                                         }

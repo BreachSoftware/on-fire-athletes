@@ -59,6 +59,18 @@ const NAV_ITEMS: Array<NavItem> = [
         href: "#",
         children: [
             {
+                label: "Our Story",
+                href: "/our-story",
+            },
+            {
+                label: "AR Cards",
+                href: "/newsroom/what-are-ar-cards",
+            },
+            {
+                label: "NIL Partnerships",
+                href: "/nil",
+            },
+            {
                 label: "FAQs",
                 href: "/faq",
             },
@@ -189,10 +201,10 @@ function DesktopNav(props: NavBarProps) {
                             onClick={
                                 navItem.label === "Sign Out"
                                     ? async () => {
-                                        await auth.signOut();
-                                        window.location.href = "/";
-                                    }
-                                    : () => { }
+                                          await auth.signOut();
+                                          window.location.href = "/";
+                                      }
+                                    : () => {}
                             }
                             _hover={{
                                 backgroundColor: NAV_COLORS.green,
@@ -211,10 +223,10 @@ function DesktopNav(props: NavBarProps) {
                                             navItem.label === "Sign Out"
                                                 ? undefined
                                                 : props.hreffunc
-                                                    ? props.hreffunc(
+                                                  ? props.hreffunc(
                                                         navItem.href || "",
                                                     )
-                                                    : undefined
+                                                  : undefined
                                         }
                                         style={{
                                             textDecoration: "none",
@@ -302,10 +314,10 @@ function DesktopNav(props: NavBarProps) {
                             onClick={
                                 navItem.label === "Sign Out"
                                     ? async () => {
-                                        await auth.signOut();
-                                        window.location.href = "/";
-                                    }
-                                    : () => { }
+                                          await auth.signOut();
+                                          window.location.href = "/";
+                                      }
+                                    : () => {}
                             }
                             _hover={{
                                 backgroundColor: NAV_COLORS.green,
@@ -319,8 +331,8 @@ function DesktopNav(props: NavBarProps) {
                                     navItem.label === "Sign Out"
                                         ? undefined
                                         : props.hreffunc
-                                            ? props.hreffunc(navItem.href || "")
-                                            : undefined
+                                          ? props.hreffunc(navItem.href || "")
+                                          : undefined
                                 }
                                 style={{
                                     textDecoration: "none",

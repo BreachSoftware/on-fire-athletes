@@ -11,6 +11,8 @@ import SharedStack from "@/components/shared/wrappers/shared-stack";
 import { FAQ_CATEGORIES } from "./components/faq_constants";
 import FAQHeader from "./components/faq_header";
 
+import DarkPaper from "@/images/backgrounds/darkpaper.png";
+
 /**
  * FAQ page component.
  * @returns {JSX.Element} The FAQ page component.
@@ -53,7 +55,7 @@ export default function FAQPage() {
             overflowY="hidden"
             w="100%"
             backgroundColor={"black"}
-            backgroundImage={"url('/darkpaper.png')"}
+            backgroundImage={DarkPaper.src}
             backgroundRepeat={"repeat"}
         >
             <BackToCheckoutModal />

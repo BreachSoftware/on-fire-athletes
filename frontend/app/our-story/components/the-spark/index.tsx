@@ -11,10 +11,12 @@ export default function TheSparkSection() {
             <Flex
                 position="relative"
                 flexDir="column"
-                px={{ base: "24px", lg: "264px" }}
+                px={{ base: "24px", lg: "212px" }}
                 py={{ base: "72px", lg: "156px" }}
                 alignItems="center"
                 gridGap="48px"
+                maxW={{ "2xl": "1720px" }}
+                mx={{ "2xl": "auto" }}
             >
                 <Box px={{ base: 0, lg: "112px" }}>
                     <Text
@@ -96,8 +98,8 @@ function ParagraphText({ children }: PropsWithChildren) {
     return (
         <Text
             fontFamily="Barlow"
-            fontSize="16px"
-            fontWeight="Medium"
+            fontSize="18px"
+            fontWeight="medium"
             letterSpacing="0.36px"
         >
             {children}

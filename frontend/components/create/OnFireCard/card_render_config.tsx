@@ -11,7 +11,7 @@ export function imagePaths(curCard: TradingCardInfo): string[] {
         "/card_assets/card-outline.png", // Exterior
         `/card_assets/card-interior-border-${curCard.cardType}.png`, // Interior
         "/card_assets/card-backdrop.png", // Solid Background
-        `/card_backgrounds/${CARD_BACKGROUNDS[curCard.selectedBackground].src}`,
+        `/backgrounds/${CARD_BACKGROUNDS[curCard.selectedBackground].src}`,
         curCard.signature ? curCard.signature : "",
     ];
 }
@@ -50,12 +50,17 @@ export function cardRenderOrder(
 
     if (cardSide === "front") {
         if (cardType === "a") {
-            const consistentElements = [
-                { src: "/card_assets/onfire-logo-year.png", x: 70, y: 75 },
+            const consistentElements: (
+                | string
+                | {
+                      src: string;
+                      x?: number;
+                      y?: number;
+                  }
+            )[] = [
+                { src: "/card_assets/onfire-logo-year.png" },
                 {
                     src: gamecardImages[CardPart.INTERIOR_BORDER],
-                    x: 165,
-                    y: 15,
                 },
                 gamecardImages[CardPart.EXTERIOR_BORDER], // Outline
             ];
@@ -76,10 +81,10 @@ export function cardRenderOrder(
             return consistentElements;
         } else if (cardType === "b") {
             const consistentElements = [
-                { src: "/card_assets/onfire-logo-year.png", x: 1015, y: 57 },
+                { src: "/card_assets/onfire-logo-year-b.png" },
                 { src: "/card_assets/blank.png", x: 0, y: 0 }, // These are quick fixes.
                 { src: "/card_assets/blank.png", x: 0, y: 0 }, // For some reason removing these causes cardType B to not render the back of the card properly
-                { src: gamecardImages[CardPart.INTERIOR_BORDER], x: 34, y: 31 },
+                { src: gamecardImages[CardPart.INTERIOR_BORDER] },
                 gamecardImages[CardPart.EXTERIOR_BORDER], // Outline
             ];
 
@@ -103,7 +108,7 @@ export function cardRenderOrder(
         return [
             gamecardImages[CardPart.ACCENT],
             gamecardImages[CardPart.BACKGROUND],
-            "/card_assets/card-bars.png", // Texture. Shouldn't really be recolored
+            // "/card_assets/card-bars.png", // Texture. Shouldn't really be recolored
         ];
     }
     return null;
