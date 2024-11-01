@@ -33,6 +33,7 @@ export const API_ENDPOINTS = [
 	"updatePaymentStatus",
 	"createSetupIntent",
 	"retrievePaymentMethod",
+	"applyCouponCode",
 	"createOrder",
 	"getOrder",
 	"assignOrder",

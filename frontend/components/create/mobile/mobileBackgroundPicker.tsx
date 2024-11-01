@@ -56,7 +56,7 @@ export default function MobileBackgroundPicker() {
                 }}
             >
                 <Image
-                    src={`/card_backgrounds/${CARD_BACKGROUNDS[index].src}`}
+                    src={`/backgrounds/${CARD_BACKGROUNDS[index].src}`}
                     bg={"#888"}
                     objectFit={"cover"}
                     height={"100%"}

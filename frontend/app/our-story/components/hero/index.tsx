@@ -11,13 +11,13 @@ export default function OurStoryHero() {
             <OurStoryHeroBackground />
             <Flex
                 pt={{ base: "120px", lg: 0 }}
-                minH="100dvh"
+                minH="100vh"
                 position="relative"
                 flexDir="column"
                 alignItems="center"
                 justifyContent="flex-end"
                 gridGap={{ base: "52px", lg: "72px" }}
-                px={{ base: "24px", lg: "156px" }}
+                px={{ base: "20px", lg: "156px" }}
             >
                 <Flex
                     w="full"
@@ -30,11 +30,12 @@ export default function OurStoryHero() {
                         alt="On Fire Athletes Full Logo"
                         w={{ base: "100%", lg: "624px" }}
                         objectFit="contain"
+                        mb={4}
                     />
                     <Box>
                         <Text
                             fontFamily="Barlow Condensed"
-                            fontSize={{ base: "26px", lg: "56px" }}
+                            fontSize={{ base: "24px", lg: "56px" }}
                             fontWeight="medium"
                             textAlign="center"
                             filter="drop-shadow(0 0 15px #00000029)"

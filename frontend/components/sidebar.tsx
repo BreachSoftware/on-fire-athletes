@@ -1,3 +1,4 @@
+"use client";
 import {
     VStack,
     Icon,
@@ -8,7 +9,7 @@ import {
     Center,
     useDisclosure,
     Image,
-} from '@chakra-ui/react'
+} from "@chakra-ui/react";
 
 import {
     FaFacebookF,
@@ -16,19 +17,19 @@ import {
     FaTiktok,
     FaSnapchat,
     FaInstagram,
-} from 'react-icons/fa6'
-import SideDrawer from './sideDrawer'
-import SidebarDotsGreen from '../public/sidebar_dots_green.svg'
-import SidebarDots from '../public/sidebar_dots.svg'
-import { CloseIcon } from '@chakra-ui/icons'
+} from "react-icons/fa6";
+import SideDrawer from "./sideDrawer";
+import SidebarDotsGreen from "../public/sidebar_dots_green.svg";
+import SidebarDots from "../public/sidebar_dots.svg";
+import { CloseIcon } from "@chakra-ui/icons";
 
 interface Props {
-    height?: string
-    backgroundPresent?: boolean
-    isMobile?: boolean
-    backColor?: string
-    isGridIconAltColor?: boolean
-    onSubClose?: () => void
+    height?: string;
+    backgroundPresent?: boolean;
+    isMobile?: boolean;
+    backColor?: string;
+    isGridIconAltColor?: boolean;
+    onSubClose?: () => void;
 }
 
 /**
@@ -45,38 +46,38 @@ interface Props {
  * @returns {JSX.Element} The sidebar component.
  */
 function Sidebar({
-    height = '100%',
+    height = "100%",
     backgroundPresent = true,
     isMobile = false,
-    backColor = 'black',
+    backColor = "black",
     isGridIconAltColor = false,
     onSubClose,
 }: Props) {
-    const defaultIconColor = 'white' // Default color for social media icons
-    const hoverIconColor = 'green.100' // Color on hover
-    const bgColor = backgroundPresent ? (backColor ?? 'black') : 'transparent'
-    const iconColor = backgroundPresent ? defaultIconColor : 'white'
-    const socialIconHoverColor = backgroundPresent ? hoverIconColor : 'white'
+    const defaultIconColor = "white"; // Default color for social media icons
+    const hoverIconColor = "green.100"; // Color on hover
+    const bgColor = backgroundPresent ? (backColor ?? "black") : "transparent";
+    const iconColor = backgroundPresent ? defaultIconColor : "white";
+    const socialIconHoverColor = backgroundPresent ? hoverIconColor : "white";
 
-    const iconSize = '12px' // Smaller icon size
-    const socialMediaIconSpacing = 3 // Adjusted spacing for smaller icons
+    const iconSize = "12px"; // Smaller icon size
+    const socialMediaIconSpacing = 3; // Adjusted spacing for smaller icons
 
     // Hook to manage the open and close state of the side drawer
-    const { isOpen, onOpen, onClose } = useDisclosure()
+    const { isOpen, onOpen, onClose } = useDisclosure();
 
     return (
         <VStack
-            w={isMobile ? '100px' : '140px'}
+            w={isMobile ? "100px" : "140px"}
             h={height}
             p={4}
-            spacing={'32px'}
+            spacing={"32px"}
             py="32px"
             align="center"
             bg={bgColor}
             css={{
                 // Getting rid of default scrollbar. Should work on nearly every browser
-                msOverflowStyle: 'none',
-                '&::-webkit-scrollbar': { width: '0px' },
+                msOverflowStyle: "none",
+                "&::-webkit-scrollbar": { width: "0px" },
             }}
         >
             <Center w="100%">
@@ -88,15 +89,15 @@ function Sidebar({
                         fontSize="24px"
                         isRound
                         color="white"
-                        _active={{ color: 'green.300' }}
-                        _hover={{ md: { color: 'green.300' } }}
-                        _focus={{ boxShadow: 'none' }}
+                        _active={{ color: "green.300" }}
+                        _hover={{ md: { color: "green.300" } }}
+                        _focus={{ boxShadow: "none" }}
                         onClick={onSubClose}
                     />
                 ) : (
                     <Flex onClick={onOpen}>
                         <Image
-                            alt={'Open Drawer'}
+                            alt={"Open Drawer"}
                             width="43px"
                             height="43px"
                             src={
@@ -104,7 +105,7 @@ function Sidebar({
                                     ? SidebarDots.src
                                     : SidebarDotsGreen.src
                             }
-                            cursor={'pointer'}
+                            cursor={"pointer"}
                         />
                     </Flex>
                 )}
@@ -113,39 +114,43 @@ function Sidebar({
                 <SideDrawer
                     isOpen={isOpen}
                     onClose={onClose}
-                    placement={'right'}
-                    size={'xl'}
+                    placement={"right"}
+                    size={"xl"}
                     isMobile={false}
                 />
             </Center>
 
             <Divider
                 orientation="vertical"
-                borderColor={iconColor === 'white' ? 'whiteAlpha.900' : 'white'}
+                borderColor={iconColor === "white" ? "whiteAlpha.900" : "white"}
             />
 
             <VStack spacing={socialMediaIconSpacing} w="100%" mt="auto">
                 {[
                     {
                         icon: FaFacebookF,
-                        label: 'Facebook',
-                        href: 'https://facebook.com',
+                        label: "Facebook",
+                        href: "https://facebook.com/onfireathletes",
                     },
-                    { icon: FaXTwitter, label: 'X', href: 'https://x.com' },
+                    {
+                        icon: FaXTwitter,
+                        label: "X",
+                        href: "https://x.com/onfireathletes",
+                    },
                     {
                         icon: FaTiktok,
-                        label: 'TikTok',
-                        href: 'https://tiktok.com',
+                        label: "TikTok",
+                        href: "https://tiktok.com/@onfireathletes",
                     },
                     {
                         icon: FaSnapchat,
-                        label: 'Snapchat',
-                        href: 'https://www.snapchat.com/',
+                        label: "Snapchat",
+                        href: "https://www.snapchat.com/onfireathletes",
                     },
                     {
                         icon: FaInstagram,
-                        label: 'Instagram',
-                        href: '',
+                        label: "Instagram",
+                        href: "https://instagram.com/onfireathletes",
                     },
                 ].map((social, index) => {
                     return (
@@ -158,8 +163,8 @@ function Sidebar({
                                         <Icon
                                             as={social.icon}
                                             style={{
-                                                width: '21px',
-                                                height: '21px',
+                                                width: "21px",
+                                                height: "21px",
                                             }}
                                         />
                                     }
@@ -170,18 +175,18 @@ function Sidebar({
                                         md: { color: socialIconHoverColor },
                                     }}
                                     _focus={{
-                                        outline: 'none',
-                                        boxShadow: 'none',
-                                        border: 'none',
+                                        outline: "none",
+                                        boxShadow: "none",
+                                        border: "none",
                                     }}
                                 />
                             </Link>
                         </Center>
-                    )
+                    );
                 })}
             </VStack>
         </VStack>
-    )
+    );
 }
 
-export default Sidebar
+export default Sidebar;

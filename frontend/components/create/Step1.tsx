@@ -12,8 +12,8 @@ import { useCurrentCardInfo } from "@/hooks/useCurrentCardInfo";
 import { useState } from "react";
 import TradingCardInfo, { allPartsToRecolor } from "@/hooks/TradingCardInfo";
 import CardDropShadow from "./CardDropShadow";
-import BlankA from "@/public/step_one_template_cards/blank_a.png";
-import BlankB from "@/public/step_one_template_cards/blank_b.png";
+import BlankA from "@/images/card-templates/blank-A.png";
+import BlankB from "@/images/card-templates/blank-B.png";
 import StatusIcon from "./StatusIcon";
 
 /**
@@ -144,7 +144,7 @@ export default function Step1() {
                                         // If no card is clicked or hovered, set scale to 1
                                         clickedIndex === null &&
                                         hoveredIndex === null
-                                            ? "scale(1)"
+                                            ? "scale(1.1)"
                                             : // If a card is hovered or clicked, set scale to 1.1. If not, set scale to 1
                                               hoveredIndex === index ||
                                                 clickedIndex === index

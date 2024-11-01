@@ -4,11 +4,7 @@ import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "./CheckoutForm";
 import { Box, useToast, Spinner } from "@chakra-ui/react";
 import { useCurrentCheckout } from "@/hooks/useCheckout";
-import {
-    apiEndpoints,
-    Environment,
-    environmentManager,
-} from "@backend/EnvironmentManager/EnvironmentManager";
+import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
 
 interface PaymentProps {
     checkoutScreen?: boolean;
@@ -17,9 +13,7 @@ interface PaymentProps {
 
 // OnFire keys
 const STRIPE_PUBLIC_KEY =
-    environmentManager.getApiStage() == Environment.Production
-        ? "pk_live_51PssXyCEBFOTy6pM9DfyGbI7JZUqMoClqRVuFCEAVamp10DYl2O48SqCjiw7vSbeiv8CCmYPZwSgguOTCcJzbY0u00cwKkUFDZ"
-        : "pk_test_51PssXyCEBFOTy6pMtubViKDQwVSljNAJRQAk5SkRyexPECtx4w8R3IHLQtI7CSNG1g7hSFk044Pc0STSYtxEWmSW00Y4VLvPII";
+    "pk_live_51PssXyCEBFOTy6pM9DfyGbI7JZUqMoClqRVuFCEAVamp10DYl2O48SqCjiw7vSbeiv8CCmYPZwSgguOTCcJzbY0u00cwKkUFDZ";
 
 /**
  * Payment component

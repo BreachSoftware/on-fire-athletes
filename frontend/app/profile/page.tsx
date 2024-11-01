@@ -597,7 +597,7 @@ export default function Profile() {
     return (
         <>
             <BackToCheckoutModal />
-            <Flex flexDir="row" minH="100dvh" w="full" bg="#121212">
+            <Flex flexDir="row" w="full" bg="#121212">
                 <Flex flexDir="column" w="full" minH="100dvh">
                     <Box position="relative">
                         <ProfileHeaderBackground />
@@ -663,9 +663,9 @@ export default function Profile() {
                                                 base: "14px",
                                                 lg: "16px",
                                             }}
-                                            fontWeight="700"
+                                            fontWeight="medium"
                                             color="white"
-                                            fontFamily="Helvetica Neue"
+                                            fontFamily="Barlow"
                                         >
                                             {profileInfo?.position || ""}
                                             {profileInfo?.position
@@ -680,13 +680,11 @@ export default function Profile() {
                                 </SharedStack>
                             </SharedStack>
                             <Flex gap="12px" w="fit-content" direction="column">
-                                {/* Top Row of Buttons */}
                                 <Flex
                                     align="center"
                                     justify="center"
                                     gap="12px"
                                 >
-                                    {/* Bio Button */}
                                     <ProfileInformationButton
                                         text="bio"
                                         clickEvent={() => {
@@ -696,7 +694,6 @@ export default function Profile() {
                                             currentSelection === PageName.Bio
                                         }
                                     />
-                                    {/* Album Button */}
                                     <ProfileInformationButton
                                         text="album"
                                         clickEvent={() => {
@@ -708,7 +705,6 @@ export default function Profile() {
                                     />
                                 </Flex>
                                 {loadPrivateProfile && (
-                                    // Edit Profile Button
                                     <Button
                                         bgColor="transparent"
                                         border="solid 3px #27CE00"
@@ -750,7 +746,7 @@ export default function Profile() {
                             w="100%"
                             px={{ base: "32px", xs: "50px", xl: "212px" }}
                             pt="34px"
-                            pb="64px"
+                            pb={{ base: "32px", lg: "64px" }}
                             position="relative"
                             color="white"
                         >

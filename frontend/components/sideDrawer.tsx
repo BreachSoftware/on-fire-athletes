@@ -1,3 +1,4 @@
+"use client";
 import {
     Drawer,
     DrawerOverlay,
@@ -20,6 +21,9 @@ import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { displayTabs } from "@/app/navbar";
 import CustomConnectButton from "./connect_wallet_button";
+
+import CreateYourCardBg from "@/images/backgrounds/create-your-card.png";
+import FutureFandomBg from "@/images/backgrounds/future-fandom.png";
 
 interface SideDrawerProps extends DrawerContentProps {
     isOpen: boolean;
@@ -83,6 +87,14 @@ const navItems: Array<MobileNavSection> = [
     {
         header: "About",
         children: [
+            {
+                title: "Our Story",
+                href: "/our-story",
+            },
+            {
+                title: "NIL Partnerships",
+                href: "/nil",
+            },
             {
                 title: "FAQs",
                 href: "/faq",
@@ -183,6 +195,7 @@ function SideDrawer(props: SideDrawerProps) {
                                         url="/create"
                                         width="100%"
                                         height="280px"
+                                        background={CreateYourCardBg.src}
                                     />
 
                                     <Headline
@@ -191,6 +204,7 @@ function SideDrawer(props: SideDrawerProps) {
                                         url="/lockerroom"
                                         width="100%"
                                         height="280px"
+                                        background={FutureFandomBg.src}
                                     />
                                 </Flex>
                             </Flex>
@@ -267,6 +281,7 @@ function SideDrawer(props: SideDrawerProps) {
                                                             return (
                                                                 <Box
                                                                     key={index}
+                                                                    w="fit-content"
                                                                     display={displayTabs(
                                                                         child.title,
                                                                         auth.isAuthenticated,

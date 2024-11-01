@@ -108,10 +108,15 @@ export default function OrderCompleteContent(props: OrderCompleteContentProps) {
             <VStack gap="20px">
                 <VStack alignItems={"center"}>
                     <Text
+                        textAlign="center"
+                        fontFamily="Barlow Semi Condensed"
+                        fontWeight="semibold"
+                        fontStyle="italic"
+                        letterSpacing="3.9px"
+                        lineHeight={{ base: "29px", lg: "31px" }}
+                        transform="uppercase"
+                        color="#27CE01"
                         textColor="green.100"
-                        fontFamily={"Barlow Condensed"}
-                        fontWeight={"light"}
-                        fontStyle={"italic"}
                         fontSize={{
                             base: "20px",
                             md: "25px",

@@ -111,30 +111,6 @@ function BackgroundComponent() {
                 backgroundSize="cover"
                 backgroundPosition={"center top"}
             />
-            {/* <Box
-                position="absolute"
-                top={0}
-                left={0}
-                right={0}
-                bottom={0}
-                h="full"
-                display={{ base: 'none', md: 'block' }}
-                backgroundImage="url('news-desktop-left.png')"
-                backgroundRepeat="no-repeat"
-                backgroundPosition="left top"
-            />
-            <Box
-                position="absolute"
-                top={0}
-                left={0}
-                right={0}
-                bottom={0}
-                h="full"
-                display={{ base: 'none', md: 'block' }}
-                backgroundImage="url('news-desktop-right.png')"
-                backgroundRepeat="no-repeat"
-                backgroundPosition="right bottom"
-            /> */}
         </>
     );
 }

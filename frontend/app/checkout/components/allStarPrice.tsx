@@ -17,6 +17,7 @@ import { checkoutSteps } from "./checkoutSteps";
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import Footer from "@/app/components/footer";
 import OnFireCard from "@/components/create/OnFireCard/OnFireCard";
+import DemarioCard from "@/images/mockups/demario-card.png";
 
 /**
  * This component is responsible for rendering the all-star price section of the checkout page.
@@ -107,7 +108,7 @@ export default function AllStarPrice() {
                             </Box>
                         ) : (
                             <Image
-                                src={"step_one_template_cards/demario_a.png"}
+                                src={DemarioCard.src}
                                 alt="Your Card"
                                 width={{ base: 150, md: 200, xl: 350 }}
                                 height={{ base: 225, md: 300, xl: 500 }}
@@ -249,7 +250,8 @@ export default function AllStarPrice() {
                                     mb="15px"
                                 >
                                     *Digital cards must be priced at a minimum
-                                    of $20.00.
+                                    of $20.00. Shipping & Handling fee of $3.00
+                                    will be added.
                                 </Text>
                             </Flex>
                         </Flex>

@@ -1,7 +1,7 @@
 import { Icon } from "@chakra-ui/icons";
 import { IconButton } from "@chakra-ui/button";
 import { useDisclosure } from "@chakra-ui/hooks";
-import { Box, AspectRatio } from "@chakra-ui/layout";
+import { Box, Center, AspectRatio } from "@chakra-ui/layout";
 import { Image as ChakraImage } from "@chakra-ui/image";
 import { FaX } from "react-icons/fa6";
 
@@ -11,6 +11,7 @@ import ProfileMediaDeleteModal from "./deleteModal";
 import { useRef } from "react";
 import ProfileMediaEditModal from "./editModal";
 import { ProfileMediaType } from "../types";
+import { FaPlayCircle } from "react-icons/fa";
 
 interface Props {
     media: ProfileMediaType | string;
@@ -109,6 +110,21 @@ export default function ProfileBioMedia({
                         </Box>
                     )}
                 </AspectRatio>
+                {mediaType === MediaType.VIDEO && (
+                    <Center
+                        position="absolute"
+                        top={0}
+                        right={0}
+                        left={0}
+                        bottom={0}
+                    >
+                        <Icon
+                            as={FaPlayCircle}
+                            fontSize="64px"
+                            color="blackAlpha.700"
+                        />
+                    </Center>
+                )}
             </Box>
             <Box
                 position="relative"
