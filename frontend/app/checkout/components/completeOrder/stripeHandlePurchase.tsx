@@ -1,3 +1,4 @@
+import emailjs from "@emailjs/browser";
 import { tradeBoughtCard } from "@/hooks/buyCardFunc";
 import CheckoutInfo from "@/hooks/CheckoutInfo";
 import TradingCardInfo from "@/hooks/TradingCardInfo";
@@ -233,6 +234,30 @@ export async function handlePurchase(
         if (buyingOtherCard) {
             // Add flag if buying another user's card
             successUrl = `${successUrl}${successUrl.includes("?") ? "&" : ""}boughtOtherCard=true`;
+        }
+
+        if (!buyingOtherCard) {
+            try {
+                const isRookie = checkout.packageName === "rookie";
+
+                const templateToUse = isRookie
+                    ? "template_71hzb7j"
+                    : "template_46qvoa9";
+                console.log("isRookie", isRookie);
+
+                await emailjs.send(
+                    "service_8rtflzq",
+                    templateToUse,
+                    {
+                        toEmail: checkout.contactInfo.email,
+                        cardImage: checkout.onFireCard?.cardImage,
+                        profileUrl: "https://onfireathletes.com/profile",
+                    },
+                    { publicKey: "nOgMf7N2DopnucmPc" },
+                );
+            } catch (e) {
+                console.error("Error sending post-checkout email: ", e);
+            }
         }
 
         // Navigate to the success page
