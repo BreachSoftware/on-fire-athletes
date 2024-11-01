@@ -23,6 +23,7 @@
         "@fontsource/barlow-semi-condensed": "^5.0.18",
         "@fontsource/chakra-petch": "^5.0.19",
         "@fontsource/roboto": "^5.1.0",
+        "@fontsource/roboto-condensed": "^5.1.0",
         "@fontsource/water-brush": "^5.0.18",
         "@rainbow-me/rainbowkit": "2",
         "@react-icons/all-files": "^4.1.0",

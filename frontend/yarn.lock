@@ -1979,6 +1979,11 @@
   resolved "https://registry.npmjs.org/@fontsource/chakra-petch/-/chakra-petch-5.1.0.tgz#c710088d1c0423526b17e7ff81fdb2ea08a80865"
   integrity sha512-xKSWOLEJyNOejn/ZQDyQwL+oz6cQXtoTaVCxjszEGUKZQnJMv9QpYj+dyPD/wEjbEbje6a0TergWsahQCclOIw==
 
+"@fontsource/roboto-condensed@^5.1.0":
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@fontsource/roboto-condensed/-/roboto-condensed-5.1.0.tgz#10e631e4259101dd0d030a227d3a105f3c03a906"
+  integrity sha512-cTS62X9bgR6H+3qRtaDwt0I+3ocitMPalyr2OrzJtilIcuEo4my8UA4VVhOgr0OI2Sk9JNrNYcSxkv0k4XuKtQ==
+
 "@fontsource/roboto@^5.1.0":
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/@fontsource/roboto/-/roboto-5.1.0.tgz#00230737ec09c60ae877a5e33d067c0607fdd5ba"
