@@ -1,5 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    output: 'export',
+    async rewrites() {
+        return [
+            {
+                source: '/.well-known/:path*',
+                destination: '/public/.well-known/:path*',
+            },
+        ];
+    },
     reactStrictMode: false,
     webpack: (config, options) => {
         if (options.isServer) {
