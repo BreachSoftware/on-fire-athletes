@@ -79,7 +79,14 @@ export default function SuccessfulCardCreationPage() {
                     );
                 }
                 TradingCardInfo.clearCard();
-                disconnect();
+                try {
+                    disconnect();
+                } catch (error) {
+                    console.error(
+                        "Error disconnecting from the wallet: ",
+                        error,
+                    );
+                }
                 setUuid(uuid);
                 setGeneratedBy(generatedBy);
                 setCardSuccessfullyCreated(true);
