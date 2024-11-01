@@ -6,6 +6,7 @@ import { retrievePaymentStatus } from "@/app/lockerroom/components/retrievePayme
 import TradingCardInfo, { PaymentStatus } from "@/hooks/TradingCardInfo";
 import { updatePaymentStatus } from "@/app/lockerroom/components/updatePaymentStatus";
 import { useEffect, useState } from "react";
+import { useDisconnect } from "wagmi";
 
 /**
  * @file This file contains the successful card creation page.
@@ -17,6 +18,8 @@ export default function SuccessfulCardCreationPage() {
     const [uuid, setUuid] = useState("");
     const [generatedBy, setGeneratedBy] = useState("");
     const [buyingOtherCard, setBuyingOtherCard] = useState(false);
+
+    const { disconnect } = useDisconnect();
 
     /**
      * This function checks to see if the user just submitted a card.
@@ -50,6 +53,7 @@ export default function SuccessfulCardCreationPage() {
                     }
                     // Clear the card
                     TradingCardInfo.clearCard();
+
                     setUuid(uuid);
                     setGeneratedBy(generatedBy);
                     setCardSuccessfullyCreated(true);
@@ -75,6 +79,7 @@ export default function SuccessfulCardCreationPage() {
                     );
                 }
                 TradingCardInfo.clearCard();
+                disconnect();
                 setUuid(uuid);
                 setGeneratedBy(generatedBy);
                 setCardSuccessfullyCreated(true);
