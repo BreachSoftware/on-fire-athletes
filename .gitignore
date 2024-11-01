@@ -15,6 +15,7 @@
 
 # production
 /frontend/build
+/frontend/out
 
 # misc
 .DS_Store
