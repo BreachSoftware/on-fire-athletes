@@ -19,6 +19,7 @@ import { BeatLoader } from "react-spinners";
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { displayTabs } from "@/app/navbar";
+import CustomConnectButton from "./connect_wallet_button";
 
 interface SideDrawerProps extends DrawerContentProps {
     isOpen: boolean;
@@ -354,18 +355,18 @@ function SideDrawer(props: SideDrawerProps) {
                                                                                     " ",
                                                                                     "",
                                                                                 ) ===
-                                                                            "signout"
+                                                                                "signout"
                                                                                 ? async () => {
-                                                                                      await auth.signOut();
-                                                                                      // Refreshes the page to update the navbar
-                                                                                      window.location.href =
-                                                                                          "/";
-                                                                                  }
+                                                                                    await auth.signOut();
+                                                                                    // Refreshes the page to update the navbar
+                                                                                    window.location.href =
+                                                                                        "/";
+                                                                                }
                                                                                 : () => {
-                                                                                      router.push(
-                                                                                          child.href,
-                                                                                      );
-                                                                                  }
+                                                                                    router.push(
+                                                                                        child.href,
+                                                                                    );
+                                                                                }
                                                                         }
                                                                     >
                                                                         {
@@ -382,9 +383,9 @@ function SideDrawer(props: SideDrawerProps) {
                                                 {index < navItems.length - 1 &&
                                                     // if we are on desktop, dont show the last two dividers
                                                     (!props.isMobile &&
-                                                    index ===
+                                                        index ===
                                                         navItems.length -
-                                                            2 ? null : (
+                                                        2 ? null : (
                                                         <Divider
                                                             borderColor={
                                                                 "gray.1700"
@@ -395,12 +396,13 @@ function SideDrawer(props: SideDrawerProps) {
                                                             marginTop="12px"
                                                             marginBottom="24px"
                                                         />
-                                                    ))}
+                                                    ))
+                                                }
 
                                                 {/* On the last element, put our action buttons */}
                                                 {isMobile &&
                                                     index ===
-                                                        navItems.length - 1 && (
+                                                    navItems.length - 1 && (
                                                         // Action Buttons
                                                         <Flex
                                                             flexDirection={
@@ -524,6 +526,10 @@ function SideDrawer(props: SideDrawerProps) {
                                         );
                                     })}
                                 </Flex>
+
+                                {/* <ConnectButton /> */}
+                                <CustomConnectButton />
+                                {/* </Button> */}
                             </Flex>
                         </DrawerBody>
 

@@ -25,7 +25,7 @@ import SideDrawer from "@/components/sideDrawer";
 // import { ConnectButton } from "@rainbow-me/rainbowkit";
 import ResponsiveBlock from "@/components/shared/wrappers/responsive-block";
 import SideBarHamburger from "@/components/sidebarHamburger";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
+import CustomConnectButton from "@/components/connect_wallet_button";
 
 // Optional params
 interface NavBarProps extends BoxProps {
@@ -189,10 +189,10 @@ function DesktopNav(props: NavBarProps) {
                             onClick={
                                 navItem.label === "Sign Out"
                                     ? async () => {
-                                          await auth.signOut();
-                                          window.location.href = "/";
-                                      }
-                                    : () => {}
+                                        await auth.signOut();
+                                        window.location.href = "/";
+                                    }
+                                    : () => { }
                             }
                             _hover={{
                                 backgroundColor: NAV_COLORS.green,
@@ -211,10 +211,10 @@ function DesktopNav(props: NavBarProps) {
                                             navItem.label === "Sign Out"
                                                 ? undefined
                                                 : props.hreffunc
-                                                  ? props.hreffunc(
+                                                    ? props.hreffunc(
                                                         navItem.href || "",
                                                     )
-                                                  : undefined
+                                                    : undefined
                                         }
                                         style={{
                                             textDecoration: "none",
@@ -290,7 +290,7 @@ function DesktopNav(props: NavBarProps) {
             <Spacer />
 
             <Flex justifyContent="flex-end" width="100%" direction="row">
-                {props.cryptoWalletConnected && <ConnectButton />}
+                {props.cryptoWalletConnected && <CustomConnectButton />}
                 {NAV_ITEMS.slice(3).map((navItem) => {
                     return (
                         <Box
@@ -302,10 +302,10 @@ function DesktopNav(props: NavBarProps) {
                             onClick={
                                 navItem.label === "Sign Out"
                                     ? async () => {
-                                          await auth.signOut();
-                                          window.location.href = "/";
-                                      }
-                                    : () => {}
+                                        await auth.signOut();
+                                        window.location.href = "/";
+                                    }
+                                    : () => { }
                             }
                             _hover={{
                                 backgroundColor: NAV_COLORS.green,
@@ -319,8 +319,8 @@ function DesktopNav(props: NavBarProps) {
                                     navItem.label === "Sign Out"
                                         ? undefined
                                         : props.hreffunc
-                                          ? props.hreffunc(navItem.href || "")
-                                          : undefined
+                                            ? props.hreffunc(navItem.href || "")
+                                            : undefined
                                 }
                                 style={{
                                     textDecoration: "none",

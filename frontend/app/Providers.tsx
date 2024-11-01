@@ -11,15 +11,20 @@ import { ChakraProvider } from "@chakra-ui/react";
 import "./fonts";
 import { ProvideMediaProcessing } from "@/hooks/useMediaProcessing";
 import { ProvideCheckout } from "@/hooks/useCheckout";
-import { getDefaultConfig } from "@rainbow-me/rainbowkit";
+import {
+    darkTheme,
+    getDefaultConfig,
+    RainbowKitProvider,
+} from "@rainbow-me/rainbowkit";
 import { bsc } from "wagmi/chains";
 import { WagmiProvider } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ProvideTransfer } from "@/hooks/useTransfer";
+import "../node_modules/@rainbow-me/rainbowkit/dist/index.css";
 
 export const rainbowKitConfig = getDefaultConfig({
-    appName: "OnFire Athletes",
-    projectId: "72f5d80525bd261bb92a76b1426b1ce0",
+    appName: 'onfire-athletes',
+    projectId: "04b034b039d6732f839163fef760fee6",
     chains: [bsc],
 });
 const queryClient = new QueryClient();
@@ -29,21 +34,23 @@ export function Providers({ children }: { children: React.ReactNode }) {
         <ChakraProvider theme={theme}>
             <WagmiProvider config={rainbowKitConfig}>
                 <QueryClientProvider client={queryClient}>
-                    <ProvideAuth>
-                        <ProvideCurrentCardInfo>
-                            <ProvideCurrentFilterInfo>
-                                <ProvideCompletedMobileSteps>
-                                    <ProvideMediaProcessing>
-                                        <ProvideCheckout>
-                                            <ProvideTransfer>
-                                                {children}
-                                            </ProvideTransfer>
-                                        </ProvideCheckout>
-                                    </ProvideMediaProcessing>
-                                </ProvideCompletedMobileSteps>
-                            </ProvideCurrentFilterInfo>
-                        </ProvideCurrentCardInfo>
-                    </ProvideAuth>
+                    <RainbowKitProvider theme={darkTheme()}>
+                        <ProvideAuth>
+                            <ProvideCurrentCardInfo>
+                                <ProvideCurrentFilterInfo>
+                                    <ProvideCompletedMobileSteps>
+                                        <ProvideMediaProcessing>
+                                            <ProvideCheckout>
+                                                <ProvideTransfer>
+                                                    {children}
+                                                </ProvideTransfer>
+                                            </ProvideCheckout>
+                                        </ProvideMediaProcessing>
+                                    </ProvideCompletedMobileSteps>
+                                </ProvideCurrentFilterInfo>
+                            </ProvideCurrentCardInfo>
+                        </ProvideAuth>
+                    </RainbowKitProvider>
                 </QueryClientProvider>
             </WagmiProvider>
         </ChakraProvider>

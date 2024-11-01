@@ -9,13 +9,13 @@ import { useCurrentCheckout } from "./useCheckout";
 
 // The properties of the useTransfer hook
 export interface UseTransferProperties {
-  onTransfer: () => void;
-  address: `0x${string}` | undefined;
-  isFetching: boolean;
-  isPending: boolean;
-  GMEXPrice: number;
-  isComplete: boolean;
-  hash: `0x${string}` | undefined;
+	onTransfer: () => void;
+	address: `0x${string}` | undefined;
+	isFetching: boolean;
+	isPending: boolean;
+	GMEXPrice: number;
+	isComplete: boolean;
+	hash: `0x${string}` | undefined;
 }
 
 const TransferContext = createContext({} as UseTransferProperties);
@@ -36,9 +36,9 @@ function useTransfer(): UseTransferProperties {
 	const CoinAddress = "0xE9d78BF51ae04c7E1263A76ED89a65537B9cA903";
 	const { address, } = useAccount();
 	const adminAddress = "0x415e077398610Dcd307bE77924856547321A8BE9";
-	const [ GMEXPrice, setGMEXPrice ] = useState(0);
+	const [GMEXPrice, setGMEXPrice] = useState(0);
 	const toast = useToast();
-	const [ isComplete, setIsComplete ] = useState(false);
+	const [isComplete, setIsComplete] = useState(false);
 
 	// Getting the current checkout
 	const curCheckout = useCurrentCheckout();
@@ -78,6 +78,19 @@ function useTransfer(): UseTransferProperties {
 		hash: data,
 	});
 
+	useEffect(() => {
+		if (error) {
+			const errorMessage = error?.toString().includes('ContractFunctionExecutionError') ? 'Insufficient Funds' : "Transaction Failed!";
+			toast({
+				title: errorMessage,
+				status: "error",
+				duration: 5000,
+				isClosable: true,
+			});
+		}
+	}, [error, isError, isFetching])
+
+
 	/**
 	 * Transfers GMEX tokens
 	 */
@@ -87,7 +100,7 @@ function useTransfer(): UseTransferProperties {
 				abi: Gamecoin,
 				address: CoinAddress,
 				functionName: "transfer",
-				args: [ adminAddress, parseUnits(GMEXPrice?.toString(), 9) ],
+				args: [adminAddress, parseUnits(GMEXPrice?.toString(), 9)],
 			});
 
 			if (error) {
@@ -114,9 +127,9 @@ function useTransfer(): UseTransferProperties {
 			fetch_price();
 		}
 	},
-	// We only want to run this effect when the cartTotal variable changes
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	[ cartTotal ]);
+		// We only want to run this effect when the cartTotal variable changes
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[cartTotal]);
 
 	useEffect(() => {
 		if (confirm) {
@@ -128,17 +141,9 @@ function useTransfer(): UseTransferProperties {
 				isClosable: true,
 			});
 		}
-		if (isError) {
-			toast({
-				title: "Transaction Failed!",
-				status: "error",
-				duration: 5000,
-				isClosable: true,
-			});
-		}
-	// We only want to run this effect when the confirm or isError variable changes
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [ confirm, isError ]);
+		// We only want to run this effect when the confirm or isError variable changes
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [confirm, isError]);
 
 
 	return {
@@ -154,7 +159,7 @@ function useTransfer(): UseTransferProperties {
 
 interface ProvideTransferProps {
 	children: ReactNode;
-  }
+}
 
 /**
  * The ProvideTransfer component is used to provide the data to the useTransfer hook
