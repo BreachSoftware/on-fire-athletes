@@ -1969,7 +1969,7 @@
   resolved "https://registry.npmjs.org/@fontsource/barlow-semi-condensed/-/barlow-semi-condensed-5.1.0.tgz#35bb6123804822c5be812355bc4ca46dd79667bf"
   integrity sha512-hTlARiOlj43hAOm17jUhjlfQxS+UXetZiqN0aHkNiADXJTgtRuMIBmoIvFq+YoSj6mj9U4cC/KuA/xpuIL+BdQ==
 
-"@fontsource/barlow@^5.1.0":
+"@fontsource/barlow@^5.0.14":
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/@fontsource/barlow/-/barlow-5.1.0.tgz#29b368ddc53db4f14441590f7e6af2fc6a788250"
   integrity sha512-HXpoWJQX3RzVrUOpuZUBfWaoruLJ69B7Z3T9lZCWySEiEjvJ1FEwLz6BDJXx0lCrW8dEIf4UMq/xFs5IEn09ag==
@@ -1978,11 +1978,6 @@
   version "5.1.0"
   resolved "https://registry.npmjs.org/@fontsource/chakra-petch/-/chakra-petch-5.1.0.tgz#c710088d1c0423526b17e7ff81fdb2ea08a80865"
   integrity sha512-xKSWOLEJyNOejn/ZQDyQwL+oz6cQXtoTaVCxjszEGUKZQnJMv9QpYj+dyPD/wEjbEbje6a0TergWsahQCclOIw==
-
-"@fontsource/roboto-condensed@^5.1.0":
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/@fontsource/roboto-condensed/-/roboto-condensed-5.1.0.tgz#10e631e4259101dd0d030a227d3a105f3c03a906"
-  integrity sha512-cTS62X9bgR6H+3qRtaDwt0I+3ocitMPalyr2OrzJtilIcuEo4my8UA4VVhOgr0OI2Sk9JNrNYcSxkv0k4XuKtQ==
 
 "@fontsource/roboto@^5.1.0":
   version "5.1.0"
