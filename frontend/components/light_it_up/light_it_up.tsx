@@ -26,7 +26,7 @@ export default function LightItUp() {
         // Array of interactive sections, each would typically have an id, image, imageOverlayText, title, description, buttonTitle, and buttonLink
         {
             id: 1,
-            videoUrl: "ForAthletesPlayingCardv2.mp4",
+            videoUrl: "ForAthletesPlayingCard3.mp4",
             imageOverlaySubtitle: "FOR",
             imageOverlayTitle: "ATHLETES",
             title: "Create a Custom Card",
