@@ -91,6 +91,10 @@ const navItems: Array<MobileNavSection> = [
                 href: "/our-story",
             },
             {
+                title: "AR Card",
+                href: "newsroom/what-are-ar-cards",
+            },
+            {
                 title: "NIL Partnerships",
                 href: "/nil",
             },
