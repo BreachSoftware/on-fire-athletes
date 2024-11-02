@@ -11,16 +11,11 @@ import { ChakraProvider } from "@chakra-ui/react";
 import "./fonts";
 import { ProvideMediaProcessing } from "@/hooks/useMediaProcessing";
 import { ProvideCheckout } from "@/hooks/useCheckout";
-import {
-    darkTheme,
-    getDefaultConfig,
-    RainbowKitProvider,
-} from "@rainbow-me/rainbowkit";
+import { getDefaultConfig } from "@rainbow-me/rainbowkit";
 import { bsc } from "wagmi/chains";
 import { WagmiProvider } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ProvideTransfer } from "@/hooks/useTransfer";
-import "../node_modules/@rainbow-me/rainbowkit/dist/index.css";
 
 export const rainbowKitConfig = getDefaultConfig({
     appName: "onfire-athletes",
@@ -34,23 +29,21 @@ export function Providers({ children }: { children: React.ReactNode }) {
         <ChakraProvider theme={theme}>
             <WagmiProvider config={rainbowKitConfig}>
                 <QueryClientProvider client={queryClient}>
-                    <RainbowKitProvider theme={darkTheme()}>
-                        <ProvideAuth>
-                            <ProvideCurrentCardInfo>
-                                <ProvideCurrentFilterInfo>
-                                    <ProvideCompletedMobileSteps>
-                                        <ProvideMediaProcessing>
-                                            <ProvideCheckout>
-                                                <ProvideTransfer>
-                                                    {children}
-                                                </ProvideTransfer>
-                                            </ProvideCheckout>
-                                        </ProvideMediaProcessing>
-                                    </ProvideCompletedMobileSteps>
-                                </ProvideCurrentFilterInfo>
-                            </ProvideCurrentCardInfo>
-                        </ProvideAuth>
-                    </RainbowKitProvider>
+                    <ProvideAuth>
+                        <ProvideCurrentCardInfo>
+                            <ProvideCurrentFilterInfo>
+                                <ProvideCompletedMobileSteps>
+                                    <ProvideMediaProcessing>
+                                        <ProvideCheckout>
+                                            <ProvideTransfer>
+                                                {children}
+                                            </ProvideTransfer>
+                                        </ProvideCheckout>
+                                    </ProvideMediaProcessing>
+                                </ProvideCompletedMobileSteps>
+                            </ProvideCurrentFilterInfo>
+                        </ProvideCurrentCardInfo>
+                    </ProvideAuth>
                 </QueryClientProvider>
             </WagmiProvider>
         </ChakraProvider>
