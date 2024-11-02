@@ -8,9 +8,10 @@ import PhotoFrame from "@/components/in_the_news/photo_frame";
 interface Props {
     title: string;
     image: string;
+    isVideo?: boolean;
 }
 
-export default function ArticleHeader({ title, image }: Props) {
+export default function ArticleHeader({ title, image, isVideo }: Props) {
     return (
         <Flex
             position="relative"
@@ -49,7 +50,7 @@ export default function ArticleHeader({ title, image }: Props) {
                     {title}
                 </ArticleTitle>
                 <Box maxW="732px" w="full">
-                    <PhotoFrame src={image} alt={title} />
+                    <PhotoFrame src={image} alt={title} isVideo={isVideo} />
                 </Box>
             </Flex>
         </Flex>
