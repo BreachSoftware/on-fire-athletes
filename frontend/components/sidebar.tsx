@@ -47,17 +47,12 @@ interface Props {
  */
 function Sidebar({
     height = "100%",
-    backgroundPresent = true,
-    isMobile = false,
     backColor = "black",
     isGridIconAltColor = false,
     onSubClose,
 }: Props) {
-    const defaultIconColor = "white"; // Default color for social media icons
-    const hoverIconColor = "green.100"; // Color on hover
-    const bgColor = backgroundPresent ? (backColor ?? "black") : "transparent";
-    const iconColor = backgroundPresent ? defaultIconColor : "white";
-    const socialIconHoverColor = backgroundPresent ? hoverIconColor : "white";
+    const iconColor = "white";
+    const socialIconHoverColor = "green.100";
 
     const iconSize = "12px"; // Smaller icon size
     const socialMediaIconSpacing = 3; // Adjusted spacing for smaller icons
@@ -67,13 +62,13 @@ function Sidebar({
 
     return (
         <VStack
-            w={isMobile ? "100px" : "140px"}
+            w={{ base: "100px", lg: "140px" }}
             h={height}
             p={4}
             spacing={"32px"}
             py="32px"
             align="center"
-            bg={bgColor}
+            bg={{ base: backColor ?? "black", lg: "transparent" }}
             css={{
                 // Getting rid of default scrollbar. Should work on nearly every browser
                 msOverflowStyle: "none",
@@ -116,7 +111,6 @@ function Sidebar({
                     onClose={onClose}
                     placement={"right"}
                     size={"xl"}
-                    isMobile={false}
                 />
             </Center>
 

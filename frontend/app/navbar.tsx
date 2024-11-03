@@ -15,7 +15,6 @@ import {
     Spacer,
     Link,
     Heading,
-    useBreakpointValue,
 } from "@chakra-ui/react";
 import { ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import OnFireLogo from "@/images/logos/small-logo.png";
@@ -432,8 +431,6 @@ export default function NavBar({
         }
     }, []);
 
-    const isMobile = useBreakpointValue({ base: true, lg: false });
-
     return (
         <>
             <SideBarHamburger />
@@ -500,7 +497,6 @@ export default function NavBar({
                     onClose={onToggle}
                     placement={"right"}
                     size={"xl"}
-                    isMobile={isMobile}
                 />
             </ResponsiveBlock>
         </>
