@@ -22,6 +22,7 @@ import { darkTheme, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 
 // OnFire keys
 const STRIPE_PUBLIC_KEY =
+    process.env.NEXT_PUBLIC_STRIPE_PK ||
     "pk_live_51PssXyCEBFOTy6pM9DfyGbI7JZUqMoClqRVuFCEAVamp10DYl2O48SqCjiw7vSbeiv8CCmYPZwSgguOTCcJzbY0u00cwKkUFDZ";
 
 /**

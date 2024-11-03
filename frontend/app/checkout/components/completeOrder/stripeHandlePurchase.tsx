@@ -238,7 +238,7 @@ export async function handlePurchase(
 
         if (!buyingOtherCard) {
             try {
-                await handlePostCheckoutEmail(checkout, onFireCard);
+                await handlePostCheckoutEmail(checkout);
             } catch (e) {
                 console.error("Error sending post-checkout email: ", e);
             }
@@ -258,10 +258,7 @@ enum EmailTemplates {
     ALL_STAR = "template_46qvoa9",
 }
 
-async function handlePostCheckoutEmail(
-    checkout: CheckoutInfo,
-    onFireCard: TradingCardInfo | null,
-) {
+async function handlePostCheckoutEmail(checkout: CheckoutInfo) {
     const isRookie = checkout.packageName === "rookie";
 
     const templateToUse = isRookie
@@ -273,8 +270,8 @@ async function handlePostCheckoutEmail(
         templateToUse,
         {
             toEmail: checkout.contactInfo.email,
-            cardImage: checkout.onFireCard?.cardImage,
-            profileUrl: `https://onfireathletes.com/profile?user=${onFireCard!.generatedBy}`,
+            cardImage: checkout.onFireCard!.cardImage,
+            profileUrl: `https://onfireathletes.com/profile?user=${checkout.onFireCard!.generatedBy}`,
         },
         { publicKey: "nOgMf7N2DopnucmPc" },
     );
