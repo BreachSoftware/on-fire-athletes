@@ -238,23 +238,7 @@ export async function handlePurchase(
 
         if (!buyingOtherCard) {
             try {
-                const isRookie = checkout.packageName === "rookie";
-
-                const templateToUse = isRookie
-                    ? "template_71hzb7j"
-                    : "template_46qvoa9";
-                console.log("isRookie", isRookie);
-
-                await emailjs.send(
-                    "service_8rtflzq",
-                    templateToUse,
-                    {
-                        toEmail: checkout.contactInfo.email,
-                        cardImage: checkout.onFireCard?.cardImage,
-                        profileUrl: "https://onfireathletes.com/profile",
-                    },
-                    { publicKey: "nOgMf7N2DopnucmPc" },
-                );
+                await handlePostCheckoutEmail(checkout, onFireCard);
             } catch (e) {
                 console.error("Error sending post-checkout email: ", e);
             }
@@ -267,4 +251,31 @@ export async function handlePurchase(
         console.error("Error during purchase:", error);
         return false;
     }
+}
+
+enum EmailTemplates {
+    ROOKIE = "template_71hzb7j",
+    ALL_STAR = "template_46qvoa9",
+}
+
+async function handlePostCheckoutEmail(
+    checkout: CheckoutInfo,
+    onFireCard: TradingCardInfo | null,
+) {
+    const isRookie = checkout.packageName === "rookie";
+
+    const templateToUse = isRookie
+        ? EmailTemplates.ROOKIE
+        : EmailTemplates.ALL_STAR;
+
+    await emailjs.send(
+        "service_8rtflzq",
+        templateToUse,
+        {
+            toEmail: checkout.contactInfo.email,
+            cardImage: checkout.onFireCard?.cardImage,
+            profileUrl: `https://onfireathletes.com/profile?user=${onFireCard!.generatedBy}`,
+        },
+        { publicKey: "nOgMf7N2DopnucmPc" },
+    );
 }
