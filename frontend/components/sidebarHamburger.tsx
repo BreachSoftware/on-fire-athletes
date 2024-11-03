@@ -66,7 +66,6 @@ export default function SideBarHamburger(props: SideBarHamburgerProps) {
                 onClose={onClose}
                 placement="right"
                 size="xl"
-                isMobile={true}
             />
         </>
     );
