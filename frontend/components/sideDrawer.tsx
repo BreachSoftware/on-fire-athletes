@@ -445,6 +445,7 @@ function ActionButtons({ onClose }: { onClose: () => void }) {
         >
             {/* Create Button */}
             <Button
+                tabIndex={-1}
                 variant="infoButton"
                 style={{
                     border: "1px solid white",
@@ -476,6 +477,7 @@ function ActionButtons({ onClose }: { onClose: () => void }) {
 
             {/* Collect Button */}
             <Button
+                tabIndex={-1}
                 variant="infoButton"
                 style={{
                     border: "1px solid white",
