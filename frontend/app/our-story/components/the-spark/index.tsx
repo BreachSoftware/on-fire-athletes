@@ -73,14 +73,14 @@ export default function TheSparkSection() {
                             moment, regardless of background? What if you could
                             chart your path? What if we could leave no athlete
                             behind? What if we created something where you
-                            didn't have to hire a PR firm or sign an NIL deal?
+                            didn't have to hire a PR firm?
                             What if you could make your own sports card and
-                            create your own hype? What if you could chart your
+                            create your own hype? What if you could share your
                             success? What if it didn't matter where you came
                             from?
                         </ParagraphText>
                         <ParagraphText>
-                            The court, the field, the gym, the arena…they don't
+                            The court, the field, the gym, the arena…ONFIRE doesn't
                             care. The athlete is all that matters.
                         </ParagraphText>
                         <ParagraphText>

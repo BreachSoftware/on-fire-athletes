@@ -57,10 +57,9 @@ export default function Article() {
                     professionals—it's for everyone. From kids in community
                     leagues to aspiring athletes in high school and college, the
                     platform is designed to democratize the process of building
-                    a personal brand. “What if you didn't need a PR firm, an NIL
-                    deal, or professional representation?” the creators of
-                    ONFIRE Athletes ask. “What if you could create your own
-                    hype, your own sports card, and chart your own success?”
+                    a personal brand. “What if you didn't need a PR firm or professional 
+                    representation?” the creators of ONFIRE Athletes ask. “What if you 
+                    could create your own hype, your own sports card, and chart your own success?”
                 </ArticleParagraph>
                 <ArticleParagraph>
                     This revolutionary approach gives athletes full control of
@@ -104,7 +103,7 @@ export default function Article() {
                     The AR feature allows athletes to showcase their best
                     moments by scanning their physical card, which then plays a
                     video highlight, creating a dynamic and interactive
-                    experience. “It's a sports card you can hold, and it's a
+                    experience. “It's a sports card that comes to life, and it's a
                     moment you can relive,” say the founders.
                 </ArticleParagraph>
                 <ArticleSubtitle>A Global Vision</ArticleSubtitle>
