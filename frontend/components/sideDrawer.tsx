@@ -393,6 +393,9 @@ function SideDrawer(props: SideDrawerProps) {
                                                                                       );
                                                                                   }
                                                                         }
+                                                                        tabIndex={
+                                                                            -1
+                                                                        }
                                                                     >
                                                                         {
                                                                             child.title
