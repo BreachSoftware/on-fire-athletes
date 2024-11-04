@@ -88,7 +88,7 @@ export default function CreationOverview() {
                             >
                                 <Box
                                     w={{
-                                        base: "full",
+                                        base: "115%",
                                         md: "396px",
                                         "2xl": "516px",
                                     }}
@@ -106,7 +106,6 @@ export default function CreationOverview() {
                                         transform="rotate(1deg) scale(1.00)"
                                         filter="drop-shadow(0 0 24px rgba(204,134,37,0.6))"
                                         mt={{ base: "32px", md: "128px" }} // Adds margin above the image
-
                                     />
                                 </Box>
                                 <Box
