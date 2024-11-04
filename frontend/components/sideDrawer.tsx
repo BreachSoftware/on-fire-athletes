@@ -260,6 +260,7 @@ function SideDrawer(props: SideDrawerProps) {
                                                 flexDirection="column"
                                                 key={index}
                                                 gap="14px"
+                                                userSelect="none"
                                             >
                                                 <Text
                                                     color={rightHeaderColor}

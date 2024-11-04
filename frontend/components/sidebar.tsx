@@ -68,7 +68,7 @@ function Sidebar({
             spacing={"32px"}
             py="32px"
             align="center"
-            bg={{ base: backColor ?? "black", lg: "transparent" }}
+            bg={backColor ?? "black"}
             css={{
                 // Getting rid of default scrollbar. Should work on nearly every browser
                 msOverflowStyle: "none",
