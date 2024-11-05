@@ -6,6 +6,7 @@ import { useAuthProps } from "@/hooks/useAuth";
 import { PaymentIntent, Stripe } from "@stripe/stripe-js";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
+import { totalPriceInCart } from "@/utils/utils";
 
 /**
  * Handles the purchase process for trading cards, supporting both Stripe and non-Stripe payment methods.
@@ -242,6 +243,15 @@ export async function handlePurchase(
             } catch (e) {
                 console.error("Error sending post-checkout email: ", e);
             }
+        } else {
+            try {
+                await handleBoughtLockerRoomCardEmail(checkout, currentUserId);
+            } catch (e) {
+                console.error(
+                    "Error sending bought locker room card email: ",
+                    e,
+                );
+            }
         }
 
         // Navigate to the success page
@@ -272,6 +282,26 @@ async function handlePostCheckoutEmail(checkout: CheckoutInfo) {
             toEmail: checkout.contactInfo.email,
             cardImage: checkout.onFireCard!.cardImage,
             profileUrl: `https://onfireathletes.com/profile?user=${checkout.onFireCard!.generatedBy}`,
+        },
+        { publicKey: "nOgMf7N2DopnucmPc" },
+    );
+}
+
+async function handleBoughtLockerRoomCardEmail(
+    checkout: CheckoutInfo,
+    userId: string,
+) {
+    await emailjs.send(
+        "service_8rtflzq",
+        "template_rsncin1",
+        {
+            toEmail: checkout.contactInfo.email,
+            cardImage: checkout.onFireCard!.cardImage,
+            cardFirstName: checkout.onFireCard!.firstName,
+            cardLastName: checkout.onFireCard!.lastName,
+            toName: `${checkout.contactInfo.firstName} ${checkout.contactInfo.lastName}`,
+            cardPrice: `${totalPriceInCart(checkout, false).toFixed(2)}`,
+            profileUrl: `https://onfireathletes.com/profile?user=${userId}`,
         },
         { publicKey: "nOgMf7N2DopnucmPc" },
     );
