@@ -11,13 +11,7 @@ import {
     Image,
 } from "@chakra-ui/react";
 
-import {
-    FaFacebookF,
-    FaXTwitter,
-    FaTiktok,
-    FaSnapchat,
-    FaInstagram,
-} from "react-icons/fa6";
+import { FaFacebookF, FaXTwitter, FaInstagram } from "react-icons/fa6";
 import SideDrawer from "./sideDrawer";
 import SidebarDotsGreen from "../public/sidebar_dots_green.svg";
 import SidebarDots from "../public/sidebar_dots.svg";
