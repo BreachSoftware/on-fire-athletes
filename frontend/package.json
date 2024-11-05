@@ -25,6 +25,7 @@
         "@fontsource/roboto": "^5.1.0",
         "@fontsource/roboto-condensed": "^5.1.0",
         "@fontsource/water-brush": "^5.0.18",
+        "@next/third-parties": "^15.0.2",
         "@rainbow-me/rainbowkit": "2",
         "@react-icons/all-files": "^4.1.0",
         "@stripe/react-stripe-js": "^2.1.0",
