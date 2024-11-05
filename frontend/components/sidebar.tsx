@@ -129,22 +129,22 @@ function Sidebar({
                     {
                         icon: FaXTwitter,
                         label: "X",
-                        href: "https://x.com/onfireathletes",
+                        href: "https://x.com/onfireathletes_",
                     },
-                    {
-                        icon: FaTiktok,
-                        label: "TikTok",
-                        href: "https://tiktok.com/@onfireathletes",
-                    },
-                    {
-                        icon: FaSnapchat,
-                        label: "Snapchat",
-                        href: "https://www.snapchat.com/onfireathletes",
-                    },
+                    // {
+                    //     icon: FaTiktok,
+                    //     label: "TikTok",
+                    //     href: "https://tiktok.com/@onfireathletes",
+                    // },
+                    // {
+                    //     icon: FaSnapchat,
+                    //     label: "Snapchat",
+                    //     href: "https://www.snapchat.com/onfireathletes",
+                    // },
                     {
                         icon: FaInstagram,
                         label: "Instagram",
-                        href: "https://instagram.com/onfireathletes",
+                        href: "https://www.instagram.com/onfireathletes_",
                     },
                 ].map((social, index) => {
                     return (
