@@ -19,6 +19,7 @@ import { useCurrentCardInfo } from "@/hooks/useCurrentCardInfo";
 import TradingCardInfo from "@/hooks/TradingCardInfo";
 import { useEffect, useRef, useState } from "react";
 import MobileStepWrapper from "@/components/create/mobile/MobileStepWrapper";
+import ArCardBack from "@/components/create/OnFireCard/ArCardBack";
 
 /**
  *
@@ -156,6 +157,7 @@ export default function CreationOverview() {
                                     mobileFlipButton={isMobile}
                                     showButton={!isMobile}
                                 />
+                                <ArCardBack card={currentInfo.curCard} />
                             </Box>
                         )}
                         {isMobile && currentInfo.curCard.stepNumber !== 1 ? (
