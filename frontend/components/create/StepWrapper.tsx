@@ -30,7 +30,6 @@ import { maskImageToCard, resize } from "../image_filters";
 import CardMask from "../../public/card_assets/card-mask.png";
 import CardMaskReverse from "../../public/card_assets/card-mask-reverse.png";
 import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
-import { useCurrentCheckout } from "@/hooks/useCheckout";
 
 interface StepWrapperProps {
     numSteps: number;
@@ -374,7 +373,6 @@ export default function StepWrapper({
     isNil,
 }: StepWrapperProps) {
     const currentInfo = useCurrentCardInfo();
-    const { checkout, setCheckout } = useCurrentCheckout();
 
     const auth = useAuth();
 

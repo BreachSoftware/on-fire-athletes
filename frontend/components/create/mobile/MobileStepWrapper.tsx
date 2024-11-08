@@ -34,7 +34,6 @@ import {
 import { useCompletedSteps } from "../../../hooks/useMobileProgress";
 import StepProgressTracker from "./StepProgressTracker";
 import { useMediaProcessing, MediaType } from "@/hooks/useMediaProcessing";
-import { useCurrentCheckout } from "@/hooks/useCheckout";
 
 interface MobileStepWrapperProps {
     wProp?: string;
@@ -68,7 +67,6 @@ export default function MobileStepWrapper(props: MobileStepWrapperProps) {
     const auth = useAuth();
     const router = useRouter();
     const currentInfo = useCurrentCardInfo();
-    const { checkout, setCheckout } = useCurrentCheckout();
 
     // Keep track of which steps are completed
     const stepHook = useCompletedSteps();
