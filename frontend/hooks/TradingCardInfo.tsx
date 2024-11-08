@@ -406,7 +406,7 @@ export default class TradingCardInfo {
 
         console.log("savedCard");
 
-        TradingCardInfo.saveCard(savedCard);
+        TradingCardInfo.saveCard({ ...savedCard, isNil: cardInfo.isNil });
 
         return savedCard;
     }

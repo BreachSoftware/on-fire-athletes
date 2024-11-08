@@ -30,6 +30,7 @@ import { maskImageToCard, resize } from "../image_filters";
 import CardMask from "../../public/card_assets/card-mask.png";
 import CardMaskReverse from "../../public/card_assets/card-mask-reverse.png";
 import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
+import { useCurrentCheckout } from "@/hooks/useCheckout";
 
 interface StepWrapperProps {
     numSteps: number;
@@ -313,7 +314,10 @@ export async function submitCardWithAuth({
     currentInfo,
     userID,
     isNil,
-}: SubmitCardProps): Promise<SubmitResult> {
+}: SubmitCardProps): Promise<{
+    result: SubmitResult;
+    cardInfo: TradingCardInfo;
+}> {
     try {
         const cardImages = await generateCardImages(
             entireCardRef,
@@ -344,15 +348,14 @@ export async function submitCardWithAuth({
         if (userID) {
             await updateUserProfile(userID, newCardData);
             await TradingCardInfo.submitCard(newCardData, userID);
-            return isNil
-                ? SubmitResult.SkipCheckout
-                : SubmitResult.GoToCheckout;
+
+            return { result: SubmitResult.GoToCheckout, cardInfo: newCardData };
         }
         TradingCardInfo.saveCard(newCardData);
-        return SubmitResult.GoToSignup;
+        return { result: SubmitResult.GoToSignup, cardInfo: newCardData };
     } catch (error) {
         console.error("Card submission failed:", error);
-        return SubmitResult.Failure;
+        return { result: SubmitResult.Failure, cardInfo: currentInfo.curCard };
     }
 }
 
@@ -371,6 +374,7 @@ export default function StepWrapper({
     isNil,
 }: StepWrapperProps) {
     const currentInfo = useCurrentCardInfo();
+    const { checkout, setCheckout } = useCurrentCheckout();
 
     const auth = useAuth();
 
@@ -519,8 +523,8 @@ export default function StepWrapper({
 
                                         // Get the user's ID
                                         const userID = user.userId;
-                                        const result = await submitCardWithAuth(
-                                            {
+                                        const { result } =
+                                            await submitCardWithAuth({
                                                 entireCardRef: entireCardRef,
                                                 foregroundRef: foregroundRef,
                                                 backgroundRef: backgroundRef,
@@ -528,25 +532,20 @@ export default function StepWrapper({
                                                 currentInfo: currentInfo,
                                                 userID: userID,
                                                 isNil,
-                                            },
-                                        );
-
-                                        console.log("SUBMITTING WITH AUTH");
+                                            });
 
                                         if (
                                             result === SubmitResult.GoToCheckout
                                         ) {
-                                            router.push("/checkout");
+                                            if (isNil) {
+                                                router.push("/nil-price");
+                                            } else {
+                                                router.push("/checkout");
+                                            }
                                         } else if (
                                             result === SubmitResult.GoToSignup
                                         ) {
                                             router.push("/signup");
-                                        } else if (
-                                            result === SubmitResult.SkipCheckout
-                                        ) {
-                                            router.push(
-                                                "/checkout/success?nil=true",
-                                            );
                                         } else {
                                             console.error(
                                                 "Error submitting card!",

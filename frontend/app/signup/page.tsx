@@ -188,8 +188,7 @@ export default function SignUp() {
                             TradingCardInfo.submitCard(card, userID).then(
                                 () => {
                                     if (card.isNil) {
-                                        window.location.href =
-                                            "/checkout/success?nil=true";
+                                        window.location.href = "/nil-price";
                                     } else {
                                         window.location.href = "/checkout";
                                     }

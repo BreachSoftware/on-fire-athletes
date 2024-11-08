@@ -34,6 +34,7 @@ import {
 import { useCompletedSteps } from "../../../hooks/useMobileProgress";
 import StepProgressTracker from "./StepProgressTracker";
 import { useMediaProcessing, MediaType } from "@/hooks/useMediaProcessing";
+import { useCurrentCheckout } from "@/hooks/useCheckout";
 
 interface MobileStepWrapperProps {
     wProp?: string;
@@ -67,6 +68,7 @@ export default function MobileStepWrapper(props: MobileStepWrapperProps) {
     const auth = useAuth();
     const router = useRouter();
     const currentInfo = useCurrentCardInfo();
+    const { checkout, setCheckout } = useCurrentCheckout();
 
     // Keep track of which steps are completed
     const stepHook = useCompletedSteps();
@@ -353,28 +355,28 @@ export default function MobileStepWrapper(props: MobileStepWrapperProps) {
 
                                     // Get the user's ID
                                     const userID = user.userId;
-                                    const result = await submitCardWithAuth({
-                                        entireCardRef: props.entireCardRef,
-                                        foregroundRef: props.foregroundRef,
-                                        backgroundRef: props.backgroundRef,
-                                        cardBackRef: props.cardBackRef,
-                                        currentInfo: props.currentInfo,
-                                        userID,
-                                        isNil: props.isNil,
-                                    });
+                                    const { result } = await submitCardWithAuth(
+                                        {
+                                            entireCardRef: props.entireCardRef,
+                                            foregroundRef: props.foregroundRef,
+                                            backgroundRef: props.backgroundRef,
+                                            cardBackRef: props.cardBackRef,
+                                            currentInfo: props.currentInfo,
+                                            userID,
+                                            isNil: props.isNil,
+                                        },
+                                    );
 
                                     if (result === SubmitResult.GoToCheckout) {
-                                        router.push("/checkout");
+                                        if (props.isNil) {
+                                            router.push("/nil-price");
+                                        } else {
+                                            router.push("/checkout");
+                                        }
                                     } else if (
                                         result === SubmitResult.GoToSignup
                                     ) {
                                         router.push("/signup");
-                                    } else if (
-                                        result === SubmitResult.SkipCheckout
-                                    ) {
-                                        router.push(
-                                            "/checkout/success?nil=true",
-                                        );
                                     } else {
                                         console.error("Error submitting card!");
                                         setIsLoading(false);
