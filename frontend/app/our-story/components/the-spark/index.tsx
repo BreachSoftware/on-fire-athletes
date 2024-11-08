@@ -2,7 +2,6 @@ import { Box, Text, Flex, SimpleGrid } from "@chakra-ui/layout";
 
 import TheSparkBackground from "./background";
 import SharedStack from "@/components/shared/wrappers/shared-stack";
-import { PropsWithChildren } from "react";
 import { TextProps } from "@chakra-ui/react";
 
 export default function TheSparkSection() {
