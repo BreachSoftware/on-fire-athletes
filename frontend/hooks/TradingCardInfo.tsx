@@ -101,6 +101,7 @@ export default class TradingCardInfo {
     submitted: boolean;
     paymentStatus: PaymentStatus;
     tradeStatus: TradeStatus;
+    isNil: boolean;
 
     /**
      * Constructor for the TradingCardInfo class
@@ -166,6 +167,7 @@ export default class TradingCardInfo {
         submitted?: boolean;
         paymentStatus?: PaymentStatus;
         tradeStatus?: TradeStatus;
+        isNil?: boolean;
     }) {
         this.uuid = options?.uuid || "";
         this.generatedBy = options?.generatedBy || "";
@@ -225,6 +227,7 @@ export default class TradingCardInfo {
         this.submitted = options?.submitted || false;
         this.paymentStatus = options?.paymentStatus || PaymentStatus.UNKNOWN;
         this.tradeStatus = options?.tradeStatus || TradeStatus.TRADE_ONLY;
+        this.isNil = options?.isNil || false;
 
         // Really complicated way to ensure that this array is populated with all the values of the enum
         this.partsToRecolor = allPartsToRecolor();
@@ -295,6 +298,7 @@ export default class TradingCardInfo {
 			submitted: ${cardInfo.submitted}
 			paid: ${cardInfo.paymentStatus}
 			tradeStatus: ${cardInfo.tradeStatus}
+            isNil: ${cardInfo.isNil}
 			`;
     }
 

@@ -44,6 +44,7 @@ interface MobileStepWrapperProps {
     foregroundRef: React.RefObject<HTMLDivElement>;
     backgroundRef: React.RefObject<HTMLDivElement>;
     currentInfo: useCurrentCardInfoProperties;
+    isNil: boolean;
 }
 
 /**
@@ -359,6 +360,7 @@ export default function MobileStepWrapper(props: MobileStepWrapperProps) {
                                         cardBackRef: props.cardBackRef,
                                         currentInfo: props.currentInfo,
                                         userID,
+                                        isNil: props.isNil,
                                     });
 
                                     if (result === SubmitResult.GoToCheckout) {
@@ -367,6 +369,12 @@ export default function MobileStepWrapper(props: MobileStepWrapperProps) {
                                         result === SubmitResult.GoToSignup
                                     ) {
                                         router.push("/signup");
+                                    } else if (
+                                        result === SubmitResult.SkipCheckout
+                                    ) {
+                                        router.push(
+                                            "/checkout/success?nil=true",
+                                        );
                                     } else {
                                         console.error("Error submitting card!");
                                         setIsLoading(false);

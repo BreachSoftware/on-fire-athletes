@@ -38,6 +38,7 @@ interface StepWrapperProps {
     foregroundRef: React.RefObject<HTMLDivElement>;
     backgroundRef: React.RefObject<HTMLDivElement>;
     cardBackRef: React.RefObject<HTMLDivElement>;
+    isNil: boolean;
 }
 
 export enum SubmitResult {
@@ -45,6 +46,7 @@ export enum SubmitResult {
     GoToCheckout = 2,
     GoToSignup = 3,
     Failure = 4,
+    SkipCheckout = 5,
 }
 
 interface SubmitCardProps {
@@ -54,6 +56,7 @@ interface SubmitCardProps {
     cardBackRef: React.RefObject<HTMLDivElement>;
     currentInfo: useCurrentCardInfoProperties;
     userID: string;
+    isNil: boolean;
 }
 
 interface CardImageData {
@@ -309,6 +312,7 @@ export async function submitCardWithAuth({
     cardBackRef,
     currentInfo,
     userID,
+    isNil,
 }: SubmitCardProps): Promise<SubmitResult> {
     try {
         const cardImages = await generateCardImages(
@@ -332,6 +336,7 @@ export async function submitCardWithAuth({
             submitted: true,
             paymentStatus: PaymentStatus.PENDING,
             tradeStatus: TradeStatus.TRADE_ONLY,
+            isNil: isNil,
         };
 
         currentInfo.setCurCard(newCardData);
@@ -339,7 +344,9 @@ export async function submitCardWithAuth({
         if (userID) {
             await updateUserProfile(userID, newCardData);
             await TradingCardInfo.submitCard(newCardData, userID);
-            return SubmitResult.GoToCheckout;
+            return isNil
+                ? SubmitResult.SkipCheckout
+                : SubmitResult.GoToCheckout;
         }
         TradingCardInfo.saveCard(newCardData);
         return SubmitResult.GoToSignup;
@@ -361,6 +368,7 @@ export default function StepWrapper({
     foregroundRef,
     backgroundRef,
     cardBackRef,
+    isNil,
 }: StepWrapperProps) {
     const currentInfo = useCurrentCardInfo();
 
@@ -519,8 +527,11 @@ export default function StepWrapper({
                                                 cardBackRef: cardBackRef,
                                                 currentInfo: currentInfo,
                                                 userID: userID,
+                                                isNil,
                                             },
                                         );
+
+                                        console.log("SUBMITTING WITH AUTH");
 
                                         if (
                                             result === SubmitResult.GoToCheckout
@@ -530,6 +541,12 @@ export default function StepWrapper({
                                             result === SubmitResult.GoToSignup
                                         ) {
                                             router.push("/signup");
+                                        } else if (
+                                            result === SubmitResult.SkipCheckout
+                                        ) {
+                                            router.push(
+                                                "/checkout/success?nil=true",
+                                            );
                                         } else {
                                             console.error(
                                                 "Error submitting card!",

@@ -140,7 +140,11 @@ export default function LoginPage() {
                 if (userID !== "") {
                     // Redirect to the pricing page
                     TradingCardInfo.submitCard(card, userID).then(() => {
-                        window.location.href = "/checkout";
+                        if (card.isNil) {
+                            window.location.href = "/checkout/success?nil=true";
+                        } else {
+                            window.location.href = "/checkout";
+                        }
                     });
                 }
             } else if (!checkingForTrade) {
@@ -165,7 +169,11 @@ export default function LoginPage() {
                 if (userID !== "") {
                     // Redirect to the pricing page
                     TradingCardInfo.submitCard(card, userID).then(() => {
-                        window.location.href = "/checkout";
+                        if (card.isNil) {
+                            window.location.href = "/checkout/success?nil=true";
+                        } else {
+                            window.location.href = "/checkout";
+                        }
                     });
                 }
             } else {

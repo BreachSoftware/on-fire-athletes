@@ -3,6 +3,7 @@ import { Box, Text, Flex, SimpleGrid } from "@chakra-ui/layout";
 import TheSparkBackground from "./background";
 import SharedStack from "@/components/shared/wrappers/shared-stack";
 import { PropsWithChildren } from "react";
+import { TextProps } from "@chakra-ui/react";
 
 export default function TheSparkSection() {
     return (
@@ -73,15 +74,14 @@ export default function TheSparkSection() {
                             moment, regardless of background? What if you could
                             chart your path? What if we could leave no athlete
                             behind? What if we created something where you
-                            didn't have to hire a PR firm?
-                            What if you could make your own sports card and
-                            create your own hype? What if you could share your
-                            success? What if it didn't matter where you came
-                            from?
+                            didn't have to hire a PR firm? What if you could
+                            make your own sports card and create your own hype?
+                            What if you could share your success? What if it
+                            didn't matter where you came from?
                         </ParagraphText>
                         <ParagraphText>
-                            The court, the field, the gym, the arena…ONFIRE doesn't
-                            care. The athlete is all that matters.
+                            The court, the field, the gym, the arena…ONFIRE
+                            doesn't care. The athlete is all that matters.
                         </ParagraphText>
                         <ParagraphText>
                             These are the questions that sparked us to create
@@ -94,13 +94,14 @@ export default function TheSparkSection() {
     );
 }
 
-function ParagraphText({ children }: PropsWithChildren) {
+export function ParagraphText({ children, ...rest }: TextProps) {
     return (
         <Text
             fontFamily="Barlow"
             fontSize="18px"
             fontWeight="medium"
             letterSpacing="0.36px"
+            {...rest}
         >
             {children}
         </Text>
