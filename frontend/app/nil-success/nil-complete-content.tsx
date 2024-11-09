@@ -48,13 +48,11 @@ export default function NilCompleteContent() {
                         lineHeight={"1.2"}
                         pb={{ base: "15px", md: "0" }}
                     >
-                        Order Complete
+                        Card is <Submitted></Submitted>
                     </Text>
                 </VStack>
                 <ParagraphText maxW="480px" textAlign="center" mb={4}>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                    do eiusmod tempor incididunt ut labore et dolore magna
-                    aliqua.
+                Once approved, you will receive an email that your card has been added to your profile and listed in the Locker Room for sale. This process typically takes 24hrs.
                 </ParagraphText>
                 <VStack gap="20px">
                     <Button
