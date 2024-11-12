@@ -7,6 +7,7 @@ import { CardActionModal } from "../profile/components/cardActionModal";
 import { useAuth } from "@/hooks/useAuth";
 import { FaCheck, FaXmark } from "react-icons/fa6";
 import { getCard } from "../generate_card_asset/cardFunctions";
+import { useCurrentCheckout } from "@/hooks/useCheckout";
 
 /**
  * The component for asking the user if they want to return to the checkout screen
@@ -20,6 +21,7 @@ export function BackToCheckoutModal() {
 
     // Modal for the card action
     const modal = useDisclosure();
+    const { checkout, setCheckout } = useCurrentCheckout();
 
     // Initialize cardExists state based on local storage
     const [cardExists, setCardExists] = useState(
@@ -28,6 +30,7 @@ export function BackToCheckoutModal() {
     const [currentCard, setCurrentCard] = useState<TradingCardInfo>(
         TradingCardInfo.loadCard(),
     );
+    const [isNil, setIsNil] = useState(false);
     const [cardOwnedByUser, setCardOwnedByUser] = useState(false);
     const [cardLoaded, setCardLoaded] = useState(false);
 
@@ -78,7 +81,11 @@ export function BackToCheckoutModal() {
                         cardInfoInCookie.uuid,
                         cardInfoInCookie.generatedBy,
                     ).then((card) => {
+                        if (cardInfoInCookie.isNil === true) {
+                            setIsNil(true);
+                        }
                         setCurrentCard(card);
+                        setCheckout({ ...checkout, onFireCard: card });
                         setCardLoaded(true);
                     });
                 }
@@ -94,9 +101,13 @@ export function BackToCheckoutModal() {
      * Redirects the user back to the checkout screen.
      */
     function onReturnToCheckout() {
-        router.push(
-            `/checkout${cardOwnedByUser ? "" : "?buyingOtherCard=true"}`,
-        );
+        if (isNil) {
+            router.push("/nil-price");
+        } else {
+            router.push(
+                `/checkout${cardOwnedByUser ? "" : "?buyingOtherCard=true"}`,
+            );
+        }
     }
 
     /**

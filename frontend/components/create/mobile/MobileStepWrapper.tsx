@@ -44,6 +44,7 @@ interface MobileStepWrapperProps {
     foregroundRef: React.RefObject<HTMLDivElement>;
     backgroundRef: React.RefObject<HTMLDivElement>;
     currentInfo: useCurrentCardInfoProperties;
+    isNil: boolean;
 }
 
 /**
@@ -352,17 +353,24 @@ export default function MobileStepWrapper(props: MobileStepWrapperProps) {
 
                                     // Get the user's ID
                                     const userID = user.userId;
-                                    const result = await submitCardWithAuth({
-                                        entireCardRef: props.entireCardRef,
-                                        foregroundRef: props.foregroundRef,
-                                        backgroundRef: props.backgroundRef,
-                                        cardBackRef: props.cardBackRef,
-                                        currentInfo: props.currentInfo,
-                                        userID,
-                                    });
+                                    const { result } = await submitCardWithAuth(
+                                        {
+                                            entireCardRef: props.entireCardRef,
+                                            foregroundRef: props.foregroundRef,
+                                            backgroundRef: props.backgroundRef,
+                                            cardBackRef: props.cardBackRef,
+                                            currentInfo: props.currentInfo,
+                                            userID,
+                                            isNil: props.isNil,
+                                        },
+                                    );
 
                                     if (result === SubmitResult.GoToCheckout) {
-                                        router.push("/checkout");
+                                        if (props.isNil) {
+                                            router.push("/nil-price");
+                                        } else {
+                                            router.push("/checkout");
+                                        }
                                     } else if (
                                         result === SubmitResult.GoToSignup
                                     ) {

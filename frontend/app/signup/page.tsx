@@ -187,7 +187,11 @@ export default function SignUp() {
                             // Save card and redirect to checkout
                             TradingCardInfo.submitCard(card, userID).then(
                                 () => {
-                                    window.location.href = "/checkout";
+                                    if (card.isNil) {
+                                        window.location.href = "/nil-price";
+                                    } else {
+                                        window.location.href = "/checkout";
+                                    }
                                 },
                             );
                         }

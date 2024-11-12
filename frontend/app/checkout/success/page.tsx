@@ -7,6 +7,7 @@ import TradingCardInfo, { PaymentStatus } from "@/hooks/TradingCardInfo";
 import { updatePaymentStatus } from "@/app/lockerroom/components/updatePaymentStatus";
 import { useEffect, useState } from "react";
 import { useDisconnect } from "wagmi";
+import { useRouter } from "next/navigation";
 
 /**
  * @file This file contains the successful card creation page.
@@ -20,6 +21,7 @@ export default function SuccessfulCardCreationPage() {
     const [buyingOtherCard, setBuyingOtherCard] = useState(false);
 
     const { disconnect } = useDisconnect();
+    const router = useRouter();
 
     /**
      * This function checks to see if the user just submitted a card.
@@ -28,8 +30,9 @@ export default function SuccessfulCardCreationPage() {
     async function checkForSubmittedCard() {
         if (typeof window !== "undefined") {
             const queryParams = new URLSearchParams(window.location.search);
+            const isNil = queryParams.get("nil") === "true";
             const paymentBypassed =
-                queryParams.get("paymentBypassed") === "true";
+                queryParams.get("paymentBypassed") === "true" || isNil;
             const paymentIntentID = queryParams.get("payment_intent");
             const boughtOtherCard = queryParams.get("boughtOtherCard");
             const boughtWithGMEX = queryParams.get("paymentWithGMEX");
@@ -49,10 +52,16 @@ export default function SuccessfulCardCreationPage() {
                             generatedBy,
                             uuid,
                             PaymentStatus.SUCCESS,
+                            isNil,
                         );
                     }
                     // Clear the card
                     TradingCardInfo.clearCard();
+
+                    if (isNil) {
+                        router.push("/nil-success");
+                        return;
+                    }
 
                     setUuid(uuid);
                     setGeneratedBy(generatedBy);
@@ -76,6 +85,7 @@ export default function SuccessfulCardCreationPage() {
                         generatedBy,
                         uuid,
                         PaymentStatus.SUCCESS,
+                        isNil,
                     );
                 }
                 TradingCardInfo.clearCard();
@@ -86,6 +96,11 @@ export default function SuccessfulCardCreationPage() {
                         "Error disconnecting from the wallet: ",
                         error,
                     );
+                }
+
+                if (isNil) {
+                    router.push("/nil-success");
+                    return;
                 }
                 setUuid(uuid);
                 setGeneratedBy(generatedBy);
