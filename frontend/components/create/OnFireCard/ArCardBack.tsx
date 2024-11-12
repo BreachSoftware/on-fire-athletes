@@ -7,7 +7,7 @@ import CardMaskReverseImage from "@/public/card_assets/card-mask-reverse.png";
 import ArCardBackgroundImage from "@/public/card_assets/ar-card-background-interior.png";
 import CardMaskReverse from "@/public/card_assets/card-mask-reverse.png";
 import CardOutline from "@/public/card_assets/card-outline.png";
-import CardOutlineShine from "@/public/card_assets/card-outline-shine.png";
+// import CardOutlineShine from "@/public/card_assets/card-outline-shine.png";
 import OnFireLogo from "@/images/logos/small-logo-white.png";
 import TradingCardInfo from "@/hooks/TradingCardInfo";
 import { CardFonts } from "@/components/create/create-helpers";
@@ -167,20 +167,20 @@ export async function generateArCardBackImage(
                                 },
                             }),
                             // Shine Effect
-                            createElement("div", {
-                                style: {
-                                    position: "absolute",
-                                    zIndex: 10,
-                                    top: 0,
-                                    left: 0,
-                                    width: "100%",
-                                    height: "100%",
-                                    background: `url(${CardOutlineShine.src})`,
-                                    backgroundSize: "cover",
-                                    opacity: 0.25,
-                                    pointerEvents: "none",
-                                },
-                            }),
+                            // createElement("div", {
+                            //     style: {
+                            //         position: "absolute",
+                            //         zIndex: 10,
+                            //         top: 0,
+                            //         left: 0,
+                            //         width: "100%",
+                            //         height: "100%",
+                            //         background: `url(${CardOutlineShine.src})`,
+                            //         backgroundSize: "cover",
+                            //         opacity: 0.25,
+                            //         pointerEvents: "none",
+                            //     },
+                            // }),
                         ],
                     ),
 
@@ -333,27 +333,31 @@ export async function generateArCardBackImage(
                                 position: "absolute",
                                 right: "32px",
                                 bottom: "30px",
-                                fontSize: "7px",
                                 color: "white",
                                 textAlign: "right",
-                                letterSpacing: "1px",
                             },
                         },
                         [
                             createElement(
                                 "div",
-                                {},
-                                "OFFICIAL TRADING CARD OF ONFIRE ATHLETES. THIS",
+                                {
+                                    style: {
+                                        fontSize: "9px",
+                                        letterSpacing: "1px",
+                                        fontWeight: 500,
+                                    },
+                                },
+                                "@2024 ONFIRE ATHLETES",
                             ),
                             createElement(
                                 "div",
-                                {},
-                                "CARD HAS NOT BEEN AUTHORIZED, ENDORSED, OR",
-                            ),
-                            createElement(
-                                "div",
-                                {},
-                                "APPROVED BY ANY LICENSING BODY",
+                                {
+                                    style: {
+                                        fontSize: "7px",
+                                        fontStyle: "italic",
+                                    },
+                                },
+                                "This card is solely licensed by the depicted player",
                             ),
                         ],
                     ),
@@ -376,12 +380,6 @@ export async function generateArCardBackImage(
             useCORS: true,
             logging: true,
             backgroundColor: "#000000",
-            onclone: (clonedDoc) => {
-                // Debug logging
-                console.log("Cloned document:", clonedDoc);
-                const clonedElement = clonedDoc.body.firstChild;
-                console.log("Cloned element:", clonedElement);
-            },
         });
 
         const mask = CardMaskReverse.src;
