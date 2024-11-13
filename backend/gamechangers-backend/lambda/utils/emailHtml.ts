@@ -157,7 +157,7 @@ export function emailTemplate(body: string) {
 		<tr>
 			<td class="v-text-align" style="padding-right: 0px;padding-left: 0px;" align="left">
 			
-			<img align="left" border="0" src="https://on-fire-athletes.netlify.app/on-fire-athletes-full-logo.png" alt="image" title="image" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none; width: 100%; max-width: 222px;"/>
+			<img align="left" border="0" src="https://onfireathletes.com/on-fire-athletes-full-logo.png" alt="image" title="image" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none; width: 100%; max-width: 222px;"/>
 			
 			</td>
 		</tr>

@@ -31,7 +31,7 @@ export function addToCollectionEmailBody(
 					<table role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
 						<tr>
 							<td colspan="2" style="vertical-align: top;">
-								<img border="0" src="https://on-fire-athletes.netlify.app/youre-on-fire-logo.png"  alt="You're On Fire" style=" width: 425px; height: 75px; padding-left: 15px; padding-top: 30px; padding-bottom: 15px">
+								<img border="0" src="https://onfireathletes.com/youre-on-fire-logo.png"  alt="You're On Fire" style=" width: 425px; height: 75px; padding-left: 15px; padding-top: 30px; padding-bottom: 15px">
 							</td>
 						</tr>
 						<tr>
@@ -44,7 +44,7 @@ export function addToCollectionEmailBody(
 									<br>
 									<p style="line-height:140%;"></p>
 									<p style="padding-left: 15px;">Click the link below and sign into your account to allow them to receive a copy of this card.</p>
-									<a href="https://on-fire-athletes.netlify.app/login?generatedByUUID=${generatedByUUID}&cardUUID=${cardUUID}&toUUID=${requesterUUID}&fromUUID=${generatedByUUID}&requested=true">
+									<a href="https://onfireathletes.com/login?generatedByUUID=${generatedByUUID}&cardUUID=${cardUUID}&toUUID=${requesterUUID}&fromUUID=${generatedByUUID}&requested=true">
 									<button class="button" style="font-family: 'Barlow', sans-serif; letter-spacing: 2px; font-size: 20px;">CONFIRM TRADE NOW</button></a>
 									<br>
 									<p style="line-height: 140%; padding-left: 15px;">Thanks!</p>

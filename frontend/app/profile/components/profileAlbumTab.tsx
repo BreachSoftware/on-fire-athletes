@@ -208,7 +208,7 @@ export default function ProfileAlbumTab(props: ProfileAlbumProps) {
         const sharedData = {
             title: "OnFire Trading Card",
             text: "Click the link above to accept my ONFIRE Athletes trading card.",
-            url: `https://on-fire-athletes.netlify.app/signup?generatedByUUID=${generatedByUUID}&fromUUID=${senderUUID}&cardUUID=${cardUUID}`,
+            url: `https://onfireathletes.com/signup?generatedByUUID=${generatedByUUID}&fromUUID=${senderUUID}&cardUUID=${cardUUID}`,
         };
 
         try {
