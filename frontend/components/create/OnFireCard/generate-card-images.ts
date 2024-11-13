@@ -44,10 +44,12 @@ export async function generateArCardBackImage(
         editionNumber,
         totalOverride,
         forPrint,
+        noNumber = false,
     }: {
         editionNumber?: number;
         totalOverride?: number;
         forPrint?: boolean;
+        noNumber?: boolean;
     } = {},
 ): Promise<string> {
     // Generate QR code
@@ -212,6 +214,9 @@ export async function generateArCardBackImage(
                                                         color: "white",
                                                         fontFamily:
                                                             CardFonts.BrotherhoodSansSerif,
+                                                        visibility: noNumber
+                                                            ? "hidden"
+                                                            : "visible",
                                                     },
                                                 },
                                                 `${editionNumber || 1} /${totalOverride || card.totalCreated}`,
@@ -601,30 +606,32 @@ export async function generateAllCardBacks(fetchedCards: TradingCardInfo[]) {
         const arCardBack = await generateArCardBackImage(card, {
             totalOverride: 1,
             forPrint: true,
+            noNumber: true,
         });
         const fileName1of1 =
-            `${card.firstName}_${card.lastName}`.trim() + "_1of1";
+            `${card.firstName}_${card.lastName}`.trim() + "_0of0";
+        // `${card.firstName}_${card.lastName}`.trim() + "_1of1";
         results[fileName1of1] = {
             imgData: arCardBack,
             uuid: card.uuid,
         };
-        const promises = [...new Array(card.totalCreated)].map(
-            async (_, index) => {
-                const editionNumber = index + 1;
-                const fileName =
-                    `${card.firstName}_${card.lastName}`.trim() +
-                    `_${editionNumber}of${card.totalCreated}`;
-                const arCardBack = await generateArCardBackImage(card, {
-                    editionNumber,
-                    forPrint: true,
-                });
-                results[fileName] = {
-                    imgData: arCardBack,
-                    uuid: card.uuid,
-                };
-            },
-        );
-        await Promise.all(promises);
+        // const promises = [...new Array(card.totalCreated)].map(
+        //     async (_, index) => {
+        //         const editionNumber = index + 1;
+        //         const fileName =
+        //             `${card.firstName}_${card.lastName}`.trim() +
+        //             `_${editionNumber}of${card.totalCreated}`;
+        //         const arCardBack = await generateArCardBackImage(card, {
+        //             editionNumber,
+        //             forPrint: true,
+        //         });
+        //         results[fileName] = {
+        //             imgData: arCardBack,
+        //             uuid: card.uuid,
+        //         };
+        //     },
+        // );
+        // await Promise.all(promises);
     }
 
     // write results to file, without using fs
