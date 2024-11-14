@@ -19,6 +19,9 @@ import Footer from "@/app/components/footer";
 import OnFireCard from "@/components/create/OnFireCard/OnFireCard";
 import DemarioCard from "@/images/mockups/demario-card.png";
 import { useRouter } from "next/navigation";
+import { handlePurchase } from "./completeOrder/stripeHandlePurchase";
+import { useAuth } from "@/hooks/useAuth";
+import CheckoutInfo from "@/hooks/CheckoutInfo";
 
 /**
  * This component is responsible for rendering the all-star price section of the checkout page.
@@ -29,6 +32,7 @@ export default function AllStarPrice({ isNil }: { isNil?: boolean }) {
     const checkout = curCheckout.checkout;
     const stepNumber = checkout.stepNum;
 
+    const auth = useAuth();
     const router = useRouter();
 
     const card = checkout.onFireCard;
@@ -309,16 +313,29 @@ export default function AllStarPrice({ isNil }: { isNil?: boolean }) {
                                         checkout.cardPrice.toString() || "0",
                                     ) < 20
                                 }
-                                onClick={() => {
+                                onClick={async () => {
                                     if (isNil) {
-                                        curCheckout.setCheckout({
+                                        const cardPrice = parseFloat(
+                                            checkout.cardPrice,
+                                        ).toFixed(2);
+
+                                        const newCheckout: CheckoutInfo = {
                                             ...checkout,
-                                            cardPrice: parseFloat(
-                                                checkout.cardPrice,
-                                            ).toFixed(2),
-                                        });
-                                        router.push(
-                                            "/checkout/success?nil=true",
+                                            cardPrice,
+                                            packageCardCount: 50,
+                                        };
+
+                                        curCheckout.setCheckout(newCheckout);
+
+                                        await handlePurchase(
+                                            newCheckout,
+                                            card,
+                                            null,
+                                            router,
+                                            false,
+                                            auth,
+                                            undefined,
+                                            true,
                                         );
                                     } // Increment the step number to go to the next step, up to the last step
                                     else if (

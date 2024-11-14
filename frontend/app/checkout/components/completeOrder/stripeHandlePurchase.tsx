@@ -28,6 +28,7 @@ export async function handlePurchase(
     buyingOtherCard: boolean,
     auth: useAuthProps,
     hash?: string,
+    isNil?: boolean,
 ): Promise<boolean> {
     try {
         // Get the current user's ID
@@ -235,6 +236,10 @@ export async function handlePurchase(
         if (buyingOtherCard) {
             // Add flag if buying another user's card
             successUrl = `${successUrl}${successUrl.includes("?") ? "&" : ""}boughtOtherCard=true`;
+        }
+        if (isNil) {
+            // Add flag if the order is for NIL
+            successUrl = `${successUrl}${successUrl.includes("?") ? "&" : ""}nil=true`;
         }
 
         if (!buyingOtherCard) {
