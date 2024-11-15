@@ -2,6 +2,7 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import html2canvas from "html2canvas";
 import QRCode from "qrcode";
+import "@fontsource/chakra-petch/600.css";
 
 import CardMaskReverseImage from "@/public/card_assets/card-mask-reverse.png";
 import ArCardBackgroundImage from "@/public/card_assets/ar-card-background-interior.png";
@@ -13,29 +14,55 @@ import TradingCardInfo from "@/hooks/TradingCardInfo";
 import { CardFonts } from "@/components/create/create-helpers";
 import { maskImageToCard, recolor, resize } from "@/components/image_filters";
 
-function calculateTextWidth(text: string, font: string): number {
-    const measureCanvas = document.createElement(
-        "canvas",
-    ) as unknown as HTMLCanvasElement;
-    const measureContext = measureCanvas.getContext("2d");
-    if (!measureContext) return 0;
+async function calculateTextWidth(text: string, font: string): Promise<number> {
+    // Create a hidden div for more accurate font measurement
+    const measureDiv = document.createElement("div");
+    measureDiv.style.position = "absolute";
+    measureDiv.style.visibility = "hidden";
+    measureDiv.style.height = "auto";
+    measureDiv.style.width = "auto";
+    measureDiv.style.whiteSpace = "nowrap";
+    measureDiv.style.font = font;
+    measureDiv.textContent = text;
 
-    measureContext.font = font;
-    return measureContext.measureText(text).width;
+    document.body.appendChild(measureDiv);
+
+    try {
+        // Force a browser reflow to ensure accurate measurements
+        void measureDiv.offsetWidth;
+
+        // Wait a frame to ensure styles are applied
+        await new Promise(requestAnimationFrame);
+
+        const width = measureDiv.getBoundingClientRect().width;
+
+        return width;
+    } finally {
+        document.body.removeChild(measureDiv);
+    }
 }
 
-function calculateTextScale(
+async function calculateTextScale(
     text: string,
     targetWidth: number,
     fontSize: number,
     fontFamily: string,
-): number {
-    const fullFont = `900 ${fontSize}px ${fontFamily}`; // Adjust font weight as needed
-    const actualWidth = calculateTextWidth(text, fullFont);
+): Promise<number> {
+    // Ensure font is loaded first
+    await document.fonts.ready;
 
-    console.log("scale", targetWidth / actualWidth);
+    // Force font loading if possible
+    try {
+        await document.fonts.load(`900 ${fontSize}px ${fontFamily}`);
+    } catch (e) {
+        console.warn("Font loading failed:", e);
+    }
 
-    return Math.min(5, targetWidth / actualWidth);
+    const fullFont = `900 ${fontSize}px ${fontFamily}`;
+    const actualWidth = await calculateTextWidth(text, fullFont);
+    const scale = Math.min(5, targetWidth / actualWidth);
+
+    return scale;
 }
 
 export async function generateArCardBackImage(
@@ -43,7 +70,7 @@ export async function generateArCardBackImage(
     {
         editionNumber,
         totalOverride,
-        forPrint,
+        forPrint = true,
         noNumber = false,
     }: {
         editionNumber?: number;
@@ -65,15 +92,15 @@ export async function generateArCardBackImage(
     });
 
     // Calculate text scaling
-    const firstNameWidth = 200;
-    const lastNameWidth = 180;
-    const firstNameScale = calculateTextScale(
+    const firstNameWidth = forPrint ? 240 : 200;
+    const lastNameWidth = forPrint ? 250 : 180;
+    const firstNameScale = await calculateTextScale(
         card.firstName,
         firstNameWidth,
         16,
         CardFonts.ChakraPetch,
     );
-    const lastNameScale = calculateTextScale(
+    const lastNameScale = await calculateTextScale(
         card.lastName,
         lastNameWidth,
         16,
