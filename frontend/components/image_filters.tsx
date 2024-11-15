@@ -91,7 +91,7 @@ export async function tint(
 export async function recolor(
     imageString: string,
     color: string,
-    inHeader: Headers,
+    inHeader: Headers | undefined,
     useAPI: boolean,
 ): Promise<string> {
     const image = await Jimp.read(imageString);

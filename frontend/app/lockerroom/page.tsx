@@ -38,8 +38,10 @@ import { helvetica } from "@/theming/fonts";
  *
  */
 export default function LockerRoom() {
-    const [cards, setCards] = useState([]);
-    const [filterableCards, setFilterableCards] = useState([]);
+    const [cards, setCards] = useState<TradingCardInfo[]>([]);
+    const [filterableCards, setFilterableCards] = useState<TradingCardInfo[]>(
+        [],
+    );
     const [isLoading, setIsLoading] = useState(true);
     const toast = useToast();
     const filter = useCurrentFilterInfo();
@@ -180,7 +182,7 @@ export default function LockerRoom() {
     useEffect(() => {
         // Fetch all cards and set the cards state
         fetchAllCards()
-            .then((fetchedCards) => {
+            .then(async (fetchedCards: TradingCardInfo[]) => {
                 setCards(fetchedCards);
                 setFilterableCards(fetchedCards);
                 setIsLoading(false);
