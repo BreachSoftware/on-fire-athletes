@@ -43,7 +43,7 @@ export async function updatePaymentStatus(
         // Get the card data from the card whose payment status was updated
         const cardData = await getCard(card_uuid, generatedBy);
 
-        const serialsToCreate = isNil ? 50 : cardData.totalCreated;
+        const serialsToCreate = cardData.totalCreated;
 
         // Make serialized cards in DynamoDB
         for (let i = 0; i < serialsToCreate; i++) {

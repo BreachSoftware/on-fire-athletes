@@ -1,10 +1,10 @@
 {
     "version": "1",
     "cognitoConfig": {
-        "identityPoolName": "gamechangers735547a3_identitypool_735547a3",
+        "identityPoolName": "gamechangers735547a3_identitypool_735547a3__production",
         "allowUnauthenticatedIdentities": false,
         "resourceNameTruncated": "gamech735547a3",
-        "userPoolName": "gamechangers735547a3_userpool_735547a3",
+        "userPoolName": "gamechangers735547a3_userpool_735547a3-production",
         "autoVerifiedAttributes": ["email"],
         "mfaConfiguration": "OFF",
         "mfaTypes": ["SMS Text Message"],
