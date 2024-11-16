@@ -31,11 +31,7 @@ import TradingCardInfo from "@/hooks/TradingCardInfo";
 import { MotionProps, motion } from "framer-motion";
 import { delay } from "lodash";
 import { imageColors, imagePaths } from "./card_render_config";
-import {
-    cardAnimation,
-    cardBackAnimation,
-    cardTopAnimation,
-} from "./card_animation_config";
+import { cardAnimation, cardTopAnimation } from "./card_animation_config";
 import { darkenHexString } from "./card_utils";
 import Draggable, { DraggableEvent } from "react-draggable";
 import ReactPlayer from "react-player";
@@ -50,20 +46,13 @@ import CardMaskImage from "@/public/card_assets/card-mask.png";
 import CardMaskReverseImage from "@/public/card_assets/card-mask-reverse.png";
 import CardOutlineShine from "@/public/card_assets/card-outline-shine.png";
 import CardInteriorShineA from "@/public/card_assets/card-inner-border-shine.png";
+import CardInteriorShineB from "@/public/card_assets/card-inner-border-shine-b.png";
 import { FaRotate } from "react-icons/fa6";
 import { CardFonts } from "../create-helpers";
-import ExteriorBorder from "./ExteriorBorder";
-
-// Use this enum to determine the zIndex of the elements on the card
-enum zIndex {
-    background = 1,
-    petch = 2,
-    hero = 3,
-    signature = 4,
-    text = 5,
-    border = 6,
-    cardBackVideo = 7,
-}
+import { zIndex } from "./OnFireCardParts/helpers";
+import OnFireLogoYear from "./OnFireCardParts/OnFireLogoYear";
+import NumberTextB from "./OnFireCardParts/NumberTextB";
+import NumberTextA from "./OnFireCardParts/NumberTextA";
 
 const headers: Headers = new Headers();
 
@@ -77,7 +66,6 @@ type OnFireCardProps = {
     cardBackRef?: React.RefObject<HTMLDivElement>;
     cardForegroundRef?: React.RefObject<HTMLDivElement>;
     cardBackgroundRef?: React.RefObject<HTMLDivElement>;
-    showShadow?: boolean;
     showButton?: boolean;
     slim?: boolean;
     shouldFlipOnClick?: boolean;
@@ -94,8 +82,6 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
         {
             card,
             cardFrontRef,
-            cardBackRef,
-            showShadow = true,
             showButton = true,
             slim = false,
             shouldFlipOnClick = false,
@@ -175,10 +161,6 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
         }
 
         useEffect(() => {
-            console.log({ isFlipped });
-        }, [isFlipped]);
-
-        useEffect(() => {
             setIsFlipped(cardHook.curCard.frontIsShowing);
             // We only want to run this once, so we don't need to add handleFlip to the dependencies
             // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -215,17 +197,6 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
         ]: (string | undefined)[] = recoloredGamecardImages;
 
         const cardIsLoaded = recoloredGamecardImages.length !== 0;
-
-        // // The string for the b64 of the front layer. This is the borders and the logo
-        // const [gamecardTopLayer, setGamecardTopLayer] = useState("");
-        // // The b64 of the front layer without the logo
-        // const [gamecardTopLayerNoLogo, setGamecardTopLayerNoLogo] =
-        //     useState("");
-        // // The string for the b64 of the back layer. This is the background p much
-        // const [gamecardBottomLayer, setGamecardBottomLayer] = useState("");
-        // // The string for the b64 of the signature
-        // const [gamecardSignatureImage, setGamecardSignatureImage] =
-        //     useState("");
 
         // stop the animation after the first time
         useEffect(() => {
@@ -389,58 +360,42 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
             });
         }
 
-        /**
-         * The Image function to render the front image of the card
-         * THIS IS NOT THE FRONT OF THE CARD, BUT THE FRONT LAYER OF THE CARD WITH BORDERS ETC.
-         * @returns the component to render the front image
-         */
-        function CardTopLayerImage({
-            flipped = false,
-        }: {
-            flipped?: boolean;
-            noLogo?: boolean;
-        }) {
-            if (curCard.cardType === "a") {
-                return null;
-            }
-
-            return cardIsLoaded ? (
-                <Image
-                    animation={
-                        shouldAnimate && (cardHover || firstTimeAnimation)
-                            ? cardTopAnimation
-                            : "translate(0);"
-                    }
-                    src={interiorBorder}
-                    alt="Interior Border"
-                    maxWidth={"350px"}
-                    zIndex={zIndex.border}
-                    position={"absolute"}
-                    draggable={false}
-                    style={{
-                        pointerEvents: "none",
-                        transform: flipped ? "scaleX(-1)" : "scaleX(1)",
-                    }}
+        function ExteriorBorder({ back = false }: { back?: boolean }) {
+            return (
+                <CardSizeBox
+                    src={exteriorBorder}
+                    zIndex={back ? zIndex.cardBackVideo + 1 : zIndex.border}
+                    transform={back ? "scaleX(-1)" : "scaleX(1)"}
                 />
-            ) : null;
+            );
+        }
+
+        function ExteriorBorderShine({ back = false }: { back?: boolean }) {
+            return (
+                <CardSizeBox
+                    src={CardOutlineShine.src}
+                    zIndex={back ? zIndex.cardBackVideo + 1 : zIndex.border}
+                    opacity={0.25}
+                    transform={back ? "scaleX(-1)" : "scaleX(1)"}
+                />
+            );
         }
 
         function InteriorBorder() {
+            return <CardSizeBox src={interiorBorder} zIndex={zIndex.border} />;
+        }
+
+        function InteriorBorderShine() {
+            const src =
+                curCard.cardType === "a"
+                    ? CardInteriorShineA.src
+                    : CardInteriorShineB.src;
+
             return (
-                <Image
-                    src={interiorBorder}
-                    alt="Interior Border"
-                    maxWidth={"350px"}
-                    zIndex={zIndex.border}
-                    top={0}
-                    left={0}
-                    w="350px"
-                    h="490px"
-                    position={"absolute"}
-                    draggable={false}
-                    style={{
-                        pointerEvents: "none",
-                    }}
+                <CardSizeBox
+                    src={src}
+                    zIndex={zIndex.border + 1}
+                    opacity={0.4}
                 />
             );
         }
@@ -449,17 +404,14 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
             flipped?: boolean;
         }
 
-        /**
-         * Back image of the card
-         * THIS IS NOT THE BACK OF THE CARD, BUT THE BACK LAYER OF THE CARD WITH BACKGROUND ETC.
-         * @returns the component to render the back image
-         */
+        // Bottom layer of the front of the card
         function CardBottomLayer({
             flipped = false,
             ...rest
         }: CardBottomLayerProps) {
             return cardIsLoaded ? (
                 <Box
+                    pos="absolute"
                     w="350px"
                     h="490px"
                     backgroundImage={solidBackground}
@@ -549,90 +501,14 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
         }
 
         /**
-         * The Number text to render for cardType A
-         * @returns the component to render the number text in its proper position
-         */
-        function NumberTextA({ ...rest }: TextProps) {
-            return (
-                <Text
-                    as={motion.div}
-                    animation={
-                        shouldAnimate && (cardHover || firstTimeAnimation)
-                            ? cardTopAnimation
-                            : "translate(0);"
-                    }
-                    zIndex={zIndex.text}
-                    position="absolute"
-                    top={"440px"}
-                    left={"15px"}
-                    width={"50px"}
-                    fontFamily={"'Barlow', sans-serif;"}
-                    fontWeight={"600"}
-                    textAlign={"center"}
-                    fontSize={"21px"}
-                    transition={"color 0.5s ease-in-out"}
-                    style={{
-                        color: curCard.numberColor,
-                        pointerEvents: "none",
-                    }}
-                    {...rest}
-                >
-                    {typeof curCard !== "undefined"
-                        ? curCard.number !== ""
-                            ? `#${curCard.number.substring(0, 2)}`
-                            : null
-                        : null}
-                </Text>
-            );
-        }
-
-        /**
-         * The Number text to render for cardType B
-         * @returns the component to render the number text in its proper position
-         */
-        function NumberTextB({ ...rest }: TextProps) {
-            return (
-                <Text
-                    as={motion.div}
-                    animation={
-                        shouldAnimate && (cardHover || firstTimeAnimation)
-                            ? cardTopAnimation
-                            : "translate(0);"
-                    }
-                    zIndex={zIndex.text}
-                    position="absolute"
-                    top={"319px"}
-                    left={"42px"}
-                    fontFamily={"'Barlow', sans-serif;"}
-                    fontWeight={"500"}
-                    textAlign={"center"}
-                    fontSize={"21px"}
-                    letterSpacing={"-1.5px"}
-                    transition={"color 0.5s ease-in-out"}
-                    style={{
-                        color: curCard.numberColor,
-                        pointerEvents: "none",
-                    }}
-                    {...rest}
-                >
-                    {typeof curCard !== "undefined"
-                        ? curCard.number !== ""
-                            ? `#${curCard.number}`
-                            : null
-                        : null}
-                </Text>
-            );
-        }
-
-        /**
          * Determines the cardType and the number text to render
          * @returns the component to render the number text in its proper position
          */
         function NumberText({ ...rest }: TextProps) {
             return curCard.cardType === "a" ? (
-                <NumberTextA {...rest} />
+                <NumberTextA card={curCard} {...rest} />
             ) : (
-                <NumberTextB {...rest} />
+                <NumberTextB card={curCard} {...rest} />
             );
         }
 
@@ -800,35 +676,6 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
             );
         }
 
-        /**
-         * The function that displays a back image if the card is slim
-         * The image comes from the S3 bucket
-         * @returns The Image to show for the back of the gamecard
-         */
-        function PrerenderedGamecardBackImage() {
-            return (
-                <Image
-                    animation={
-                        shouldAnimate && (cardHover || firstTimeAnimation)
-                            ? cardBackAnimation
-                            : "translate(0);"
-                    }
-                    src={`${curCard.cardBackS3URL}`}
-                    alt={`Back of ${curCard.firstName} ${curCard.lastName}'s card`}
-                    maxWidth={"350px"}
-                    zIndex={zIndex.background}
-                    position={"absolute"}
-                    left={0}
-                    right={0}
-                    top={0}
-                    bottom={0}
-                    transition={"filter 1s ease-in"}
-                    draggable={false}
-                    style={{ pointerEvents: "none" }}
-                />
-            );
-        }
-
         const outerBoxStyling: BoxProps = {
             id: "card",
             position: "relative",
@@ -955,85 +802,140 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
             curCard?.backVideoS3URL?.split("com/").at(1);
 
         return (
-            <div>
-                <Center
-                    {...outerBoxStyling}
-                    onClick={shouldFlipOnClick ? handleClick : () => {}}
-                >
-                    {/* Front of OnFire card */}
-                    <motion.div {...frontCardMotionStyling}>
-                        <VStack
-                            {...frontCardContainerStyling}
-                            ref={cardFrontRef}
-                        >
-                            {cardIsLoaded || slim ? (
-                                <Box
-                                    as={motion.div}
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    transition="opacity 0.5s"
-                                    width={"100%"}
-                                    position={"relative"}
-                                    height={"100%"}
-                                    css={{
-                                        // White is visible, black is not
-                                        maskImage: `url(${CardMaskImage.src})`,
-                                        maskMode: "luminance",
-                                        maskSize: "cover",
-                                        maskRepeat: "no-repeat",
-                                        // Webkit
-                                        WebkitMaskImage: `url(${CardMaskImage.src})`,
-                                        WebkitMaskMode: "luminance",
-                                        WebkitMaskSize: "contain",
-                                        WebkitMaskRepeat: "no-repeat",
-                                    }}
-                                >
-                                    {slim ? (
-                                        <PrerenderedGamecardFrontImage />
-                                    ) : (
-                                        <>
-                                            <CardBottomLayer position="absolute" />
+            <Center
+                {...outerBoxStyling}
+                onClick={shouldFlipOnClick ? handleClick : () => {}}
+            >
+                {/* Front of OnFire card */}
+                <motion.div {...frontCardMotionStyling}>
+                    <VStack {...frontCardContainerStyling} ref={cardFrontRef}>
+                        {cardIsLoaded || slim ? (
+                            <Box
+                                as={motion.div}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition="opacity 0.5s"
+                                width={"100%"}
+                                position={"relative"}
+                                height={"100%"}
+                                css={{
+                                    // White is visible, black is not
+                                    maskImage: `url(${CardMaskImage.src})`,
+                                    maskMode: "luminance",
+                                    maskSize: "cover",
+                                    maskRepeat: "no-repeat",
+                                    // Webkit
+                                    WebkitMaskImage: `url(${CardMaskImage.src})`,
+                                    WebkitMaskMode: "luminance",
+                                    WebkitMaskSize: "contain",
+                                    WebkitMaskRepeat: "no-repeat",
+                                }}
+                            >
+                                {slim ? (
+                                    <PrerenderedGamecardFrontImage />
+                                ) : (
+                                    <>
+                                        <CardBottomLayer />
 
-                                            <Box
-                                                pos="absolute"
-                                                zIndex="10"
-                                                top="0"
-                                                left="0"
-                                                w="100%"
-                                                h="100%"
-                                                bgImage={exteriorBorder}
-                                                backgroundSize="cover"
-                                                pointerEvents="none"
-                                            />
-                                            <Box
-                                                pos="absolute"
-                                                zIndex="10"
-                                                top="0"
-                                                left="0"
-                                                w="100%"
-                                                h="100%"
-                                                bgImage={CardOutlineShine.src}
-                                                backgroundSize="cover"
-                                                opacity="0.25"
-                                                pointerEvents="none"
-                                            />
-                                            <Box
-                                                pos="absolute"
-                                                zIndex="10"
-                                                top="0"
-                                                left="0"
-                                                w="100%"
-                                                h="100%"
-                                                bgImage={CardInteriorShineA.src}
-                                                backgroundSize="cover"
-                                                opacity="0.4"
-                                                pointerEvents="none"
-                                            />
+                                        <ExteriorBorder />
+                                        <ExteriorBorderShine />
 
-                                            {/* Not its own element because it causes Petch text to jump around */}
-                                            {curCard.cardType === "a" && (
-                                                <RepeatingPetch
-                                                    as={motion.div}
+                                        <InteriorBorder />
+                                        <InteriorBorderShine />
+
+                                        {/* Not its own element because it causes Petch text to jump around */}
+                                        {curCard.cardType === "a" && (
+                                            <RepeatingPetch
+                                                as={motion.div}
+                                                animation={
+                                                    shouldAnimate &&
+                                                    (cardHover ||
+                                                        firstTimeAnimation)
+                                                        ? cardTopAnimation
+                                                        : "translate(0);"
+                                                }
+                                                text={curCard.lastName}
+                                                position="absolute"
+                                                height="fit-content"
+                                                style={petchOutlineStyle}
+                                                fontFam={
+                                                    curCard.nameFont ===
+                                                    CardFonts.UniserBold
+                                                        ? CardFonts.ChakraPetch
+                                                        : CardFonts.BrotherhoodSansSerif
+                                                }
+                                                zIndex={zIndex.petch}
+                                            />
+                                        )}
+
+                                        {/* Not its own element because the Draggable snaps back when it is */}
+                                        <Box
+                                            w={"100%"}
+                                            h={"100%"}
+                                            zIndex={zIndex.hero}
+                                            position={"absolute"}
+                                            top={0}
+                                            left={0}
+                                        >
+                                            {/* Draggable Hero */}
+                                            {curCard.frontPhotoURL && (
+                                                <Draggable
+                                                    defaultPosition={{
+                                                        x: curCard.heroXOffset,
+                                                        y: curCard.heroYOffset,
+                                                    }}
+                                                    bounds={{
+                                                        top: -500,
+                                                        left: -300,
+                                                        right: 300,
+                                                        bottom: 500,
+                                                    }}
+                                                    onStop={handleHeroDragStop}
+                                                    nodeRef={heroRef}
+                                                >
+                                                    <Center
+                                                        verticalAlign={"center"}
+                                                        ref={heroRef}
+                                                    >
+                                                        <Image
+                                                            animation={
+                                                                shouldAnimate &&
+                                                                (cardHover ||
+                                                                    firstTimeAnimation)
+                                                                    ? cardTopAnimation
+                                                                    : "translate(0);"
+                                                            }
+                                                            src={`${curCard.frontPhotoURL}`}
+                                                            alt="Player Hero"
+                                                            maxWidth={`${curCard.heroWidth}px`}
+                                                            top={"-5px"}
+                                                            left={"0px"}
+                                                            draggable={false}
+                                                            style={{
+                                                                filter: "drop-shadow(0px 0px 2px #000000)",
+                                                            }}
+                                                        />
+                                                    </Center>
+                                                </Draggable>
+                                            )}
+
+                                            {/* Draggable Signature */}
+                                            <Draggable
+                                                defaultPosition={{
+                                                    x: curCard.signatureXOffset,
+                                                    y: curCard.signatureYOffset,
+                                                }}
+                                                bounds={{
+                                                    top: -400,
+                                                    left: -300,
+                                                    right: 300,
+                                                    bottom: 400,
+                                                }}
+                                                onStop={handleSignatureDragStop}
+                                                nodeRef={signatureRef}
+                                            >
+                                                <Image
+                                                    hidden={!signature}
                                                     animation={
                                                         shouldAnimate &&
                                                         (cardHover ||
@@ -1041,350 +943,219 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                                             ? cardTopAnimation
                                                             : "translate(0);"
                                                     }
-                                                    text={curCard.lastName}
+                                                    src={signature}
+                                                    alt="Player Signature"
+                                                    maxWidth={`${curCard.signatureWidth}px`}
                                                     position="absolute"
-                                                    height="fit-content"
-                                                    style={petchOutlineStyle}
-                                                    fontFam={
-                                                        curCard.nameFont ===
-                                                        CardFonts.UniserBold
-                                                            ? CardFonts.ChakraPetch
-                                                            : CardFonts.BrotherhoodSansSerif
-                                                    }
-                                                    zIndex={zIndex.petch}
-                                                />
-                                            )}
-
-                                            {/* Not its own element because the Draggable snaps back when it is */}
-                                            <Box
-                                                w={"100%"}
-                                                h={"100%"}
-                                                zIndex={zIndex.hero}
-                                                position={"absolute"}
-                                                top={0}
-                                                left={0}
-                                                style={{
-                                                    // maskImage: `url(${gamecardBottomLayer})`,
-                                                    maskSize: "cover",
-                                                    maskRepeat: "no-repeat",
-                                                }}
-                                            >
-                                                {/* Draggable Hero */}
-                                                {curCard.frontPhotoURL && (
-                                                    <Draggable
-                                                        defaultPosition={{
-                                                            x: curCard.heroXOffset,
-                                                            y: curCard.heroYOffset,
-                                                        }}
-                                                        bounds={{
-                                                            top: -500,
-                                                            left: -300,
-                                                            right: 300,
-                                                            bottom: 500,
-                                                        }}
-                                                        onStop={
-                                                            handleHeroDragStop
-                                                        }
-                                                        nodeRef={heroRef}
-                                                    >
-                                                        <Center
-                                                            verticalAlign={
-                                                                "center"
-                                                            }
-                                                            ref={heroRef}
-                                                        >
-                                                            <Image
-                                                                animation={
-                                                                    shouldAnimate &&
-                                                                    (cardHover ||
-                                                                        firstTimeAnimation)
-                                                                        ? cardTopAnimation
-                                                                        : "translate(0);"
-                                                                }
-                                                                src={`${curCard.frontPhotoURL}`}
-                                                                alt="Player Hero"
-                                                                maxWidth={`${curCard.heroWidth}px`}
-                                                                top={"-5px"}
-                                                                left={"0px"}
-                                                                draggable={
-                                                                    false
-                                                                }
-                                                                style={{
-                                                                    filter: "drop-shadow(0px 0px 2px #000000)",
-                                                                }}
-                                                            />
-                                                        </Center>
-                                                    </Draggable>
-                                                )}
-
-                                                {/* Draggable Signature */}
-                                                <Draggable
-                                                    defaultPosition={{
-                                                        x: curCard.signatureXOffset,
-                                                        y: curCard.signatureYOffset,
-                                                    }}
-                                                    bounds={{
-                                                        top: -400,
-                                                        left: -300,
-                                                        right: 300,
-                                                        bottom: 400,
-                                                    }}
-                                                    onStop={
-                                                        handleSignatureDragStop
-                                                    }
-                                                    nodeRef={signatureRef}
-                                                >
-                                                    <Image
-                                                        hidden={!signature}
-                                                        animation={
-                                                            shouldAnimate &&
-                                                            (cardHover ||
-                                                                firstTimeAnimation)
-                                                                ? cardTopAnimation
-                                                                : "translate(0);"
-                                                        }
-                                                        src={signature}
-                                                        alt="Player Signature"
-                                                        maxWidth={`${curCard.signatureWidth}px`}
-                                                        position="absolute"
-                                                        top={"380px"}
-                                                        left={"75px"}
-                                                        draggable={false}
-                                                        alignSelf="center"
-                                                        justifySelf="center"
-                                                        style={{
-                                                            filter: "drop-shadow(0px 0px 2px #000000)",
-                                                        }}
-                                                        ref={signatureRef}
-                                                    />
-                                                </Draggable>
-                                            </Box>
-
-                                            <CardTopLayerImage />
-
-                                            <InteriorBorder />
-
-                                            <PositionText />
-
-                                            <TeamText />
-
-                                            <NumberText />
-
-                                            {curCard.cardType === "a" ? (
-                                                <BigTextA />
-                                            ) : (
-                                                <BigTextB />
-                                            )}
-
-                                            {/* Card Shadow */}
-                                            {showShadow === true && (
-                                                <Box
+                                                    top={"380px"}
+                                                    left={"75px"}
+                                                    draggable={false}
                                                     alignSelf="center"
-                                                    paddingTop="50px"
-                                                    w={"170%"}
-                                                    visibility={{
-                                                        base: "hidden",
-                                                        md: "visible",
-                                                    }}
-                                                >
-                                                    <CardDropShadow
-                                                        opacity={0.7}
-                                                    />
-                                                </Box>
-                                            )}
-                                        </>
-                                    )}
-                                </Box>
-                            ) : (
-                                <Spinner
-                                    speed={"0.75s"}
-                                    color="white"
-                                    w="150px"
-                                    h="150px"
-                                    margin={"auto"}
-                                    marginTop={"30%"}
-                                />
-                            )}
-                        </VStack>
-                    </motion.div>
-
-                    {/* Back of OnFire card */}
-                    <motion.div {...backCardMotionStyling}>
-                        <VStack {...backCardContainerStyling}>
-                            <Box
-                                position="relative"
-                                overflow="hidden"
-                                maxWidth="350px"
-                                maxHeight="490px"
-                                h="490px"
-                                display="grid"
-                                gridTemplateColumns="1fr"
-                                gridTemplateRows="1fr"
-                            >
-                                <>
-                                    {slim ? (
-                                        <Box
-                                            gridColumn="1"
-                                            gridRow="1"
-                                            ref={cardBackRef}
-                                        >
-                                            <PrerenderedGamecardBackImage />
-                                        </Box>
-                                    ) : (
-                                        <Box
-                                            gridColumn="1"
-                                            gridRow="1"
-                                            ref={cardBackRef}
-                                        >
-                                            <CardTopLayerImage flipped noLogo />
-                                            <CardBottomLayer flipped />
-                                        </Box>
-                                    )}
-
-                                    {/* The back video */}
-                                    <Box
-                                        zIndex={zIndex.cardBackVideo}
-                                        width="350px"
-                                        height="490px"
-                                        position="absolute"
-                                        top={0}
-                                        left={0}
-                                        overflow="hidden"
-                                        display={"block"}
-                                    >
-                                        <Draggable
-                                            defaultPosition={{
-                                                x: curCard.backVideoXOffset,
-                                                y: curCard.backVideoYOffset,
-                                            }}
-                                            bounds={{
-                                                top: -500,
-                                                left: -600,
-                                                right: 600,
-                                                bottom: 500,
-                                            }}
-                                            onStop={handleVideoDragStop}
-                                            nodeRef={videoRef}
-                                            disabled={slim}
-                                        >
-                                            {/* The display is a grid so that the resize can be done from the top-center, while also
-											allowing the width to bleed outside the card */}
-                                            <Box
-                                                display="grid"
-                                                alignItems={"center"}
-                                                justifyContent={"center"}
-                                                ref={videoRef}
-                                            >
-                                                <ReactPlayer
-                                                    pip={false}
-                                                    width={
-                                                        hasBackVideo
-                                                            ? `${curCard.backVideoWidth}px`
-                                                            : "100%"
-                                                    }
-                                                    height={
-                                                        hasBackVideo
-                                                            ? `${curCard.backVideoHeight}px`
-                                                            : "100%"
-                                                    }
-                                                    playing={true}
-                                                    playsinline
-                                                    muted={true}
-                                                    loop={true}
-                                                    url={
-                                                        hasBackVideo
-                                                            ? curCard.backVideoURL
-                                                            : DEFAULT_BACK_VIDEO_URL
-                                                    }
+                                                    justifySelf="center"
                                                     style={{
-                                                        rotate: `${curCard.backVideoRotation}deg`,
-                                                        objectFit: "cover",
-                                                        objectPosition:
-                                                            "center",
+                                                        filter: "drop-shadow(0px 0px 2px #000000)",
                                                     }}
+                                                    ref={signatureRef}
                                                 />
-                                            </Box>
-                                        </Draggable>
-                                    </Box>
-                                    <ExteriorBorder
-                                        color={curCard.borderColor}
-                                        mirrored
-                                    />
-                                </>
-                            </Box>
-                        </VStack>
-                    </motion.div>
+                                            </Draggable>
+                                        </Box>
 
-                    {!slim && showButton && !mobileFlipButton && (
-                        <Button
+                                        <PositionText />
+
+                                        <TeamText />
+
+                                        <NumberText />
+
+                                        <OnFireLogoYear card={curCard} />
+
+                                        {curCard.cardType === "a" ? (
+                                            <BigTextA />
+                                        ) : (
+                                            <BigTextB />
+                                        )}
+
+                                        {/* Card Shadow */}
+                                        <Box
+                                            alignSelf="center"
+                                            paddingTop="50px"
+                                            w={"170%"}
+                                            visibility={{
+                                                base: "hidden",
+                                                md: "visible",
+                                            }}
+                                        >
+                                            <CardDropShadow opacity={0.7} />
+                                        </Box>
+                                    </>
+                                )}
+                            </Box>
+                        ) : (
+                            <Spinner
+                                speed={"0.75s"}
+                                color="white"
+                                w="150px"
+                                h="150px"
+                                margin={"auto"}
+                                marginTop={"30%"}
+                            />
+                        )}
+                    </VStack>
+                </motion.div>
+
+                {/* Back of OnFire card */}
+                <motion.div {...backCardMotionStyling}>
+                    <VStack {...backCardContainerStyling}>
+                        <Box
+                            position="relative"
+                            overflow="hidden"
+                            maxWidth="350px"
+                            maxHeight="490px"
+                            h="490px"
+                            display="grid"
+                            gridTemplateColumns="1fr"
+                            gridTemplateRows="1fr"
+                        >
+                            <>
+                                {/* The back video */}
+                                <Box
+                                    zIndex={zIndex.cardBackVideo}
+                                    width="350px"
+                                    height="490px"
+                                    position="absolute"
+                                    top={0}
+                                    left={0}
+                                    overflow="hidden"
+                                    display={"block"}
+                                >
+                                    <Draggable
+                                        defaultPosition={{
+                                            x: curCard.backVideoXOffset,
+                                            y: curCard.backVideoYOffset,
+                                        }}
+                                        bounds={{
+                                            top: -500,
+                                            left: -600,
+                                            right: 600,
+                                            bottom: 500,
+                                        }}
+                                        onStop={handleVideoDragStop}
+                                        nodeRef={videoRef}
+                                        disabled={slim}
+                                    >
+                                        {/* The display is a grid so that the resize can be done from the top-center, while also
+											allowing the width to bleed outside the card */}
+                                        <Box
+                                            display="grid"
+                                            alignItems={"center"}
+                                            justifyContent={"center"}
+                                            ref={videoRef}
+                                        >
+                                            <ReactPlayer
+                                                pip={false}
+                                                width={
+                                                    hasBackVideo
+                                                        ? `${curCard.backVideoWidth}px`
+                                                        : "100%"
+                                                }
+                                                height={
+                                                    hasBackVideo
+                                                        ? `${curCard.backVideoHeight}px`
+                                                        : "100%"
+                                                }
+                                                playing={true}
+                                                playsinline
+                                                muted={true}
+                                                loop={true}
+                                                url={
+                                                    hasBackVideo
+                                                        ? curCard.backVideoURL
+                                                        : DEFAULT_BACK_VIDEO_URL
+                                                }
+                                                style={{
+                                                    rotate: `${curCard.backVideoRotation}deg`,
+                                                    objectFit: "cover",
+                                                    objectPosition: "center",
+                                                }}
+                                            />
+                                        </Box>
+                                    </Draggable>
+                                </Box>
+                                <ExteriorBorder back />
+                                <ExteriorBorderShine back />
+                            </>
+                        </Box>
+                    </VStack>
+                </motion.div>
+
+                {!slim && showButton && !mobileFlipButton && (
+                    <Button
+                        onClick={handleClick}
+                        variant={"white"}
+                        bottom={"-350px"}
+                        width={"70%"}
+                        style={{
+                            opacity: cardIsLoaded ? 1 : 0,
+                            transition: "opacity 1s ease-in",
+                        }}
+                        rightIcon={<FlipCardIcon />}
+                        iconSpacing={4}
+                    >
+                        FLIP CARD
+                    </Button>
+                )}
+
+                {!slim && (
+                    <Box top={"0px"} right={"-70px"} pos={"absolute"}>
+                        <OnFireCardSliders />
+                    </Box>
+                )}
+
+                {mobileFlipButton &&
+                    (isOnProfile ? (
+                        <IconButton
                             onClick={handleClick}
-                            variant={"white"}
-                            bottom={"-350px"}
-                            width={"70%"}
+                            aria-label="Flip Card"
+                            pos="absolute"
+                            bottom="-50px"
+                            right="-30px"
+                            minW="32px"
+                            maxW="32px"
+                            minH="32px"
+                            maxH="32px"
+                            background="#D5D5D5"
+                            marginLeft={5}
+                            icon={
+                                <Icon
+                                    as={FaRotate}
+                                    color="#121212"
+                                    style={{
+                                        width: "22px",
+                                        height: "22px",
+                                    }}
+                                />
+                            }
+                        />
+                    ) : (
+                        <Center
+                            rounded="full"
+                            tabIndex={0}
+                            pos="absolute"
+                            bottom="-50px"
+                            right="-74px"
+                            onClick={handleClick}
+                            aria-label="Flip Card"
+                            background={"white"}
+                            width="48px"
+                            height="48px"
                             style={{
-                                opacity: cardIsLoaded ? 1 : 0,
+                                opacity: 1,
                                 transition: "opacity 1s ease-in",
                             }}
-                            rightIcon={<FlipCardIcon />}
-                            iconSpacing={4}
                         >
-                            FLIP CARD
-                        </Button>
-                    )}
-
-                    {!slim && (
-                        <Box top={"0px"} right={"-70px"} pos={"absolute"}>
-                            <OnFireCardSliders />
-                        </Box>
-                    )}
-
-                    {mobileFlipButton &&
-                        (isOnProfile ? (
-                            <IconButton
-                                onClick={handleClick}
-                                aria-label="Flip Card"
-                                pos="absolute"
-                                bottom="-50px"
-                                right="-30px"
-                                minW="32px"
-                                maxW="32px"
-                                minH="32px"
-                                maxH="32px"
-                                background="#D5D5D5"
-                                marginLeft={5}
-                                icon={
-                                    <Icon
-                                        as={FaRotate}
-                                        color="#121212"
-                                        style={{
-                                            width: "22px",
-                                            height: "22px",
-                                        }}
-                                    />
-                                }
-                            />
-                        ) : (
-                            <Center
-                                rounded="full"
-                                tabIndex={0}
-                                pos="absolute"
-                                bottom="-50px"
-                                right="-74px"
-                                onClick={handleClick}
-                                aria-label="Flip Card"
-                                background={"white"}
-                                width="48px"
-                                height="48px"
-                                style={{
-                                    opacity: 1,
-                                    transition: "opacity 1s ease-in",
-                                }}
-                            >
-                                <FlipCardIcon boxSize={7} />
-                            </Center>
-                        ))}
-                </Center>
-            </div>
+                            <FlipCardIcon boxSize={7} />
+                        </Center>
+                    ))}
+            </Center>
         );
     },
 );
@@ -1392,3 +1163,19 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
 OnFireCard.displayName = "GamechangersCard";
 
 export default OnFireCard;
+
+function CardSizeBox({ src, ...rest }: { src: string | undefined } & BoxProps) {
+    return (
+        <Box
+            pos="absolute"
+            top="0"
+            left="0"
+            w="100%"
+            h="100%"
+            bgImage={src}
+            backgroundSize="cover"
+            pointerEvents="none"
+            {...rest}
+        />
+    );
+}
