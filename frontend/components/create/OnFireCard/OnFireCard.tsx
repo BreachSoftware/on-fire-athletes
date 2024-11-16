@@ -18,7 +18,6 @@ import {
     Icon,
     useBreakpointValue,
 } from "@chakra-ui/react";
-import mergeImages, { ImageSource } from "merge-images";
 import {
     useState,
     useEffect,
@@ -28,10 +27,10 @@ import {
 } from "react";
 import { recolor } from "@/components/image_filters";
 import "@fontsource/barlow";
-import TradingCardInfo, { CardPart } from "@/hooks/TradingCardInfo";
+import TradingCardInfo from "@/hooks/TradingCardInfo";
 import { MotionProps, motion } from "framer-motion";
 import { delay } from "lodash";
-import { cardRenderOrder, imageColors, imagePaths } from "./card_render_config";
+import { imageColors, imagePaths } from "./card_render_config";
 import {
     cardAnimation,
     cardBackAnimation,
@@ -67,152 +66,6 @@ enum zIndex {
 }
 
 const headers: Headers = new Headers();
-
-/**
- * Function to call recolor() on all the images in the card.
- * Uses both the array of hex values and paths to the images.
- * @param colors The array of hex values to recolor the images with
- * @param paths The array of paths to the images to recolor. The length of this array also determines the number of images to recolor
- */
-export async function recolorAllImages(
-    colors: string[],
-    paths: string[],
-    header: Headers,
-) {
-    const base64arr: string[] = new Array(paths.length);
-
-    // Parallel processing of all the images
-    await Promise.all(
-        paths.map(async (path, index) => {
-            if (path === "" || colors[index] === "") {
-                return;
-            }
-
-            let parsedImage = null;
-
-            const isBorderColor =
-                index == CardPart.EXTERIOR_BORDER ||
-                index == CardPart.INTERIOR_BORDER;
-            const recolorFunction = isBorderColor ? recolor : recolor;
-
-            // Second true value is for the tint function's inverted parameter
-            parsedImage = await recolorFunction(
-                path,
-                colors[index],
-                header,
-                true,
-            );
-            if (parsedImage) {
-                base64arr[index] = parsedImage;
-            }
-        }),
-    );
-
-    return base64arr;
-}
-
-/**
- * Stacks and loads the image to be displayed on the card
- */
-export async function loadImage(
-    setGamecardTopLayer: (arg0: string) => void,
-    setGamecardTopLayerNoLogo: (arg0: string) => void,
-    setGamecardBottomLayer: (arg0: string) => void,
-    setGamecardSignatureImage: (arg0: string) => void,
-    recoloredGamecardImages: string[],
-    partsToRecolor: number[],
-    curCard: TradingCardInfo,
-    finalRender: boolean = false,
-) {
-    if (partsToRecolor.length !== 0) {
-        // Make sure that you're not waiting on anything
-        return;
-    }
-
-    const cardRenderFrontArray = cardRenderOrder(
-        "front",
-        curCard,
-        recoloredGamecardImages,
-        finalRender,
-    );
-    const cardRenderBackArray = cardRenderOrder(
-        "back",
-        curCard,
-        recoloredGamecardImages,
-    );
-    let cardRenderFrontArrayNoLogo: ImageSource[] = cardRenderFrontArray || [];
-    const bBorderRecoloredGamecardImages = [...recoloredGamecardImages];
-
-    // Get the B border recolored
-    // B Border is used on the back of the card, so that is why we are doing this here.
-    const tintResult = await recolor(
-        "/card_assets/card-interior-border-b.png",
-        curCard.borderColor,
-        headers,
-        true,
-    ).catch((error) => {
-        console.error("Error tinting the B border", error);
-        return null;
-    });
-
-    if (tintResult) {
-        // Set up the stack of cards to render, with the interior border as the recolored B border
-        // bBorderRecoloredGamecardImages is copied from the current recoloredGamecardImages to reduce backend calls.
-        bBorderRecoloredGamecardImages[CardPart.INTERIOR_BORDER] = tintResult;
-
-        // Take out the front element, which is the logo. Forcing card type B to get B's border on the back
-        const frontArrayStart = 3;
-        const bCard = { ...curCard, cardType: "b" };
-        cardRenderFrontArrayNoLogo = (
-            cardRenderOrder(
-                "front",
-                bCard,
-                bBorderRecoloredGamecardImages,
-                finalRender,
-            ) || []
-        ).slice(frontArrayStart);
-
-        if (!cardRenderFrontArray || !cardRenderBackArray) {
-            console.error("Null Arrays!");
-            return;
-        }
-
-        const b64FrontNoLogo = await mergeImages(
-            cardRenderFrontArrayNoLogo.filter(Boolean),
-        ).catch((error) => {
-            console.error("Error merging the front image", error);
-
-            return null;
-        });
-
-        const b64Front = await mergeImages(
-            cardRenderFrontArray.filter(Boolean),
-        ).catch((error) => {
-            console.error("Error merging the front image", error);
-            console.error("Front Array", cardRenderFrontArray);
-            return null;
-        });
-
-        const b64Back = await mergeImages(
-            cardRenderBackArray.filter(Boolean),
-        ).catch((error) => {
-            console.error("Error merging the back image", error);
-            console.error("Back Array", cardRenderBackArray);
-            return null;
-        });
-
-        if (b64FrontNoLogo && b64Front && b64Back) {
-            setGamecardTopLayerNoLogo(b64FrontNoLogo);
-            setGamecardTopLayer(b64Front);
-            setGamecardBottomLayer(b64Back);
-        }
-
-        setGamecardSignatureImage(recoloredGamecardImages[CardPart.SIGNATURE]);
-        curCard.signature = recoloredGamecardImages[CardPart.SIGNATURE];
-    } else {
-        console.error("Something wrong with tinting the B border");
-    }
-}
 
 export interface OnFireCardRef {
     handleClick: () => void;
@@ -340,16 +193,6 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [cardHook.curCard]);
 
-        useEffect(() => {
-            // if (curCard.partsToRecolor.length > 0) {
-            setPartsToRecolor(curCard.partsToRecolor);
-            // }
-        }, [curCard.partsToRecolor]);
-
-        // useEffect(() => {
-
-        // )}
-
         const [cardHover, setCardHover] = useState(false);
 
         const [firstTimeAnimation, setFirstTimeAnimation] = useState(false);
@@ -363,113 +206,89 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
         const [recoloredGamecardImages, setRecoloredGamecardImages] = useState<
             string[]
         >([]);
+        const [
+            exteriorBorder,
+            interiorBorder,
+            solidBackground,
+            background,
+            signature,
+        ]: (string | undefined)[] = recoloredGamecardImages;
 
-        // The string for the b64 of the front layer. This is the borders and the logo
-        const [gamecardTopLayer, setGamecardTopLayer] = useState("");
-        // The b64 of the front layer without the logo
-        const [gamecardTopLayerNoLogo, setGamecardTopLayerNoLogo] =
-            useState("");
-        // The string for the b64 of the back layer. This is the background p much
-        const [gamecardBottomLayer, setGamecardBottomLayer] = useState("");
-        // The string for the b64 of the signature
-        const [gamecardSignatureImage, setGamecardSignatureImage] =
-            useState("");
+        const cardIsLoaded = recoloredGamecardImages.length !== 0;
 
-        // State for partsToRecolor
-        const [partsToRecolor, setPartsToRecolor] = useState<number[]>(
-            curCard.partsToRecolor,
-        );
+        // // The string for the b64 of the front layer. This is the borders and the logo
+        // const [gamecardTopLayer, setGamecardTopLayer] = useState("");
+        // // The b64 of the front layer without the logo
+        // const [gamecardTopLayerNoLogo, setGamecardTopLayerNoLogo] =
+        //     useState("");
+        // // The string for the b64 of the back layer. This is the background p much
+        // const [gamecardBottomLayer, setGamecardBottomLayer] = useState("");
+        // // The string for the b64 of the signature
+        // const [gamecardSignatureImage, setGamecardSignatureImage] =
+        //     useState("");
 
         // stop the animation after the first time
         useEffect(() => {
-            if (gamecardTopLayer && gamecardBottomLayer) {
+            if (cardIsLoaded && curCard.inputDisabled) {
                 setFirstTimeAnimation(true);
                 delay(setFirstTimeAnimation, 12000, false);
                 delay(setCard, 1000, { ...curCard, inputDisabled: false });
             }
             // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [gamecardBottomLayer, gamecardTopLayer]);
+        }, [recoloredGamecardImages]);
 
         const [cardGlowColor, setCardGlowColor] = useState(curCard.borderColor);
 
         useEffect(() => {
+            setCardGlowColor(curCard.borderColor);
+        }, [curCard.borderColor]);
+
+        useEffect(() => {
             /**
-             * Function to recolor the necessary images. Taken out to make things easier to understand.
+             * Function to recolor the necessary images
              */
-            function recolorNecessaryImages() {
-                const partsLeft = partsToRecolor;
-                for (let i = 0; i < partsLeft.length; i++) {
-                    const recolorFunction =
-                        partsLeft[0] === CardPart.EXTERIOR_BORDER ||
-                        partsLeft[0] === CardPart.INTERIOR_BORDER
-                            ? recolor
-                            : recolor;
-                    // Take the first element of the list to recolor
-                    // Create the small array of recolored images
-                    const temp = recoloredGamecardImages;
-                    // Second true value is for the tint function's inverted parameter
-                    recolorFunction(
-                        imagePaths(curCard)[partsLeft[0]],
-                        imageColors(curCard)[partsLeft[0]],
-                        headers,
-                        true,
-                    ).then((result) => {
-                        if (result) {
-                            // Add the new card
-                            temp[partsLeft[0]] = result;
-                            // Set the glow color to the border color if the border is being recolored
-                            if (partsLeft[0] === CardPart.EXTERIOR_BORDER) {
-                                setCardGlowColor(curCard.borderColor);
-                            }
-                            // Remove the first element of the list
-                            setPartsToRecolor(partsToRecolor.slice(1));
-                            // Set the state variable to the new array after everything is recolored
-                            setRecoloredGamecardImages(temp);
-                        } else {
-                            console.error(
-                                "Error recoloring in recolorFunction",
-                            );
-                        }
-                    });
-                }
+            async function recolorNecessaryImages(): Promise<string[]> {
+                const imgsToRecolor: string[] = imagePaths(curCard);
+
+                console.log({ imgsToRecolor });
+                const colorsToRecolor: string[] = imageColors(curCard);
+
+                console.log({ colorsToRecolor });
+
+                const recoloredImages = await Promise.all(
+                    imgsToRecolor.filter(Boolean).map((img, i) => {
+                        return recolor(img, colorsToRecolor[i], headers, true);
+                    }),
+                );
+
+                console.log({ recoloredImages });
+
+                return recoloredImages;
             }
 
-            const needToRecolor = partsToRecolor.length !== 0;
-            if (needToRecolor && !slim) {
-                // Object.keys(CardPart).length / 2 is the number of elements in the enum due to some 'reverse mapping' thing
-                const keysInCardPartEnum = Object.keys(CardPart).length / 2;
-                if (partsToRecolor.length === keysInCardPartEnum) {
-                    recolorAllImages(
-                        imageColors(curCard),
-                        imagePaths(curCard),
-                        headers,
-                    ).then((result) => {
+            if (!slim) {
+                recolorNecessaryImages()
+                    .then((result) => {
                         if (result) {
                             setRecoloredGamecardImages(result);
-                            setPartsToRecolor([]);
-                            setCardGlowColor(curCard.borderColor);
-                        } else {
-                            console.error(
-                                "Error recoloring in recolorAllImages",
-                            );
                         }
+                    })
+                    .catch((err) => {
+                        console.log({ err });
                     });
-                } else {
-                    recolorNecessaryImages();
-                }
-            } else if (!slim) {
-                loadImage(
-                    setGamecardTopLayer,
-                    setGamecardTopLayerNoLogo,
-                    setGamecardBottomLayer,
-                    setGamecardSignatureImage,
-                    recoloredGamecardImages,
-                    partsToRecolor,
-                    curCard,
-                );
             }
             // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [partsToRecolor.length]);
+        }, [
+            curCard.signature,
+            curCard.nameColor,
+            curCard.borderColor,
+            curCard.numberColor,
+            curCard.topCardTextColor,
+            curCard.selectedBackground,
+            curCard.backgroundMainColor,
+            curCard.backgroundTextColor,
+            curCard.backgroundAccentColor,
+        ]);
 
         const nameLength =
             curCard.firstName.length + curCard.lastName.length + 1;
@@ -577,21 +396,23 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
          */
         function CardTopLayerImage({
             flipped = false,
-            noLogo = false,
         }: {
             flipped?: boolean;
             noLogo?: boolean;
         }) {
-            return (noLogo ? gamecardTopLayerNoLogo : gamecardTopLayer) &&
-                gamecardBottomLayer ? (
+            if (curCard.cardType === "a") {
+                return null;
+            }
+
+            return cardIsLoaded ? (
                 <Image
                     animation={
                         shouldAnimate && (cardHover || firstTimeAnimation)
                             ? cardTopAnimation
                             : "translate(0);"
                     }
-                    src={`${noLogo ? gamecardTopLayerNoLogo : gamecardTopLayer}`}
-                    alt="Merged Front Image"
+                    src={interiorBorder}
+                    alt="Interior Border"
                     maxWidth={"350px"}
                     zIndex={zIndex.border}
                     position={"absolute"}
@@ -602,6 +423,26 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                     }}
                 />
             ) : null;
+        }
+
+        function InteriorBorder() {
+            return (
+                <Image
+                    src={interiorBorder}
+                    alt="Interior Border"
+                    maxWidth={"350px"}
+                    zIndex={zIndex.border}
+                    top={0}
+                    left={0}
+                    w="350px"
+                    h="490px"
+                    position={"absolute"}
+                    draggable={false}
+                    style={{
+                        pointerEvents: "none",
+                    }}
+                />
+            );
         }
 
         interface CardBottomLayerProps extends ImageProps {
@@ -617,25 +458,27 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
             flipped = false,
             ...rest
         }: CardBottomLayerProps) {
-            return gamecardTopLayer && gamecardBottomLayer ? (
-                <Image
-                    animation={
-                        shouldAnimate && (cardHover || firstTimeAnimation)
-                            ? cardBackAnimation
-                            : "translate(0);"
-                    }
-                    src={`${gamecardBottomLayer}`}
-                    alt="Merged Back Image"
-                    maxWidth={"350px"}
-                    zIndex={zIndex.background}
-                    transition={"filter 1s ease-in"}
-                    draggable={false}
-                    style={{
-                        pointerEvents: "none",
-                        transform: flipped ? "scaleX(-1)" : "scaleX(1)",
-                    }}
-                    {...rest}
-                />
+            return cardIsLoaded ? (
+                <Box
+                    w="350px"
+                    h="490px"
+                    backgroundImage={solidBackground}
+                    backgroundSize="cover"
+                >
+                    <Image
+                        src={background}
+                        alt="Merged Back Image"
+                        maxWidth={"350px"}
+                        zIndex={zIndex.background}
+                        transition={"filter 1s ease-in"}
+                        draggable={false}
+                        style={{
+                            pointerEvents: "none",
+                            transform: flipped ? "scaleX(-1)" : "scaleX(1)",
+                        }}
+                        {...rest}
+                    />
+                </Box>
             ) : null;
         }
 
@@ -1123,8 +966,7 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                             {...frontCardContainerStyling}
                             ref={cardFrontRef}
                         >
-                            {(gamecardTopLayer && gamecardBottomLayer) ||
-                            slim ? (
+                            {cardIsLoaded || slim ? (
                                 <Box
                                     as={motion.div}
                                     initial={{ opacity: 0 }}
@@ -1152,18 +994,17 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                         <>
                                             <CardBottomLayer position="absolute" />
 
-                                            {/* <Box
+                                            <Box
                                                 pos="absolute"
                                                 zIndex="10"
                                                 top="0"
                                                 left="0"
                                                 w="100%"
                                                 h="100%"
-                                                bgImage={CardOutline.src}
+                                                bgImage={exteriorBorder}
                                                 backgroundSize="cover"
-                                                opacity="0"
                                                 pointerEvents="none"
-                                            /> */}
+                                            />
                                             <Box
                                                 pos="absolute"
                                                 zIndex="10"
@@ -1220,8 +1061,10 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                                 h={"100%"}
                                                 zIndex={zIndex.hero}
                                                 position={"absolute"}
+                                                top={0}
+                                                left={0}
                                                 style={{
-                                                    maskImage: `url(${gamecardBottomLayer})`,
+                                                    // maskImage: `url(${gamecardBottomLayer})`,
                                                     maskSize: "cover",
                                                     maskRepeat: "no-repeat",
                                                 }}
@@ -1292,12 +1135,7 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                                     nodeRef={signatureRef}
                                                 >
                                                     <Image
-                                                        hidden={
-                                                            gamecardSignatureImage ==
-                                                                undefined ||
-                                                            gamecardSignatureImage ===
-                                                                ""
-                                                        }
+                                                        hidden={!signature}
                                                         animation={
                                                             shouldAnimate &&
                                                             (cardHover ||
@@ -1305,7 +1143,7 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                                                 ? cardTopAnimation
                                                                 : "translate(0);"
                                                         }
-                                                        src={`${gamecardSignatureImage}`}
+                                                        src={signature}
                                                         alt="Player Signature"
                                                         maxWidth={`${curCard.signatureWidth}px`}
                                                         position="absolute"
@@ -1323,6 +1161,8 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                             </Box>
 
                                             <CardTopLayerImage />
+
+                                            <InteriorBorder />
 
                                             <PositionText />
 
@@ -1482,10 +1322,7 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                             bottom={"-350px"}
                             width={"70%"}
                             style={{
-                                opacity:
-                                    gamecardTopLayer && gamecardBottomLayer
-                                        ? 1
-                                        : 0,
+                                opacity: cardIsLoaded ? 1 : 0,
                                 transition: "opacity 1s ease-in",
                             }}
                             rightIcon={<FlipCardIcon />}
