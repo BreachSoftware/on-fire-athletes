@@ -11,6 +11,7 @@ export default function OnFireLogoYear({ card }: { card: TradingCardInfo }) {
 
     return (
         <Image
+            pointerEvents="none"
             position="absolute"
             top={0}
             left={0}

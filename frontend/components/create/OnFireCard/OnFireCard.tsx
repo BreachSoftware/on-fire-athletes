@@ -191,6 +191,7 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
         const [
             exteriorBorder,
             interiorBorder,
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             solidBackground,
             background,
             signature,
@@ -363,7 +364,14 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
         function ExteriorBorder({ back = false }: { back?: boolean }) {
             return (
                 <CardSizeBox
-                    src={exteriorBorder}
+                    src={undefined}
+                    bg={curCard.borderColor}
+                    style={{
+                        maskImage: `url(${exteriorBorder})`,
+                        maskSize: "cover",
+                        maskPosition: "center",
+                        maskRepeat: "no-repeat",
+                    }}
                     zIndex={back ? zIndex.cardBackVideo + 1 : zIndex.border}
                     transform={back ? "scaleX(-1)" : "scaleX(1)"}
                 />
@@ -414,20 +422,28 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                     pos="absolute"
                     w="350px"
                     h="490px"
-                    backgroundImage={solidBackground}
+                    // backgroundImage={solidBackground}
+                    bg={curCard.backgroundAccentColor}
                     backgroundSize="cover"
                 >
-                    <Image
-                        src={background}
-                        alt="Merged Back Image"
-                        maxWidth={"350px"}
-                        zIndex={zIndex.background}
-                        transition={"filter 1s ease-in"}
-                        draggable={false}
+                    <Box
+                        bg={curCard.backgroundMainColor}
+                        pos="absolute"
+                        top={0}
+                        left={0}
+                        w="350px"
+                        h="490px"
                         style={{
+                            maskImage: `url(${background})`,
+                            maskSize: "cover",
+                            maskPosition: "center",
+                            maskRepeat: "no-repeat",
                             pointerEvents: "none",
                             transform: flipped ? "scaleX(-1)" : "scaleX(1)",
                         }}
+                        zIndex={zIndex.background}
+                        transition={"filter 1s ease-in"}
+                        draggable={false}
                         {...rest}
                     />
                 </Box>
