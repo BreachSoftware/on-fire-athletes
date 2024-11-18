@@ -15,7 +15,6 @@ import {
     Spacer,
     Link,
     Heading,
-    useBreakpointValue,
 } from "@chakra-ui/react";
 import { ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import OnFireLogo from "@/images/logos/small-logo.png";
@@ -25,7 +24,7 @@ import SideDrawer from "@/components/sideDrawer";
 // import { ConnectButton } from "@rainbow-me/rainbowkit";
 import ResponsiveBlock from "@/components/shared/wrappers/responsive-block";
 import SideBarHamburger from "@/components/sidebarHamburger";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
+import CustomConnectButton from "@/components/connect_wallet_button";
 
 // Optional params
 interface NavBarProps extends BoxProps {
@@ -61,6 +60,10 @@ const NAV_ITEMS: Array<NavItem> = [
             {
                 label: "Our Story",
                 href: "/our-story",
+            },
+            {
+                label: "AR Cards",
+                href: "/newsroom/what-are-ar-cards",
             },
             {
                 label: "NIL Partnerships",
@@ -298,7 +301,7 @@ function DesktopNav(props: NavBarProps) {
             <Spacer />
 
             <Flex justifyContent="flex-end" width="100%" direction="row">
-                {props.cryptoWalletConnected && <ConnectButton />}
+                {props.cryptoWalletConnected && <CustomConnectButton />}
                 {NAV_ITEMS.slice(3).map((navItem) => {
                     return (
                         <Box
@@ -428,8 +431,6 @@ export default function NavBar({
         }
     }, []);
 
-    const isMobile = useBreakpointValue({ base: true, lg: false });
-
     return (
         <>
             <SideBarHamburger />
@@ -496,7 +497,6 @@ export default function NavBar({
                     onClose={onToggle}
                     placement={"right"}
                     size={"xl"}
-                    isMobile={isMobile}
                 />
             </ResponsiveBlock>
         </>

@@ -1,3 +1,4 @@
+import emailjs from "@emailjs/browser";
 import { tradeBoughtCard } from "@/hooks/buyCardFunc";
 import CheckoutInfo from "@/hooks/CheckoutInfo";
 import TradingCardInfo from "@/hooks/TradingCardInfo";
@@ -5,6 +6,7 @@ import { useAuthProps } from "@/hooks/useAuth";
 import { PaymentIntent, Stripe } from "@stripe/stripe-js";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
+import { totalPriceInCart } from "@/utils/utils";
 
 /**
  * Handles the purchase process for trading cards, supporting both Stripe and non-Stripe payment methods.
@@ -26,6 +28,7 @@ export async function handlePurchase(
     buyingOtherCard: boolean,
     auth: useAuthProps,
     hash?: string,
+    isNil?: boolean,
 ): Promise<boolean> {
     try {
         // Get the current user's ID
@@ -234,6 +237,27 @@ export async function handlePurchase(
             // Add flag if buying another user's card
             successUrl = `${successUrl}${successUrl.includes("?") ? "&" : ""}boughtOtherCard=true`;
         }
+        if (isNil) {
+            // Add flag if the order is for NIL
+            successUrl = `${successUrl}${successUrl.includes("?") ? "&" : ""}nil=true`;
+        }
+
+        if (!buyingOtherCard) {
+            try {
+                await handlePostCheckoutEmail(checkout);
+            } catch (e) {
+                console.error("Error sending post-checkout email: ", e);
+            }
+        } else {
+            try {
+                await handleBoughtLockerRoomCardEmail(checkout, currentUserId);
+            } catch (e) {
+                console.error(
+                    "Error sending bought locker room card email: ",
+                    e,
+                );
+            }
+        }
 
         // Navigate to the success page
         router.push(successUrl);
@@ -242,4 +266,48 @@ export async function handlePurchase(
         console.error("Error during purchase:", error);
         return false;
     }
+}
+
+enum EmailTemplates {
+    ROOKIE = "template_71hzb7j",
+    ALL_STAR = "template_46qvoa9",
+}
+
+async function handlePostCheckoutEmail(checkout: CheckoutInfo) {
+    const isRookie = checkout.packageName === "rookie";
+
+    const templateToUse = isRookie
+        ? EmailTemplates.ROOKIE
+        : EmailTemplates.ALL_STAR;
+
+    await emailjs.send(
+        "service_8rtflzq",
+        templateToUse,
+        {
+            toEmail: checkout.contactInfo.email,
+            cardImage: checkout.onFireCard!.cardImage,
+            profileUrl: `https://onfireathletes.com/profile?user=${checkout.onFireCard!.generatedBy}`,
+        },
+        { publicKey: "nOgMf7N2DopnucmPc" },
+    );
+}
+
+async function handleBoughtLockerRoomCardEmail(
+    checkout: CheckoutInfo,
+    userId: string,
+) {
+    await emailjs.send(
+        "service_8rtflzq",
+        "template_rsncin1",
+        {
+            toEmail: checkout.contactInfo.email,
+            cardImage: checkout.onFireCard!.cardImage,
+            cardFirstName: checkout.onFireCard!.firstName,
+            cardLastName: checkout.onFireCard!.lastName,
+            toName: `${checkout.contactInfo.firstName} ${checkout.contactInfo.lastName}`,
+            cardPrice: `${totalPriceInCart(checkout, false).toFixed(2)}`,
+            profileUrl: `https://onfireathletes.com/profile?user=${userId}`,
+        },
+        { publicKey: "nOgMf7N2DopnucmPc" },
+    );
 }

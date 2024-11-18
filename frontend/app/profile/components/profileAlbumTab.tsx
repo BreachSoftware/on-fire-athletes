@@ -207,8 +207,8 @@ export default function ProfileAlbumTab(props: ProfileAlbumProps) {
 
         const sharedData = {
             title: "OnFire Trading Card",
-            text: "Click the link to accept my ONFIRE Athletes trading card.",
-            url: `https://on-fire-athletes.netlify.app/signup?generatedByUUID=${generatedByUUID}&fromUUID=${senderUUID}&cardUUID=${cardUUID}`,
+            text: "Click the link above to accept my ONFIRE Athletes trading card.",
+            url: `https://onfireathletes.com/signup?generatedByUUID=${generatedByUUID}&fromUUID=${senderUUID}&cardUUID=${cardUUID}`,
         };
 
         try {
@@ -380,18 +380,14 @@ export default function ProfileAlbumTab(props: ProfileAlbumProps) {
                 <Box w="full">
                     <Collapse in={viewCardClicked} animateOpacity>
                         <Box w="full">
-                            <Flex
-                                direction="column"
-                                w="full"
-                                align="center"
-                                mt="-50px"
-                            >
+                            <Flex direction="column" w="full" align="center">
                                 <Flex
                                     w="max-content"
                                     borderRadius="10px"
                                     direction={{ base: "column", xl: "row" }}
                                     alignItems="center"
                                     gap={{ base: "0px", sm: "15px" }}
+                                    mt="-50px"
                                 >
                                     {/* Container for the Card */}
                                     <Flex
@@ -443,6 +439,7 @@ export default function ProfileAlbumTab(props: ProfileAlbumProps) {
                                         justify="center"
                                         mb={{ base: "10px", md: "60px" }}
                                         userSelect={"none"}
+                                        pt={{ md: "56px" }}
                                     >
                                         <Text
                                             fontFamily="'Barlow Condensed', sans-serif"

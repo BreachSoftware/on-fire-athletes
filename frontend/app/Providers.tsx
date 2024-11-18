@@ -18,8 +18,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ProvideTransfer } from "@/hooks/useTransfer";
 
 export const rainbowKitConfig = getDefaultConfig({
-    appName: "OnFire Athletes",
-    projectId: "72f5d80525bd261bb92a76b1426b1ce0",
+    appName: "onfire-athletes",
+    projectId: "04b034b039d6732f839163fef760fee6",
     chains: [bsc],
 });
 const queryClient = new QueryClient();

@@ -15,6 +15,7 @@
 
 # production
 /frontend/build
+/frontend/out
 
 # misc
 .DS_Store
@@ -26,7 +27,8 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
-.env.*
+.env.production
+.env.local
 
 # vercel
 .vercel
@@ -58,3 +60,5 @@ amplifytools.xcconfig
 .secret-*
 **.sample
 #amplify-do-not-edit-end
+
+.vercel

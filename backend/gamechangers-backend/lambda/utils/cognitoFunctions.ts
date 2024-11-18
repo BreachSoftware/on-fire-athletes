@@ -27,7 +27,7 @@ export async function getUserToken(
 
 	const params = {
 		AuthFlow: "USER_PASSWORD_AUTH",
-		ClientId: "201jn51bb4jt2suoi1lbchicj6",
+		ClientId: "2875gl69d4oj3rdpgrrj86ptor",
 		AuthParameters: {
 			USERNAME: email,
 			PASSWORD: password,

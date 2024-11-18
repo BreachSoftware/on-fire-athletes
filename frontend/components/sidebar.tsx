@@ -11,13 +11,7 @@ import {
     Image,
 } from "@chakra-ui/react";
 
-import {
-    FaFacebookF,
-    FaXTwitter,
-    FaTiktok,
-    FaSnapchat,
-    FaInstagram,
-} from "react-icons/fa6";
+import { FaFacebookF, FaXTwitter, FaInstagram } from "react-icons/fa6";
 import SideDrawer from "./sideDrawer";
 import SidebarDotsGreen from "../public/sidebar_dots_green.svg";
 import SidebarDots from "../public/sidebar_dots.svg";
@@ -47,17 +41,12 @@ interface Props {
  */
 function Sidebar({
     height = "100%",
-    backgroundPresent = true,
-    isMobile = false,
     backColor = "black",
     isGridIconAltColor = false,
     onSubClose,
 }: Props) {
-    const defaultIconColor = "white"; // Default color for social media icons
-    const hoverIconColor = "green.100"; // Color on hover
-    const bgColor = backgroundPresent ? (backColor ?? "black") : "transparent";
-    const iconColor = backgroundPresent ? defaultIconColor : "white";
-    const socialIconHoverColor = backgroundPresent ? hoverIconColor : "white";
+    const iconColor = "white";
+    const socialIconHoverColor = "green.100";
 
     const iconSize = "12px"; // Smaller icon size
     const socialMediaIconSpacing = 3; // Adjusted spacing for smaller icons
@@ -67,13 +56,13 @@ function Sidebar({
 
     return (
         <VStack
-            w={isMobile ? "100px" : "140px"}
+            w={{ base: "100px", lg: "140px" }}
             h={height}
             p={4}
             spacing={"32px"}
             py="32px"
             align="center"
-            bg={bgColor}
+            bg={backColor ?? "black"}
             css={{
                 // Getting rid of default scrollbar. Should work on nearly every browser
                 msOverflowStyle: "none",
@@ -116,7 +105,6 @@ function Sidebar({
                     onClose={onClose}
                     placement={"right"}
                     size={"xl"}
-                    isMobile={false}
                 />
             </Center>
 
@@ -135,22 +123,22 @@ function Sidebar({
                     {
                         icon: FaXTwitter,
                         label: "X",
-                        href: "https://x.com/onfireathletes",
+                        href: "https://x.com/onfireathletes_",
                     },
-                    {
-                        icon: FaTiktok,
-                        label: "TikTok",
-                        href: "https://tiktok.com/@onfireathletes",
-                    },
-                    {
-                        icon: FaSnapchat,
-                        label: "Snapchat",
-                        href: "https://www.snapchat.com/onfireathletes",
-                    },
+                    // {
+                    //     icon: FaTiktok,
+                    //     label: "TikTok",
+                    //     href: "https://tiktok.com/@onfireathletes",
+                    // },
+                    // {
+                    //     icon: FaSnapchat,
+                    //     label: "Snapchat",
+                    //     href: "https://www.snapchat.com/onfireathletes",
+                    // },
                     {
                         icon: FaInstagram,
                         label: "Instagram",
-                        href: "https://instagram.com/onfireathletes",
+                        href: "https://www.instagram.com/onfireathletes_",
                     },
                 ].map((social, index) => {
                     return (

@@ -11,6 +11,7 @@ import {
     Divider,
     Box,
     Button,
+    useBreakpointValue,
 } from "@chakra-ui/react";
 import Sidebar from "./sidebar";
 import Headline from "./headline_section/headline";
@@ -23,13 +24,13 @@ import { displayTabs } from "@/app/navbar";
 
 import CreateYourCardBg from "@/images/backgrounds/create-your-card.png";
 import FutureFandomBg from "@/images/backgrounds/future-fandom.png";
+import SharedStack from "./shared/wrappers/shared-stack";
 
 interface SideDrawerProps extends DrawerContentProps {
     isOpen: boolean;
     onClose: () => void;
     placement?: "bottom" | "end" | "left" | "right" | "start" | "top";
     size?: "xs" | "sm" | "md" | "lg" | "xl" | "full";
-    isMobile?: boolean;
 }
 
 interface MobileNavItem {
@@ -91,6 +92,10 @@ const navItems: Array<MobileNavSection> = [
                 href: "/our-story",
             },
             {
+                title: "AR Card",
+                href: "newsroom/what-are-ar-cards",
+            },
+            {
                 title: "NIL Partnerships",
                 href: "/nil",
             },
@@ -104,9 +109,6 @@ const navItems: Array<MobileNavSection> = [
             },
         ],
     },
-    {
-        header: "Get Started Today",
-    },
 ];
 
 /**
@@ -115,7 +117,9 @@ const navItems: Array<MobileNavSection> = [
  * @returns
  */
 function SideDrawer(props: SideDrawerProps) {
-    const { onClose, isMobile } = props;
+    const isMobile = useBreakpointValue({ base: true, lg: false });
+
+    const { onClose } = props;
 
     const rightHeaderColor = "#187b07";
     const leftHeaderColor = "green.100";
@@ -132,12 +136,16 @@ function SideDrawer(props: SideDrawerProps) {
     const secondaryBackgroundColor = "#171C1B"; // Linear gradient for drawer left
 
     const router = useRouter();
-    const pathname = usePathname();
     const auth = useAuth();
 
-    // State for the create button loading
-    const [createButtonLoading, setCreateButtonLoading] = useState(false);
-    const [collectButtonLoading, setCollectButtonLoading] = useState(false);
+    const sidebarItems = isMobile
+        ? [
+              ...navItems,
+              {
+                  header: "Get Started Today",
+              },
+          ]
+        : navItems;
 
     return (
         <Drawer
@@ -151,105 +159,108 @@ function SideDrawer(props: SideDrawerProps) {
             <DrawerContent w={{ base: "100%", md: "1000px" }} maxW="1000px">
                 {/* Grid split in two halves that takes up full width */}
                 <Grid
-                    templateColumns={props.isMobile ? "100%" : "1fr 1fr"}
+                    templateColumns={{ base: "100%", lg: "1fr 1fr" }}
                     templateRows="auto"
                     height="100dvh"
                     overflowY="hidden"
                 >
                     {/* Left half */}
                     {/* Only show this on desktop */}
-                    {!props.isMobile && (
+                    <Flex
+                        display={{ base: "none", lg: "flex" }}
+                        flexDirection="column"
+                        bgColor={secondaryBackgroundColor}
+                        justifyContent={"center"}
+                    >
                         <Flex
-                            flexDirection="column"
-                            bgColor={secondaryBackgroundColor}
-                            justifyContent={"center"}
+                            direction={"column"}
+                            width={"80%"}
+                            alignSelf={"center"}
+                            gap={5}
                         >
+                            <Text
+                                color={leftHeaderColor}
+                                fontFamily={headerFont}
+                                fontSize={{ base: "16px", lg: "20px" }}
+                                letterSpacing={headerSpacing}
+                                fontWeight={headerWeight}
+                                textTransform={"uppercase"}
+                            >
+                                Get Started Today
+                            </Text>
+
+                            {/* Headline Boxes */}
                             <Flex
                                 direction={"column"}
-                                width={"80%"}
-                                alignSelf={"center"}
-                                gap={5}
+                                height={"min-content"}
+                                gap={34}
+                                justifyContent={"center"}
                             >
-                                <Text
-                                    color={leftHeaderColor}
-                                    fontFamily={headerFont}
-                                    fontSize={{ base: "16px", lg: "20px" }}
-                                    letterSpacing={headerSpacing}
-                                    fontWeight={headerWeight}
-                                    textTransform={"uppercase"}
-                                >
-                                    Get Started Today
-                                </Text>
+                                <Headline
+                                    headlineTitle="Create Your Card"
+                                    buttonText="Start Creating"
+                                    url="/create"
+                                    width="100%"
+                                    height="280px"
+                                    background={CreateYourCardBg.src}
+                                />
 
-                                {/* Headline Boxes */}
-                                <Flex
-                                    direction={"column"}
-                                    height={"min-content"}
-                                    gap={34}
-                                    justifyContent={"center"}
-                                >
-                                    <Headline
-                                        headlineTitle="Create Your Card"
-                                        buttonText="Start Creating"
-                                        url="/create"
-                                        width="100%"
-                                        height="280px"
-                                        background={CreateYourCardBg.src}
-                                    />
-
-                                    <Headline
-                                        headlineTitle="The Future of Fandom"
-                                        buttonText="Start Collecting"
-                                        url="/lockerroom"
-                                        width="100%"
-                                        height="280px"
-                                        background={FutureFandomBg.src}
-                                    />
-                                </Flex>
+                                <Headline
+                                    headlineTitle="The Future of Fandom"
+                                    buttonText="Start Collecting"
+                                    url="/lockerroom"
+                                    width="100%"
+                                    height="280px"
+                                    background={FutureFandomBg.src}
+                                />
                             </Flex>
                         </Flex>
-                    )}
+                    </Flex>
 
                     {/* Right half */}
                     <Flex
-                        flexDirection={isMobile ? "row-reverse" : "row"}
+                        flexDirection={{ base: "row-reverse", lg: "row" }}
                         backgroundColor={primaryBackgroundColor}
                         justifyContent={"center"}
                         alignItems={"center"}
                         height="100%"
-                        overflowY="scroll"
+                        overflowY="auto"
                         w="100%"
                     >
-                        <DrawerBody px="40px" h="100%">
+                        <DrawerBody h="100%">
                             {/* Nav Menu */}
                             <Flex
                                 flexDirection={"column"}
                                 justifySelf={"center"}
                                 alignSelf={"center"}
-                                height={"100%"}
+                                py={{ base: "32px", md: "80px" }}
                             >
-                                <Flex
+                                <SharedStack
                                     flexDirection={"column"}
                                     alignSelf={"center"}
                                     height={"100%"}
-                                    py={{ base: "32px", md: "80px" }}
                                     w="100%"
+                                    divider={
+                                        <Divider
+                                            borderColor={"gray.1700"}
+                                            opacity={0.26}
+                                            borderWidth={1}
+                                            width="106%"
+                                            style={{
+                                                marginTop: "25px",
+                                                marginBottom: "25px",
+                                            }}
+                                        />
+                                    }
                                 >
                                     {/* Smaller groupings of each nav section */}
-                                    {navItems.map((navItem, index) => {
-                                        // Skip the last section if we are on desktop
-                                        if (
-                                            !isMobile == true &&
-                                            index === navItems.length - 1
-                                        ) {
-                                            return null;
-                                        }
-
+                                    {sidebarItems.map((navItem, index) => {
                                         return (
                                             <Flex
                                                 flexDirection="column"
                                                 key={index}
                                                 gap="14px"
+                                                userSelect="none"
                                             >
                                                 <Text
                                                     color={rightHeaderColor}
@@ -270,10 +281,7 @@ function SideDrawer(props: SideDrawerProps) {
                                                 >
                                                     {navItem.header}
                                                 </Text>
-                                                <Flex
-                                                    flexDirection={"column"}
-                                                    gap="12px"
-                                                >
+                                                <SharedStack gap="12px">
                                                     {/* Each child of the nav section */}
                                                     {navItem.children?.map(
                                                         (child, index) => {
@@ -290,7 +298,10 @@ function SideDrawer(props: SideDrawerProps) {
                                                                             "none",
                                                                     }}
                                                                 >
-                                                                    <Text
+                                                                    <Button
+                                                                        variant="ghost"
+                                                                        p={0}
+                                                                        h="fit-content"
                                                                         display={
                                                                             "inline-block"
                                                                         }
@@ -382,171 +393,29 @@ function SideDrawer(props: SideDrawerProps) {
                                                                                       );
                                                                                   }
                                                                         }
+                                                                        tabIndex={
+                                                                            -1
+                                                                        }
                                                                     >
                                                                         {
                                                                             child.title
                                                                         }
-                                                                    </Text>
+                                                                    </Button>
                                                                 </Box>
                                                             );
                                                         },
                                                     )}
-                                                </Flex>
-
-                                                {/* Divider below all except the last item */}
-                                                {index < navItems.length - 1 &&
-                                                    // if we are on desktop, dont show the last two dividers
-                                                    (!props.isMobile &&
-                                                    index ===
-                                                        navItems.length -
-                                                            2 ? null : (
-                                                        <Divider
-                                                            borderColor={
-                                                                "gray.1700"
-                                                            }
-                                                            opacity={0.26}
-                                                            borderWidth={1}
-                                                            width="106%"
-                                                            marginTop="12px"
-                                                            marginBottom="24px"
-                                                        />
-                                                    ))}
-
-                                                {/* On the last element, put our action buttons */}
-                                                {isMobile &&
-                                                    index ===
-                                                        navItems.length - 1 && (
-                                                        // Action Buttons
-                                                        <Flex
-                                                            flexDirection={
-                                                                "column"
-                                                            }
-                                                            gap={"15px"}
-                                                            mb="30px"
-                                                        >
-                                                            {/* Create Button */}
-                                                            <Button
-                                                                variant="infoButton"
-                                                                style={{
-                                                                    border: "1px solid white",
-                                                                    height: "50px",
-                                                                }}
-                                                                w="100%"
-                                                                letterSpacing={
-                                                                    "1.5px"
-                                                                }
-                                                                bg={
-                                                                    "transparent"
-                                                                }
-                                                                borderRadius="30px"
-                                                                color="white"
-                                                                _focus={{
-                                                                    shadow: "none",
-                                                                }}
-                                                                pl="32px"
-                                                                isLoading={
-                                                                    createButtonLoading
-                                                                }
-                                                                spinner={
-                                                                    <BeatLoader
-                                                                        color="white"
-                                                                        size={8}
-                                                                    />
-                                                                }
-                                                                onClick={() => {
-                                                                    if (
-                                                                        pathname !==
-                                                                        "/create"
-                                                                    ) {
-                                                                        router.push(
-                                                                            "/create",
-                                                                        );
-                                                                        setCreateButtonLoading(
-                                                                            true,
-                                                                        );
-                                                                    } else {
-                                                                        onClose();
-                                                                    }
-                                                                }}
-                                                            >
-                                                                <Text fontSize="14px">
-                                                                    START
-                                                                    CREATING
-                                                                </Text>
-                                                                <ChevronRightIcon
-                                                                    boxSize={8}
-                                                                    marginLeft="auto"
-                                                                />
-                                                            </Button>
-
-                                                            {/* Collect Button */}
-                                                            <Button
-                                                                variant="infoButton"
-                                                                style={{
-                                                                    border: "1px solid white",
-                                                                    height: "50px",
-                                                                }}
-                                                                w="100%"
-                                                                letterSpacing={
-                                                                    "1.5px"
-                                                                }
-                                                                bg={
-                                                                    "transparent"
-                                                                }
-                                                                borderRadius="30px"
-                                                                color="white"
-                                                                _focus={{
-                                                                    shadow: "none",
-                                                                }}
-                                                                pl="32px"
-                                                                isLoading={
-                                                                    collectButtonLoading
-                                                                }
-                                                                spinner={
-                                                                    <BeatLoader
-                                                                        color="white"
-                                                                        size={8}
-                                                                    />
-                                                                }
-                                                                onClick={() => {
-                                                                    if (
-                                                                        pathname !==
-                                                                        "/lockerroom"
-                                                                    ) {
-                                                                        router.push(
-                                                                            "/lockerroom",
-                                                                        );
-                                                                        setCollectButtonLoading(
-                                                                            true,
-                                                                        );
-                                                                    } else {
-                                                                        onClose();
-                                                                    }
-                                                                }}
-                                                            >
-                                                                <Text fontSize="14px">
-                                                                    START
-                                                                    COLLECTING
-                                                                </Text>
-                                                                <ChevronRightIcon
-                                                                    boxSize={8}
-                                                                    marginLeft="auto"
-                                                                />
-                                                            </Button>
-                                                        </Flex>
-                                                    )}
+                                                </SharedStack>
                                             </Flex>
                                         );
                                     })}
-                                </Flex>
+                                </SharedStack>
+                                {/* <Box w="100px" h="400px" bg="yellow"></Box> */}
+                                <ActionButtons onClose={onClose} />
                             </Flex>
                         </DrawerBody>
 
-                        <Sidebar
-                            onSubClose={props.onClose}
-                            backgroundPresent={props.isMobile}
-                            isMobile={props.isMobile}
-                        />
+                        <Sidebar onSubClose={props.onClose} />
                     </Flex>
                 </Grid>
             </DrawerContent>
@@ -555,3 +424,88 @@ function SideDrawer(props: SideDrawerProps) {
 }
 
 export default SideDrawer;
+
+function ActionButtons({ onClose }: { onClose: () => void }) {
+    const pathname = usePathname();
+    const router = useRouter();
+
+    // State for the create button loading
+    const [createButtonLoading, setCreateButtonLoading] = useState(false);
+    const [collectButtonLoading, setCollectButtonLoading] = useState(false);
+
+    return (
+        <Flex
+            display={{
+                base: "flex",
+                lg: "none",
+            }}
+            mt="16px"
+            flexDirection={"column"}
+            gap={"15px"}
+        >
+            {/* Create Button */}
+            <Button
+                tabIndex={-1}
+                variant="infoButton"
+                style={{
+                    border: "1px solid white",
+                    height: "50px",
+                }}
+                w="100%"
+                letterSpacing={"1.5px"}
+                bg={"transparent"}
+                borderRadius="30px"
+                color="white"
+                _focus={{
+                    shadow: "none",
+                }}
+                pl="32px"
+                isLoading={createButtonLoading}
+                spinner={<BeatLoader color="white" size={8} />}
+                onClick={() => {
+                    if (pathname !== "/create") {
+                        router.push("/create");
+                        setCreateButtonLoading(true);
+                    } else {
+                        onClose();
+                    }
+                }}
+            >
+                <Text fontSize="14px">START CREATING</Text>
+                <ChevronRightIcon boxSize={8} marginLeft="auto" />
+            </Button>
+
+            {/* Collect Button */}
+            <Button
+                tabIndex={-1}
+                variant="infoButton"
+                style={{
+                    border: "1px solid white",
+                    height: "50px",
+                }}
+                w="100%"
+                letterSpacing={"1.5px"}
+                bg={"transparent"}
+                borderRadius="30px"
+                color="white"
+                _focus={{
+                    shadow: "none",
+                }}
+                pl="32px"
+                isLoading={collectButtonLoading}
+                spinner={<BeatLoader color="white" size={8} />}
+                onClick={() => {
+                    if (pathname !== "/lockerroom") {
+                        router.push("/lockerroom");
+                        setCollectButtonLoading(true);
+                    } else {
+                        onClose();
+                    }
+                }}
+            >
+                <Text fontSize="14px">START COLLECTING</Text>
+                <ChevronRightIcon boxSize={8} marginLeft="auto" />
+            </Button>
+        </Flex>
+    );
+}

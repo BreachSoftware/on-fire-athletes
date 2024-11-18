@@ -20,11 +20,15 @@ import TradingCardInfo from "@/hooks/TradingCardInfo";
 import { useEffect, useRef, useState } from "react";
 import MobileStepWrapper from "@/components/create/mobile/MobileStepWrapper";
 
+interface CardCreationProps {
+    isNil?: boolean;
+}
+
 /**
  *
  * @returns the creation overview page
  */
-export default function CreationOverview() {
+export default function CreationOverview({ isNil = false }: CardCreationProps) {
     const currentInfo = useCurrentCardInfo();
     const cardFrontRef = useRef(null);
     const foregroundRef = useRef(null);
@@ -234,6 +238,7 @@ export default function CreationOverview() {
                                 currentInfo={currentInfo}
                                 foregroundRef={foregroundRef}
                                 backgroundRef={backgroundRef}
+                                isNil={isNil}
                             />
                         ) : (
                             <Flex
@@ -247,6 +252,7 @@ export default function CreationOverview() {
                                     foregroundRef={foregroundRef}
                                     backgroundRef={backgroundRef}
                                     cardBackRef={cardBackRef}
+                                    isNil={isNil}
                                 />
                             </Flex>
                         )}

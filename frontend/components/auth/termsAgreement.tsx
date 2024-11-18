@@ -32,7 +32,7 @@ export default function TermsAndConditions({ isAccepted, setIsAccepted }: Props)
 						router.push("/faq#Legal");
 					}}
 					textDecorationLine="underline">
-					Terms of Service
+					Terms of Use
 				</Button>
 
 				<Text>and</Text>

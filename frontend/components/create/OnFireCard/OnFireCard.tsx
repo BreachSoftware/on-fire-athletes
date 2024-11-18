@@ -47,13 +47,13 @@ import RepeatingPetch from "./repeating_petch";
 import FlipCardIcon from "./flip_card_button";
 import { useMediaProcessing } from "@/hooks/useMediaProcessing";
 import OnFireCardSliders from "./OnFireCardSliders";
-import CardOutline from "@/public/card_assets/card-outline.png";
 import CardMaskImage from "@/public/card_assets/card-mask.png";
 import CardMaskReverseImage from "@/public/card_assets/card-mask-reverse.png";
 import CardOutlineShine from "@/public/card_assets/card-outline-shine.png";
 import CardInteriorShineA from "@/public/card_assets/card-inner-border-shine.png";
 import { FaRotate } from "react-icons/fa6";
 import { CardFonts } from "../create-helpers";
+import ExteriorBorder from "./ExteriorBorder";
 
 // Use this enum to determine the zIndex of the elements on the card
 enum zIndex {
@@ -1532,7 +1532,7 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                 tabIndex={0}
                                 pos="absolute"
                                 bottom="-50px"
-                                right="-70px"
+                                right="-74px"
                                 onClick={handleClick}
                                 aria-label="Flip Card"
                                 background={"white"}
@@ -1555,55 +1555,3 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
 OnFireCard.displayName = "GamechangersCard";
 
 export default OnFireCard;
-
-function ExteriorBorder({
-    color,
-    mirrored,
-}: {
-    color: string;
-    mirrored: boolean;
-}) {
-    return (
-        <Box
-            // mirror
-            transform={mirrored ? "scaleX(-1)" : "scaleX(1)"}
-            position="absolute"
-            zIndex={zIndex.cardBackVideo + 1}
-            top={0}
-            left={0}
-            w="100%"
-            h="100%"
-            pointerEvents="none"
-            userSelect="none"
-        >
-            <Box
-                position="absolute"
-                top={0}
-                left={0}
-                w="100%"
-                h="100%"
-                bg={color}
-                css={{
-                    maskImage: `url(${CardOutline.src})`,
-                    maskSize: "cover",
-                    maskRepeat: "no-repeat",
-                    WebkitMaskImage: `url(${CardOutline.src})`,
-                    WebkitMaskSize: "cover",
-                    WebkitMaskRepeat: "no-repeat",
-                }}
-            />
-            <Box
-                pos="absolute"
-                zIndex="10"
-                top="0"
-                left="0"
-                w="100%"
-                h="100%"
-                bgImage={CardOutlineShine.src}
-                backgroundSize="cover"
-                opacity="0.25"
-                pointerEvents="none"
-            />
-        </Box>
-    );
-}

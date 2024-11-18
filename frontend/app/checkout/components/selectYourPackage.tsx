@@ -141,6 +141,7 @@ export default function SelectYourPackage() {
                                         | "rookie"
                                         | "allStar"
                                         | "mvp",
+                                    digitalCardCount: 0,
                                 });
                             }}
                             cursor={"pointer"}

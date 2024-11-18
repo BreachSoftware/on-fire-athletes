@@ -18,15 +18,22 @@ import { ChevronRightIcon } from "@chakra-ui/icons";
 import Footer from "@/app/components/footer";
 import OnFireCard from "@/components/create/OnFireCard/OnFireCard";
 import DemarioCard from "@/images/mockups/demario-card.png";
+import { useRouter } from "next/navigation";
+import { handlePurchase } from "./completeOrder/stripeHandlePurchase";
+import { useAuth } from "@/hooks/useAuth";
+import CheckoutInfo from "@/hooks/CheckoutInfo";
 
 /**
  * This component is responsible for rendering the all-star price section of the checkout page.
  * @returns {JSX.Element} - The rendered JSX element for the all-star price section.
  */
-export default function AllStarPrice() {
+export default function AllStarPrice({ isNil }: { isNil?: boolean }) {
     const curCheckout = useCurrentCheckout();
     const checkout = curCheckout.checkout;
     const stepNumber = checkout.stepNum;
+
+    const auth = useAuth();
+    const router = useRouter();
 
     const card = checkout.onFireCard;
 
@@ -277,18 +284,20 @@ export default function AllStarPrice() {
                             pb={{ base: "32px", md: 0 }}
                         >
                             {/* Back button to go to the previous step */}
-                            <Button
-                                variant={"back"}
-                                width="100px"
-                                onClick={() => {
-                                    curCheckout.setCheckout({
-                                        ...curCheckout.checkout,
-                                        stepNum: stepNumber - 1,
-                                    });
-                                }}
-                            >
-                                Back
-                            </Button>
+                            {!isNil && (
+                                <Button
+                                    variant={"back"}
+                                    width="100px"
+                                    onClick={() => {
+                                        curCheckout.setCheckout({
+                                            ...curCheckout.checkout,
+                                            stepNum: stepNumber - 1,
+                                        });
+                                    }}
+                                >
+                                    Back
+                                </Button>
+                            )}
                             {/* Next button to proceed to the next step, disabled if the price is below $20 */}
                             <Button
                                 variant="next"
@@ -304,9 +313,32 @@ export default function AllStarPrice() {
                                         checkout.cardPrice.toString() || "0",
                                     ) < 20
                                 }
-                                onClick={() => {
-                                    // Increment the step number to go to the next step, up to the last step
-                                    if (
+                                onClick={async () => {
+                                    if (isNil) {
+                                        const cardPrice = parseFloat(
+                                            checkout.cardPrice,
+                                        ).toFixed(2);
+
+                                        const newCheckout: CheckoutInfo = {
+                                            ...checkout,
+                                            cardPrice,
+                                            packageCardCount: 50,
+                                        };
+
+                                        curCheckout.setCheckout(newCheckout);
+
+                                        await handlePurchase(
+                                            newCheckout,
+                                            card,
+                                            null,
+                                            router,
+                                            false,
+                                            auth,
+                                            undefined,
+                                            true,
+                                        );
+                                    } // Increment the step number to go to the next step, up to the last step
+                                    else if (
                                         stepNumber >= 0 &&
                                         stepNumber < checkoutSteps.length - 1
                                     ) {

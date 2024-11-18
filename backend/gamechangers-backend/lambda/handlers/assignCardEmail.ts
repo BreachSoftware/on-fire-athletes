@@ -112,7 +112,7 @@ export async function assignCardEmail(
 		}
 
 		const baseUrl = (
-			process.env.BASE_URL || "https://on-fire-athletes.netlify.app"
+			process.env.BASE_URL || "https://onfireathletes.com"
 		).replace(/\/$/, "");
 
 		// Supply the email template with its body
