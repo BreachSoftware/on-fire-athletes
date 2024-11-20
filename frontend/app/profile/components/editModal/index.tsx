@@ -6,54 +6,54 @@ import {
     ModalOverlay,
     ModalContent,
     ModalCloseButton,
-} from '@chakra-ui/modal'
-import { Button } from '@chakra-ui/button'
-import { Textarea } from '@chakra-ui/textarea'
-import { Text, Flex, Grid, GridItem } from '@chakra-ui/layout'
+} from "@chakra-ui/modal";
+import { Button } from "@chakra-ui/button";
+import { Textarea } from "@chakra-ui/textarea";
+import { Text, Flex, Grid, GridItem } from "@chakra-ui/layout";
 
-import EditProfileInput from './input'
-import SocialMediaInput from '../socialMediaInput'
-import { validateSocialLink } from '../../helpers'
-import ProfileAvatarInput from './avatar'
-import { ProfileInfo } from '../../page'
+import EditProfileInput from "./input";
+import SocialMediaInput from "../socialMediaInput";
+import { validateSocialLink } from "../../helpers";
+import ProfileAvatarInput from "./avatar";
+import { ProfileInfo } from "../profile.client";
 
 interface Props {
     // Modal Props
-    isOpen: boolean
-    onClose: () => void
+    isOpen: boolean;
+    onClose: () => void;
 
     // Actions
-    checkUpdate: () => void
-    undoProfileChanges: () => void
+    checkUpdate: () => void;
+    undoProfileChanges: () => void;
 
     // Profile Info
-    profileInfo?: ProfileInfo
+    profileInfo?: ProfileInfo;
 
     // Values
-    editableFirstName: string
-    setEditableFirstName: (value: string) => void
-    editableLastName: string
-    setEditableLastName: (value: string) => void
-    editablePosition: string
-    setEditablePosition: (value: string) => void
-    editableTeamHometown: string
-    setEditableTeamHometown: (value: string) => void
-    editableBio: string
-    setEditableBio: (value: string) => void
-    editableProfilePicture: string
-    setEditableProfilePicture: (value: string) => void
-    editableFacebookLink: string
-    setEditableFacebookLink: (value: string) => void
-    editableXLink: string
-    setEditableXLink: (value: string) => void
-    editableTiktokLink: string
-    setEditableTiktokLink: (value: string) => void
-    editableInstagramLink: string
-    setEditableInstagramLink: (value: string) => void
-    editableYoutubeLink: string
-    setEditableYoutubeLink: (value: string) => void
-    editableSnapchatLink: string
-    setEditableSnapchatLink: (value: string) => void
+    editableFirstName: string;
+    setEditableFirstName: (value: string) => void;
+    editableLastName: string;
+    setEditableLastName: (value: string) => void;
+    editablePosition: string;
+    setEditablePosition: (value: string) => void;
+    editableTeamHometown: string;
+    setEditableTeamHometown: (value: string) => void;
+    editableBio: string;
+    setEditableBio: (value: string) => void;
+    editableProfilePicture: string;
+    setEditableProfilePicture: (value: string) => void;
+    editableFacebookLink: string;
+    setEditableFacebookLink: (value: string) => void;
+    editableXLink: string;
+    setEditableXLink: (value: string) => void;
+    editableTiktokLink: string;
+    setEditableTiktokLink: (value: string) => void;
+    editableInstagramLink: string;
+    setEditableInstagramLink: (value: string) => void;
+    editableYoutubeLink: string;
+    setEditableYoutubeLink: (value: string) => void;
+    editableSnapchatLink: string;
+    setEditableSnapchatLink: (value: string) => void;
 }
 
 /**
@@ -101,15 +101,15 @@ export default function EditProfileModal({
             isOpen={isOpen}
             onClose={onClose}
             isCentered
-            size={{ base: 'full', md: 'xl' }}
+            size={{ base: "full", md: "xl" }}
             preserveScrollBarGap
             scrollBehavior="inside"
             closeOnOverlayClick={false}
         >
             <ModalOverlay />
             <ModalContent
-                minW={{ base: '85%', md: '70%', xl: '800px' }}
-                maxW={{ base: '85%', md: '70%', xl: '800px' }}
+                minW={{ base: "85%", md: "70%", xl: "800px" }}
+                maxW={{ base: "85%", md: "70%", xl: "800px" }}
                 rounded="xl"
                 bg="#1B1B1B"
                 color="white"
@@ -118,46 +118,46 @@ export default function EditProfileModal({
                 <ModalCloseButton onClick={undoProfileChanges} />
                 <ModalBody>
                     <Grid
-                        templateColumns={{ base: '1fr', xl: 'repeat(6, 1fr)' }}
+                        templateColumns={{ base: "1fr", xl: "repeat(6, 1fr)" }}
                         gap={4}
                     >
                         <GridItem colSpan={{ base: 1, xl: 3 }}>
                             <Text>First Name *</Text>
                             <EditProfileInput
-                                placeholder={'First Name *'}
+                                placeholder={"First Name *"}
                                 value={editableFirstName}
                                 onChange={(e) => {
-                                    setEditableFirstName(e.target.value)
+                                    setEditableFirstName(e.target.value);
                                 }}
                             />
                         </GridItem>
                         <GridItem colSpan={{ base: 1, xl: 3 }}>
                             <Text>Last Name *</Text>
                             <EditProfileInput
-                                placeholder={'Last Name *'}
+                                placeholder={"Last Name *"}
                                 value={editableLastName}
                                 onChange={(e) => {
-                                    setEditableLastName(e.target.value)
+                                    setEditableLastName(e.target.value);
                                 }}
                             />
                         </GridItem>
                         <GridItem colSpan={{ base: 1, xl: 3 }}>
                             <Text>Position *</Text>
                             <EditProfileInput
-                                placeholder={'Position'}
+                                placeholder={"Position"}
                                 value={editablePosition}
                                 onChange={(e) => {
-                                    setEditablePosition(e.target.value)
+                                    setEditablePosition(e.target.value);
                                 }}
                             />
                         </GridItem>
                         <GridItem colSpan={{ base: 1, xl: 3 }}>
                             <Text>Team Name/Hometown *</Text>
                             <EditProfileInput
-                                placeholder={'Team Name, State'}
+                                placeholder={"Team Name, State"}
                                 value={editableTeamHometown}
                                 onChange={(e) => {
-                                    setEditableTeamHometown(e.target.value)
+                                    setEditableTeamHometown(e.target.value);
                                 }}
                             />
                         </GridItem>
@@ -165,17 +165,17 @@ export default function EditProfileModal({
                             <Text>About You</Text>
                             <Textarea
                                 backgroundColor="#2B2B2B"
-                                border={'solid 1px #323232'}
+                                border={"solid 1px #323232"}
                                 rounded="md"
-                                placeholder={'Write your bio...'}
+                                placeholder={"Write your bio..."}
                                 px="20px"
                                 py="12px"
-                                color={'white'}
+                                color={"white"}
                                 h="200px"
                                 resize="none"
                                 value={editableBio}
                                 onChange={(e) => {
-                                    setEditableBio(e.target.value)
+                                    setEditableBio(e.target.value);
                                 }}
                             />
                         </GridItem>
@@ -280,17 +280,17 @@ export default function EditProfileModal({
                 </ModalBody>
 
                 <ModalFooter>
-                    <Flex justifyContent={'center'} maxW={'100%'} w={'100%'}>
+                    <Flex justifyContent={"center"} maxW={"100%"} w={"100%"}>
                         <Button
                             maxW={{
-                                base: '100%',
-                                sm: '75%',
-                                md: '60%',
-                                lg: '50%',
+                                base: "100%",
+                                sm: "75%",
+                                md: "60%",
+                                lg: "50%",
                             }}
                             variant="next"
                             onClick={() => {
-                                checkUpdate()
+                                checkUpdate();
                             }}
                         >
                             Save Changes
@@ -299,5 +299,5 @@ export default function EditProfileModal({
                 </ModalFooter>
             </ModalContent>
         </Modal>
-    )
+    );
 }

@@ -12,7 +12,7 @@ import {
     UseToastOptions,
 } from "@chakra-ui/react";
 import { ChangeEvent, createRef, useState } from "react";
-import { ProfileInfo } from "../../page";
+import { ProfileInfo } from "@/app/profile/components/profile.client";
 import ProfileBioMedia from "./media";
 import ProfileNewMedia from "./newMedia";
 import { MediaType } from "@/hooks/useMediaProcessing";
