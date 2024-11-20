@@ -26,6 +26,7 @@ import {
 } from "aws-amplify/auth";
 import profileInfo from "@/interfaces/profileInfo";
 import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
+import { UserFields } from "@/types/user.types";
 
 Amplify.configure(config);
 
@@ -53,6 +54,7 @@ export interface useAuthProps {
     ) => Promise<Result>;
     currentSession: () => void;
     currentAuthenticatedUser: () => Promise<AuthUser>;
+    dbUser: UserFields | null;
 }
 
 type Props = {
@@ -73,6 +75,12 @@ export const useAuth = () => {
 function useProvideAuth(): useAuthProps {
     const [isLoading, setIsLoading] = useState(true);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [dbUser, setDbUser] = useState<UserFields | null>(null);
+
+    function handleSetDbUser(user: UserFields) {
+        console.log("Setting DB User", JSON.stringify(user));
+        setDbUser(user);
+    }
 
     /**
      * Uses aws-amplify sdk to get the auth session for the current user
@@ -107,7 +115,27 @@ function useProvideAuth(): useAuthProps {
             requestOptions,
         );
 
+        const dbUser: UserFields = await response.json();
+
+        handleSetDbUser(dbUser);
+
         return response.ok;
+    }
+
+    async function setDbUserInContext(uuid: string) {
+        const requestOptions: RequestInit = {
+            method: "GET",
+            redirect: "follow",
+        };
+
+        const response = await fetch(
+            `${apiEndpoints.getUser()}?uuid=${encodeURIComponent(uuid)}`,
+            requestOptions,
+        );
+
+        const dbUser: UserFields = await response.json();
+
+        handleSetDbUser(dbUser);
     }
 
     /**
@@ -263,6 +291,8 @@ function useProvideAuth(): useAuthProps {
                     autoSignIn: true,
                 },
             });
+
+            await setDbUserInContext((await getCurrentUser()).userId);
         } catch (error) {
             return { success: false, message: "account exists" };
         }
@@ -276,6 +306,7 @@ function useProvideAuth(): useAuthProps {
                     (await fetchAuthSession()).tokens ?? {};
                 if (accessToken && idToken) {
                     setIsAuthenticated(true);
+                    await setDbUserInContext((await getCurrentUser()).userId);
                 }
             } catch (err) {
                 // Based on our current implementation, we can surpress these errors
@@ -361,6 +392,7 @@ function useProvideAuth(): useAuthProps {
         confirmReset: handleConfirmResetPassword,
         currentSession: currentSession,
         currentAuthenticatedUser: currentAuthenticatedUser,
+        dbUser,
     };
 }
 

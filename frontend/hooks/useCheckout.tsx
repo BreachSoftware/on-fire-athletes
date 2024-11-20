@@ -7,6 +7,8 @@ import CheckoutInfo from "@/hooks/CheckoutInfo";
 export interface useCheckoutProperties {
     checkout: CheckoutInfo;
     setCheckout: (newCheckout: CheckoutInfo) => void;
+    setupIntentCreated: boolean;
+    setSetupIntentCreated: (value: boolean) => void;
 }
 
 type Props = {
@@ -30,10 +32,14 @@ export function useCurrentCheckout() {
  */
 function useCheckout(): useCheckoutProperties {
     const [checkout, setCheckout] = useState<CheckoutInfo>(new CheckoutInfo());
+    const [setupIntentCreated, setSetupIntentCreated] =
+        useState<boolean>(false);
 
     return {
         checkout: checkout,
         setCheckout: setCheckout,
+        setupIntentCreated: setupIntentCreated,
+        setSetupIntentCreated: setSetupIntentCreated,
     };
 }
 

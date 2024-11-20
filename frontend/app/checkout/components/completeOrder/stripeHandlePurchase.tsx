@@ -7,6 +7,7 @@ import { PaymentIntent, Stripe } from "@stripe/stripe-js";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
 import { totalPriceInCart } from "@/utils/utils";
+import { PaymentMethod } from "@/utils/constants";
 
 /**
  * Handles the purchase process for trading cards, supporting both Stripe and non-Stripe payment methods.
@@ -36,8 +37,6 @@ export async function handlePurchase(
         let paymentIntent: PaymentIntent | null = null;
         let shouldByPassPayment = false;
 
-        console.log("checkout total", checkout.total);
-
         if (checkout.total === 0) {
             // If the total is 0, bypass payment and create the order
             shouldByPassPayment = true;
@@ -48,10 +47,6 @@ export async function handlePurchase(
             // Extract payment method and customer ID from checkout info
             const paymentMethodId = checkout.paymentMethodId;
             const customerId = checkout.customerId;
-
-            console.log("checkout", JSON.stringify(checkout));
-            console.log("paymentMethodId", paymentMethodId);
-            console.log("customerId", customerId);
 
             if (!paymentMethodId || !customerId) {
                 console.error("Payment method or customer ID not found.");
@@ -75,7 +70,6 @@ export async function handlePurchase(
             );
 
             const data = await paymentIntentResponse.json();
-            console.log("Payment intent response:", data);
 
             shouldByPassPayment = data.byPassPayment;
 
@@ -139,6 +133,12 @@ export async function handlePurchase(
                 city: checkout.shippingAddress.city,
                 state: checkout.shippingAddress.state,
                 zip_code: checkout.shippingAddress.zipCode,
+                coupon_used: checkout.couponCode,
+                payment_method: shouldByPassPayment
+                    ? PaymentMethod.Bypassed
+                    : hash
+                      ? PaymentMethod.GMEX
+                      : PaymentMethod.Card,
             }),
         };
 

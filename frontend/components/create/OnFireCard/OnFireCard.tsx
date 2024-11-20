@@ -322,10 +322,6 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
         }
 
         useEffect(() => {
-            console.log({ isFlipped });
-        }, [isFlipped]);
-
-        useEffect(() => {
             setIsFlipped(cardHook.curCard.frontIsShowing);
             // We only want to run this once, so we don't need to add handleFlip to the dependencies
             // eslint-disable-next-line react-hooks/exhaustive-deps

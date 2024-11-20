@@ -95,8 +95,6 @@ export default function SendMyCardModal(props: SendMyCardModalProps) {
         );
         const senderProfileData = await senderProfile.json();
 
-        console.log("senderProfileData", senderProfileData);
-
         const { generatedBy, uuid, cardImage, firstName, lastName } =
             props.currentCard;
 
