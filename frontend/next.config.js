@@ -1,11 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    output: 'export',
+    // output: 'export',
     async rewrites() {
         return [
             {
-                source: '/.well-known/:path*',
-                destination: '/public/.well-known/:path*',
+                source: "/.well-known/:path*",
+                destination: "/public/.well-known/:path*",
             },
         ];
     },
