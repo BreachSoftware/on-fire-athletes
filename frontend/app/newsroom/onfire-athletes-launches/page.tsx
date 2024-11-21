@@ -34,15 +34,6 @@ export default function Article() {
                 </ArticleParagraph>
 
                 <ArticleParagraph>
-                    Game Coin, proudly announces the official launch of its
-                    platform, ONFIRE ATHLETES, which incorporates groundbreaking
-                    technology with the nostalgia of traditional sports trading
-                    cards, combining the best of both worlds. Years in the
-                    making, the ONFIRE ATHLETES platform empowers athletes to
-                    create, showcase, trade, and print personalized sports cards
-                    that come to life through Augmented Reality (AR).
-                </ArticleParagraph>
-                <ArticleParagraph>
                     ONFIRE ATHLETES is unlike any other platform, enabling
                     athletes of all levels—from Heisman hopefuls and World
                     Series MVPs to little leaguers and dance teams and every
