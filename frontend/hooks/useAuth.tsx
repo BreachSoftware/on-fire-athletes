@@ -77,11 +77,6 @@ function useProvideAuth(): useAuthProps {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [dbUser, setDbUser] = useState<UserFields | null>(null);
 
-    function handleSetDbUser(user: UserFields) {
-        console.log("Setting DB User", JSON.stringify(user));
-        setDbUser(user);
-    }
-
     /**
      * Uses aws-amplify sdk to get the auth session for the current user
      */
@@ -117,7 +112,7 @@ function useProvideAuth(): useAuthProps {
 
         const dbUser: UserFields = await response.json();
 
-        handleSetDbUser(dbUser);
+        setDbUser(dbUser);
 
         return response.ok;
     }
@@ -135,7 +130,7 @@ function useProvideAuth(): useAuthProps {
 
         const dbUser: UserFields = await response.json();
 
-        handleSetDbUser(dbUser);
+        setDbUser(dbUser);
     }
 
     /**

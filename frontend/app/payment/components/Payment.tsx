@@ -40,7 +40,6 @@ export default function Payment(props: PaymentProps) {
          */
         async function createSetupIntent() {
             let customerId: string = dbUser?.stripe_customer_id || "";
-            console.log("CREATING SETUP INTENT");
 
             if (customerId) {
                 console.log("Found customer! Skipping create...");
