@@ -24,7 +24,6 @@ import { darkTheme, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 const STRIPE_PUBLIC_KEY =
     process.env.NEXT_PUBLIC_STRIPE_PK ||
     "pk_live_51PssXyCEBFOTy6pM9DfyGbI7JZUqMoClqRVuFCEAVamp10DYl2O48SqCjiw7vSbeiv8CCmYPZwSgguOTCcJzbY0u00cwKkUFDZ";
-
 /**
  * The Checkout page when purchasing a card
  * @returns JSX.Element
@@ -46,7 +45,6 @@ export default function CheckoutPage() {
 
     const checkout = co.checkout;
     const checkoutStep = checkout.stepNum;
-    console.log("CARD:", checkout.onFireCard);
 
     const itemsInCart = checkout.cart;
 
@@ -147,7 +145,6 @@ export default function CheckoutPage() {
     // This useEffect is used to set the cart items when the user is not buying a card from another user
     useEffect(() => {
         if (checkoutStep === 2 && !buyingOtherCard) {
-            console.log("Setting cart items");
             let formalPackageName = "";
             if (co.checkout.packageName) {
                 switch (co.checkout.packageName) {
