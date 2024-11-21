@@ -8,9 +8,6 @@ import { CARD_BACKGROUNDS } from "../card-backgrounds";
  */
 export function imagePaths(curCard: TradingCardInfo): string[] {
     return [
-        "/card_assets/card-outline.png", // Exterior
-        `/card_assets/card-interior-border-${curCard.cardType}.png`, // Interior
-        "/card_assets/card-backdrop.png", // Solid Background
         `/backgrounds/${CARD_BACKGROUNDS[curCard.selectedBackground].src}`,
         curCard.signature ? curCard.signature : "",
     ];
@@ -22,13 +19,7 @@ export function imagePaths(curCard: TradingCardInfo): string[] {
  * @returns the array of colors to recolor images by
  */
 export function imageColors(curCard: TradingCardInfo): string[] {
-    return [
-        curCard.borderColor,
-        curCard.borderColor,
-        curCard.backgroundAccentColor,
-        curCard.backgroundMainColor,
-        curCard.signatureColor,
-    ];
+    return [curCard.backgroundMainColor, curCard.signatureColor];
 }
 
 /**

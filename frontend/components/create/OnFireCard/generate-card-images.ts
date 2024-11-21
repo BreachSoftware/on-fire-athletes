@@ -7,7 +7,7 @@ import "@fontsource/chakra-petch/600.css";
 import CardMaskReverseImage from "@/public/card_assets/card-mask-reverse.png";
 import ArCardBackgroundImage from "@/public/card_assets/ar-card-background-interior.png";
 import CardMaskReverse from "@/public/card_assets/card-mask-reverse.png";
-import CardOutlineNew from "@/public/card_assets/card-outline-new.png";
+import CardOutlineNew from "@/public/card_assets/card-outline-thick.png";
 // import CardOutlineShine from "@/public/card_assets/card-outline-shine.png";
 import OnFireLogo from "@/images/logos/small-logo-white.png";
 import TradingCardInfo from "@/hooks/TradingCardInfo";
