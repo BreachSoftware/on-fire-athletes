@@ -15,7 +15,7 @@ interface PaymentProps {
 // OnFire keys
 const STRIPE_PUBLIC_KEY =
     process.env.NEXT_PUBLIC_STRIPE_PK ||
-    "pk_test_51PssXyCEBFOTy6pMtubViKDQwVSljNAJRQAk5SkRyexPECtx4w8R3IHLQtI7CSNG1g7hSFk044Pc0STSYtxEWmSW00Y4VLvPII";
+    "pk_live_51PssXyCEBFOTy6pM9DfyGbI7JZUqMoClqRVuFCEAVamp10DYl2O48SqCjiw7vSbeiv8CCmYPZwSgguOTCcJzbY0u00cwKkUFDZ";
 /**
  * Payment component
  * @param {*} props
@@ -23,11 +23,12 @@ const STRIPE_PUBLIC_KEY =
  */
 export default function Payment(props: PaymentProps) {
     const { dbUser } = useAuth();
-    const { checkout, setCheckout, setupIntentCreated, setSetupIntentCreated } =
-        useCurrentCheckout();
+    const { checkout, setCheckout } = useCurrentCheckout();
     const toast = useToast();
     const stripePromise = loadStripe(STRIPE_PUBLIC_KEY);
     const [clientSecret, setClientSecret] = useState<string>("");
+    const [setupIntentCreated, setSetupIntentCreated] =
+        useState<boolean>(false);
     const appearance = useRef<Appearance>({
         theme: "night",
     });
