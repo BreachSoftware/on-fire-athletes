@@ -25,7 +25,7 @@ export default function Profile() {
     );
 
     const cardFrontFilename = `${card?.uuid}_v${card?.cardType === "a" ? "1" : "2"}_X_X_${card?.firstName}_${card?.lastName}.png`;
-    const cardBackFilename = `${card?.uuid}_v${card?.cardType === "a" ? "1" : "2"}_X_X_${card?.firstName}_${card?.lastName}.png`;
+    const cardBackFilename = `${card?.uuid}_v${card?.cardType === "a" ? "1" : "2"}_X_X_${card?.firstName}_${card?.lastName}_back.png`;
 
     useEffect(() => {
         (async () => {

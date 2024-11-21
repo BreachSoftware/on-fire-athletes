@@ -8,7 +8,7 @@ import { resize } from "@/components/image_filters";
 import DropzoneButton from "@/components/create/dropzoneButton";
 import { b64toBlob, uploadAssetToS3 } from "@/components/create/Step3";
 import CropModal from "@/components/shared/modals/crop-modal";
-import { ProfileInfo } from "../../page";
+import { ProfileInfo } from "../profile.client";
 import { useDisclosure } from "@chakra-ui/react";
 
 interface Props {
