@@ -22,15 +22,22 @@ export default function Article() {
             <ArticleBody>
                 <ArticleParagraph>
                     <ArticleSpan fontWeight="bold">
-                        Game Coin, proudly announces the official launch of its
+                    Game Coin Launches its ONFIRE ATHLETES Platform, Merging Digital and Physical Sports Cards with Augmented Reality 
+                    </ArticleSpan>{" "}
+                </ArticleParagraph>
+                <ArticleParagraph>   
+                    Game Coin, proudly announces the official launch of its
                         platform, ONFIRE ATHLETES, which incorporates
                         groundbreaking technology with the nostalgia of
                         traditional sports trading cards, combining the best of
-                        both worlds. Years in the making, the ONFIRE ATHLETES
+                        both worlds. 
+                </ArticleParagraph>
+                
+                <ArticleParagraph>             
+                        Years in the making, the ONFIRE ATHLETES
                         platform empowers athletes to create, showcase, trade,
                         and print personalized sports cards that come to life
-                        through Augmented Reality (AR).
-                    </ArticleSpan>{" "}
+                        through Augmented Reality (AR).     
                 </ArticleParagraph>
 
                 <ArticleParagraph>
