@@ -103,8 +103,15 @@ function ARViewer() {
 
         // Set the card to the card that was scanned
         if (videoRef.current && found) {
-            videoRef.current.src = readCard.backVideoURL;
-            console.log("Playing: ", readCard.backVideoURL);
+            const backVideoUrl =
+                !readCard.backVideoURL ||
+                readCard.backVideoURL ===
+                    "https://onfireathletes-media-uploads.s3.amazonaws.com/"
+                    ? "https://onfireathletes-media-uploads.s3.amazonaws.com/onfire-athletes-back-default.mov"
+                    : readCard.backVideoURL;
+
+            videoRef.current.src = backVideoUrl;
+            console.log("Playing: ", backVideoUrl);
             videoRef.current.play();
             setIsVideoSourceSet(true);
         }
