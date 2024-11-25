@@ -373,7 +373,7 @@ function ARViewer() {
                             height="1.5"
                             width={videoWidth}
                             position={`${videoXOffset} ${videoYOffset} 0`}
-                            scale="1 1 1"
+                            scale="-1 1 1"
                         ></a-video>
                         // Potentially show a spinner if not loaded or something
                     )}
@@ -381,7 +381,7 @@ function ARViewer() {
                         obj-model="obj: url(/ar/gcmask-rev-edited.obj); mtl: #obj-mtl"
                         rotation="0 0 -90"
                         position={`0 0 0.01`}
-                        scale="0.058 0.058 0.058"
+                        scale="0.058 -0.058 0.058"
                         cloak
                     ></a-entity>
                 </a-entity>
