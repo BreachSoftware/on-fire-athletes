@@ -53,6 +53,7 @@ function ARViewer() {
 
     let found = false;
     let readCard = new TradingCardInfo();
+    let isDefaultBack = false;
 
     /**
      * A callback function that is called when a QR code is scanned.
@@ -78,6 +79,8 @@ function ARViewer() {
         // Find the OnFire card that matches the UUID of the QR code
         found = false;
         readCard = new TradingCardInfo();
+        isDefaultBack = false;
+
         cards.forEach((fetchedCard) => {
             if (fetchedCard.uuid === cardUUID) {
                 console.log("FOUND!");
@@ -88,8 +91,13 @@ function ARViewer() {
                 const videoX = fetchedCard.backVideoXOffset / 1000;
                 const videoY = fetchedCard.backVideoYOffset / 1000;
 
+                isDefaultBack =
+                    !fetchedCard.backVideoURL ||
+                    fetchedCard.backVideoURL ===
+                        "https://onfireathletes-media-uploads.s3.amazonaws.com/";
+
                 // Make width ratio of height, normalized as height = 1.5
-                const newWidth = (1.5 * videoW) / videoH;
+                const newWidth = isDefaultBack ? 1 : (1.5 * videoW) / videoH;
 
                 // Normalize the pixel offsets to a height of 1.5
                 setVideoWidth(newWidth);
@@ -103,12 +111,9 @@ function ARViewer() {
 
         // Set the card to the card that was scanned
         if (videoRef.current && found) {
-            const backVideoUrl =
-                !readCard.backVideoURL ||
-                readCard.backVideoURL ===
-                    "https://onfireathletes-media-uploads.s3.amazonaws.com/"
-                    ? "https://onfireathletes-media-uploads.s3.amazonaws.com/onfire-athletes-back-default.mov"
-                    : readCard.backVideoURL;
+            const backVideoUrl = isDefaultBack
+                ? "https://onfireathletes-media-uploads.s3.amazonaws.com/onfire-athletes-back-default.mov"
+                : readCard.backVideoURL;
 
             videoRef.current.src = backVideoUrl;
             console.log("Playing: ", backVideoUrl);
