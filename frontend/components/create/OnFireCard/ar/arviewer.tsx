@@ -339,6 +339,52 @@ function ARViewer() {
                         cloak
                     ></a-entity>
                 </a-entity>
+                {/* Front Image Inverted (for Android) (targetIndex 2) */}
+                <a-entity
+                    mindar-image-target="targetIndex: 2"
+                    id="front-entity-invert"
+                >
+                    {/* Render the video if the video source is set */}
+                    {isVideoSourceSet && (
+                        <a-plane
+                            src="#card-image"
+                            height="1.5"
+                            scale="-1 1 1"
+                        ></a-plane>
+                    )}
+                    <a-entity
+                        obj-model="obj: url(/ar/gcmask-edited-4.obj); mtl: #obj-mtl"
+                        rotation="0 0 -90"
+                        position="0 0 0.002"
+                        // scale="0.058 0.0576 0.058"
+                        scale="0.058 -0.0576 0.058"
+                        cloak
+                    ></a-entity>
+                </a-entity>
+                {/* Back Video Inverted for Android (targetIndex 3) */}
+                <a-entity
+                    mindar-image-target="targetIndex: 3"
+                    id="back-entity-invert"
+                >
+                    {/* Render the video if the video source is set */}
+                    {isVideoSourceSet && (
+                        <a-video
+                            src="#card-video"
+                            height="1.5"
+                            width={videoWidth}
+                            position={`${videoXOffset} ${videoYOffset} 0`}
+                            scale="1 1 1"
+                        ></a-video>
+                        // Potentially show a spinner if not loaded or something
+                    )}
+                    <a-entity
+                        obj-model="obj: url(/ar/gcmask-rev-edited.obj); mtl: #obj-mtl"
+                        rotation="0 0 -90"
+                        position={`0 0 0.01`}
+                        scale="0.058 0.058 0.058"
+                        cloak
+                    ></a-entity>
+                </a-entity>
             </a-scene>
 
             {/* Render a hidden video element for QR code scanning */}
