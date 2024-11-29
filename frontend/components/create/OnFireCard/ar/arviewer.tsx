@@ -53,6 +53,7 @@ function ARViewer() {
 
     let found = false;
     let readCard = new TradingCardInfo();
+    let isDefaultBack = false;
 
     /**
      * A callback function that is called when a QR code is scanned.
@@ -78,6 +79,8 @@ function ARViewer() {
         // Find the OnFire card that matches the UUID of the QR code
         found = false;
         readCard = new TradingCardInfo();
+        isDefaultBack = false;
+
         cards.forEach((fetchedCard) => {
             if (fetchedCard.uuid === cardUUID) {
                 console.log("FOUND!");
@@ -88,8 +91,13 @@ function ARViewer() {
                 const videoX = fetchedCard.backVideoXOffset / 1000;
                 const videoY = fetchedCard.backVideoYOffset / 1000;
 
+                isDefaultBack =
+                    !fetchedCard.backVideoURL ||
+                    fetchedCard.backVideoURL ===
+                        "https://onfireathletes-media-uploads.s3.amazonaws.com/";
+
                 // Make width ratio of height, normalized as height = 1.5
-                const newWidth = (1.5 * videoW) / videoH;
+                const newWidth = isDefaultBack ? 1 : (1.5 * videoW) / videoH;
 
                 // Normalize the pixel offsets to a height of 1.5
                 setVideoWidth(newWidth);
@@ -103,8 +111,12 @@ function ARViewer() {
 
         // Set the card to the card that was scanned
         if (videoRef.current && found) {
-            videoRef.current.src = readCard.backVideoURL;
-            console.log("Playing: ", readCard.backVideoURL);
+            const backVideoUrl = isDefaultBack
+                ? "https://onfireathletes-media-uploads.s3.amazonaws.com/onfire-athletes-back-default.mov"
+                : readCard.backVideoURL;
+
+            videoRef.current.src = backVideoUrl;
+            console.log("Playing: ", backVideoUrl);
             videoRef.current.play();
             setIsVideoSourceSet(true);
         }
@@ -329,6 +341,52 @@ function ARViewer() {
                         rotation="0 0 -90"
                         position={`0 0 0.01`}
                         scale="0.058 0.058 0.058"
+                        cloak
+                    ></a-entity>
+                </a-entity>
+                {/* Front Image Inverted (for Android) (targetIndex 2) */}
+                <a-entity
+                    mindar-image-target="targetIndex: 2"
+                    id="front-entity-invert"
+                >
+                    {/* Render the video if the video source is set */}
+                    {isVideoSourceSet && (
+                        <a-plane
+                            src="#card-image"
+                            height="1.5"
+                            scale="-1 1 1"
+                        ></a-plane>
+                    )}
+                    <a-entity
+                        obj-model="obj: url(/ar/gcmask-edited-4.obj); mtl: #obj-mtl"
+                        rotation="0 0 -90"
+                        position="0 0 0.002"
+                        // scale="0.058 0.0576 0.058"
+                        scale="0.058 -0.0576 0.058"
+                        cloak
+                    ></a-entity>
+                </a-entity>
+                {/* Back Video Inverted for Android (targetIndex 3) */}
+                <a-entity
+                    mindar-image-target="targetIndex: 3"
+                    id="back-entity-invert"
+                >
+                    {/* Render the video if the video source is set */}
+                    {isVideoSourceSet && (
+                        <a-video
+                            src="#card-video"
+                            height="1.5"
+                            width={videoWidth}
+                            position={`${videoXOffset} ${videoYOffset} 0`}
+                            scale="-1 1 1"
+                        ></a-video>
+                        // Potentially show a spinner if not loaded or something
+                    )}
+                    <a-entity
+                        obj-model="obj: url(/ar/gcmask-rev-edited.obj); mtl: #obj-mtl"
+                        rotation="0 0 -90"
+                        position={`0 0 0.01`}
+                        scale="0.058 -0.058 0.058"
                         cloak
                     ></a-entity>
                 </a-entity>

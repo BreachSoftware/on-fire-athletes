@@ -26,7 +26,7 @@ export default function Index() {
         {
             id: 1,
             imageUrl: "in_the_news/news1.png",
-            headline: "ONFIRE Athletes Launches!",
+            headline: "GC Launches Platform!",
             description:
                 "ONFIRE Athletes, Powered by Game Coin, Revolutionizes Sports Legacy.",
             link: "/newsroom/onfire-athletes-launches",

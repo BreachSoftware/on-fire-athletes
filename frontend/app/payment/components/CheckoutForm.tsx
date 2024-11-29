@@ -51,8 +51,6 @@ export default function CheckoutForm({ buyCard }: CheckoutFormProps) {
             2,
         );
 
-        console.log("total", total);
-
         if (total === "0.00") {
             router.push(buyCard ? "/transfer" : "/lockerroom");
             return;
@@ -73,8 +71,6 @@ export default function CheckoutForm({ buyCard }: CheckoutFormProps) {
                     : `${window.location.origin}/lockerroom`,
             },
         });
-
-        console.log("ERROR?: ", error);
 
         if (error) {
             if (
@@ -175,8 +171,6 @@ export default function CheckoutForm({ buyCard }: CheckoutFormProps) {
                                     buyingPhysicalCards,
                                 ).toFixed(2);
 
-                                console.log("total 2", total);
-
                                 if (total === "0.00") {
                                     setCheckout({
                                         ...curCheckout.checkout,
@@ -236,13 +230,9 @@ export default function CheckoutForm({ buyCard }: CheckoutFormProps) {
                                     });
                                 }
 
-                                console.log("result", result);
-
                                 // Retrieve the payment method details
                                 const paymentMethodId = result.setupIntent
                                     ?.payment_method as string | undefined;
-
-                                console.log("paymentMethodId", paymentMethodId);
 
                                 setCheckout({
                                     ...curCheckout.checkout,
@@ -277,8 +267,6 @@ export default function CheckoutForm({ buyCard }: CheckoutFormProps) {
                                         .charAt(0)
                                         .toUpperCase() +
                                     paymentMethod.card.brand.slice(1);
-
-                                console.log("setting checkout info");
 
                                 setCheckout({
                                     ...curCheckout.checkout,

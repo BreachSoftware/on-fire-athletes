@@ -33,8 +33,6 @@ export default function PaymentFooter() {
         } else {
             // Toast error
         }
-
-        console.log("couponResponse", couponResponse);
     }
 
     return (

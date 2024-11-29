@@ -1,5 +1,9 @@
 /* eslint-disable func-style */
-import { Handler, APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
+import {
+	Handler,
+	APIGatewayProxyEvent,
+	APIGatewayProxyResult,
+} from "aws-lambda";
 import { DynamoDB } from "aws-sdk";
 import { v4 as uuidv4 } from "uuid";
 import { checkIfCardExists } from "../utils/checkIfCardExists";
@@ -14,8 +18,9 @@ const dynamoDb = new DynamoDB.DocumentClient();
  * @param event - The API Gateway event object.
  * @returns A promise that resolves to the API Gateway proxy result.
  */
-export const createOrder: Handler = async(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-
+export const createOrder: Handler = async (
+	event: APIGatewayProxyEvent,
+): Promise<APIGatewayProxyResult> => {
 	const uuid: string = uuidv4();
 	const currentUnixTime: number = Math.floor(Date.now() / 1000);
 	try {
@@ -34,8 +39,11 @@ export const createOrder: Handler = async(event: APIGatewayProxyEvent): Promise<
 				return {
 					statusCode: 400,
 					headers: { "Content-Type": "text/plain" },
-					body: JSON.stringify({ error: "The request body must contain the card_uuid, card_generatedBy, cost_paid," +
-						" sender_uuid and receiver_uuid properties" }),
+					body: JSON.stringify({
+						error:
+							"The request body must contain the card_uuid, card_generatedBy, cost_paid," +
+							" sender_uuid and receiver_uuid properties",
+					}),
 				};
 			} else if (
 				data.card_uuid === "" ||
@@ -47,11 +55,13 @@ export const createOrder: Handler = async(event: APIGatewayProxyEvent): Promise<
 				return {
 					statusCode: 400,
 					headers: { "Content-Type": "text/plain" },
-					body: JSON.stringify({ error: "The card_uuid, card_generatedBy, sender_uuid," +
-						" and receiever_uuid properties cannot be empty. Cost_paid must be more than zero" }),
+					body: JSON.stringify({
+						error:
+							"The card_uuid, card_generatedBy, sender_uuid," +
+							" and receiever_uuid properties cannot be empty. Cost_paid must be more than zero",
+					}),
 				};
-			} else if
-			(
+			} else if (
 				typeof data.card_uuid !== "string" ||
 				typeof data.card_generatedBy !== "string" ||
 				typeof data.cost_paid !== "number" ||
@@ -61,13 +71,19 @@ export const createOrder: Handler = async(event: APIGatewayProxyEvent): Promise<
 				return {
 					statusCode: 400,
 					headers: { "Content-Type": "text/plain" },
-					body: JSON.stringify({ error: "The card_uuid, card_generatedBy, sender_uuid, and receiver_uuid properties" +
-						" must be of type string. cost_paid must be of type number" }),
+					body: JSON.stringify({
+						error:
+							"The card_uuid, card_generatedBy, sender_uuid, and receiver_uuid properties" +
+							" must be of type string. cost_paid must be of type number",
+					}),
 				};
 			}
 
 			// Verify that the card_uuid exists in the database
-			const cardResponse = await checkIfCardExists(data.card_uuid, data.card_generatedBy);
+			const cardResponse = await checkIfCardExists(
+				data.card_uuid,
+				data.card_generatedBy,
+			);
 
 			if (cardResponse.statusCode === 404) {
 				return cardResponse;
@@ -77,15 +93,21 @@ export const createOrder: Handler = async(event: APIGatewayProxyEvent): Promise<
 			const senderResponse = await checkIfUserExists(data.sender_uuid);
 
 			if (senderResponse.statusCode === 404) {
-				senderResponse.body = JSON.stringify({ error: "The sender_uuid does not exist in the Users database" });
+				senderResponse.body = JSON.stringify({
+					error: "The sender_uuid does not exist in the Users database",
+				});
 				return senderResponse;
 			}
 
 			// Verify that the receiver_uuid exists in the database
-			const receiverResponse = await checkIfUserExists(data.receiver_uuid);
+			const receiverResponse = await checkIfUserExists(
+				data.receiver_uuid,
+			);
 
 			if (receiverResponse.statusCode === 404) {
-				receiverResponse.body = JSON.stringify({ error: "The receiver_uuid does not exist in the Users database" });
+				receiverResponse.body = JSON.stringify({
+					error: "The receiver_uuid does not exist in the Users database",
+				});
 				return receiverResponse;
 			}
 
@@ -112,6 +134,8 @@ export const createOrder: Handler = async(event: APIGatewayProxyEvent): Promise<
 					city: data.city,
 					state: data.state,
 					zip_code: data.zip_code,
+					coupon_used: data.coupon_used,
+					payment_method: data.payment_method,
 				},
 			};
 

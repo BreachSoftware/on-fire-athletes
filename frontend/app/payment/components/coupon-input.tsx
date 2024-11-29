@@ -21,18 +21,7 @@ export default function CouponInput() {
 
         if (couponResponse.status === 200) {
             const couponData = await couponResponse.json();
-            console.log("couponData", couponData);
-
             const { coupon, code } = couponData;
-
-            console.log("coupon", coupon);
-
-            console.log(
-                "UPDATING COUPON",
-                code,
-                coupon.amount_off,
-                coupon.percent_off,
-            );
 
             setCheckout({
                 ...checkout,
@@ -43,8 +32,6 @@ export default function CouponInput() {
         } else {
             // Toast error
         }
-
-        console.log("couponResponse", couponResponse);
     }
 
     function getCouponDetail() {

@@ -327,10 +327,6 @@ export async function submitCardWithAuth({
         const filename = generateFilename(userID);
         const cardUrls = await uploadImages(filename, cardImages);
 
-        console.log("cardUrls", cardUrls);
-
-        console.log("cardImages", cardImages);
-
         const newCardData = {
             ...currentInfo.curCard,
             ...cardUrls,

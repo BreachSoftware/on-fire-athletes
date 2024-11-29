@@ -143,7 +143,7 @@ export async function assignCardEmail(
 				},
 				Subject: {
 					Charset: "UTF-8",
-					Data: "You've been sent an OnFire Athletes trading card!",
+					Data: "You've been sent an ONFIRE Athletes trading card!",
 				},
 			},
 			Source: "OnFire Athletes Team <colin@breachsoftware.com>",
