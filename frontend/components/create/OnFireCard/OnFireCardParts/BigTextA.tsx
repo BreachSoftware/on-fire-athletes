@@ -5,24 +5,6 @@ import { CardFonts } from "@/components/create/create-helpers";
 import TradingCardInfo from "@/hooks/TradingCardInfo";
 import { zIndex } from "./helpers";
 
-const nameSolidStyle: CSSProperties = {
-    pointerEvents: "none",
-    WebkitTextStrokeWidth: "1.75px",
-    WebkitTextStrokeColor: "transparent",
-    userSelect: "none",
-    WebkitUserSelect: "none",
-    MozUserSelect: "none",
-};
-
-const nameOutlineStyle: CSSProperties = {
-    color: "transparent",
-    pointerEvents: "none",
-    WebkitTextStrokeWidth: "1px",
-    userSelect: "none",
-    WebkitUserSelect: "none",
-    MozUserSelect: "none",
-};
-
 /**
  * The BigTextA function to render the first and last name in big text for cardType A
  * @returns the component to render the first and last name in big text
@@ -37,16 +19,34 @@ export default function BigTextA({
     const textAttributes: TextProps = {
         fontFamily: CardFonts.UniserBold,
         fontSize: "45px",
-        style: {
-            ...(curCard.firstNameSolid ? nameSolidStyle : nameOutlineStyle),
-            WebkitTextStrokeColor: curCard.nameColor,
-        },
         letterSpacing: `${letterSpacing}px`,
         color: curCard.nameColor,
         transition:
             "color 0.5s ease-in-out, " +
             "-webkit-text-stroke-color 0.5s ease-in-out, " +
             "-webkit-text-stroke-width 0.5s ease-in-out",
+    };
+
+    const nameSolidStyle: CSSProperties = {
+        color: curCard.nameColor,
+        pointerEvents: "none",
+        WebkitTextStrokeWidth: "1.75px",
+        WebkitTextStrokeColor: "transparent",
+        userSelect: "none",
+        WebkitUserSelect: "none",
+        MozUserSelect: "none",
+        letterSpacing: `${letterSpacing}px`,
+    };
+
+    const nameOutlineStyle: CSSProperties = {
+        color: "transparent",
+        pointerEvents: "none",
+        WebkitTextStrokeWidth: "1px",
+        WebkitTextStrokeColor: curCard.nameColor,
+        userSelect: "none",
+        WebkitUserSelect: "none",
+        MozUserSelect: "none",
+        letterSpacing: `${letterSpacing}px`,
     };
 
     return (
