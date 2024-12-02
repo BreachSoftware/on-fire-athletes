@@ -14,6 +14,8 @@ import Sidebar from "@/components/sidebar";
 import NavBar from "../navbar";
 import LoginHeader from "../components/loginHeader";
 
+import DarkPaper from "@/images/backgrounds/darkpaper.png";
+
 /**
  * The login page component.
  * @returns the login page
@@ -138,7 +140,11 @@ export default function LoginPage() {
                 if (userID !== "") {
                     // Redirect to the pricing page
                     TradingCardInfo.submitCard(card, userID).then(() => {
-                        window.location.href = "/checkout";
+                        if (card.isNil) {
+                            window.location.href = "/nil-price";
+                        } else {
+                            window.location.href = "/checkout";
+                        }
                     });
                 }
             } else if (!checkingForTrade) {
@@ -163,7 +169,11 @@ export default function LoginPage() {
                 if (userID !== "") {
                     // Redirect to the pricing page
                     TradingCardInfo.submitCard(card, userID).then(() => {
-                        window.location.href = "/checkout";
+                        if (card.isNil) {
+                            window.location.href = "/nil-price";
+                        } else {
+                            window.location.href = "/checkout";
+                        }
                     });
                 }
             } else {
@@ -206,7 +216,7 @@ export default function LoginPage() {
                 h={{ base: "100%", md: "100vh" }}
                 justify="flex-start"
                 direction="row-reverse"
-                bgImage={"darkpaper.png"}
+                bgImage={DarkPaper.src}
                 bgPosition={"center"}
                 bgRepeat={"no-repeat"}
                 bgSize={"cover"}

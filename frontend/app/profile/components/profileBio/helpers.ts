@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@chakra-ui/toast";
 
-import { ProfileInfo } from "../../page";
+import { ProfileInfo } from "@/app/profile/components/profile.client";
 import { ProfileMediaType } from "./types";
 import { MediaType } from "@/hooks/useMediaProcessing";
 import { b64toBlob, uploadAssetToS3 } from "@/components/create/Step3";

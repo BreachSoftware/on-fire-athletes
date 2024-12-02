@@ -17,6 +17,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import TradingCardInfo from "@/hooks/TradingCardInfo";
 import { useAuth } from "@/hooks/useAuth";
+import { totalPriceInCart } from "@/utils/utils";
+import React from "react";
 
 interface CheckoutStepWrapperProps {
     onFireCard: TradingCardInfo | null;
@@ -63,24 +65,7 @@ export default function CheckoutStepWrapper({
      * @returns {boolean} - Whether the current step is incomplete
      */
     function stepIsIncomplete() {
-        if (stepNumber === 2) {
-            // Check if the email is the correct format
-            const validEmail = checkout.contactInfo.email.match(
-                /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g,
-            );
-
-            // Check if the phone number is the correct format
-            const validPhone = !checkout.contactInfo.phone
-                ? true
-                : checkout.contactInfo.phone.match(/^\d{10}$/g);
-
-            return (
-                checkout.contactInfo.firstName === "" ||
-                checkout.contactInfo.lastName === "" ||
-                !validEmail ||
-                !validPhone
-            );
-        } else if (stepNumber === 3) {
+        if (stepNumber === 3) {
             // Check if the street address is the correct format
             const validStreetAddress =
                 checkout.shippingAddress.streetAddress.match(
@@ -94,8 +79,6 @@ export default function CheckoutStepWrapper({
                     checkout.shippingAddress.zipCode.length === 10);
 
             return (
-                checkout.shippingAddress.firstName === "" ||
-                checkout.shippingAddress.lastName === "" ||
                 !validStreetAddress ||
                 checkout.shippingAddress.city === "" ||
                 checkout.shippingAddress.state === "" ||
@@ -106,28 +89,13 @@ export default function CheckoutStepWrapper({
     }
 
     /**
-     *  Function to calculate the total price of all items in the cart
-     * @returns {number} - The total price of all items in the cart
-     */
-    function totalPriceInCart() {
-        let total = 0;
-        for (let i = 0; i < checkout.cart.length; i++) {
-            total =
-                total +
-                checkout.cart[i].price * checkout.cart[i].numberOfOrders;
-        }
-        if (buyingPhysicalCards) {
-            total = total + checkout.shippingCost;
-        }
-        return total;
-    }
-
-    /**
      *  Function to calculate the total price of all items in the cart in cents
      * @returns {number} - The total price of all items in the cart in cents
      */
     function totalPriceInCartInCents() {
-        return parseInt((totalPriceInCart() * 100).toFixed(2));
+        return parseInt(
+            (totalPriceInCart(checkout, buyingPhysicalCards) * 100).toFixed(2),
+        );
     }
 
     /**
@@ -147,7 +115,7 @@ export default function CheckoutStepWrapper({
             shippingCost: calculateShippingCost(),
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [checkout.cart, checkout.stepNum]);
+    }, [checkout.cart, checkout.stepNum, checkout.couponCode]);
 
     return (
         <Flex width={"100%"} bg="#171C1B" h={"100%"} borderRadius={"8px"}>
@@ -177,7 +145,7 @@ export default function CheckoutStepWrapper({
                                 if (index !== 0 && index !== 1) {
                                     return (
                                         // Fragment is used to avoid adding extra nodes to the DOM
-                                        <>
+                                        <React.Fragment key={step.title}>
                                             <Text
                                                 key={index} // Unique key for each step to help React manage re-renders
                                                 // Change text color based on whether the step is completed or not.
@@ -242,7 +210,7 @@ export default function CheckoutStepWrapper({
                                                     ? ""
                                                     : "/"}
                                             </Text>
-                                        </>
+                                        </React.Fragment>
                                     );
                                 }
                                 return null;
@@ -255,11 +223,11 @@ export default function CheckoutStepWrapper({
                 {checkoutSteps[stepNumber].bodyElement}
 
                 {/* Footer section with the Next or Purchase button and optional bot-left element */}
-                {stepNumber !== 4 && (
+                {stepNumber !== 3 && (
                     <Flex
                         justifyContent={{
                             base: "center",
-                            lg: stepNumber === 4 ? "space-between" : "flex-end",
+                            lg: stepNumber === 3 ? "space-between" : "flex-end",
                         }}
                         flexDirection={{ base: "column", lg: "row" }}
                         alignItems="center"
@@ -282,7 +250,11 @@ export default function CheckoutStepWrapper({
                                 fontSize={"2xl"}
                                 fontWeight={"bold"}
                             >
-                                Total: ${totalPriceInCart().toFixed(2)}
+                                Total: $
+                                {totalPriceInCart(
+                                    checkout,
+                                    buyingPhysicalCards,
+                                ).toFixed(2)}
                                 {buyingPhysicalCards ? "*" : ""}
                             </Text>
                             <Flex gap="10%">

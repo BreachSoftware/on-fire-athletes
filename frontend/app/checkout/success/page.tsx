@@ -6,6 +6,8 @@ import { retrievePaymentStatus } from "@/app/lockerroom/components/retrievePayme
 import TradingCardInfo, { PaymentStatus } from "@/hooks/TradingCardInfo";
 import { updatePaymentStatus } from "@/app/lockerroom/components/updatePaymentStatus";
 import { useEffect, useState } from "react";
+import { useDisconnect } from "wagmi";
+import { useRouter } from "next/navigation";
 
 /**
  * @file This file contains the successful card creation page.
@@ -18,6 +20,9 @@ export default function SuccessfulCardCreationPage() {
     const [generatedBy, setGeneratedBy] = useState("");
     const [buyingOtherCard, setBuyingOtherCard] = useState(false);
 
+    const { disconnect } = useDisconnect();
+    const router = useRouter();
+
     /**
      * This function checks to see if the user just submitted a card.
      * If the user just submitted a card, the payment status will checked and updated accordingly.
@@ -25,11 +30,16 @@ export default function SuccessfulCardCreationPage() {
     async function checkForSubmittedCard() {
         if (typeof window !== "undefined") {
             const queryParams = new URLSearchParams(window.location.search);
+            const isNil = queryParams.get("nil") === "true";
+            const paymentBypassed =
+                queryParams.get("paymentBypassed") === "true" || isNil;
             const paymentIntentID = queryParams.get("payment_intent");
             const boughtOtherCard = queryParams.get("boughtOtherCard");
             const boughtWithGMEX = queryParams.get("paymentWithGMEX");
-            if (paymentIntentID) {
-                const status = await retrievePaymentStatus(paymentIntentID);
+            if (paymentIntentID || paymentBypassed) {
+                const status = paymentBypassed
+                    ? "succeeded"
+                    : await retrievePaymentStatus(paymentIntentID);
                 if (status === "succeeded") {
                     // Load the card and update the payment status
                     const { uuid, generatedBy } = TradingCardInfo.loadCard();
@@ -42,10 +52,17 @@ export default function SuccessfulCardCreationPage() {
                             generatedBy,
                             uuid,
                             PaymentStatus.SUCCESS,
+                            isNil,
                         );
                     }
                     // Clear the card
                     TradingCardInfo.clearCard();
+
+                    if (isNil) {
+                        router.push("/nil-success");
+                        return;
+                    }
+
                     setUuid(uuid);
                     setGeneratedBy(generatedBy);
                     setCardSuccessfullyCreated(true);
@@ -68,9 +85,23 @@ export default function SuccessfulCardCreationPage() {
                         generatedBy,
                         uuid,
                         PaymentStatus.SUCCESS,
+                        isNil,
                     );
                 }
                 TradingCardInfo.clearCard();
+                try {
+                    disconnect();
+                } catch (error) {
+                    console.error(
+                        "Error disconnecting from the wallet: ",
+                        error,
+                    );
+                }
+
+                if (isNil) {
+                    router.push("/nil-success");
+                    return;
+                }
                 setUuid(uuid);
                 setGeneratedBy(generatedBy);
                 setCardSuccessfullyCreated(true);

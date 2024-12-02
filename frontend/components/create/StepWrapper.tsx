@@ -38,6 +38,7 @@ interface StepWrapperProps {
     foregroundRef: React.RefObject<HTMLDivElement>;
     backgroundRef: React.RefObject<HTMLDivElement>;
     cardBackRef: React.RefObject<HTMLDivElement>;
+    isNil: boolean;
 }
 
 export enum SubmitResult {
@@ -45,6 +46,7 @@ export enum SubmitResult {
     GoToCheckout = 2,
     GoToSignup = 3,
     Failure = 4,
+    SkipCheckout = 5,
 }
 
 interface SubmitCardProps {
@@ -54,6 +56,7 @@ interface SubmitCardProps {
     cardBackRef: React.RefObject<HTMLDivElement>;
     currentInfo: useCurrentCardInfoProperties;
     userID: string;
+    isNil: boolean;
 }
 
 interface CardImageData {
@@ -100,17 +103,21 @@ async function generateCardImage(
     offScreen.style.position = "absolute";
     offScreen.style.left = "-9999px";
     offScreen.style.width = "350px";
-    offScreen.style.height = label === "cardBack" ? "527px" : "525px";
+    offScreen.style.height = label === "cardBack" ? "490px" : "490px";
 
     // Clone the content into the off-screen container
     const clonedContent = ref.current.cloneNode(true) as HTMLElement;
     offScreen.appendChild(clonedContent);
     document.body.appendChild(offScreen);
 
+    const scale = 2;
+    const width = 350;
+    const height = 490;
+
     const canvas = await html2canvas(offScreen, {
-        width: 350,
-        height: 525,
-        scale: 2,
+        width: width,
+        height: height,
+        scale: scale,
         useCORS: true,
         logging: true,
     });
@@ -119,8 +126,10 @@ async function generateCardImage(
     // div.style.cssText = originalStyles;
 
     const imageBase64 = canvas.toDataURL("image/png", 1.0);
-    const resizedMask = await resize(mask, 700, null);
-    return maskImageToCard(imageBase64, resizedMask);
+    const resizedMask = await resize(mask, width * scale, height * scale);
+    const resultingImage = await maskImageToCard(imageBase64, resizedMask);
+    document.body.removeChild(offScreen);
+    return resultingImage;
 }
 
 /**
@@ -303,7 +312,11 @@ export async function submitCardWithAuth({
     cardBackRef,
     currentInfo,
     userID,
-}: SubmitCardProps): Promise<SubmitResult> {
+    isNil,
+}: SubmitCardProps): Promise<{
+    result: SubmitResult;
+    cardInfo: TradingCardInfo;
+}> {
     try {
         const cardImages = await generateCardImages(
             entireCardRef,
@@ -314,10 +327,6 @@ export async function submitCardWithAuth({
         const filename = generateFilename(userID);
         const cardUrls = await uploadImages(filename, cardImages);
 
-        console.log("cardUrls", cardUrls);
-
-        console.log("cardImages", cardImages);
-
         const newCardData = {
             ...currentInfo.curCard,
             ...cardUrls,
@@ -326,6 +335,7 @@ export async function submitCardWithAuth({
             submitted: true,
             paymentStatus: PaymentStatus.PENDING,
             tradeStatus: TradeStatus.TRADE_ONLY,
+            isNil: isNil,
         };
 
         currentInfo.setCurCard(newCardData);
@@ -333,13 +343,14 @@ export async function submitCardWithAuth({
         if (userID) {
             await updateUserProfile(userID, newCardData);
             await TradingCardInfo.submitCard(newCardData, userID);
-            return SubmitResult.GoToCheckout;
+
+            return { result: SubmitResult.GoToCheckout, cardInfo: newCardData };
         }
         TradingCardInfo.saveCard(newCardData);
-        return SubmitResult.GoToSignup;
+        return { result: SubmitResult.GoToSignup, cardInfo: newCardData };
     } catch (error) {
         console.error("Card submission failed:", error);
-        return SubmitResult.Failure;
+        return { result: SubmitResult.Failure, cardInfo: currentInfo.curCard };
     }
 }
 
@@ -355,6 +366,7 @@ export default function StepWrapper({
     foregroundRef,
     backgroundRef,
     cardBackRef,
+    isNil,
 }: StepWrapperProps) {
     const currentInfo = useCurrentCardInfo();
 
@@ -505,21 +517,25 @@ export default function StepWrapper({
 
                                         // Get the user's ID
                                         const userID = user.userId;
-                                        const result = await submitCardWithAuth(
-                                            {
+                                        const { result } =
+                                            await submitCardWithAuth({
                                                 entireCardRef: entireCardRef,
                                                 foregroundRef: foregroundRef,
                                                 backgroundRef: backgroundRef,
                                                 cardBackRef: cardBackRef,
                                                 currentInfo: currentInfo,
                                                 userID: userID,
-                                            },
-                                        );
+                                                isNil,
+                                            });
 
                                         if (
                                             result === SubmitResult.GoToCheckout
                                         ) {
-                                            router.push("/checkout");
+                                            if (isNil) {
+                                                router.push("/nil-price");
+                                            } else {
+                                                router.push("/checkout");
+                                            }
                                         } else if (
                                             result === SubmitResult.GoToSignup
                                         ) {

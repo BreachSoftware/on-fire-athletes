@@ -112,7 +112,7 @@ export async function assignCardEmail(
 		}
 
 		const baseUrl = (
-			process.env.BASE_URL || "https://on-fire-athletes.netlify.app"
+			process.env.BASE_URL || "https://onfireathletes.com"
 		).replace(/\/$/, "");
 
 		// Supply the email template with its body
@@ -143,7 +143,7 @@ export async function assignCardEmail(
 				},
 				Subject: {
 					Charset: "UTF-8",
-					Data: "You've been sent an OnFire Athletes trading card!",
+					Data: "You've been sent an ONFIRE Athletes trading card!",
 				},
 			},
 			Source: "OnFire Athletes Team <colin@breachsoftware.com>",

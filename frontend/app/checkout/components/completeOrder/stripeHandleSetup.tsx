@@ -55,14 +55,10 @@ export async function handleSetup(
         });
     }
 
-    console.log("result", result);
-
     // Retrieve the payment method details
     const paymentMethodId = result.setupIntent?.payment_method as
         | string
         | undefined;
-
-    console.log("paymentMethodId", paymentMethodId);
 
     setCheckout({
         ...curCheckout.checkout,
@@ -92,7 +88,6 @@ export async function handleSetup(
         paymentMethod.card.brand.charAt(0).toUpperCase() +
         paymentMethod.card.brand.slice(1);
 
-    console.log("setting checkout info");
     return {
         paymentMethodId,
         clientSecret,

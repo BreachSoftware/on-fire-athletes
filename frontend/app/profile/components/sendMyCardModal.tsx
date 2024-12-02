@@ -1,7 +1,8 @@
+import emailjs from "@emailjs/browser";
+
 import TradingCardInfo from "@/hooks/TradingCardInfo";
 import { Button, Flex, Input, Text, useToast } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { RequestRedirect } from "node-fetch";
 import { useAuth } from "@/hooks/useAuth";
 import { CardActionModal } from "./cardActionModal";
 import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
@@ -23,7 +24,6 @@ export default function SendMyCardModal(props: SendMyCardModalProps) {
     const [accountUUID, setAccountUUID] = useState("");
     const [email, setEmail] = useState("");
     const [isLoading, setIsLoading] = useState(false);
-    const card = props.currentCard;
 
     // Fetch the account UUID of the current user to be the sender of the card
     useEffect(() => {
@@ -68,6 +68,11 @@ export default function SendMyCardModal(props: SendMyCardModalProps) {
         const myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
 
+        const senderProfileRequestOptions = {
+            method: "GET",
+            headers: myHeaders,
+        };
+
         const uuidrequestOptions = {
             method: "POST",
             headers: myHeaders,
@@ -84,89 +89,56 @@ export default function SendMyCardModal(props: SendMyCardModalProps) {
         const prenewOwnUUID: string = await fetcheduuid;
         const newOwnUUID = prenewOwnUUID;
 
-        const senderProfileRequestOptions = {
-            method: "GET",
-            headers: myHeaders,
-        };
-
         const senderProfile = await fetch(
             `${apiEndpoints.getUser()}?uuid=${(await auth.currentAuthenticatedUser()).userId}`,
             senderProfileRequestOptions,
         );
         const senderProfileData = await senderProfile.json();
-        const senderEmail = senderProfileData.email;
 
-        const emailHeaders = new Headers();
-        emailHeaders.append("Content-Type", "application/json");
+        const { generatedBy, uuid, cardImage, firstName, lastName } =
+            props.currentCard;
 
-        const raw = JSON.stringify({
-            recepientEmail: email,
-            generatedByUUID: card.generatedBy,
-            cardUUID: card.uuid,
-            recepientUUID: newOwnUUID,
-            fromUUID: accountUUID,
-            cardFirstName: card.firstName,
-            cardLastName: card.lastName,
-            cardImage: card.cardImage,
-            senderFirstName: props.fromName,
-            fromEmail: senderEmail,
-        });
+        const tradeURL = `https://onfireathletes.com/signup?generatedByUUID=${generatedBy}&cardUUID=${uuid}&toUUID=${newOwnUUID}&fromUUID=${accountUUID}`;
 
-        const requestOptions = {
-            method: "POST",
-            headers: emailHeaders,
-            body: raw,
-            redirect: "follow" as RequestRedirect,
-        };
-
-        if (newOwnUUID === accountUUID) {
-            toast({
-                title: "Cannot send card to yourself",
-                description: "Please enter a valid email address.",
-                status: "error",
-                duration: 5000,
-                isClosable: true,
-            });
-
-            setIsLoading(false);
-        } else if (newOwnUUID === card.generatedBy) {
-            toast({
-                title: "Cannot send card to creator",
-                description: "Please enter a valid email address.",
-                status: "error",
-                duration: 5000,
-                isClosable: true,
-            });
-
-            setIsLoading(false);
-        } else {
-            await fetch(apiEndpoints.assignCardEmail(), requestOptions)
-                .then((response) => {
-                    return response.text();
-                })
-                .then(() => {
-                    toast({
-                        title: "Card Sent!",
-                        description:
-                            "Once the recipient accepts the card from their email, it will be added to their collection.",
-                        status: "success",
-                        duration: 5000,
-                        isClosable: true,
-                    });
-                })
-                .catch((error) => {
-                    toast({
-                        title: "Failed to send card",
-                        status: "error",
-                        duration: 5000,
-                        isClosable: true,
-                    });
-                    return console.error("FAILED...", error);
+        await emailjs
+            .send(
+                "service_8rtflzq",
+                "template_g3b9rl4",
+                {
+                    toEmail: email,
+                    tradeUrl: tradeURL,
+                    cardImage,
+                    senderName: `${senderProfileData.first_name} ${senderProfileData.last_name}`,
+                    cardFirstName: firstName,
+                    cardLastName: lastName,
+                    toName: email,
+                },
+                {
+                    publicKey: "nOgMf7N2DopnucmPc",
+                },
+            )
+            .then(() => {
+                toast({
+                    title: "Card Sent!",
+                    description:
+                        "Once the recipient accepts the card from their email, it will be added to their collection.",
+                    status: "success",
+                    duration: 5000,
+                    isClosable: true,
                 });
+            })
+            .catch((error) => {
+                toast({
+                    title: "Failed to send card",
+                    status: "error",
+                    duration: 5000,
+                    isClosable: true,
+                });
+                return console.error("FAILED...", error);
+            });
 
-            setIsLoading(false);
-            props.onClose();
-        }
+        setIsLoading(false);
+        props.onClose();
     }
 
     const emailInputComponent = (

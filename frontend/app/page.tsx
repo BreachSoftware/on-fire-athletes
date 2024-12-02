@@ -1,5 +1,5 @@
-"use client";
 import React from "react";
+
 import BuiltForAthletes from "@/components/built_for_athletes";
 import { Flex } from "@chakra-ui/react";
 import { Box } from "@chakra-ui/react";
@@ -21,14 +21,12 @@ import SideBarHamburger from "@/components/sidebarHamburger";
  * @returns {JSX.Element} The rendered home screen.
  */
 export default function Index() {
-    // Data for the "In The News" section. This array would typically come from props or be fetched from an API
-
     /* Array of news items, each item would have an id, imageUrl, headline, and description */
     const inTheNewsData = [
         {
             id: 1,
             imageUrl: "in_the_news/news1.png",
-            headline: "ONFIRE Athletes Launches!",
+            headline: "GC Launches Platform!",
             description:
                 "ONFIRE Athletes, Powered by Game Coin, Revolutionizes Sports Legacy.",
             link: "/newsroom/onfire-athletes-launches",
@@ -59,7 +57,27 @@ export default function Index() {
                     <Box w="full">
                         <Box
                             as="video"
-                            src="HomepageBackgroundVideo.mp4"
+                            src="https://onfireathletes-media-uploads.s3.us-east-1.amazonaws.com/homepage/HomepageBackgroundVideoDesktop.m4v"
+                            display={{ base: "none", md: "block" }}
+                            loop={false}
+                            muted={true}
+                            controls={false}
+                            autoPlay={true}
+                            playsInline={true}
+                            w={{ base: "full", md: "100dvw" }}
+                            h={{ base: "full", md: "100dvh" }}
+                            minH="100vh"
+                            objectFit="cover"
+                            position="fixed"
+                            top={0}
+                            right={0}
+                            left={0}
+                            bottom={0}
+                        />
+                        <Box
+                            as="video"
+                            src="https://onfireathletes-media-uploads.s3.us-east-1.amazonaws.com/homepage/HomepageBackgroundVideoMobile.m4v"
+                            display={{ base: "block", md: "none" }}
                             loop={false}
                             muted={true}
                             controls={false}

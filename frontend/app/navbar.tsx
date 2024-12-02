@@ -15,16 +15,16 @@ import {
     Spacer,
     Link,
     Heading,
-    useBreakpointValue,
 } from "@chakra-ui/react";
 import { ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import OnFireLogo from "@/images/logos/small-logo.png";
 import { useAuth } from "@/hooks/useAuth";
 import { useEffect, useState } from "react";
 import SideDrawer from "@/components/sideDrawer";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
+// import { ConnectButton } from "@rainbow-me/rainbowkit";
 import ResponsiveBlock from "@/components/shared/wrappers/responsive-block";
 import SideBarHamburger from "@/components/sidebarHamburger";
+import CustomConnectButton from "@/components/connect_wallet_button";
 
 // Optional params
 interface NavBarProps extends BoxProps {
@@ -57,6 +57,18 @@ const NAV_ITEMS: Array<NavItem> = [
         label: "About",
         href: "#",
         children: [
+            {
+                label: "Our Story",
+                href: "/our-story",
+            },
+            {
+                label: "AR Cards",
+                href: "/newsroom/what-are-ar-cards",
+            },
+            {
+                label: "NIL Partnerships",
+                href: "/nil",
+            },
             {
                 label: "FAQs",
                 href: "/faq",
@@ -289,6 +301,7 @@ function DesktopNav(props: NavBarProps) {
             <Spacer />
 
             <Flex justifyContent="flex-end" width="100%" direction="row">
+                {props.cryptoWalletConnected && <CustomConnectButton />}
                 {NAV_ITEMS.slice(3).map((navItem) => {
                     return (
                         <Box
@@ -361,8 +374,6 @@ function DesktopNav(props: NavBarProps) {
                         </Box>
                     );
                 })}
-                {/* If a crypto wallet is connected, their account information and balance will be shown */}
-                {props.cryptoWalletConnected && <ConnectButton />}
             </Flex>
         </Flex>
     );
@@ -419,8 +430,6 @@ export default function NavBar({
             setWindowLocation(path || null);
         }
     }, []);
-
-    const isMobile = useBreakpointValue({ base: true, lg: false });
 
     return (
         <>
@@ -488,7 +497,6 @@ export default function NavBar({
                     onClose={onToggle}
                     placement={"right"}
                     size={"xl"}
-                    isMobile={isMobile}
                 />
             </ResponsiveBlock>
         </>

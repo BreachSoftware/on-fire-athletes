@@ -20,11 +20,15 @@ import TradingCardInfo from "@/hooks/TradingCardInfo";
 import { useEffect, useRef, useState } from "react";
 import MobileStepWrapper from "@/components/create/mobile/MobileStepWrapper";
 
+interface CardCreationProps {
+    isNil?: boolean;
+}
+
 /**
  *
  * @returns the creation overview page
  */
-export default function CreationOverview() {
+export default function CreationOverview({ isNil = false }: CardCreationProps) {
     const currentInfo = useCurrentCardInfo();
     const cardFrontRef = useRef(null);
     const foregroundRef = useRef(null);
@@ -35,7 +39,7 @@ export default function CreationOverview() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const isMobile = useBreakpointValue({ base: true, md: false });
+    const isMobile = useBreakpointValue({ base: true, lg: false });
 
     /**
      * Calculates the scale factor for the OnFire card on mobile screens
@@ -109,7 +113,7 @@ export default function CreationOverview() {
                     ? "none"
                     : "linear(180deg, gray.1200 0%, gray.1300 100%) 0% 0% no-repeat padding-box;"
             }
-            minH={typeof window == "undefined" ? "89vh" : window.innerHeight} // making sure that the whole page is on screen at the same time
+            minH={typeof window == "undefined" ? "100vh" : window.innerHeight} // making sure that the whole page is on screen at the same time
             overflowY={
                 isMobile && currentInfo.curCard.stepNumber == 1
                     ? "hidden"
@@ -167,6 +171,7 @@ export default function CreationOverview() {
                                 currentInfo={currentInfo}
                                 foregroundRef={foregroundRef}
                                 backgroundRef={backgroundRef}
+                                isNil={isNil}
                             />
                         ) : (
                             <Flex
@@ -180,6 +185,7 @@ export default function CreationOverview() {
                                     foregroundRef={foregroundRef}
                                     backgroundRef={backgroundRef}
                                     cardBackRef={cardBackRef}
+                                    isNil={isNil}
                                 />
                             </Flex>
                         )}

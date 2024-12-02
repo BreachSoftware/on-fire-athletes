@@ -46,7 +46,7 @@ while True:
                 generated_by = item['generatedBy']['S']
 
                 # Construct the URL for the trading card
-                url = f"https://on-fire-athletes.netlify.app/generate_card_asset?generatedBy={generated_by}&uuid={uuid}"
+                url = f"https://onfireathletes.com/generate_card_asset?generatedBy={generated_by}&uuid={uuid}"
 
                 # Open the URL in the default browser
                 webbrowser.open(url)

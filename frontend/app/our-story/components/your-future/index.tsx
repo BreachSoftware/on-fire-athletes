@@ -17,9 +17,11 @@ export default function YourFutureSection() {
                 flexDir="column"
                 alignItems="center"
                 gridGap={{ base: "48px", lg: "64px" }}
-                px={{ base: "24px", lg: "264px" }}
+                px={{ base: "20px", lg: "264px" }}
                 pt={{ base: "96px", lg: "124px" }}
                 pb="48px"
+                maxW={{ "2xl": "1920px" }}
+                mx={{ "2xl": "auto" }}
             >
                 <Box>
                     <Text
@@ -36,7 +38,7 @@ export default function YourFutureSection() {
                     <Text
                         fontFamily="Barlow Condensed"
                         fontWeight="semibold"
-                        fontSize={{ base: "48px", lg: "80px" }}
+                        fontSize={{ base: "44px", lg: "80px" }}
                         letterSpacing="4px"
                         textTransform="uppercase"
                         textAlign="center"

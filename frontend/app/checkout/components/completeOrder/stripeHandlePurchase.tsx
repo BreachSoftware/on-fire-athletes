@@ -1,3 +1,4 @@
+import emailjs from "@emailjs/browser";
 import { tradeBoughtCard } from "@/hooks/buyCardFunc";
 import CheckoutInfo from "@/hooks/CheckoutInfo";
 import TradingCardInfo from "@/hooks/TradingCardInfo";
@@ -5,6 +6,8 @@ import { useAuthProps } from "@/hooks/useAuth";
 import { PaymentIntent, Stripe } from "@stripe/stripe-js";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
+import { totalPriceInCart } from "@/utils/utils";
+import { PaymentMethod } from "@/utils/constants";
 
 /**
  * Handles the purchase process for trading cards, supporting both Stripe and non-Stripe payment methods.
@@ -26,21 +29,24 @@ export async function handlePurchase(
     buyingOtherCard: boolean,
     auth: useAuthProps,
     hash?: string,
+    isNil?: boolean,
 ): Promise<boolean> {
     try {
         // Get the current user's ID
         const currentUserId = (await auth.currentAuthenticatedUser()).userId;
         let paymentIntent: PaymentIntent | null = null;
+        let shouldByPassPayment = false;
+
+        if (checkout.total === 0) {
+            // If the total is 0, bypass payment and create the order
+            shouldByPassPayment = true;
+        }
 
         // If Stripe is provided, process the payment using Stripe
-        if (stripe) {
+        if (stripe && !shouldByPassPayment) {
             // Extract payment method and customer ID from checkout info
             const paymentMethodId = checkout.paymentMethodId;
             const customerId = checkout.customerId;
-
-            console.log("checkout", JSON.stringify(checkout));
-            console.log("paymentMethodId", paymentMethodId);
-            console.log("customerId", customerId);
 
             if (!paymentMethodId || !customerId) {
                 console.error("Payment method or customer ID not found.");
@@ -64,30 +70,34 @@ export async function handlePurchase(
             );
 
             const data = await paymentIntentResponse.json();
-            console.log("Payment intent response:", data);
-            const clientSecret = data.paymentIntent.client_secret;
 
-            // Confirm the card payment
-            const {
-                error: confirmError,
-                paymentIntent: confirmedPaymentIntent,
-            } = await stripe.confirmCardPayment(clientSecret, {
-                payment_method: paymentMethodId,
-            });
+            shouldByPassPayment = data.byPassPayment;
 
-            if (confirmError) {
-                console.error(
-                    confirmError.message ?? "An unknown error occurred.",
-                );
-                return false;
-            } else if (
-                confirmedPaymentIntent &&
-                confirmedPaymentIntent.status === "succeeded"
-            ) {
-                paymentIntent = confirmedPaymentIntent;
-            } else {
-                console.error("Payment failed.");
-                return false;
+            if (!shouldByPassPayment) {
+                const clientSecret = data.paymentIntent.client_secret;
+
+                // Confirm the card payment
+                const {
+                    error: confirmError,
+                    paymentIntent: confirmedPaymentIntent,
+                } = await stripe.confirmCardPayment(clientSecret, {
+                    payment_method: paymentMethodId,
+                });
+
+                if (confirmError) {
+                    console.error(
+                        confirmError.message ?? "An unknown error occurred.",
+                    );
+                    return false;
+                } else if (
+                    confirmedPaymentIntent &&
+                    confirmedPaymentIntent.status === "succeeded"
+                ) {
+                    paymentIntent = confirmedPaymentIntent;
+                } else {
+                    console.error("Payment failed.");
+                    return false;
+                }
             }
         }
 
@@ -123,6 +133,12 @@ export async function handlePurchase(
                 city: checkout.shippingAddress.city,
                 state: checkout.shippingAddress.state,
                 zip_code: checkout.shippingAddress.zipCode,
+                coupon_used: checkout.couponCode,
+                payment_method: shouldByPassPayment
+                    ? PaymentMethod.Bypassed
+                    : hash
+                      ? PaymentMethod.GMEX
+                      : PaymentMethod.Card,
             }),
         };
 
@@ -179,8 +195,8 @@ export async function handlePurchase(
             }
 
             // Update card price for "allStar" package
-            if (checkout.packageName === "allStar") {
-                const newCardPrice = parseFloat(checkout.cardPrice);
+            if (checkout.packageName !== "rookie") {
+                const newCardPrice = parseFloat(checkout.cardPrice) + 3.0;
 
                 const updatePriceOptions = {
                     method: "POST",
@@ -207,7 +223,10 @@ export async function handlePurchase(
 
         // Construct the success URL with appropriate query parameters
         let successUrl = "/checkout/success?";
-        if (stripe && paymentIntent) {
+        if (shouldByPassPayment) {
+            // Add flag if payment was bypassed
+            successUrl = `${successUrl}paymentBypassed=true`;
+        } else if (stripe && paymentIntent) {
             // Add Stripe payment intent ID if Stripe was used
             successUrl = `${successUrl}payment_intent=${paymentIntent.id}`;
         } else if (hash) {
@@ -218,6 +237,27 @@ export async function handlePurchase(
             // Add flag if buying another user's card
             successUrl = `${successUrl}${successUrl.includes("?") ? "&" : ""}boughtOtherCard=true`;
         }
+        if (isNil) {
+            // Add flag if the order is for NIL
+            successUrl = `${successUrl}${successUrl.includes("?") ? "&" : ""}nil=true`;
+        }
+
+        if (!buyingOtherCard) {
+            try {
+                await handlePostCheckoutEmail(checkout);
+            } catch (e) {
+                console.error("Error sending post-checkout email: ", e);
+            }
+        } else {
+            try {
+                await handleBoughtLockerRoomCardEmail(checkout, currentUserId);
+            } catch (e) {
+                console.error(
+                    "Error sending bought locker room card email: ",
+                    e,
+                );
+            }
+        }
 
         // Navigate to the success page
         router.push(successUrl);
@@ -226,4 +266,48 @@ export async function handlePurchase(
         console.error("Error during purchase:", error);
         return false;
     }
+}
+
+enum EmailTemplates {
+    ROOKIE = "template_71hzb7j",
+    ALL_STAR = "template_46qvoa9",
+}
+
+async function handlePostCheckoutEmail(checkout: CheckoutInfo) {
+    const isRookie = checkout.packageName === "rookie";
+
+    const templateToUse = isRookie
+        ? EmailTemplates.ROOKIE
+        : EmailTemplates.ALL_STAR;
+
+    await emailjs.send(
+        "service_8rtflzq",
+        templateToUse,
+        {
+            toEmail: checkout.contactInfo.email,
+            cardImage: checkout.onFireCard!.cardImage,
+            profileUrl: `https://onfireathletes.com/profile?user=${checkout.onFireCard!.generatedBy}`,
+        },
+        { publicKey: "nOgMf7N2DopnucmPc" },
+    );
+}
+
+async function handleBoughtLockerRoomCardEmail(
+    checkout: CheckoutInfo,
+    userId: string,
+) {
+    await emailjs.send(
+        "service_8rtflzq",
+        "template_rsncin1",
+        {
+            toEmail: checkout.contactInfo.email,
+            cardImage: checkout.onFireCard!.cardImage,
+            cardFirstName: checkout.onFireCard!.firstName,
+            cardLastName: checkout.onFireCard!.lastName,
+            toName: `${checkout.contactInfo.firstName} ${checkout.contactInfo.lastName}`,
+            cardPrice: `${totalPriceInCart(checkout, false).toFixed(2)}`,
+            profileUrl: `https://onfireathletes.com/profile?user=${userId}`,
+        },
+        { publicKey: "nOgMf7N2DopnucmPc" },
+    );
 }

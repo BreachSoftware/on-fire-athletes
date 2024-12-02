@@ -101,6 +101,7 @@ export default class TradingCardInfo {
     submitted: boolean;
     paymentStatus: PaymentStatus;
     tradeStatus: TradeStatus;
+    isNil: boolean;
 
     /**
      * Constructor for the TradingCardInfo class
@@ -166,6 +167,7 @@ export default class TradingCardInfo {
         submitted?: boolean;
         paymentStatus?: PaymentStatus;
         tradeStatus?: TradeStatus;
+        isNil?: boolean;
     }) {
         this.uuid = options?.uuid || "";
         this.generatedBy = options?.generatedBy || "";
@@ -206,7 +208,7 @@ export default class TradingCardInfo {
         this.backVideoWidth = options?.backVideoWidth || 1500; // Leaving the original values here as a reference - 350;
         this.backVideoHeight = options?.backVideoHeight || 843.75; // Leaving the original values here as a reference - 196.875;
         this.backVideoRotation = options?.backVideoRotation || 0;
-        this.borderColor = options?.borderColor || "#67ca3c";
+        this.borderColor = options?.borderColor || "#27CE00";
         // Found a bug in backgroundAccentColor: the initial color in the card creation is significantly darker than the color configured here.
         this.backgroundAccentColor =
             options?.backgroundAccentColor || "#2a2a2a";
@@ -225,6 +227,7 @@ export default class TradingCardInfo {
         this.submitted = options?.submitted || false;
         this.paymentStatus = options?.paymentStatus || PaymentStatus.UNKNOWN;
         this.tradeStatus = options?.tradeStatus || TradeStatus.TRADE_ONLY;
+        this.isNil = options?.isNil || false;
 
         // Really complicated way to ensure that this array is populated with all the values of the enum
         this.partsToRecolor = allPartsToRecolor();
@@ -295,6 +298,7 @@ export default class TradingCardInfo {
 			submitted: ${cardInfo.submitted}
 			paid: ${cardInfo.paymentStatus}
 			tradeStatus: ${cardInfo.tradeStatus}
+            isNil: ${cardInfo.isNil}
 			`;
     }
 
@@ -402,7 +406,7 @@ export default class TradingCardInfo {
 
         console.log("savedCard");
 
-        TradingCardInfo.saveCard(savedCard);
+        TradingCardInfo.saveCard({ ...savedCard, isNil: cardInfo.isNil });
 
         return savedCard;
     }

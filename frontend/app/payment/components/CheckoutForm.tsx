@@ -7,6 +7,9 @@ import { checkoutSteps } from "@/app/checkout/components/checkoutSteps";
 import { useState } from "react";
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
+import CouponInput from "./coupon-input";
+import { totalPriceInCart } from "@/utils/utils";
+import { useRouter } from "next/navigation";
 
 interface CheckoutFormProps {
     buyCard?: boolean;
@@ -16,6 +19,7 @@ interface CheckoutFormProps {
  * The CheckoutForm component
  */
 export default function CheckoutForm({ buyCard }: CheckoutFormProps) {
+    const router = useRouter();
     const stripe = useStripe();
     const toast = useToast();
     const elements = useElements();
@@ -43,6 +47,15 @@ export default function CheckoutForm({ buyCard }: CheckoutFormProps) {
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
 
+        const total = totalPriceInCart(checkout, buyingPhysicalCards).toFixed(
+            2,
+        );
+
+        if (total === "0.00") {
+            router.push(buyCard ? "/transfer" : "/lockerroom");
+            return;
+        }
+
         if (!stripe || !elements) {
             // Stripe.js has not yet loaded.
             // Make sure to disable form submission until Stripe.js has loaded.
@@ -58,8 +71,6 @@ export default function CheckoutForm({ buyCard }: CheckoutFormProps) {
                     : `${window.location.origin}/lockerroom`,
             },
         });
-
-        console.log("ERROR?: ", error);
 
         if (error) {
             if (
@@ -85,22 +96,10 @@ export default function CheckoutForm({ buyCard }: CheckoutFormProps) {
         }
     }
 
-    function totalPriceInCart() {
-        let total = 0;
-        for (let i = 0; i < checkout.cart.length; i++) {
-            total =
-                total +
-                checkout.cart[i].price * checkout.cart[i].numberOfOrders;
-        }
-        if (buyingPhysicalCards) {
-            total = total + checkout.shippingCost;
-        }
-        return total;
-    }
-
     return (
         <form id="payment-form" onSubmit={handleSubmit}>
             <PaymentElement id="payment-element" />
+            <CouponInput />
             {/* Invisible button that gets clicked by the checkoutStepWrapper */}
             <Flex
                 justifyContent={{
@@ -127,7 +126,11 @@ export default function CheckoutForm({ buyCard }: CheckoutFormProps) {
                         fontSize={"2xl"}
                         fontWeight={"bold"}
                     >
-                        Total: ${totalPriceInCart().toFixed(2)}
+                        Total: $
+                        {totalPriceInCart(
+                            checkout,
+                            buyingPhysicalCards,
+                        ).toFixed(2)}
                         {buyingPhysicalCards ? "*" : ""}
                     </Text>
                     <Flex gap="10%">
@@ -162,6 +165,24 @@ export default function CheckoutForm({ buyCard }: CheckoutFormProps) {
                             isLoading={isLoading}
                             onClick={async () => {
                                 setIsLoading(true);
+
+                                const total = totalPriceInCart(
+                                    checkout,
+                                    buyingPhysicalCards,
+                                ).toFixed(2);
+
+                                if (total === "0.00") {
+                                    setCheckout({
+                                        ...curCheckout.checkout,
+                                        paymentInfoEntered: true,
+                                        stepNum: checkoutSteps.length - 1,
+                                        visitedSteps: checkoutSteps.length - 1,
+                                    });
+
+                                    setIsLoading(false);
+                                    return;
+                                }
+
                                 // Call elements.submit() to trigger the form submission
                                 const { error: submitError } =
                                     await elements!.submit();
@@ -209,13 +230,9 @@ export default function CheckoutForm({ buyCard }: CheckoutFormProps) {
                                     });
                                 }
 
-                                console.log("result", result);
-
                                 // Retrieve the payment method details
                                 const paymentMethodId = result.setupIntent
                                     ?.payment_method as string | undefined;
-
-                                console.log("paymentMethodId", paymentMethodId);
 
                                 setCheckout({
                                     ...curCheckout.checkout,
@@ -250,8 +267,6 @@ export default function CheckoutForm({ buyCard }: CheckoutFormProps) {
                                         .charAt(0)
                                         .toUpperCase() +
                                     paymentMethod.card.brand.slice(1);
-
-                                console.log("setting checkout info");
 
                                 setCheckout({
                                     ...curCheckout.checkout,

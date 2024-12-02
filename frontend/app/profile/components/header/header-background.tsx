@@ -1,4 +1,5 @@
-import { Box } from '@chakra-ui/layout'
+import { Box } from "@chakra-ui/layout";
+import HeaderBackground from "@/images/backgrounds/Header-Abstract-Background.jpg";
 
 export default function ProfileHeaderBackground() {
     return (
@@ -8,7 +9,7 @@ export default function ProfileHeaderBackground() {
             left={0}
             bottom={0}
             w="100dvw"
-            bgImage="Header-Abstract-Background.jpg"
+            bgImage={HeaderBackground.src}
             backgroundPosition="center"
             opacity={0.36}
             mixBlendMode="luminosity"
@@ -20,5 +21,5 @@ export default function ProfileHeaderBackground() {
                 h="100%"
             />
         </Box>
-    )
+    );
 }

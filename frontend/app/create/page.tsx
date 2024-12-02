@@ -11,8 +11,10 @@ import Footer from "../components/footer";
 import CreateBackground from "./components/background";
 import SharedStack from "@/components/shared/wrappers/shared-stack";
 import { InfoItemProps } from "./components/info-card/item";
-import StartCreatingButton from "./components/start-creating-button";
 import SideBarHamburger from "@/components/sidebarHamburger";
+import LightItUpCTAButton from "../components/buttons/light-it-up-button";
+
+import DemarioCard from "@/images/mockups/demario-card.gif";
 
 /**
  * Main page for the creation process
@@ -26,7 +28,7 @@ export default function CreationOverview() {
         },
         {
             number: 2,
-            description: "Pick a digital and/or physical AR package!",
+            description: "Pick a tradable and/or sellable package!",
         },
         {
             number: 3,
@@ -66,8 +68,10 @@ export default function CreationOverview() {
                                     justifyContent="space-between"
                                 >
                                     <CreateYourCardText />
-                                    <Box>
-                                        <StartCreatingButton />
+                                    <Box color="white">
+                                        <LightItUpCTAButton link="/create/card_creation">
+                                            START CREATING
+                                        </LightItUpCTAButton>
                                     </Box>
                                 </Flex>
                                 <Box
@@ -84,7 +88,7 @@ export default function CreationOverview() {
                             >
                                 <Box
                                     w={{
-                                        base: "full",
+                                        base: "115%",
                                         md: "396px",
                                         "2xl": "516px",
                                     }}
@@ -96,15 +100,16 @@ export default function CreationOverview() {
                                 >
                                     <Image
                                         maxH={{ base: "500px", md: "unset" }}
-                                        src="step_one_template_cards/demario_a.png"
+                                        src={DemarioCard.src}
                                         alt="Your Card"
                                         objectFit="contain"
-                                        transform="rotate(12deg) scale(0.75)"
+                                        transform="rotate(1deg) scale(1.00)"
                                         filter="drop-shadow(0 0 24px rgba(204,134,37,0.6))"
+                                        mt={{ base: "32px", md: "128px" }} // Adds margin above the image
                                     />
                                 </Box>
                                 <Box
-                                    mt={{ base: "16px", lg: "64px" }}
+                                    mt={{ base: "16px", lg: "32px" }}
                                     width="100%"
                                 >
                                     <CardDropShadow />

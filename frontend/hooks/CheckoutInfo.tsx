@@ -55,6 +55,10 @@ export default class CheckoutInfo {
     paymentCardLastFour?: string;
     cryptoWalletConnected: boolean;
 
+    couponCode: string;
+    couponCentsOff: number;
+    couponPercentOff: number;
+
     stepNum: number;
     shippingCards: boolean;
     shippingAddress: StreetAddress;
@@ -104,6 +108,10 @@ export default class CheckoutInfo {
         this.paymentCardBrand = "";
         this.paymentCardLastFour = "";
         this.cryptoWalletConnected = false;
+
+        this.couponCode = "";
+        this.couponCentsOff = 0;
+        this.couponPercentOff = 0;
 
         this.stepNum = 0;
         this.shippingCards = false;

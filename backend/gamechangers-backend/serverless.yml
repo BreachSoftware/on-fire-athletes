@@ -1,4 +1,4 @@
-service: gamechangers-backend-dev
+service: gamechangers-backend
 frameworkVersion: "3"
 useDotenv: true
 
@@ -52,7 +52,8 @@ provider:
                 - Effect: Allow
                   Action:
                       - ses:SendEmail
-                  Resource: "arn:aws:ses:us-east-1:372797063233:identity/zenithsoftware.dev"
+                  Resource:
+                      - "*"
 
 functions:
     resize:
@@ -212,6 +213,12 @@ functions:
             - httpApi:
                   path: /retrievePaymentMethod
                   method: post
+    applyCouponCode:
+        handler: lambda/handlers/applyCouponCode.applyCouponCode
+        events:
+            - httpApi:
+                  path: /applyCouponCode
+                  method: post
     createOrder:
         handler: lambda/handlers/createOrder.createOrder
         events:
@@ -253,6 +260,12 @@ functions:
         events:
             - httpApi:
                   path: /createCustomer
+                  method: post
+    requestNILVerification:
+        handler: lambda/handlers/requestNILVerification.requestNILVerification
+        events:
+            - httpApi:
+                  path: /requestNILVerification
                   method: post
 
     ### RIVALS ENDPOINTS ###

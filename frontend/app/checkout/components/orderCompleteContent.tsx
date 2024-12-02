@@ -61,7 +61,7 @@ export default function OrderCompleteContent(props: OrderCompleteContentProps) {
                 .share({
                     title: "Check out my new OnFire card!",
                     text: "I just created a new OnFire card. Check it out!",
-                    url: `https://on-fire-athletes.netlify.app/profile?user=${props.generatedByUUID}&card=${props.cardUUID}`,
+                    url: `https://onfireathletes.com/profile?user=${props.generatedByUUID}&card=${props.cardUUID}`,
                 })
                 .then(() => {
                     toast({
@@ -78,7 +78,7 @@ export default function OrderCompleteContent(props: OrderCompleteContentProps) {
             // Fallback to copy the link to the clipboard
             navigator.clipboard
                 .writeText(
-                    `https://on-fire-athletes.netlify.app/profile?user=${props.generatedByUUID}&card=${props.cardUUID}`,
+                    `https://onfireathletes.com/profile?user=${props.generatedByUUID}&card=${props.cardUUID}`,
                 )
                 .then(() => {
                     toast({
@@ -108,10 +108,15 @@ export default function OrderCompleteContent(props: OrderCompleteContentProps) {
             <VStack gap="20px">
                 <VStack alignItems={"center"}>
                     <Text
+                        textAlign="center"
+                        fontFamily="Barlow Semi Condensed"
+                        fontWeight="semibold"
+                        fontStyle="italic"
+                        letterSpacing="3.9px"
+                        lineHeight={{ base: "29px", lg: "31px" }}
+                        transform="uppercase"
+                        color="#27CE01"
                         textColor="green.100"
-                        fontFamily={"Barlow Condensed"}
-                        fontWeight={"light"}
-                        fontStyle={"italic"}
                         fontSize={{
                             base: "20px",
                             md: "25px",

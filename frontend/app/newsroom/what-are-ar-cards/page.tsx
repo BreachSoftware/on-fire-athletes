@@ -2,7 +2,6 @@
 "use client";
 import React from "react";
 import { Box, Center, UnorderedList, OrderedList } from "@chakra-ui/layout";
-import BackgroundImage from "../images/news2.png";
 import ArticleParagraph from "../components/paragraph";
 import ArticleSubtitle from "../components/subtitle";
 import ArticleListItem from "../components/list-item";
@@ -19,7 +18,10 @@ export default function Article() {
         <Box w="full">
             <ArticleHeader
                 title="What are “AR” Cards?"
-                image={BackgroundImage.src}
+                image={
+                    "https://onfireathletes-media-uploads.s3.us-east-1.amazonaws.com/content/OA+-+AR+Blog+Featured+Image+-+Video+v2.mp4"
+                }
+                isVideo
             />
             <ArticleBody>
                 <ArticleParagraph>

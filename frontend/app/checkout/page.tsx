@@ -17,18 +17,13 @@ import AllStarPrice from "./components/allStarPrice";
 import { getCard } from "../generate_card_asset/cardFunctions";
 import TradingCardInfo from "@/hooks/TradingCardInfo";
 import { useTransferContext } from "@/hooks/useTransfer";
+import "../../node_modules/@rainbow-me/rainbowkit/dist/index.css";
 import { darkTheme, RainbowKitProvider } from "@rainbow-me/rainbowkit";
-import {
-    Environment,
-    environmentManager,
-} from "@backend/EnvironmentManager/EnvironmentManager";
 
 // OnFire keys
 const STRIPE_PUBLIC_KEY =
-    environmentManager.getApiStage() == Environment.Production
-        ? "pk_live_51PssXyCEBFOTy6pM9DfyGbI7JZUqMoClqRVuFCEAVamp10DYl2O48SqCjiw7vSbeiv8CCmYPZwSgguOTCcJzbY0u00cwKkUFDZ"
-        : "pk_test_51PssXyCEBFOTy6pMtubViKDQwVSljNAJRQAk5SkRyexPECtx4w8R3IHLQtI7CSNG1g7hSFk044Pc0STSYtxEWmSW00Y4VLvPII";
-
+    process.env.NEXT_PUBLIC_STRIPE_PK ||
+    "pk_live_51PssXyCEBFOTy6pM9DfyGbI7JZUqMoClqRVuFCEAVamp10DYl2O48SqCjiw7vSbeiv8CCmYPZwSgguOTCcJzbY0u00cwKkUFDZ";
 /**
  * The Checkout page when purchasing a card
  * @returns JSX.Element
@@ -50,7 +45,6 @@ export default function CheckoutPage() {
 
     const checkout = co.checkout;
     const checkoutStep = checkout.stepNum;
-    console.log("CARD:", checkout.onFireCard);
 
     const itemsInCart = checkout.cart;
 
@@ -151,7 +145,6 @@ export default function CheckoutPage() {
     // This useEffect is used to set the cart items when the user is not buying a card from another user
     useEffect(() => {
         if (checkoutStep === 2 && !buyingOtherCard) {
-            console.log("Setting cart items");
             let formalPackageName = "";
             if (co.checkout.packageName) {
                 switch (co.checkout.packageName) {
@@ -192,44 +185,22 @@ export default function CheckoutPage() {
                 }
 
                 let includedPhysicalAddOn = null;
-                let physicalAddOn = null;
-                // Check if the user has selected the All-Star or MVP packages and has ordered more than five physical card
-                if (
-                    co.checkout.packageName === "allStar" ||
-                    co.checkout.packageName === "mvp"
-                ) {
-                    includedPhysicalAddOn = {
-                        title: "Included Physical Card",
-                        card: onFireCard,
-                        numberOfCards: 1,
-                        numberOfOrders:
-                            co.checkout.packageName === "allStar" ? 1 : 5,
-                        price: 0.0,
-                    };
 
-                    // If there are additional physical cards beyond the free ones, set the physical card add-on
-                    if (
-                        co.checkout.packageName === "mvp" &&
-                        co.checkout.physicalCardCount >= 6
-                    ) {
-                        physicalAddOn = {
-                            title: "Physical Card Add-On",
-                            card: onFireCard,
-                            numberOfCards: 1,
-                            numberOfOrders: co.checkout.physicalCardCount - 5,
-                            price: co.checkout.physicalCardPrice,
-                        };
-                    }
-                } else if (co.checkout.physicalCardCount > 0) {
-                    // If not All-Star package or only one physical card, check if there are any physical cards
-                    physicalAddOn = {
-                        title: "Physical Card Add-On",
-                        card: onFireCard,
-                        numberOfCards: 1,
-                        numberOfOrders: co.checkout.physicalCardCount,
-                        price: co.checkout.physicalCardPrice,
-                    };
-                }
+                includedPhysicalAddOn = {
+                    title:
+                        co.checkout.packageName === "rookie"
+                            ? "Included Physical Card"
+                            : "Included Physical Cards",
+                    card: onFireCard,
+                    numberOfCards: 1,
+                    numberOfOrders:
+                        co.checkout.packageName === "rookie"
+                            ? 1
+                            : co.checkout.packageName === "allStar"
+                              ? 5
+                              : 10,
+                    price: 0.0,
+                };
 
                 // Add all items to the cart
                 co.setCheckout({
@@ -238,7 +209,6 @@ export default function CheckoutPage() {
                         mainPackage,
                         includedPhysicalAddOn,
                         digitalAddOn,
-                        physicalAddOn,
                     ].filter((item) => {
                         return item !== null;
                     }),
@@ -260,12 +230,10 @@ export default function CheckoutPage() {
 
     return (
         <RainbowKitProvider theme={darkTheme()}>
-            {/* The stepNum code is to account for running out of space in the large screen orientation */}
             <Flex
                 flexDir="row"
                 w="full"
                 minH="100dvh"
-                h={{ base: "fit-content", md: "100dvh" }}
                 bgGradient={
                     "linear(180deg, gray.1200 0%, gray.1300 100%) 0% 0% no-repeat padding-box;"
                 }
