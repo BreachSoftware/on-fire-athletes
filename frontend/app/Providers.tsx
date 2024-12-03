@@ -16,6 +16,7 @@ import { bsc } from "wagmi/chains";
 import { WagmiProvider } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ProvideTransfer } from "@/hooks/useTransfer";
+import { usePathname } from "next/navigation";
 
 export const rainbowKitConfig = getDefaultConfig({
     appName: "onfire-athletes",
@@ -25,9 +26,12 @@ export const rainbowKitConfig = getDefaultConfig({
 const queryClient = new QueryClient();
 
 export function Providers({ children }: { children: React.ReactNode }) {
+    const pathname = usePathname();
+    const isArViewer = pathname.includes("/ar");
+
     return (
         <ChakraProvider theme={theme}>
-            <WagmiProvider config={rainbowKitConfig}>
+            <MaybeWagmiProvider shouldUse={!isArViewer}>
                 <QueryClientProvider client={queryClient}>
                     <ProvideAuth>
                         <ProvideCurrentCardInfo>
@@ -35,9 +39,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
                                 <ProvideCompletedMobileSteps>
                                     <ProvideMediaProcessing>
                                         <ProvideCheckout>
-                                            <ProvideTransfer>
+                                            <MaybeProvideTransfer
+                                                shouldUse={!isArViewer}
+                                            >
                                                 {children}
-                                            </ProvideTransfer>
+                                            </MaybeProvideTransfer>
                                         </ProvideCheckout>
                                     </ProvideMediaProcessing>
                                 </ProvideCompletedMobileSteps>
@@ -45,7 +51,37 @@ export function Providers({ children }: { children: React.ReactNode }) {
                         </ProvideCurrentCardInfo>
                     </ProvideAuth>
                 </QueryClientProvider>
-            </WagmiProvider>
+            </MaybeWagmiProvider>
         </ChakraProvider>
     );
+}
+
+function MaybeWagmiProvider({
+    shouldUse,
+    children,
+}: {
+    shouldUse: boolean;
+    children: React.ReactNode;
+}) {
+    if (shouldUse) {
+        return (
+            <WagmiProvider config={rainbowKitConfig}>{children}</WagmiProvider>
+        );
+    }
+
+    return <>{children}</>;
+}
+
+function MaybeProvideTransfer({
+    shouldUse,
+    children,
+}: {
+    shouldUse: boolean;
+    children: React.ReactNode;
+}) {
+    if (shouldUse) {
+        return <ProvideTransfer>{children}</ProvideTransfer>;
+    }
+
+    return <>{children}</>;
 }
