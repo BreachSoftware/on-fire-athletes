@@ -62,6 +62,25 @@ export interface OnFireCardRef {
     handleClick: () => void;
 }
 
+const defaultPartsToShow = {
+    cardShadow: true,
+    exteriorBorder: true,
+    exteriorBorderShine: true,
+    interiorBorder: true,
+    interiorBorderShine: true,
+    background: true,
+    name: true,
+    backgroundName: true,
+    number: true,
+    onFireLogo: true,
+    position: true,
+    team: true,
+    hero: true,
+    signature: true,
+};
+
+type PartsToShowType = Partial<typeof defaultPartsToShow>;
+
 type OnFireCardProps = {
     card?: TradingCardInfo;
     cardFrontRef?: React.RefObject<HTMLDivElement>;
@@ -73,6 +92,7 @@ type OnFireCardProps = {
     shouldFlipOnClick?: boolean;
     mobileFlipButton?: boolean;
     isOnProfile?: boolean;
+    enabledParts?: PartsToShowType;
 };
 
 /**
@@ -90,11 +110,17 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
             shouldFlipOnClick = false,
             mobileFlipButton = false,
             isOnProfile = false,
+            enabledParts = defaultPartsToShow,
         },
         ref,
     ) => {
         const DEFAULT_BACK_VIDEO_URL =
             "https://onfireathletes-media-uploads.s3.amazonaws.com/onfire-athletes-back-default.mov";
+
+        const partsToShow = {
+            ...defaultPartsToShow,
+            ...enabledParts,
+        };
 
         // usingHook should be true only if you are not slim and you did not put in a card.
         const usingHook = card === undefined;
@@ -592,36 +618,49 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                 <PrerenderedGamecardFrontImage />
                             ) : (
                                 <>
-                                    <CardBottomLayer />
+                                    {partsToShow.background && (
+                                        <CardBottomLayer />
+                                    )}
 
-                                    <ExteriorBorder
-                                        color={curCard.borderColor}
-                                    />
-                                    <ExteriorBorderShine />
-
-                                    <InteriorBorder
-                                        color={curCard.borderColor}
-                                        cardType={curCard.cardType as "a" | "b"}
-                                    />
-                                    <InteriorBorderShine />
-
-                                    {/* Not its own element because it causes Petch text to jump around */}
-                                    {curCard.cardType === "a" && (
-                                        <RepeatingPetch
-                                            as={motion.div}
-                                            text={curCard.lastName}
-                                            position="absolute"
-                                            height="fit-content"
-                                            style={petchOutlineStyle}
-                                            fontFam={
-                                                curCard.nameFont ===
-                                                CardFonts.UniserBold
-                                                    ? CardFonts.ChakraPetch
-                                                    : CardFonts.BrotherhoodSansSerif
-                                            }
-                                            zIndex={zIndex.petch}
+                                    {partsToShow.exteriorBorder && (
+                                        <ExteriorBorder
+                                            color={curCard.borderColor}
                                         />
                                     )}
+                                    {partsToShow.exteriorBorderShine && (
+                                        <ExteriorBorderShine />
+                                    )}
+
+                                    {partsToShow.interiorBorder && (
+                                        <InteriorBorder
+                                            color={curCard.borderColor}
+                                            cardType={
+                                                curCard.cardType as "a" | "b"
+                                            }
+                                        />
+                                    )}
+                                    {partsToShow.interiorBorderShine && (
+                                        <InteriorBorderShine />
+                                    )}
+
+                                    {/* Not its own element because it causes Petch text to jump around */}
+                                    {partsToShow.backgroundName &&
+                                        curCard.cardType === "a" && (
+                                            <RepeatingPetch
+                                                as={motion.div}
+                                                text={curCard.lastName}
+                                                position="absolute"
+                                                height="fit-content"
+                                                style={petchOutlineStyle}
+                                                fontFam={
+                                                    curCard.nameFont ===
+                                                    CardFonts.UniserBold
+                                                        ? CardFonts.ChakraPetch
+                                                        : CardFonts.BrotherhoodSansSerif
+                                                }
+                                                zIndex={zIndex.petch}
+                                            />
+                                        )}
 
                                     {/* Not its own element because the Draggable snaps back when it is */}
                                     <Box
@@ -633,106 +672,114 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                                         left={0}
                                     >
                                         {/* Draggable Hero */}
-                                        {curCard.frontPhotoURL && (
-                                            <Draggable
-                                                defaultPosition={{
-                                                    x: curCard.heroXOffset,
-                                                    y: curCard.heroYOffset,
-                                                }}
-                                                bounds={{
-                                                    top: -500,
-                                                    left: -300,
-                                                    right: 300,
-                                                    bottom: 500,
-                                                }}
-                                                onStop={handleHeroDragStop}
-                                                nodeRef={heroRef}
-                                            >
-                                                <Center
-                                                    verticalAlign={"center"}
-                                                    ref={heroRef}
+                                        {partsToShow.hero &&
+                                            curCard.frontPhotoURL && (
+                                                <Draggable
+                                                    defaultPosition={{
+                                                        x: curCard.heroXOffset,
+                                                        y: curCard.heroYOffset,
+                                                    }}
+                                                    bounds={{
+                                                        top: -500,
+                                                        left: -300,
+                                                        right: 300,
+                                                        bottom: 500,
+                                                    }}
+                                                    onStop={handleHeroDragStop}
+                                                    nodeRef={heroRef}
                                                 >
-                                                    <Image
-                                                        src={`${curCard.frontPhotoURL}`}
-                                                        alt="Player Hero"
-                                                        maxWidth={`${curCard.heroWidth}px`}
-                                                        top={"-5px"}
-                                                        left={"0px"}
-                                                        draggable={false}
-                                                        style={{
-                                                            filter: "drop-shadow(0px 0px 2px #000000)",
-                                                        }}
-                                                    />
-                                                </Center>
-                                            </Draggable>
-                                        )}
+                                                    <Center
+                                                        verticalAlign={"center"}
+                                                        ref={heroRef}
+                                                    >
+                                                        <Image
+                                                            src={`${curCard.frontPhotoURL}`}
+                                                            alt="Player Hero"
+                                                            maxWidth={`${curCard.heroWidth}px`}
+                                                            top={"-5px"}
+                                                            left={"0px"}
+                                                            draggable={false}
+                                                            style={{
+                                                                filter: "drop-shadow(0px 0px 2px #000000)",
+                                                            }}
+                                                        />
+                                                    </Center>
+                                                </Draggable>
+                                            )}
 
                                         {/* Draggable Signature */}
-                                        <Draggable
-                                            defaultPosition={{
-                                                x: curCard.signatureXOffset,
-                                                y: curCard.signatureYOffset,
-                                            }}
-                                            bounds={{
-                                                top: -400,
-                                                left: -300,
-                                                right: 300,
-                                                bottom: 400,
-                                            }}
-                                            onStop={handleSignatureDragStop}
-                                            nodeRef={signatureRef}
-                                        >
-                                            <Image
-                                                hidden={!signature}
-                                                src={signature}
-                                                alt="Player Signature"
-                                                maxWidth={`${curCard.signatureWidth}px`}
-                                                position="absolute"
-                                                top={"380px"}
-                                                left={"75px"}
-                                                draggable={false}
-                                                alignSelf="center"
-                                                justifySelf="center"
-                                                style={{
-                                                    filter: "drop-shadow(0px 0px 2px #000000)",
+                                        {partsToShow.signature && (
+                                            <Draggable
+                                                defaultPosition={{
+                                                    x: curCard.signatureXOffset,
+                                                    y: curCard.signatureYOffset,
                                                 }}
-                                                ref={signatureRef}
-                                            />
-                                        </Draggable>
+                                                bounds={{
+                                                    top: -400,
+                                                    left: -300,
+                                                    right: 300,
+                                                    bottom: 400,
+                                                }}
+                                                onStop={handleSignatureDragStop}
+                                                nodeRef={signatureRef}
+                                            >
+                                                <Image
+                                                    hidden={!signature}
+                                                    src={signature}
+                                                    alt="Player Signature"
+                                                    maxWidth={`${curCard.signatureWidth}px`}
+                                                    position="absolute"
+                                                    top={"380px"}
+                                                    left={"75px"}
+                                                    draggable={false}
+                                                    alignSelf="center"
+                                                    justifySelf="center"
+                                                    style={{
+                                                        filter: "drop-shadow(0px 0px 2px #000000)",
+                                                    }}
+                                                    ref={signatureRef}
+                                                />
+                                            </Draggable>
+                                        )}
                                     </Box>
 
-                                    <PositionText />
+                                    {partsToShow.position && <PositionText />}
 
-                                    <TeamText />
+                                    {partsToShow.team && <TeamText />}
 
-                                    <NumberText />
+                                    {partsToShow.number && <NumberText />}
 
-                                    <OnFireLogoYear card={curCard} />
-
-                                    {curCard.cardType === "a" ? (
-                                        <BigTextA
-                                            curCard={curCard}
-                                            letterSpacing={letterSpacing}
-                                        />
-                                    ) : (
-                                        <BigTextB
-                                            curCard={curCard}
-                                            letterSpacing={letterSpacing}
-                                        />
+                                    {partsToShow.onFireLogo && (
+                                        <OnFireLogoYear card={curCard} />
                                     )}
 
+                                    {partsToShow.name &&
+                                        (curCard.cardType === "a" ? (
+                                            <BigTextA
+                                                curCard={curCard}
+                                                letterSpacing={letterSpacing}
+                                            />
+                                        ) : (
+                                            <BigTextB
+                                                curCard={curCard}
+                                                letterSpacing={letterSpacing}
+                                            />
+                                        ))}
+
                                     {/* Card Shadow */}
-                                    <Box
-                                        alignSelf="center"
-                                        paddingTop="50px"
-                                        w={"170%"}
-                                        visibility={{
-                                            base: "hidden",
-                                            md: "visible",
-                                        }}
-                                    >
-                                        <CardDropShadow opacity={0.7} />
-                                    </Box>
+                                    {partsToShow.cardShadow && (
+                                        <Box
+                                            alignSelf="center"
+                                            paddingTop="50px"
+                                            w={"170%"}
+                                            visibility={{
+                                                base: "hidden",
+                                                md: "visible",
+                                            }}
+                                        >
+                                            <CardDropShadow opacity={0.7} />
+                                        </Box>
+                                    )}
                                 </>
                             )}
                         </Box>

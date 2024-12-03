@@ -34,6 +34,7 @@ export default function CreationOverview({ isNil = false }: CardCreationProps) {
     const foregroundRef = useRef(null);
     const backgroundRef = useRef(null);
     const cardBackRef = useRef(null);
+    const cardPrintRef = useRef(null);
     useEffect(() => {
         currentInfo.setCurCard(new TradingCardInfo());
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -154,11 +155,15 @@ export default function CreationOverview({ isNil = false }: CardCreationProps) {
                             >
                                 <OnfireCard
                                     cardFrontRef={cardFrontRef}
-                                    cardForegroundRef={foregroundRef}
-                                    cardBackgroundRef={backgroundRef}
                                     cardBackRef={cardBackRef}
                                     mobileFlipButton={isMobile}
                                     showButton={!isMobile}
+                                    // enabledParts={{
+                                    //     interiorBorder: false,
+                                    //     interiorBorderShine: false,
+                                    //     exteriorBorderShine: false,
+                                    //     onFireLogo: false,
+                                    // }}
                                 />
                             </Box>
                         )}
@@ -198,6 +203,19 @@ export default function CreationOverview({ isNil = false }: CardCreationProps) {
                     <Sidebar height={"auto"} />
                 </Box>
             </HStack>
+            <Box visibility="hidden" pos="absolute" left="-9999px">
+                <OnfireCard
+                    cardFrontRef={cardPrintRef}
+                    mobileFlipButton={isMobile}
+                    showButton={!isMobile}
+                    enabledParts={{
+                        interiorBorder: false,
+                        interiorBorderShine: false,
+                        exteriorBorderShine: false,
+                        onFireLogo: false,
+                    }}
+                />
+            </Box>
         </Box>
     );
 }

@@ -103,7 +103,7 @@ async function generateCardImage(
     offScreen.style.position = "absolute";
     offScreen.style.left = "-9999px";
     offScreen.style.width = "350px";
-    offScreen.style.height = label === "cardBack" ? "490px" : "490px";
+    offScreen.style.height = "490px";
 
     // Clone the content into the off-screen container
     const clonedContent = ref.current.cloneNode(true) as HTMLElement;
