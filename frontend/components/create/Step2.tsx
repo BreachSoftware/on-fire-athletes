@@ -5,20 +5,21 @@ import DropdownInput from "./DropdownInput";
 import { SportsPositions } from "./SportsPositions";
 import { SportsLevels } from "./SportsLevels";
 import PositionDropdown from "./PositionDropdown";
+import TextInput from "./TextInput";
 
 /**
  * This function checks if the key pressed is a number
  * @param event the key press event
  */
 export function checkIfNumber(event: KeyboardEvent<HTMLInputElement>) {
-    /**
-     * Allowing: Integers | Backspace | Tab | Delete | Left & Right arrow keys
-     **/
-    const regex = new RegExp(
-        /(^\d*$)|(Backspace|Tab|Delete|ArrowLeft|ArrowRight)/,
-    );
+/**
+ * Allowing: Integers | Backspace | Tab | Delete | Left & Right arrow keys
+ **/
+const regex = new RegExp(
+/(^\d*$)|(Backspace|Tab|Delete|ArrowLeft|ArrowRight)/,
+);
 
-    return !event.key.match(regex) && event.preventDefault();
+return !event.key.match(regex) && event.preventDefault();
 }
 
 /**
@@ -27,158 +28,107 @@ export function checkIfNumber(event: KeyboardEvent<HTMLInputElement>) {
  * @returns the content of Step 2 in the card creation process
  */
 export default function Step2() {
-    const card = useCurrentCardInfo();
+const card = useCurrentCardInfo();
 
-    return (
-        <>
-            <VStack
-                width={"100%"}
-                height={"100%"}
-                alignItems={"left"}
-                justifyContent={"space-evenly"}
-                gap={8}
-                fontFamily={"Barlow Semi Condensed"}
-            >
-                {/* Portrait orientation section */}
+const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>, cardField: keyof typeof card.curCard) => {
+    card.setCurCard({
+        ...card.curCard,
+        [cardField]: e.target.value, 
+    });
+};
 
-                {/* Input grid */}
-                <HStack
-                    width={"100%"}
-                    justifyContent={"space-between"}
-                    flexWrap={"wrap"}
-                >
-                    <Text color="white">*Required fields.</Text>
-                    <Grid
-                        templateColumns={{ base: "1fr", md: "1fr 1fr" }}
-                        templateRows={{
-                            base: "1fr 1fr 1fr 1fr 1fr",
-                            md: "1fr 1fr, 1fr 1fr, 1fr 1fr",
-                        }}
-                        gap={4}
-                        width={"100%"}
-                    >
-                        {/* Fake username and password fields, to make sure that
-						Google Autocomplete stuff doesnt randomly pop up when typing things */}
-                        <Input type="username" display="none" />
-                        <Input type="password" display="none" />
+return (
+<>
+<VStack
+    width={"100%"}
+    height={"100%"}
+    alignItems={"left"}
+    justifyContent={"space-evenly"}
+    gap={8}
+    fontFamily={"Barlow Semi Condensed"}
+>
+    {/* Portrait orientation section */}
 
-                        {/* User Inputs */}
-                        <Input
-                            variant={"basicInput"}
-                            isDisabled={card.curCard.inputDisabled}
-                            backgroundColor={"gray.200"}
-                            placeholder={"First Name*"}
-                            value={card.curCard.firstName}
-                            onChange={(e) => {
-                                if (e.target.value.length > 13) {
-                                    e.target.value = e.target.value.slice(
-                                        0,
-                                        13,
-                                    );
-                                }
-                                card.setCurCard({
-                                    ...card.curCard,
-                                    firstName: e.target.value,
-                                });
-                            }}
-                        />
+    {/* Input grid */}
+    <HStack
+        width={"100%"}
+        justifyContent={"space-between"}
+        flexWrap={"wrap"}
+    >
+        <Text color="white">*Required fields.</Text>
+        <Grid
+            templateColumns={{ base: "1fr", md: "1fr 1fr" }}
+            templateRows={{
+                base: "1fr 1fr 1fr 1fr 1fr",
+                md: "1fr 1fr, 1fr 1fr, 1fr 1fr",
+            }}
+            gap={4}
+            width={"100%"}
+        >
+            {/* Fake username and password fields, to make sure that
+            Google Autocomplete stuff doesnt randomly pop up when typing things */}
+            <Input type="username" display="none" />
+            <Input type="password" display="none" />
 
-                        <Input
-                            variant={"basicInput"}
-                            isDisabled={card.curCard.inputDisabled}
-                            backgroundColor={"gray.200"}
-                            placeholder={"Last Name*"}
-                            value={card.curCard.lastName}
-                            onChange={(e) => {
-                                if (e.target.value.length > 13) {
-                                    e.target.value = e.target.value.slice(
-                                        0,
-                                        13,
-                                    );
-                                }
-                                card.setCurCard({
-                                    ...card.curCard,
-                                    lastName: e.target.value,
-                                });
-                            }}
-                        />
+            {/* User Inputs */}
+            <TextInput
+            title={card.curCard.firstName}
+            onChange={(e) => handleTextChange(e, "firstName")}
+            placeholder="First Name*"
+            maxLength={13}
+        />
 
-                        <Input
-                            variant={"basicInput"}
-                            isDisabled={card.curCard.inputDisabled}
-                            backgroundColor={"gray.200"}
-                            placeholder={"Jersey Number"}
-                            value={card.curCard.number}
-                            type={"number"}
-                            onKeyDown={(event) => {
-                                checkIfNumber(event);
-                            }}
-                            onChange={(e) => {
-                                // Doing this because maxLength didnt work
-                                if (e.target.value.length > 2) {
-                                    e.target.value = e.target.value.slice(0, 2);
-                                }
-                                card.setCurCard({
-                                    ...card.curCard,
-                                    number: e.target.value,
-                                });
-                            }}
-                        />
+        <TextInput
+            title={card.curCard.lastName}
+            onChange={(e) => handleTextChange(e, "lastName")}
+            placeholder="Last Name*"
+            maxLength={13}
+        />
 
-                        <DropdownInput
-                            isDisabled={card.curCard.inputDisabled}
-                            title={
-                                card.curCard.sport === ""
-                                    ? "Sport*"
-                                    : card.curCard.sport
-                            }
-                            options={[
-                                // the names of all the titles in the SportsPositions file
-                                ...Object.keys(SportsPositions),
-                            ]}
-                            attribute="sport"
-                        />
+        <TextInput
+            title={card.curCard.number}
+            onChange={(e) => handleTextChange(e, "number")}
+            placeholder="Jersey Number"
+            maxLength={2}
+            type="number"
+            onKeyDown={(event) => checkIfNumber(event)}
+        />
 
-                        <PositionDropdown />
+            <DropdownInput
+                isDisabled={card.curCard.inputDisabled}
+                title={
+                    card.curCard.sport || "Sport*"
+                }
+                options={[
+                    // the names of all the titles in the SportsPositions file
+                    ...Object.keys(SportsPositions),
+                ]}
+                attribute="sport"
+            />
 
-                        {/* Career Level dropdown */}
-                        <DropdownInput
-                            isDisabled={card.curCard.inputDisabled}
-                            title={
-                                card.curCard.careerLevel === ""
-                                    ? "Career Level"
-                                    : card.curCard.careerLevel
-                            }
-                            options={SportsLevels}
-                            attribute="careerLevel"
-                        />
+            <PositionDropdown />
 
-                        <GridItem as={GridItem} colSpan={{ base: 1, md: 2 }}>
-                            <Input
-                                variant={"basicInput"}
-                                isDisabled={card.curCard.inputDisabled}
-                                w={"100%"}
-                                backgroundColor={"#303C3A"}
-                                placeholder={"Team Name or Hometown*"}
-                                value={card.curCard.teamName}
-                                onChange={(e) => {
-                                    // The max length is 22
-                                    if (e.target.value.length > 22) {
-                                        e.target.value = e.target.value.slice(
-                                            0,
-                                            22,
-                                        );
-                                    }
-                                    card.setCurCard({
-                                        ...card.curCard,
-                                        teamName: e.target.value,
-                                    });
-                                }}
-                            />
-                        </GridItem>
-                    </Grid>
-                </HStack>
-            </VStack>
-        </>
-    );
+            {/* Career Level dropdown */}
+            <DropdownInput
+                isDisabled={card.curCard.inputDisabled}
+                title={
+                    card.curCard.sport || "CareerLevel*"
+                }
+                options={SportsLevels}
+                attribute="careerLevel"
+            />
+
+            <GridItem as={GridItem} colSpan={{ base: 1, md: 2 }}>
+            <TextInput
+                title={card.curCard.teamName}
+                onChange={(e) => handleTextChange(e, "teamName")}
+                placeholder="Team Name or Hometown*"
+                maxLength={22}
+            />
+            </GridItem>
+        </Grid>
+    </HStack>
+</VStack>
+</>
+);
 }
