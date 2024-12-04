@@ -25,7 +25,6 @@
 
 // eslint-disable-next-line no-use-before-define
 import React, { useEffect, useRef, useState } from "react";
-import PlayImage from "../../../../public/card_assets/play.png";
 import { useCurrentCardInfo } from "@/hooks/useCurrentCardInfo";
 import { Result, useZxing } from "react-zxing";
 // import { getCard } from "@/app/generate_card_asset/cardFunctions";
