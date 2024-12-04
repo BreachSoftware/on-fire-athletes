@@ -268,8 +268,8 @@ function ARViewer() {
                 mindar-image={`imageTargetSrc: ${determineMindFile()};`} // Also have front and back
                 renderer="colorManagement: true, physicallyCorrectLights"
                 vr-mode-ui="enabled: false"
-                filterMinCF=".01"
-                filterBeta=".001"
+                filterMinCF="0.001"
+                filterBeta="100"
                 missTolerance="20" // warmupTolerance="100" missTolerance="1000"
                 xr-mode-ui="enabled: false"
                 device-orientation-permission-ui="enabled: false"
@@ -281,11 +281,6 @@ function ARViewer() {
                         src={imgSource}
                         crossOrigin="anonymous"
                         alt="The OnFire card"
-                    />
-                    <img
-                        id="play-image"
-                        src={PlayImage.src}
-                        alt="Play button"
                     />
                     <video
                         ref={videoRef}
