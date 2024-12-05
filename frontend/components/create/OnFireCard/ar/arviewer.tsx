@@ -49,6 +49,7 @@ function ARViewer() {
     const [videoWidth, setVideoWidth] = useState(1.5);
     const [videoXOffset, setVideoXOffset] = useState(0);
     const [videoYOffset, setVideoYOffset] = useState(0);
+    const [videoRotation, setVideoRotation] = useState(0);
 
     let found = false;
     let readCard = new TradingCardInfo();
@@ -102,6 +103,7 @@ function ARViewer() {
                 setVideoWidth(newWidth);
                 setVideoXOffset(videoX * newWidth);
                 setVideoYOffset(videoY * 1.5);
+                setVideoRotation(fetchedCard.backVideoRotation);
 
                 console.log("IMG SOURCE:", fetchedCard.cardImage);
                 found = true;
@@ -127,65 +129,60 @@ function ARViewer() {
     });
 
     useEffect(() => {
-        (async () => {
-            const sceneEl = sceneRef.current;
-            if (!sceneEl) {
-                return () => {};
-            }
+        const sceneEl = sceneRef.current;
+        if (!sceneEl) {
+            return () => {};
+        }
 
-            await new Promise((resolve) => setTimeout(resolve, 3000));
+        // Get the AR system from the scene element
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const arSystem = (sceneEl as any).systems["mindar-image-system"];
 
-            // Get the AR system from the scene element
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const arSystem = (sceneEl as any).systems["mindar-image-system"];
-
-            /**
-             * Starts the AR system when the scene is ready.
-             */
-            function startARSystem() {
-                if (arSystem) {
-                    arSystem.start(); // start AR
-                    console.info("AR System started");
-                    if (videoRef.current) {
-                        // Wait 1 second before playing the video
-                        setTimeout(() => {
-                            videoRef.current?.play();
-                        }, 1000);
-                    }
+        /**
+         * Starts the AR system when the scene is ready.
+         */
+        function startARSystem() {
+            if (arSystem) {
+                arSystem.start(); // start AR
+                console.info("AR System started");
+                if (videoRef.current) {
+                    // Wait 1 second before playing the video
+                    setTimeout(() => {
+                        videoRef.current?.play();
+                    }, 1000);
                 }
-                // Add a click event listener to play the video
-                window.addEventListener("click", () => {
-                    if (videoRef.current) {
-                        console.log(videoRef.current.src);
-                        videoRef.current.src = readCard.backVideoURL;
-                        console.log("Playing: ", readCard.backVideoURL);
-                        videoRef.current.play();
-                    }
-                });
             }
-
-            // Here lies the section in which the cloak material used to be loaded. It is now in the patch file.
-
-            // Add a renderstart event listener to start the AR system
-            // FOR SOME REASON this renderstart listener doesnt work after the page is reloaded
-            // This is true even after the patch, so let's just avoid putting crucial code in this listener
-            sceneEl.addEventListener("renderstart", startARSystem);
-
-            // Load the video prematurely for the card scanned to get here
-            console.log("Current card: ", window.location.href);
-            onQRResult(window.location.href).then(() => {
-                // Reset the QR result the first time
-                setQRResult("");
+            // Add a click event listener to play the video
+            window.addEventListener("click", () => {
+                if (videoRef.current) {
+                    console.log(videoRef.current.src);
+                    videoRef.current.src = readCard.backVideoURL;
+                    console.log("Playing: ", readCard.backVideoURL);
+                    videoRef.current.play();
+                }
             });
+        }
 
-            // Clean up the event listener and stop the AR system when the component unmounts
-            return () => {
-                if (arSystem) {
-                    arSystem.stop();
-                }
-            };
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-        })();
+        // Here lies the section in which the cloak material used to be loaded. It is now in the patch file.
+
+        // Add a renderstart event listener to start the AR system
+        // FOR SOME REASON this renderstart listener doesnt work after the page is reloaded
+        // This is true even after the patch, so let's just avoid putting crucial code in this listener
+        sceneEl.addEventListener("renderstart", startARSystem);
+
+        // Load the video prematurely for the card scanned to get here
+        console.log("Current card: ", window.location.href);
+        onQRResult(window.location.href).then(() => {
+            // Reset the QR result the first time
+            setQRResult("");
+        });
+
+        // Clean up the event listener and stop the AR system when the component unmounts
+        return () => {
+            if (arSystem) {
+                arSystem.stop();
+            }
+        };
     }, [card.curCard.backVideoURL]);
 
     /**
@@ -286,7 +283,6 @@ function ARViewer() {
                         id="card-video"
                         autoPlay
                         style={{
-                            "webkit-playsinline": "true",
                             objectFit: "cover",
                         }}
                         muted
@@ -331,6 +327,7 @@ function ARViewer() {
                             height="1.5"
                             width={videoWidth}
                             position={`${videoXOffset} ${videoYOffset} 0`}
+                            rotation={`0 0 -${videoRotation}`}
                         ></a-video>
                         // Potentially show a spinner if not loaded or something
                     )}
