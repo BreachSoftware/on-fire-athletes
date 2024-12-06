@@ -324,7 +324,7 @@ function ARViewer() {
                         <a-plane src="#card-image" height="1.5"></a-plane>
                     )}
                     <a-entity
-                        obj-model="obj: url(/ar/gcmask-edited-4.obj); mtl: #obj-mtl"
+                        obj-model="obj: url(/ar/ofamask-lg.obj); mtl: #obj-mtl"
                         rotation="0 0 -90"
                         position="0 0 0.002"
                         // scale="0.058 0.0576 0.058"
@@ -346,7 +346,7 @@ function ARViewer() {
                         // Potentially show a spinner if not loaded or something
                     )}
                     <a-entity
-                        obj-model="obj: url(/ar/gcmask-rev-edited.obj); mtl: #obj-mtl"
+                        obj-model="obj: url(/ar/ofamask-rev-lg.obj); mtl: #obj-mtl"
                         rotation="0 0 -90"
                         position={`0 0 0.01`}
                         scale="0.058 0.058 0.058"
@@ -367,7 +367,7 @@ function ARViewer() {
                         ></a-plane>
                     )}
                     <a-entity
-                        obj-model="obj: url(/ar/gcmask-edited-4.obj); mtl: #obj-mtl"
+                        obj-model="obj: url(/ar/ofamask-lg.obj); mtl: #obj-mtl"
                         rotation="0 0 -90"
                         position="0 0 0.002"
                         // scale="0.058 0.0576 0.058"
@@ -393,7 +393,7 @@ function ARViewer() {
                         // Potentially show a spinner if not loaded or something
                     )}
                     <a-entity
-                        obj-model="obj: url(/ar/gcmask-rev-edited.obj); mtl: #obj-mtl"
+                        obj-model="obj: url(/ar/ofamask-rev-lg.obj); mtl: #obj-mtl"
                         rotation="0 0 -90"
                         position={`0 0 0.01`}
                         scale="0.058 -0.058 0.058"

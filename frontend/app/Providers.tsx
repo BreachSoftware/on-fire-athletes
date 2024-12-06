@@ -29,6 +29,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
     const isArViewer = pathname.includes("/ar");
 
+    if (isArViewer) {
+        return <>{children}</>;
+    }
+
     return (
         <ChakraProvider theme={theme}>
             <MaybeWagmiProvider shouldUse={!isArViewer}>
