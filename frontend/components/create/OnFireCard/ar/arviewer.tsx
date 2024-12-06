@@ -46,10 +46,12 @@ function ARViewer() {
     const [qrResult, setQRResult] = useState<string>("");
     const sceneRef = useRef<HTMLElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
-    const [videoWidth, setVideoWidth] = useState(1.5);
     const [videoXOffset, setVideoXOffset] = useState(0);
     const [videoYOffset, setVideoYOffset] = useState(0);
+    // const [scale, setScale] = useState(1);
     const [videoRotation, setVideoRotation] = useState(0);
+    const [height, setHeight] = useState(1.5);
+    const [width, setWidth] = useState(2.6667);
 
     let found = false;
     let readCard = new TradingCardInfo();
@@ -86,23 +88,35 @@ function ARViewer() {
                 console.log("FOUND!");
                 readCard = fetchedCard;
                 setImgSource(fetchedCard.cardImage);
-                const videoH = fetchedCard.backVideoHeight;
-                const videoW = fetchedCard.backVideoWidth;
-                const videoX = fetchedCard.backVideoXOffset / 1000;
-                const videoY = fetchedCard.backVideoYOffset / 1000;
+
+                const isHorizontal = fetchedCard.isHorizontal;
+
+                const aspectRatio =
+                    fetchedCard.backVideoWidth / fetchedCard.backVideoHeight;
+
+                const targetHeight = 1.5;
+                const targetWidth = targetHeight * aspectRatio;
+
+                const videoXOff = fetchedCard.backVideoXOffset / 1000;
+                const videoYOff = fetchedCard.backVideoYOffset / 1000;
+
+                if (isHorizontal) {
+                    setWidth(targetWidth);
+                    setHeight(targetHeight);
+                    setVideoXOffset(videoXOff * 1.5);
+                    setVideoYOffset(videoYOff * 1.5);
+                } else {
+                    setWidth(targetHeight);
+                    setHeight(targetWidth);
+                    setVideoXOffset(videoXOff * 1.5);
+                    setVideoYOffset(videoYOff * 1.5);
+                }
 
                 isDefaultBack =
                     !fetchedCard.backVideoURL ||
                     fetchedCard.backVideoURL ===
                         "https://onfireathletes-media-uploads.s3.amazonaws.com/";
 
-                // Make width ratio of height, normalized as height = 1.5
-                const newWidth = isDefaultBack ? 1 : (1.5 * videoW) / videoH;
-
-                // Normalize the pixel offsets to a height of 1.5
-                setVideoWidth(newWidth);
-                setVideoXOffset(videoX * newWidth);
-                setVideoYOffset(videoY * 1.5);
                 setVideoRotation(fetchedCard.backVideoRotation);
 
                 console.log("IMG SOURCE:", fetchedCard.cardImage);
@@ -324,8 +338,8 @@ function ARViewer() {
                     {isVideoSourceSet && (
                         <a-video
                             src="#card-video"
-                            height="1.5"
-                            width={videoWidth}
+                            height={height}
+                            width={width}
                             position={`${videoXOffset} ${videoYOffset} 0`}
                             rotation={`0 0 -${videoRotation}`}
                         ></a-video>
@@ -370,9 +384,10 @@ function ARViewer() {
                     {isVideoSourceSet && (
                         <a-video
                             src="#card-video"
-                            height="1.5"
-                            width={videoWidth}
+                            height={height}
+                            width={width}
                             position={`${videoXOffset} ${videoYOffset} 0`}
+                            rotation={`0 0 -${videoRotation}`}
                             scale="-1 1 1"
                         ></a-video>
                         // Potentially show a spinner if not loaded or something
