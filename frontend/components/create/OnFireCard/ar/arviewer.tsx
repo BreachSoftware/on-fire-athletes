@@ -25,7 +25,7 @@
 
 // eslint-disable-next-line no-use-before-define
 import React, { useEffect, useRef, useState } from "react";
-import { useCurrentCardInfo } from "@/hooks/useCurrentCardInfo";
+// import { useCurrentCardInfo } from "@/hooks/useCurrentCardInfo";
 import { Result, useZxing } from "react-zxing";
 // import { getCard } from "@/app/generate_card_asset/cardFunctions";
 import { Box, Button, Center, Text } from "@chakra-ui/react";
@@ -40,9 +40,9 @@ import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
  * @returns {JSX.Element} ARViewer component
  */
 function ARViewer() {
-    const card = useCurrentCardInfo();
+    // const card = useCurrentCardInfo();
     const [isVideoSourceSet, setIsVideoSourceSet] = useState(false);
-    const [imgSource, setImgSource] = useState(card.curCard.cardImage);
+    const [imgSource, setImgSource] = useState("");
     const [qrResult, setQRResult] = useState<string>("");
     const sceneRef = useRef<HTMLElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
@@ -197,7 +197,7 @@ function ARViewer() {
                 arSystem.stop();
             }
         };
-    }, [card.curCard.backVideoURL]);
+    }, []);
 
     /**
      * A function to determine which mindFile to use for the given card.
