@@ -28,6 +28,7 @@ import React, { useEffect, useRef, useState } from "react";
 // import { useCurrentCardInfo } from "@/hooks/useCurrentCardInfo";
 import { Result, useZxing } from "react-zxing";
 // import { getCard } from "@/app/generate_card_asset/cardFunctions";
+import { useRouter } from "next/navigation";
 import { Box, Button, Center, Text } from "@chakra-ui/react";
 import TradingCardInfo from "@/hooks/TradingCardInfo";
 import "aframe";
@@ -53,10 +54,26 @@ function ARViewer() {
     const [height, setHeight] = useState(1.5);
     const [width, setWidth] = useState(2.6667);
 
+    const router = useRouter();
+
     let found = false;
     let readCard = new TradingCardInfo();
     let isDefaultBack = false;
 
+    useEffect(() => {
+        const currentUrl = window?.location?.href;
+
+        const queryParams = new URLSearchParams(currentUrl?.split("?")[1]);
+        const cardUUID = queryParams.get("card");
+
+        const isNotProduction = !currentUrl.includes("onfireathletes.com");
+        const misPrintIds = ["ee76a2f7-8c66-453d-bafc-89dfd65c11f2"];
+
+        if (isNotProduction && misPrintIds.includes(cardUUID)) {
+            console.log("Misprint detected, redirecting to production...");
+            router.replace(`https://onfireathletes.com/ar?card=${cardUUID}`);
+        }
+    }, []);
     /**
      * A callback function that is called when a QR code is scanned.
      * This sets the cardUUID and generatedByUUID states, then
@@ -76,6 +93,7 @@ function ARViewer() {
             typeof result === "string" ? result : result.getText();
         const queryParams = new URLSearchParams(stringedResult.split("?")[1]);
         const cardUUID = queryParams.get("card");
+
         setQRResult(cardUUID);
 
         // Find the OnFire card that matches the UUID of the QR code
