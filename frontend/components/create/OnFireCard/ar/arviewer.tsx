@@ -25,10 +25,10 @@
 
 // eslint-disable-next-line no-use-before-define
 import React, { useEffect, useRef, useState } from "react";
-import PlayImage from "../../../../public/card_assets/play.png";
-import { useCurrentCardInfo } from "@/hooks/useCurrentCardInfo";
+// import { useCurrentCardInfo } from "@/hooks/useCurrentCardInfo";
 import { Result, useZxing } from "react-zxing";
 // import { getCard } from "@/app/generate_card_asset/cardFunctions";
+import { useRouter } from "next/navigation";
 import { Box, Button, Center, Text } from "@chakra-ui/react";
 import TradingCardInfo from "@/hooks/TradingCardInfo";
 import "aframe";
@@ -41,20 +41,39 @@ import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
  * @returns {JSX.Element} ARViewer component
  */
 function ARViewer() {
-    const card = useCurrentCardInfo();
+    // const card = useCurrentCardInfo();
     const [isVideoSourceSet, setIsVideoSourceSet] = useState(false);
-    const [imgSource, setImgSource] = useState(card.curCard.cardImage);
+    const [imgSource, setImgSource] = useState("");
     const [qrResult, setQRResult] = useState<string>("");
     const sceneRef = useRef<HTMLElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
-    const [videoWidth, setVideoWidth] = useState(1.5);
     const [videoXOffset, setVideoXOffset] = useState(0);
     const [videoYOffset, setVideoYOffset] = useState(0);
+    // const [scale, setScale] = useState(1);
+    const [videoRotation, setVideoRotation] = useState(0);
+    const [height, setHeight] = useState(1.5);
+    const [width, setWidth] = useState(2.6667);
+
+    const router = useRouter();
 
     let found = false;
     let readCard = new TradingCardInfo();
     let isDefaultBack = false;
 
+    useEffect(() => {
+        const currentUrl = window?.location?.href;
+
+        const queryParams = new URLSearchParams(currentUrl?.split("?")[1]);
+        const cardUUID = queryParams.get("card");
+
+        const isNotProduction = !currentUrl.includes("onfireathletes.com");
+        const misPrintIds = ["ee76a2f7-8c66-453d-bafc-89dfd65c11f2"];
+
+        if (isNotProduction && misPrintIds.includes(cardUUID)) {
+            console.log("Misprint detected, redirecting to production...");
+            router.replace(`https://onfireathletes.com/ar?card=${cardUUID}`);
+        }
+    }, []);
     /**
      * A callback function that is called when a QR code is scanned.
      * This sets the cardUUID and generatedByUUID states, then
@@ -74,6 +93,7 @@ function ARViewer() {
             typeof result === "string" ? result : result.getText();
         const queryParams = new URLSearchParams(stringedResult.split("?")[1]);
         const cardUUID = queryParams.get("card");
+
         setQRResult(cardUUID);
 
         // Find the OnFire card that matches the UUID of the QR code
@@ -86,23 +106,36 @@ function ARViewer() {
                 console.log("FOUND!");
                 readCard = fetchedCard;
                 setImgSource(fetchedCard.cardImage);
-                const videoH = fetchedCard.backVideoHeight;
-                const videoW = fetchedCard.backVideoWidth;
-                const videoX = fetchedCard.backVideoXOffset / 1000;
-                const videoY = fetchedCard.backVideoYOffset / 1000;
+
+                const isHorizontal = fetchedCard.isHorizontal;
+
+                const aspectRatio =
+                    fetchedCard.backVideoWidth / fetchedCard.backVideoHeight;
+
+                const targetHeight = 1.5;
+                const targetWidth = targetHeight * aspectRatio;
+
+                const videoXOff = fetchedCard.backVideoXOffset / 1000;
+                const videoYOff = fetchedCard.backVideoYOffset / 1000;
+
+                if (isHorizontal) {
+                    setWidth(targetWidth);
+                    setHeight(targetHeight);
+                    setVideoXOffset(videoXOff * 1.5);
+                    setVideoYOffset(videoYOff * 1.5);
+                } else {
+                    setWidth(targetHeight);
+                    setHeight(targetWidth);
+                    setVideoXOffset(videoXOff * 1.5);
+                    setVideoYOffset(videoYOff * 1.5);
+                }
 
                 isDefaultBack =
                     !fetchedCard.backVideoURL ||
                     fetchedCard.backVideoURL ===
                         "https://onfireathletes-media-uploads.s3.amazonaws.com/";
 
-                // Make width ratio of height, normalized as height = 1.5
-                const newWidth = isDefaultBack ? 1 : (1.5 * videoW) / videoH;
-
-                // Normalize the pixel offsets to a height of 1.5
-                setVideoWidth(newWidth);
-                setVideoXOffset(videoX * newWidth);
-                setVideoYOffset(videoY * 1.5);
+                setVideoRotation(fetchedCard.backVideoRotation);
 
                 console.log("IMG SOURCE:", fetchedCard.cardImage);
                 found = true;
@@ -182,8 +215,7 @@ function ARViewer() {
                 arSystem.stop();
             }
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [card.curCard.backVideoURL]);
+    }, []);
 
     /**
      * A function to determine which mindFile to use for the given card.
@@ -264,8 +296,8 @@ function ARViewer() {
                 mindar-image={`imageTargetSrc: ${determineMindFile()};`} // Also have front and back
                 renderer="colorManagement: true, physicallyCorrectLights"
                 vr-mode-ui="enabled: false"
-                filterMinCF=".01"
-                filterBeta=".001"
+                filterMinCF="0.001"
+                filterBeta="100"
                 missTolerance="20" // warmupTolerance="100" missTolerance="1000"
                 xr-mode-ui="enabled: false"
                 device-orientation-permission-ui="enabled: false"
@@ -278,17 +310,11 @@ function ARViewer() {
                         crossOrigin="anonymous"
                         alt="The OnFire card"
                     />
-                    <img
-                        id="play-image"
-                        src={PlayImage.src}
-                        alt="Play button"
-                    />
                     <video
                         ref={videoRef}
                         id="card-video"
                         autoPlay
                         style={{
-                            "webkit-playsinline": "true",
                             objectFit: "cover",
                         }}
                         muted
@@ -316,7 +342,7 @@ function ARViewer() {
                         <a-plane src="#card-image" height="1.5"></a-plane>
                     )}
                     <a-entity
-                        obj-model="obj: url(/ar/gcmask-edited-4.obj); mtl: #obj-mtl"
+                        obj-model="obj: url(/ar/ofamask-lg.obj); mtl: #obj-mtl"
                         rotation="0 0 -90"
                         position="0 0 0.002"
                         // scale="0.058 0.0576 0.058"
@@ -330,14 +356,15 @@ function ARViewer() {
                     {isVideoSourceSet && (
                         <a-video
                             src="#card-video"
-                            height="1.5"
-                            width={videoWidth}
+                            height={height}
+                            width={width}
                             position={`${videoXOffset} ${videoYOffset} 0`}
+                            rotation={`0 0 -${videoRotation}`}
                         ></a-video>
                         // Potentially show a spinner if not loaded or something
                     )}
                     <a-entity
-                        obj-model="obj: url(/ar/gcmask-rev-edited.obj); mtl: #obj-mtl"
+                        obj-model="obj: url(/ar/ofamask-rev-lg.obj); mtl: #obj-mtl"
                         rotation="0 0 -90"
                         position={`0 0 0.01`}
                         scale="0.058 0.058 0.058"
@@ -358,7 +385,7 @@ function ARViewer() {
                         ></a-plane>
                     )}
                     <a-entity
-                        obj-model="obj: url(/ar/gcmask-edited-4.obj); mtl: #obj-mtl"
+                        obj-model="obj: url(/ar/ofamask-lg.obj); mtl: #obj-mtl"
                         rotation="0 0 -90"
                         position="0 0 0.002"
                         // scale="0.058 0.0576 0.058"
@@ -375,15 +402,16 @@ function ARViewer() {
                     {isVideoSourceSet && (
                         <a-video
                             src="#card-video"
-                            height="1.5"
-                            width={videoWidth}
+                            height={height}
+                            width={width}
                             position={`${videoXOffset} ${videoYOffset} 0`}
+                            rotation={`0 0 -${videoRotation}`}
                             scale="-1 1 1"
                         ></a-video>
                         // Potentially show a spinner if not loaded or something
                     )}
                     <a-entity
-                        obj-model="obj: url(/ar/gcmask-rev-edited.obj); mtl: #obj-mtl"
+                        obj-model="obj: url(/ar/ofamask-rev-lg.obj); mtl: #obj-mtl"
                         rotation="0 0 -90"
                         position={`0 0 0.01`}
                         scale="0.058 -0.058 0.058"
