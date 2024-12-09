@@ -95,7 +95,7 @@ async function generateCardImage(
     label?: string,
 ): Promise<string> {
     if (!ref.current) {
-        throw new CardSubmissionError("Card reference is null");
+        throw new CardSubmissionError(`Card reference is null for ${label}`);
     }
 
     // Create an off-screen container
