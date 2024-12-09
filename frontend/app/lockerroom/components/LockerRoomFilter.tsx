@@ -3,29 +3,23 @@
 import {
     Accordion,
     AccordionButton,
-    AccordionIcon,
     AccordionItem,
     AccordionPanel,
     Box,
     Divider,
     Flex,
-    Input,
-    InputGroup,
-    InputRightElement,
     Text,
     Spacer,
     useBreakpointValue,
     Center,
 } from "@chakra-ui/react";
 import { useEffect } from "react";
-import { ChevronRightIcon } from "@chakra-ui/icons";
 import RadioPicker from "../../../components/create/RadioPicker";
 import FilterTag from "../../lockerroom/components/FilterTag";
 import { useCurrentFilterInfo } from "@/hooks/useCurrentFilter";
 import TradingCardInfo from "@/hooks/TradingCardInfo";
 import FilterInfo from "@/hooks/FilterInfo";
 import { isEqual } from "lodash";
-import { Search2Icon } from "@chakra-ui/icons";
 import { FaXmark } from "react-icons/fa6";
 import { BsFilter } from "react-icons/bs";
 import StatusIcon from "@/components/create/StatusIcon";
@@ -470,9 +464,7 @@ export default function Filter(props: FilterProps) {
             paddingBottom={3}
         >
             <RadioPicker
-                option1text={"All"}
-                option2text={"For Sale"}
-                option3text={"Trade Only"}
+                options={["All", "For Sale", "Trade Only"]}
                 value={currentFilter.curFilter.type}
                 onChange={(value) => {
                     currentFilter.setCurFilter({

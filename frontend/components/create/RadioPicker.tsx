@@ -1,24 +1,22 @@
 "use client";
 
 import React from "react";
-import { Radio, RadioGroup, Text, Flex } from "@chakra-ui/react";
+import { Radio, RadioGroup, Text, Flex, Box } from "@chakra-ui/react";
 
 interface RadioPickerProps {
-    option1text: string;
-    option2text: string;
-    option3text: string;
+    options: string[];
     value: string;
     onChange: (value: string) => void;
     variant?: string;
+    excludeLabels?: string[];
 }
 
 export default function RadioPicker({
-    option1text,
-    option2text,
-    option3text,
+    options,
     value = "1",
     onChange,
     variant = "default",
+    excludeLabels = [],
 }: RadioPickerProps) {
     const determineBoxShadow = (radioValue: string) => {
         return radioValue === value ? "0px 0px 10px #27CE00" : "none";
@@ -43,23 +41,40 @@ export default function RadioPicker({
         </Radio>
     );
 
-    return (
-        <RadioGroup
-            value={value}
-            onChange={(value) => onChange?.(value)}
-            variant={variant}
-            width={option3text ? "95%" : "100%"}
+    const filterButtons = options
+        .filter((option) => !excludeLabels.includes(option))
+        .map((option, index) => createButton(index.toString(), option));
+
+    const exclusionMessage = excludeLabels.length > 0 && (
+        <Text
+            color="red.500"
+            fontSize="sm"
+            mt={2}
+            textAlign="center"
+            width="100%"
         >
-            <Flex
+            Some options are excluded.
+        </Text>
+    );
+
+    return (
+        <Box width="100%">
+            <RadioGroup
+                value={value}
+                onChange={(value) => onChange?.(value)}
+                variant={variant}
                 width={"100%"}
-                maxW={variant ? "100%" : "200px"}
-                alignItems={"center"}
-                justifyContent={"space-between"}
             >
-                {createButton("1", option1text)}
-                {createButton("2", option2text)}
-                {option3text && createButton("3", option3text)}
-            </Flex>
-        </RadioGroup>
+                <Flex
+                    width={"100%"}
+                    maxW={variant ? "100%" : "200px"}
+                    alignItems={"center"}
+                    justifyContent={"space-between"}
+                >
+                    {filterButtons}
+                </Flex>
+            </RadioGroup>
+            {exclusionMessage}
+        </Box>
     );
 }
