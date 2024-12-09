@@ -1,4 +1,4 @@
-import { Box } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 
 export type Item = {
     id: string;
@@ -27,6 +27,7 @@ const items: Item[] = [
 export default function RyanPage() {
     return (
         <Box>
+            <Text>Ryan Page</Text>
             {/* Write component that accepts a single Item and shows it's name with it's color */}
 
             {/* Write component that accepts any number of Items and displays the name and color in a box */}
