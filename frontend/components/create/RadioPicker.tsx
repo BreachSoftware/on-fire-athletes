@@ -18,50 +18,15 @@ export default function RadioPicker({
     variant = "default",
     excludeLabels = [],
 }: RadioPickerProps) {
-    const determineBoxShadow = (radioValue: string) => {
-        return radioValue === value ? "0px 0px 10px #27CE00" : "none";
-    };
-
-    const createButton = (radioValue: string, label: string) => (
-        <Radio
-            value={radioValue}
-            boxShadow={determineBoxShadow(radioValue)}
-            _checked={{
-                backgroundColor: "green.100",
-                borderColor: "green.100",
-            }}
-        >
-            <Text
-                textColor={radioValue === value ? "green.100" : "white"}
-                fontSize={"14px"}
-                fontWeight="medium"
-            >
-                {label}
-            </Text>
-        </Radio>
-    );
-
-    const filterButtons = options
-        .filter((option) => !excludeLabels.includes(option))
-        .map((option, index) => createButton(index.toString(), option));
-
-    const exclusionMessage = excludeLabels.length > 0 && (
-        <Text
-            color="red.500"
-            fontSize="sm"
-            mt={2}
-            textAlign="center"
-            width="100%"
-        >
-            Some options are excluded.
-        </Text>
+    const includedOptions = options.filter(
+        (option) => !excludeLabels.includes(option),
     );
 
     return (
         <Box width="100%">
             <RadioGroup
                 value={value}
-                onChange={(value) => onChange?.(value)}
+                onChange={onChange}
                 variant={variant}
                 width={"100%"}
             >
@@ -71,10 +36,63 @@ export default function RadioPicker({
                     alignItems={"center"}
                     justifyContent={"space-between"}
                 >
-                    {filterButtons}
+                    {includedOptions.map((option, index) => (
+                        <RadioButton
+                            key={index}
+                            label={option}
+                            radioValue={index.toString()}
+                            selectedValue={value}
+                        />
+                    ))}
                 </Flex>
             </RadioGroup>
-            {exclusionMessage}
+            {excludeLabels.length > 0 && <ExclusionMessage />}
         </Box>
+    );
+}
+
+function RadioButton({
+    radioValue,
+    label,
+    selectedValue,
+}: {
+    radioValue: string;
+    label: string;
+    selectedValue: string;
+}) {
+    const determineBoxShadow = (radioValue: string) => {
+        return radioValue === selectedValue ? "0px 0px 10px #27CE00" : "none";
+    };
+    return (
+        <Radio
+            value={radioValue}
+            boxShadow={determineBoxShadow(radioValue)}
+            _checked={{
+                backgroundColor: "green.100",
+                borderColor: "green.100",
+            }}
+        >
+            <Text
+                textColor={radioValue === selectedValue ? "green.100" : "white"}
+                fontSize={"14px"}
+                fontWeight="medium"
+            >
+                {label}
+            </Text>
+        </Radio>
+    );
+}
+
+function ExclusionMessage() {
+    return (
+        <Text
+            color="red.500"
+            fontSize="sm"
+            mt={2}
+            textAlign="center"
+            width="100%"
+        >
+            Some options are excluded.
+        </Text>
     );
 }
