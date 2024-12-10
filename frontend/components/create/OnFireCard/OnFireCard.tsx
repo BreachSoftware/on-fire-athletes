@@ -79,7 +79,7 @@ const defaultPartsToShow = {
     signature: true,
 };
 
-type PartsToShowType = Partial<typeof defaultPartsToShow>;
+export type PartsToShowType = Partial<typeof defaultPartsToShow>;
 
 type OnFireCardProps = {
     card?: TradingCardInfo;
@@ -353,38 +353,32 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
         }
 
         // Bottom layer of the front of the card
-        function CardBottomLayer({
-            flipped = false,
-            ...rest
-        }: CardBottomLayerProps) {
+        function CardBottomLayer({ flipped = false }: CardBottomLayerProps) {
             return (
                 <Box
                     pos="absolute"
                     w="350px"
                     h="490px"
-                    // backgroundImage={solidBackground}
                     bg={curCard.backgroundAccentColor}
                     backgroundSize="cover"
                 >
                     <Box
-                        bg={curCard.backgroundMainColor}
+                        bgImage={background}
+                        bgSize="cover"
+                        bgPosition="center"
+                        bgRepeat="no-repeat"
                         pos="absolute"
                         top={0}
                         left={0}
                         w="350px"
                         h="490px"
                         style={{
-                            maskImage: `url(${background})`,
-                            maskSize: "cover",
-                            maskPosition: "center",
-                            maskRepeat: "no-repeat",
                             pointerEvents: "none",
                             transform: flipped ? "scaleX(-1)" : "scaleX(1)",
                         }}
                         zIndex={zIndex.background}
                         transition={"filter 1s ease-in"}
                         draggable={false}
-                        {...rest}
                     />
                 </Box>
             );

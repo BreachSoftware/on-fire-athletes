@@ -176,6 +176,7 @@ export default function CreationOverview({ isNil = false }: CardCreationProps) {
                                 currentInfo={currentInfo}
                                 foregroundRef={foregroundRef}
                                 backgroundRef={backgroundRef}
+                                cardPrintRef={cardPrintRef}
                                 isNil={isNil}
                             />
                         ) : (
@@ -190,6 +191,7 @@ export default function CreationOverview({ isNil = false }: CardCreationProps) {
                                     foregroundRef={foregroundRef}
                                     backgroundRef={backgroundRef}
                                     cardBackRef={cardBackRef}
+                                    cardPrintRef={cardPrintRef}
                                     isNil={isNil}
                                 />
                             </Flex>
