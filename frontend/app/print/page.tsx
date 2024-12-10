@@ -101,7 +101,7 @@ export default function Profile() {
                                 key={card?.uuid}
                                 card={card}
                                 showButton={false}
-                                ref={onFireCardRef}
+                                cardFrontRef={onFireCardRef}
                                 shouldFlipOnClick
                                 enabledParts={partsToShow}
                             />
