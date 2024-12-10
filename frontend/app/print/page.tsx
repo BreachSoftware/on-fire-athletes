@@ -13,7 +13,10 @@ import {
 } from "@chakra-ui/react";
 import "@fontsource/barlow-condensed/500-italic.css";
 import { getCard } from "../generate_card_asset/cardFunctions";
-import { generateArCardBackImage } from "@/components/create/OnFireCard/generate-card-images";
+import {
+    generateArCardBackImage,
+    generatePrintCardFrontImage,
+} from "@/components/create/OnFireCard/generate-card-images";
 import SharedStack from "@/components/shared/wrappers/shared-stack";
 import TradingCardInfo from "@/hooks/TradingCardInfo";
 import OnFireCard, {
@@ -74,13 +77,37 @@ export default function Profile() {
                 const backImg = await generateArCardBackImage(card, {
                     noNumber: true,
                 });
-                // const frontImg = await generatePrintCardFrontImage(card);
 
                 setPrintBackImg(backImg);
-                // setPrintFrontImg(frontImg);
+                generatePrintFront();
             }
         })();
     }, []);
+
+    async function generatePrintFront() {
+        // Ensure images are displayed correctly for html2canvas
+        const style = document.createElement("style");
+        document.head.appendChild(style);
+        // @ts-expect-error - style.sheet is not defined
+        style.sheet?.insertRule(
+            "body > div:last-child img { display: inline-block; }",
+        );
+        setLoading(true);
+        const frontImg = await generateCardImage(
+            onFireCardRef,
+            CardMask.src,
+            "cardFront",
+        );
+        const printFrontImg = await generatePrintCardFrontImage(
+            frontImg,
+            card?.borderColor || "#ffffff",
+            {
+                forPrint: true,
+            },
+        );
+        setPrintFrontImg(printFrontImg);
+        setLoading(false);
+    }
 
     return (
         <Flex
@@ -129,18 +156,9 @@ export default function Profile() {
                         <Button
                             bg="blue.500"
                             color="white"
-                            onClick={async () => {
-                                setLoading(true);
-                                const frontImg = await generateCardImage(
-                                    onFireCardRef,
-                                    CardMask.src,
-                                    "cardFront",
-                                );
-                                setPrintFrontImg(frontImg);
-                                setLoading(false);
-                            }}
+                            onClick={generatePrintFront}
                         >
-                            Generate Print Front
+                            Re-Generate Print Front
                         </Button>
                         <Heading size="lg" color="white">
                             Print Card Front
