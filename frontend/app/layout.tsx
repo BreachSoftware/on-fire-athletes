@@ -8,6 +8,17 @@ import { Providers } from "./Providers";
 export const metadata: Metadata = {
     title: "OnFire Athletes",
     description: "Sports cards for the new era!",
+    openGraph: {
+        images: [
+            "https://onfireathletes-media-uploads.s3.us-east-1.amazonaws.com/content/ofa-metadata-img.png",
+        ],
+    },
+    twitter: {
+        card: "summary_large_image",
+        images: [
+            "https://onfireathletes-media-uploads.s3.us-east-1.amazonaws.com/content/ofa-metadata-img.png",
+        ],
+    },
 };
 
 export default function RootLayout({
