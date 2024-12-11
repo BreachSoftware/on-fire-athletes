@@ -196,9 +196,9 @@ export async function handlePurchase(
                 return false;
             }
 
-            // Update card price for "allStar" package
+            // Update card price for sellable packages
             if (checkout.packageName !== "rookie") {
-                const newCardPrice = parseFloat(checkout.cardPrice) + 3.0;
+                const newCardPrice = parseFloat(checkout.cardPrice) + 5.0;
 
                 const updatePriceOptions = {
                     method: "POST",
