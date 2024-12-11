@@ -81,7 +81,7 @@ export default function CardInfoElement(props: CardInfoElementProps) {
                     _hover={{ width: "100%" }}
                     isDisabled
                 >
-                    <Text>CARD UNAVAILABLE</Text>
+                    <Text>SOLD OUT</Text>
                 </Button>
             );
         } else if (props.privateView) {
