@@ -360,7 +360,6 @@ function ARViewer() {
                             width={width}
                             position={`${videoXOffset} ${videoYOffset} 0`}
                             rotation={`0 0 -${videoRotation}`}
-                            scale="0.6 0.5 0.6"
                         ></a-video>
                         // Potentially show a spinner if not loaded or something
                     )}
@@ -368,8 +367,8 @@ function ARViewer() {
                         obj-model="obj: url(/ar/ofamask-rev-lg.obj); mtl: #obj-mtl"
                         rotation="0 0 -90"
                         position={`0 0 0.01`}
+                        scale="0.058 0.058 0.058"
                         cloak
-                        scale="0.05 0.05 0.05"
                     ></a-entity>
                 </a-entity>
                 {/* Front Image Inverted (for Android) (targetIndex 2) */}
@@ -407,7 +406,7 @@ function ARViewer() {
                             width={width}
                             position={`${videoXOffset} ${videoYOffset} 0`}
                             rotation={`0 0 -${videoRotation}`}
-                            scale="-0.6 0.5 0.6"
+                            scale="-1 1 1"
                         ></a-video>
                         // Potentially show a spinner if not loaded or something
                     )}
@@ -415,7 +414,7 @@ function ARViewer() {
                         obj-model="obj: url(/ar/ofamask-rev-lg.obj); mtl: #obj-mtl"
                         rotation="0 0 -90"
                         position={`0 0 0.01`}
-                        scale="0.05 -0.05 0.05"
+                        scale="0.058 -0.058 0.058"
                         cloak
                     ></a-entity>
                 </a-entity>
