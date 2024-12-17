@@ -245,7 +245,7 @@ export default function ProfileAlbumTab(props: ProfileAlbumProps) {
                         fontWeight="600"
                         letterSpacing="2px"
                     >
-                        CARD UNAVAILABLE
+                        SOLD OUT
                     </Text>
                 </ViewedCardActionButton>
             );
