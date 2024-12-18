@@ -1,7 +1,10 @@
+"use client";
+
 import { Box, Flex, Text } from "@chakra-ui/react";
 import ColorItemSelect from "./ColorItemSelect";
 import ColorItemBox from "./ColorItemBox";
 import ColorItem from "./ColorItem";
+import { ColorItemProvider } from "./ColorItemProvider"; // Import the ColorItemProvider
 
 export type Item = {
     id: string;
@@ -29,28 +32,30 @@ const items: Item[] = [
 
 export default function RyanPage() {
     return (
-        <Box>
-            <Text
-                align="center"
-                fontSize="60"
-                fontWeight="semibold"
-                fontFamily="Barlow Condensed"
-                color="white"
-            >
-                Ryan Page
-            </Text>
-            <Box alignSelf="flex-start" mb={8}>
-                <ColorItemBox items={items} />
-            </Box>
-            <Flex direction="column" align="center" justify="center" mt={8}>
-                <Flex mb={8} justifyContent="center">
-                    {items.map((item) => (
-                        <ColorItem key={item.id} item={item} />
-                    ))}
-                </Flex>
+        <ColorItemProvider items={items}>
+            <Box>
+                <Text
+                    align="center"
+                    fontSize="60"
+                    fontWeight="semibold"
+                    fontFamily="Barlow Condensed"
+                    color="white"
+                >
+                    Ryan Page
+                </Text>
+                <Box alignSelf="flex-start" mb={8}>
+                    <ColorItemBox items={items} />
+                </Box>
+                <Flex direction="column" align="center" justify="center" mt={8}>
+                    <Flex mb={8} justifyContent="center">
+                        {items.map((item) => (
+                            <ColorItem key={item.id} item={item} />
+                        ))}
+                    </Flex>
 
-                <ColorItemSelect items={items} />
-            </Flex>
-        </Box>
+                    <ColorItemSelect items={items} />
+                </Flex>
+            </Box>
+        </ColorItemProvider>
     );
 }

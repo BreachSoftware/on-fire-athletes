@@ -1,7 +1,8 @@
-"use client";
+"use-client";
 
 import { Box, Button, Text, Flex } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React from "react";
+import { useColorItemContext } from "./ColorItemProvider";
 import { Item } from "./page";
 
 interface ColorItemSelectProps {
@@ -9,8 +10,6 @@ interface ColorItemSelectProps {
 }
 
 export default function ColorItemSelect({ items }: ColorItemSelectProps) {
-    const [selectedItems, setSelectedItems] = useState<Item[]>([]);
-
     return (
         <Flex
             direction="column"
@@ -26,45 +25,24 @@ export default function ColorItemSelect({ items }: ColorItemSelectProps) {
                 fontWeight="semibold"
                 fontFamily="Barlow Condensed"
                 textAlign="center"
+                textColor="white"
             >
                 Select Items
             </Text>
             <Box mb={4}>
                 {items.map((item) => (
-                    <ColorItemButton
-                        key={item.id}
-                        item={item}
-                        selectedItems={selectedItems}
-                        setSelectedItems={setSelectedItems}
-                    />
+                    <ColorItemButton key={item.id} item={item} />
                 ))}
             </Box>
-            {selectedItems.length > 0 && (
-                <SelectedItemsText selectedItems={selectedItems} />
-            )}
+            <SelectedItemsText />
         </Flex>
     );
 }
 
-function ColorItemButton({
-    item,
-    selectedItems,
-    setSelectedItems,
-}: {
-    item: Item;
-    selectedItems: Item[];
-    setSelectedItems: (items: Item[]) => void;
-}) {
+function ColorItemButton({ item }: { item: Item }) {
+    const { selectedItems, handleButtonClick } = useColorItemContext();
+
     const isSelected = selectedItems.includes(item);
-    const handleButtonClick = (item: Item) => {
-        if (isSelected) {
-            setSelectedItems(
-                selectedItems.filter((selected) => selected.id !== item.id),
-            );
-        } else {
-            setSelectedItems([...selectedItems, item]);
-        }
-    };
 
     return (
         <Button
@@ -86,7 +64,9 @@ function ColorItemButton({
     );
 }
 
-function SelectedItemsText({ selectedItems }: { selectedItems: Item[] }) {
+function SelectedItemsText() {
+    const { selectedItems } = useColorItemContext();
+
     return (
         <Box textAlign="left">
             <Text
