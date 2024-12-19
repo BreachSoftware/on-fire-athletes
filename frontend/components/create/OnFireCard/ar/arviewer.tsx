@@ -465,14 +465,17 @@ function ARViewer() {
                 >
                     {/* Render the video if the video source is set */}
                     {isVideoSourceSet && (
-                        <a-video
-                            src="#card-video"
-                            height={height}
-                            width={width}
+                        <a-entity
                             position={`${videoXOffset} ${videoYOffset} 0`}
                             rotation={`0 0 -${videoRotation}`}
-                            scale="-1 1 1"
-                        ></a-video>
+                            scale={`-${scale} ${scale} 1`}
+                        >
+                            <a-video
+                                src="#card-video"
+                                height={height}
+                                width={width}
+                            ></a-video>
+                        </a-entity>
                         // Potentially show a spinner if not loaded or something
                     )}
                     <a-entity
