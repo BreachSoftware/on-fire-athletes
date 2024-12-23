@@ -41,6 +41,13 @@ import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
  * @returns {JSX.Element} ARViewer component
  */
 function ARViewer() {
+    const PIXEL_AFRAME_CONVERSION = 300;
+    const HEIGHT_OF_CARD = 1.5;
+    const CARD_RATIO = 1 / 1.4;
+    const WIDTH_OF_CARD = HEIGHT_OF_CARD * CARD_RATIO;
+    const BASE_PIXEL_WIDTH = 1080;
+    const BASE_PIXEL_HEIGHT = 1920;
+
     // const card = useCurrentCardInfo();
     const [isVideoSourceSet, setIsVideoSourceSet] = useState(false);
     const [imgSource, setImgSource] = useState("");
@@ -51,8 +58,9 @@ function ARViewer() {
     const [videoYOffset, setVideoYOffset] = useState(0);
     // const [scale, setScale] = useState(1);
     const [videoRotation, setVideoRotation] = useState(0);
-    const [height, setHeight] = useState(1.5);
-    const [width, setWidth] = useState(2.6667);
+    const [height, setHeight] = useState(HEIGHT_OF_CARD);
+    const [width, setWidth] = useState(WIDTH_OF_CARD);
+    const [scale, setScale] = useState(1);
 
     const router = useRouter();
 
@@ -101,53 +109,95 @@ function ARViewer() {
         readCard = new TradingCardInfo();
         isDefaultBack = false;
 
-        cards.forEach((fetchedCard) => {
-            if (fetchedCard.uuid === cardUUID) {
-                console.log("FOUND!");
-                readCard = fetchedCard;
-                setImgSource(fetchedCard.cardImage);
+        const fetchedCard = cards.find((card) => card.uuid === cardUUID);
 
-                const isHorizontal = fetchedCard.isHorizontal;
+        if (!fetchedCard) {
+            console.error("Card not found");
+            return;
+        }
 
-                const aspectRatio =
-                    fetchedCard.backVideoWidth / fetchedCard.backVideoHeight;
+        found = true;
+        readCard = fetchedCard;
+        isDefaultBack =
+            !fetchedCard.backVideoURL ||
+            fetchedCard.backVideoURL ===
+                "https://onfireathletes-media-uploads.s3.amazonaws.com/";
 
-                const targetHeight = 1.5;
-                const targetWidth = targetHeight * aspectRatio;
+        setImgSource(fetchedCard.cardImage);
 
-                const videoXOff = fetchedCard.backVideoXOffset / 1000;
-                const videoYOff = fetchedCard.backVideoYOffset / 1000;
+        const backVideoUrl = isDefaultBack
+            ? "https://onfireathletes-media-uploads.s3.amazonaws.com/onfire-athletes-back-default.mov"
+            : readCard.backVideoURL;
 
-                if (isHorizontal) {
-                    setWidth(targetWidth);
-                    setHeight(targetHeight);
-                    setVideoXOffset(videoXOff * 1.5);
-                    setVideoYOffset(videoYOff * 1.5);
-                } else {
-                    setWidth(targetHeight);
-                    setHeight(targetWidth);
-                    setVideoXOffset(videoXOff * 1.5);
-                    setVideoYOffset(videoYOff * 1.5);
-                }
+        const { width, height } = await getVideoDimensions(backVideoUrl);
+        const dbWidth = fetchedCard.backVideoWidth;
+        // const dbHeight = fetchedCard.backVideoHeight;
 
-                isDefaultBack =
-                    !fetchedCard.backVideoURL ||
-                    fetchedCard.backVideoURL ===
-                        "https://onfireathletes-media-uploads.s3.amazonaws.com/";
+        const aspectRatio = width / height;
 
-                setVideoRotation(fetchedCard.backVideoRotation);
+        let targetHeight = HEIGHT_OF_CARD;
+        let targetWidth = targetHeight * aspectRatio;
 
-                console.log("IMG SOURCE:", fetchedCard.cardImage);
-                found = true;
-            }
-        });
+        // const baseTargetWidth = targetWidth;
+        const rotation = fetchedCard.backVideoRotation;
+        const isRotated = rotation === 90 || rotation === 270;
+
+        // console.log({ rotation });
+
+        const scale = isDefaultBack
+            ? 1
+            : dbWidth / (isRotated ? BASE_PIXEL_HEIGHT : BASE_PIXEL_WIDTH);
+
+        // console.log({ scale });
+
+        const videoXOff =
+            fetchedCard.backVideoXOffset / PIXEL_AFRAME_CONVERSION;
+        const videoYOff =
+            fetchedCard.backVideoYOffset / PIXEL_AFRAME_CONVERSION;
+
+        setScale(scale);
+
+        const effectiveWidth = targetWidth * scale;
+
+        if (effectiveWidth < WIDTH_OF_CARD) {
+            const widthScaleAdjustment = WIDTH_OF_CARD / effectiveWidth;
+            targetWidth = effectiveWidth * widthScaleAdjustment;
+
+            // console.log({ effectiveWidth, widthScaleAdjustment, targetWidth });
+
+            targetHeight *= widthScaleAdjustment;
+        }
+
+        // const additionalOffset = targetHeight * effectiveScale - targetHeight;
+        // videoYOff -= additionalOffset / 2;
+
+        // console.log({
+        //     width,
+        //     height,
+        //     targetHeight,
+        //     targetWidth,
+        //     dbWidth,
+        //     dbHeight,
+        //     videoXOff,
+        //     videoYOff,
+        //     scale: dbWidth / width,
+        //     baseTargetWidth,
+        // });
+
+        // if (rotation === 90 || rotation === 270) {
+        //     const temp = targetHeight;
+        //     targetHeight = targetWidth;
+        //     targetWidth = temp;
+        // }
+
+        setHeight(targetHeight);
+        setWidth(targetWidth);
+        setVideoXOffset(videoXOff);
+        setVideoYOffset(videoYOff);
+        setVideoRotation(fetchedCard.backVideoRotation);
 
         // Set the card to the card that was scanned
         if (videoRef.current && found) {
-            const backVideoUrl = isDefaultBack
-                ? "https://onfireathletes-media-uploads.s3.amazonaws.com/onfire-athletes-back-default.mov"
-                : readCard.backVideoURL;
-
             videoRef.current.src = backVideoUrl;
             console.log("Playing: ", backVideoUrl);
             videoRef.current.play();
@@ -214,6 +264,15 @@ function ARViewer() {
             if (arSystem) {
                 arSystem.stop();
             }
+
+            return () => {
+                const sceneEl = sceneRef.current;
+                if (sceneEl) {
+                    if (sceneEl.systems["mindar-image-system"]) {
+                        sceneEl.systems["mindar-image-system"].stop();
+                    }
+                }
+            };
         };
     }, []);
 
@@ -233,6 +292,7 @@ function ARViewer() {
         // Something that we just know works. Not really the correct URL.
         return `https://onfireathletes-media-uploads.s3.amazonaws.com/mind-ar/magback.mind`;
     }
+    //
 
     /**
      * A function to get a query parameter from the URL.
@@ -354,14 +414,19 @@ function ARViewer() {
                 <a-entity mindar-image-target="targetIndex: 1" id="back-entity">
                     {/* Render the video if the video source is set */}
                     {isVideoSourceSet && (
-                        <a-video
-                            src="#card-video"
-                            height={height}
-                            width={width}
+                        <a-entity
                             position={`${videoXOffset} ${videoYOffset} 0`}
                             rotation={`0 0 -${videoRotation}`}
-                        ></a-video>
+                            scale={`${scale} ${scale} 1`}
+                        >
+                            <a-video
+                                src="#card-video"
+                                height={height}
+                                width={width}
+                            ></a-video>
+                        </a-entity>
                         // Potentially show a spinner if not loaded or something
+                        //
                     )}
                     <a-entity
                         obj-model="obj: url(/ar/ofamask-rev-lg.obj); mtl: #obj-mtl"
@@ -400,14 +465,17 @@ function ARViewer() {
                 >
                     {/* Render the video if the video source is set */}
                     {isVideoSourceSet && (
-                        <a-video
-                            src="#card-video"
-                            height={height}
-                            width={width}
+                        <a-entity
                             position={`${videoXOffset} ${videoYOffset} 0`}
                             rotation={`0 0 -${videoRotation}`}
-                            scale="-1 1 1"
-                        ></a-video>
+                            scale={`-${scale} ${scale} 1`}
+                        >
+                            <a-video
+                                src="#card-video"
+                                height={height}
+                                width={width}
+                            ></a-video>
+                        </a-entity>
                         // Potentially show a spinner if not loaded or something
                     )}
                     <a-entity
@@ -426,6 +494,41 @@ function ARViewer() {
             </Box>
         </>
     );
+}
+
+/**
+ * Gets the dimensions of a video from its URL
+ * @param url URL of the video file
+ * @returns Promise that resolves to an object containing width and height
+ */
+function getVideoDimensions(
+    url: string,
+): Promise<{ width: number; height: number }> {
+    return new Promise((resolve, reject) => {
+        const video = document.createElement("video");
+
+        // Load metadata only, don't download the whole video
+        video.preload = "metadata";
+
+        video.onloadedmetadata = () => {
+            // Clean up
+            video.remove();
+
+            resolve({
+                width: video.videoWidth,
+                height: video.videoHeight,
+            });
+        };
+
+        video.onerror = () => {
+            // Clean up
+            video.remove();
+            reject(new Error("Failed to load video metadata"));
+        };
+
+        // Set the source and begin loading metadata
+        video.src = url;
+    });
 }
 
 export default ARViewer;
