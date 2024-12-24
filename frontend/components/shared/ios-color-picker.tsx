@@ -25,7 +25,7 @@ import {
     useDisclosure,
     Icon,
 } from "@chakra-ui/react";
-import { BsEyedropper, BsX } from "react-icons/bs";
+import { BsEyedropper, BsPlus, BsX } from "react-icons/bs";
 
 interface CursorPosition {
     x: number;
@@ -47,6 +47,7 @@ declare global {
 interface ColorPickerProps {
     color: string;
     setColor: (color: string) => void;
+    isDisabled?: boolean;
 }
 
 const initialPresetColors = [
@@ -90,6 +91,7 @@ interface PresetColorsProps {
     currentColor: string;
     savedColors: SavedColor[];
     onAddColor: (color: string) => void;
+    onClearSavedColors: () => void;
 }
 
 const PresetColors = ({
@@ -97,9 +99,11 @@ const PresetColors = ({
     currentColor,
     savedColors,
     onAddColor,
+    onClearSavedColors: clearSavedColors,
 }: PresetColorsProps) => {
     const [currentPage] = useState(0);
     const colorsPerPage = 10;
+    const defaultColorsLen = 5;
 
     const boxSize = "24px";
 
@@ -111,19 +115,41 @@ const PresetColors = ({
     return (
         <Box pt={4} borderTop="1px solid" borderColor="rgba(255,255,255,0.1)">
             <Box display="flex" gap={3} alignItems="flex-start">
-                <Box
-                    width="40px"
-                    height="40px"
-                    borderRadius="md"
-                    backgroundColor={currentColor}
-                    border="2px solid rgba(255, 255, 255, 0.2)"
-                    flexShrink={0}
-                />
+                <Box>
+                    <Box
+                        width="40px"
+                        height="40px"
+                        borderRadius="md"
+                        backgroundColor={currentColor}
+                        border="2px solid rgba(255, 255, 255, 0.2)"
+                        flexShrink={0}
+                    />
+                    {savedColors.length > defaultColorsLen && (
+                        <Center
+                            mt={1}
+                            pt="3px"
+                            pb="4px"
+                            rounded="md"
+                            fontSize="xs"
+                            fontWeight="normal"
+                            color="whiteAlpha.600"
+                            aria-label="Reset saved colors"
+                            cursor="pointer"
+                            onClick={clearSavedColors}
+                            _hover={{ bg: "whiteAlpha.200" }}
+                            _active={{ bg: "whiteAlpha.300" }}
+                            title="Reset saved colors"
+                            lineHeight="10px"
+                        >
+                            Clear
+                        </Center>
+                    )}
+                </Box>
                 <Box flex={1} px={2}>
                     <Box position="relative">
                         <SimpleGrid
                             columns={Math.floor(colorsPerPage / 2)}
-                            spacing={2}
+                            spacing={4}
                         >
                             {currentColors.map(
                                 ({ value: savedColor, isNew }) => (
@@ -183,13 +209,11 @@ const PresetColors = ({
                                     onClick={() => onAddColor(currentColor)}
                                     title="Add current color to presets"
                                 >
-                                    <Box
-                                        as="span"
-                                        fontSize="lg"
+                                    <Icon
+                                        as={BsPlus}
+                                        boxSize="24px"
                                         color="gray.400"
-                                    >
-                                        +
-                                    </Box>
+                                    />
                                 </Center>
                             )}
                         </SimpleGrid>
@@ -258,13 +282,40 @@ const hexToRgb = (hex: string): RGBColor => {
         : { r: 0, g: 0, b: 0 };
 };
 
-export default function IOSColorPicker({ color, setColor }: ColorPickerProps) {
+const STORAGE_KEY = "ios-color-picker-saved-colors";
+
+const getInitialColors = (): SavedColor[] => {
+    if (typeof window === "undefined") return initialPresetColors;
+
+    try {
+        const stored = sessionStorage.getItem(STORAGE_KEY);
+        return stored ? JSON.parse(stored) : initialPresetColors;
+    } catch (e) {
+        console.warn("Failed to load saved colors from session storage:", e);
+        return initialPresetColors;
+    }
+};
+
+const clearSavedColors = () => {
+    try {
+        sessionStorage.removeItem(STORAGE_KEY);
+    } catch (e) {
+        console.warn("Failed to clear saved colors from session storage:", e);
+    }
+    return initialPresetColors;
+};
+
+export default function IOSColorPicker({
+    color,
+    setColor,
+    isDisabled = false,
+}: ColorPickerProps) {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [cursorPosition, setCursorPosition] = useState<CursorPosition | null>(
         null,
     );
     const [savedColors, setSavedColors] =
-        useState<SavedColor[]>(initialPresetColors);
+        useState<SavedColor[]>(getInitialColors());
     const spectrumRef = useRef<HTMLDivElement>(null);
     const borderColor = useColorModeValue("gray.200", "gray.600");
     const lastUpdateRef = useRef<number>(0);
@@ -339,19 +390,44 @@ export default function IOSColorPicker({ color, setColor }: ColorPickerProps) {
             }));
 
             // Add new color with animation flag
-            return [...updatedPrev, { value: colorToAdd, isNew: true }].slice(
-                -10,
-            );
+            const newColors = [
+                ...updatedPrev,
+                { value: colorToAdd, isNew: true },
+            ].slice(-10);
+
+            // Save to session storage
+            try {
+                sessionStorage.setItem(STORAGE_KEY, JSON.stringify(newColors));
+            } catch (e) {
+                console.warn("Failed to save colors to session storage:", e);
+            }
+
+            return newColors;
         });
 
         // Reset the isNew flag after animation
         setTimeout(() => {
-            setSavedColors((prev) =>
-                prev.map((color) => ({
+            setSavedColors((prev) => {
+                const updated = prev.map((color) => ({
                     ...color,
                     isNew: false,
-                })),
-            );
+                }));
+
+                // Update session storage
+                try {
+                    sessionStorage.setItem(
+                        STORAGE_KEY,
+                        JSON.stringify(updated),
+                    );
+                } catch (e) {
+                    console.warn(
+                        "Failed to save colors to session storage:",
+                        e,
+                    );
+                }
+
+                return updated;
+            });
         }, 300); // Match animation duration
     }, []);
 
@@ -363,7 +439,7 @@ export default function IOSColorPicker({ color, setColor }: ColorPickerProps) {
 
     const handleEyeDropper = async () => {
         try {
-            if (!window.EyeDropper) {
+            if (!window?.EyeDropper) {
                 console.warn("EyeDropper API not supported in this browser");
                 return;
             }
@@ -380,6 +456,12 @@ export default function IOSColorPicker({ color, setColor }: ColorPickerProps) {
         }
     };
 
+    useEffect(() => {
+        if (isOpen) {
+            setSavedColors(getInitialColors());
+        }
+    }, [isOpen]);
+
     return (
         <Popover
             placement="bottom-start"
@@ -394,10 +476,18 @@ export default function IOSColorPicker({ color, setColor }: ColorPickerProps) {
                     padding="0"
                     borderRadius="md"
                     backgroundColor={color}
-                    _hover={{ transform: "scale(1.05)" }}
+                    _hover={{ transform: isDisabled ? "none" : "scale(1.05)" }}
                     transition="transform 0.2s"
                     border="2px solid"
                     borderColor={borderColor}
+                    cursor={isDisabled ? "not-allowed" : "pointer"}
+                    opacity={isDisabled ? 0.6 : 1}
+                    onClick={(e) => {
+                        if (isDisabled) {
+                            e.preventDefault();
+                        }
+                    }}
+                    isDisabled={isDisabled}
                 />
             </PopoverTrigger>
             <PopoverContent
@@ -968,6 +1058,9 @@ export default function IOSColorPicker({ color, setColor }: ColorPickerProps) {
                             currentColor={color}
                             savedColors={savedColors}
                             onAddColor={handleAddColor}
+                            onClearSavedColors={() => {
+                                setSavedColors(clearSavedColors());
+                            }}
                         />
                     </Box>
                 </PopoverBody>
