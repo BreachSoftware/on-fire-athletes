@@ -43,6 +43,7 @@ interface MobileStepWrapperProps {
     cardBackRef: React.RefObject<HTMLDivElement>;
     foregroundRef: React.RefObject<HTMLDivElement>;
     backgroundRef: React.RefObject<HTMLDivElement>;
+    cardPrintRef: React.RefObject<HTMLDivElement>;
     currentInfo: useCurrentCardInfoProperties;
     isNil: boolean;
 }
@@ -359,6 +360,7 @@ export default function MobileStepWrapper(props: MobileStepWrapperProps) {
                                             foregroundRef: props.foregroundRef,
                                             backgroundRef: props.backgroundRef,
                                             cardBackRef: props.cardBackRef,
+                                            cardPrintRef: props.cardPrintRef,
                                             currentInfo: props.currentInfo,
                                             userID,
                                             isNil: props.isNil,

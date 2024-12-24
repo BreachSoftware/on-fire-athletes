@@ -38,6 +38,7 @@ interface StepWrapperProps {
     foregroundRef: React.RefObject<HTMLDivElement>;
     backgroundRef: React.RefObject<HTMLDivElement>;
     cardBackRef: React.RefObject<HTMLDivElement>;
+    cardPrintRef: React.RefObject<HTMLDivElement>;
     isNil: boolean;
 }
 
@@ -54,6 +55,7 @@ interface SubmitCardProps {
     foregroundRef: React.RefObject<HTMLDivElement>;
     backgroundRef: React.RefObject<HTMLDivElement>;
     cardBackRef: React.RefObject<HTMLDivElement>;
+    cardPrintRef: React.RefObject<HTMLDivElement>;
     currentInfo: useCurrentCardInfoProperties;
     userID: string;
     isNil: boolean;
@@ -64,6 +66,7 @@ interface CardImageData {
     cardForegroundImageBase64: string;
     cardBackgroundImageBase64: string;
     cardBackImageBase64: string;
+    cardPrintImageBase64: string;
 }
 
 interface CardUrls {
@@ -71,6 +74,7 @@ interface CardUrls {
     cardForegroundS3URL: string;
     cardBackgroundS3URL: string;
     cardBackS3URL: string;
+    cardPrintS3URL: string;
 }
 
 class CardSubmissionError extends Error {
@@ -89,13 +93,13 @@ class CardSubmissionError extends Error {
  * @param mask The mask to use for the card
  * @returns The card image
  */
-async function generateCardImage(
+export async function generateCardImage(
     ref: React.RefObject<HTMLDivElement>,
     mask: string,
     label?: string,
 ): Promise<string> {
     if (!ref.current) {
-        throw new CardSubmissionError("Card reference is null");
+        throw new CardSubmissionError(`Card reference is null for ${label}`);
     }
 
     // Create an off-screen container
@@ -103,7 +107,7 @@ async function generateCardImage(
     offScreen.style.position = "absolute";
     offScreen.style.left = "-9999px";
     offScreen.style.width = "350px";
-    offScreen.style.height = label === "cardBack" ? "490px" : "490px";
+    offScreen.style.height = "490px";
 
     // Clone the content into the off-screen container
     const clonedContent = ref.current.cloneNode(true) as HTMLElement;
@@ -143,6 +147,7 @@ async function generateCardImages(
     foregroundRef: React.RefObject<HTMLDivElement>,
     backgroundRef: React.RefObject<HTMLDivElement>,
     cardBackRef: React.RefObject<HTMLDivElement>,
+    cardPrintRef: React.RefObject<HTMLDivElement>,
 ): Promise<CardImageData> {
     // Ensure images are displayed correctly for html2canvas
     const style = document.createElement("style");
@@ -157,6 +162,7 @@ async function generateCardImages(
         cardForegroundImageBase64,
         cardBackgroundImageBase64,
         cardBackImageBase64,
+        cardPrintImageBase64,
     ] = await Promise.all([
         generateCardImage(entireCardRef, CardMask.src, "entireCard"),
         foregroundRef.current
@@ -165,6 +171,7 @@ async function generateCardImages(
         backgroundRef.current
             ? generateCardImage(backgroundRef, CardMask.src, "background")
             : Promise.resolve(""),
+        generateCardImage(cardPrintRef, CardMask.src, "cardPrint"),
         generateCardImage(cardBackRef, CardMaskReverse.src, "cardBack"),
     ]);
 
@@ -173,6 +180,7 @@ async function generateCardImages(
         cardForegroundImageBase64: cardForegroundImageBase64,
         cardBackgroundImageBase64: cardBackgroundImageBase64,
         cardBackImageBase64: cardBackImageBase64,
+        cardPrintImageBase64: cardPrintImageBase64,
     };
 }
 
@@ -203,15 +211,22 @@ async function uploadImages(
         cardForegroundImageBase64,
         cardBackgroundImageBase64,
         cardBackImageBase64,
+        cardPrintImageBase64,
     }: CardImageData,
 ): Promise<CardUrls> {
-    const [cardBlob, cardForegroundBlob, cardBackgroundBlob, cardBackBlob] =
-        await Promise.all([
-            b64toBlob(cardImageBase64),
-            b64toBlob(cardForegroundImageBase64),
-            b64toBlob(cardBackgroundImageBase64),
-            b64toBlob(cardBackImageBase64),
-        ]);
+    const [
+        cardBlob,
+        cardForegroundBlob,
+        cardBackgroundBlob,
+        cardBackBlob,
+        cardPrintBlob,
+    ] = await Promise.all([
+        b64toBlob(cardImageBase64),
+        b64toBlob(cardForegroundImageBase64),
+        b64toBlob(cardBackgroundImageBase64),
+        b64toBlob(cardBackImageBase64),
+        b64toBlob(cardPrintImageBase64),
+    ]);
 
     await Promise.all([
         uploadAssetToS3(filename, cardBlob, "card", "image/png"),
@@ -228,6 +243,7 @@ async function uploadImages(
             "image/png",
         ),
         uploadAssetToS3(filename, cardBackBlob, "card-back", "image/png"),
+        uploadAssetToS3(filename, cardPrintBlob, "card-print", "image/png"),
     ]);
 
     const baseUrl = "https://onfireathletes-media-uploads.s3.amazonaws.com";
@@ -236,6 +252,7 @@ async function uploadImages(
         cardForegroundS3URL: `${baseUrl}/card-foreground/${filename}`,
         cardBackgroundS3URL: `${baseUrl}/card-background/${filename}`,
         cardBackS3URL: `${baseUrl}/card-back/${filename}`,
+        cardPrintS3URL: `${baseUrl}/card-print/${filename}`,
     };
 }
 
@@ -310,6 +327,7 @@ export async function submitCardWithAuth({
     foregroundRef,
     backgroundRef,
     cardBackRef,
+    cardPrintRef,
     currentInfo,
     userID,
     isNil,
@@ -323,6 +341,7 @@ export async function submitCardWithAuth({
             foregroundRef,
             backgroundRef,
             cardBackRef,
+            cardPrintRef,
         );
         const filename = generateFilename(userID);
         const cardUrls = await uploadImages(filename, cardImages);
@@ -366,6 +385,7 @@ export default function StepWrapper({
     foregroundRef,
     backgroundRef,
     cardBackRef,
+    cardPrintRef,
     isNil,
 }: StepWrapperProps) {
     const currentInfo = useCurrentCardInfo();
@@ -523,6 +543,7 @@ export default function StepWrapper({
                                                 foregroundRef: foregroundRef,
                                                 backgroundRef: backgroundRef,
                                                 cardBackRef: cardBackRef,
+                                                cardPrintRef: cardPrintRef,
                                                 currentInfo: currentInfo,
                                                 userID: userID,
                                                 isNil,
