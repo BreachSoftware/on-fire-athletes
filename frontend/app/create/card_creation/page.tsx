@@ -120,6 +120,7 @@ export default function CreationOverview({ isNil = false }: CardCreationProps) {
                     ? "hidden"
                     : "scroll"
             }
+            maxH="100vh"
             overflowX={"hidden"}
         >
             <HStack w="100%" h="100%" align="top" spacing={0}>
@@ -205,7 +206,7 @@ export default function CreationOverview({ isNil = false }: CardCreationProps) {
                     <Sidebar height={"auto"} />
                 </Box>
             </HStack>
-            <Box visibility="hidden" pos="absolute" left="-9999px">
+            <Box visibility="hidden" pos="absolute" left="-9999px" top={0}>
                 <OnfireCard
                     cardFrontRef={cardPrintRef}
                     mobileFlipButton={isMobile}
