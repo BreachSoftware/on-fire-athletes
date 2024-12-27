@@ -120,7 +120,6 @@ export default function CreationOverview({ isNil = false }: CardCreationProps) {
                     ? "hidden"
                     : "scroll"
             }
-            maxH="100vh"
             overflowX={"hidden"}
         >
             <HStack w="100%" h="100%" align="top" spacing={0}>
