@@ -6,6 +6,7 @@ import {
     useBreakpointValue,
     VStack,
 } from "@chakra-ui/react";
+import { useEffect, useRef, useState } from "react";
 import StepWrapper from "@/components/create/StepWrapper";
 import Step1 from "@/components/create/Step1";
 import Step2 from "@/components/create/Step2";
@@ -17,7 +18,6 @@ import NavBar from "@/app/navbar";
 import OnfireCard from "@/components/create/OnFireCard/OnFireCard";
 import { useCurrentCardInfo } from "@/hooks/useCurrentCardInfo";
 import TradingCardInfo from "@/hooks/TradingCardInfo";
-import { useEffect, useRef, useState } from "react";
 import MobileStepWrapper from "@/components/create/mobile/MobileStepWrapper";
 
 interface CardCreationProps {
