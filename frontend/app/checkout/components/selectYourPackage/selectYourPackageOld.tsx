@@ -79,6 +79,8 @@ function PackageBoxComponent({ pkg }: { pkg: PackageType }) {
 
     return (
         <Flex
+            flex={1}
+            minH="fit-content"
             overflow="hidden"
             // flexBasis={{ base: "100%", md: "30%" }}
             backgroundColor={"#1B2120"}
