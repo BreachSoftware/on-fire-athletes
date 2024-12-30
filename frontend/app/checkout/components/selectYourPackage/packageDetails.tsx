@@ -13,8 +13,11 @@ export default function PackageDetails({ pkg }: { pkg: PackageType }) {
         <Flex
             flexDirection="column"
             alignItems="flex-start"
-            p="25px"
+            px={{ base: "25px", xl: "25px" }}
+            pt={{ base: 0, xl: "25px" }}
+            pb={{ base: "18px", xl: "25px" }}
             fontSize="14"
+            h="max-content"
         >
             <Text
                 fontFamily="Barlow Condensed"

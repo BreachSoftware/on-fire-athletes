@@ -7,7 +7,8 @@ import PackageDetails from "@/app/checkout/components/selectYourPackage/packageD
 import { PackageType } from "@/app/checkout/components/selectYourPackage/packages";
 import { packages } from "@/app/checkout/components/selectYourPackage/packages";
 import CheckoutButtonFooter from "@/app/checkout/components/selectYourPackage/checkoutButtonFooter";
-import SelectBanner from "./selectBanner";
+import SelectBannerVertical from "@/app/checkout/components/selectYourPackage/selectBannerVertical";
+import SelectBannerHorizontal from "@/app/checkout/components/selectYourPackage/selectBannerHorizontal";
 import SharedStack from "@/components/shared/wrappers/shared-stack";
 /**
  * This component is responsible for rendering the select your package section of the checkout page.
@@ -30,7 +31,7 @@ export default function SelectYourPackage() {
                 color="white"
                 fontWeight={"100"}
                 width={"100%"}
-                fontSize={{ base: "35px", sm: "40px", md: "50px", lg: "76px" }}
+                fontSize={{ base: "46px", sm: "54px", md: "64px", lg: "76px" }}
                 textAlign={{ base: "center", md: "left" }}
                 letterSpacing={"3.0px"}
             >
@@ -41,13 +42,14 @@ export default function SelectYourPackage() {
             <SharedStack>
                 <Grid
                     width="100%"
-                    templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }}
+                    templateColumns={{ base: "1fr", lg: "repeat(2, 1fr)" }}
                     templateRows="1fr"
                     justifyContent="center"
                     marginTop="16px"
                     flexDir="column"
+                    gap="20px"
                 >
-                    <Flex flexDir="column" gap="16px">
+                    <Flex flexDir="column" gap="20px">
                         {/* Package Box Component */}
                         {[
                             packages.prospect,
@@ -78,8 +80,7 @@ function PackageBoxComponent({ pkg }: { pkg: PackageType }) {
     return (
         <Flex
             overflow="hidden"
-            margin={"10px"}
-            flexBasis={{ base: "100%", md: "30%" }}
+            // flexBasis={{ base: "100%", md: "30%" }}
             backgroundColor={"#171C1B"}
             // padding={"20px"}
             // borderWidth={"2px"}
@@ -121,9 +122,11 @@ function PackageBoxComponent({ pkg }: { pkg: PackageType }) {
                             : "green.100",
                 },
             }}
+            flexDirection={{ base: "column", xl: "row" }}
+            pos="relative"
         >
-            {/* Select Banner */}
-            <SelectBanner
+            {/* Select Banner (Large Screens Only) */}
+            <SelectBannerVertical
                 isSelected={checkout.packageName === pkg.databaseName}
             />
 
@@ -132,6 +135,11 @@ function PackageBoxComponent({ pkg }: { pkg: PackageType }) {
 
             {/* Bullet Points */}
             <PackageDetails pkg={pkg} />
+
+            {/* Select Banner (Mobile Only) */}
+            <SelectBannerHorizontal
+                isSelected={checkout.packageName === pkg.databaseName}
+            />
         </Flex>
     );
 }

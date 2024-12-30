@@ -3,6 +3,7 @@ import { Center, Circle, Flex, Text } from "@chakra-ui/react";
 export default function SelectBanner({ isSelected }: { isSelected: boolean }) {
     return (
         <Flex
+            display={{ base: "none", xl: "flex" }}
             justify="center"
             align="center"
             bg={isSelected ? "#27CE01" : "#27CE0140"}
