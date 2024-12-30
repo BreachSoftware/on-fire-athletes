@@ -3,7 +3,7 @@ import React from "react";
 import CreditCardInformationBody from "./creditCardInformationBody";
 import AddressBody, { AddressType } from "./addressBody";
 import CompleteOrderBody from "./completeOrder/completeOrder";
-import SelectYourPackage from "./selectYourPackage";
+import SelectYourPackage from "./selectYourPackageOld";
 import AllStarPrice from "./allStarPrice";
 import GameCoinButton from "./GameCoinButton";
 

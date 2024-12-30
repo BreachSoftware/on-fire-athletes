@@ -12,7 +12,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import { useEffect, useState } from "react";
 import { getWithExpiry } from "@/components/localStorageFunctions";
-import SelectYourPackage from "./components/selectYourPackage";
+import SelectYourPackage from "./components/selectYourPackageOld";
 import AllStarPrice from "./components/allStarPrice";
 import { getCard } from "../generate_card_asset/cardFunctions";
 import TradingCardInfo from "@/hooks/TradingCardInfo";

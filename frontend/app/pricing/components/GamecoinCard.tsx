@@ -32,10 +32,7 @@ export default function GamecoinCard() {
             spacing={6}
             align="stretch"
             alignSelf="stretch"
-            flexGrow={"1"}
             color="white"
-            border="1px solid"
-            borderColor="gray.800"
             bg="gray.700"
             borderRadius="2xl"
             p={10}
