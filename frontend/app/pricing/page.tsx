@@ -55,7 +55,7 @@ export default function Pricing() {
                     <NavBar />
 
                     {/* Page content */}
-                    <VStack pt="40px">
+                    <VStack py="40px">
                         {/* Pricing Options */}
                         <Flex
                             gap={12}
@@ -63,12 +63,12 @@ export default function Pricing() {
                                 base: "column",
                                 sm: "row",
                             }}
-                            w={"90%"}
                             height={"100%"}
                             p={{ base: 5, sm: 0 }}
                             justifyContent={"center"}
                             alignItems={"center"}
                             wrap={{ base: "wrap", sm: "nowrap" }}
+                            w="full"
                         >
                             {/* White Digital Card */}
                             <PricingCard />

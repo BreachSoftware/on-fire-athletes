@@ -12,10 +12,11 @@ export default function GamecoinCard() {
             color="white"
             bg="gray.1000"
             borderRadius="13px"
-            px="60px"
-            py="40px"
+            px={{ base: "20px", lg: "60px" }}
+            py={{ base: "20px", lg: "40px" }}
             boxShadow="0 0 16px #27CE00"
-            maxW="580px"
+            maxW={{ lg: "580px" }}
+            w="full"
         >
             {/* Header */}
             <Text
@@ -80,11 +81,12 @@ export default function GamecoinCard() {
             <Link href="/faq?category=Gamecoin">
                 <Button
                     variant="next"
-                    fontSize="14px"
+                    fontSize={{ base: "10px", lg: "14px" }}
                     fontFamily="Barlow"
                     fontWeight="medium"
                     letterSpacing="2px"
-                    maxW="120%"
+                    maxW={{ lg: "120%" }}
+                    whiteSpace="normal"
                 >
                     LEARN MORE ABOUT GAME COIN (GMEX)
                 </Button>

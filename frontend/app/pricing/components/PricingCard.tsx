@@ -80,17 +80,23 @@ export default function PricingTable() {
                     rounded="full"
                     bg="green.200"
                     color="white"
-                    fontSize="15px"
+                    fontSize={{ base: "12px", lg: "15px" }}
                 />
             );
         } else if (value === "X") {
-            return <CloseIcon p="2px" color="white" fontSize="15px" />;
+            return (
+                <CloseIcon
+                    p="2px"
+                    color="white"
+                    fontSize={{ base: "12px", lg: "15px" }}
+                />
+            );
         } else {
             return (
                 <Text
                     color="white"
                     fontWeight="medium"
-                    fontSize="15px"
+                    fontSize={{ base: "12px", lg: "15px" }}
                     fontFamily="Barlow"
                 >
                     {value}
@@ -104,11 +110,11 @@ export default function PricingTable() {
             overflowX="auto"
             bg="gray.1000"
             borderRadius="2xl"
-            p={10}
+            p={{ base: "10px", lg: 10 }}
             boxShadow="0 0 16px #27CE00"
             h="100%"
             flex={1}
-            maxW="860px"
+            maxW={{ base: "100%", lg: "860px" }}
         >
             <Table colorScheme="gray">
                 <Thead>
@@ -117,7 +123,7 @@ export default function PricingTable() {
                             borderColor="transparent"
                             fontFamily="Brotherhood, Regular"
                             color="white"
-                            fontSize="42px"
+                            fontSize={{ base: "32px", lg: "42px" }}
                             fontWeight="normal"
                             pl="12px"
                             pb="18px"
@@ -132,7 +138,7 @@ export default function PricingTable() {
                                     textAlign="center"
                                 >
                                     <Heading
-                                        size="sm"
+                                        fontSize={{ base: "10px", lg: "16px" }}
                                         color="green.200"
                                         textTransform="uppercase"
                                         fontFamily="Barlow Semi Condensed"
@@ -155,13 +161,14 @@ export default function PricingTable() {
                                 color="white"
                                 display="flex"
                                 flexDirection="column"
-                                fontSize="14px"
+                                fontSize={{ base: "10px", lg: "14px" }}
                                 fontWeight="medium"
                                 fontFamily="Barlow"
                                 letterSpacing="18"
                                 borderColor="transparent"
-                                maxW="360px"
-                                p="10px"
+                                maxW={{ base: "120px", lg: "360px" }}
+                                p={{ base: "6px", lg: "10px" }}
+                                lineHeight={{ base: "13px", lg: "initial" }}
                             >
                                 {feature.label}
                                 {feature.subText &&
@@ -187,7 +194,7 @@ export default function PricingTable() {
                                         key={tierName}
                                         borderColor="transparent"
                                         textAlign="center"
-                                        p="10px"
+                                        p={{ base: "6px", lg: "10px" }}
                                     >
                                         {renderFeatureValue(
                                             tiers[tierName].features[index],
@@ -231,11 +238,25 @@ export default function PricingTable() {
                     </Tr>
                 </Tbody>
             </Table>
-            <Flex justify="flex-end" mt={4} gap={4}>
-                <LightItUpCTAButton link="/" color="white">
+            <Flex
+                justify={{ base: "flex-start", lg: "flex-end" }}
+                mt={4}
+                gap={4}
+                position={{ base: "sticky", lg: "relative" }}
+                left={"16px"}
+            >
+                <LightItUpCTAButton
+                    link="/signup"
+                    color="white"
+                    w={{ base: "100%", lg: "233px" }}
+                >
                     SIGN UP
                 </LightItUpCTAButton>
-                <LightItUpCTAButton link="/" color="white">
+                <LightItUpCTAButton
+                    link="/create"
+                    color="white"
+                    w={{ base: "100%", lg: "233px" }}
+                >
                     START CREATING
                 </LightItUpCTAButton>
             </Flex>
