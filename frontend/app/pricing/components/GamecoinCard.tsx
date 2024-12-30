@@ -1,111 +1,125 @@
-import { Box, Text, VStack, Button } from "@chakra-ui/react";
-
-interface Benefit {
-    description: string;
-    percentage: number;
-}
-
-const benefits: Benefit[] = [
-    {
-        description:
-            "of all GMEX transactions is distributed among all token holders",
-        percentage: 2,
-    },
-    {
-        description:
-            "of every transaction is distributed to a charity wallet to support underserved athletes, teams, and communities",
-        percentage: 5,
-    },
-];
-
-const discount: {
-    percentage: number;
-    description: string;
-} = {
-    percentage: 20,
-    description: "Discount on All Purchases",
-};
+import SharedStack from "@/components/shared/wrappers/shared-stack";
+import { Box, Text, Button, Image } from "@chakra-ui/react";
+import Link from "next/link";
+import CreditCardOptions from "@/images/misc/credit-card-options.png";
+import GameCoin from "@/images/misc/game-coin-logo.png";
 
 export default function GamecoinCard() {
     return (
-        <VStack
-            spacing={6}
-            align="stretch"
+        <SharedStack
+            spacing={5}
             alignSelf="stretch"
             color="white"
-            bg="gray.700"
-            borderRadius="2xl"
-            p={10}
-            boxShadow="0 0 32px lime"
+            bg="gray.1000"
+            borderRadius="13px"
+            px="60px"
+            py="40px"
+            boxShadow="0 0 16px #27CE00"
+            maxW="580px"
         >
             {/* Header */}
-            <Text fontSize="xl" fontWeight="bold" textTransform="uppercase">
+            <Text
+                fontSize="42px"
+                textTransform="uppercase"
+                fontFamily="Brotherhood, Regular"
+                letterSpacing="0.84px"
+            >
                 Payment Options
             </Text>
+            <GreenDivider />
 
             {/* Game Coin Section */}
             <Box>
-                <Text color="green.200" fontWeight="semibold" fontSize="sm">
-                    (GMEX OFFICIAL CRYPTO TOKEN OF ON/OFF ATHLETES)
-                </Text>
-                <Text fontSize="xl" fontWeight="bold" mb={4}>
-                    GAME COIN
-                </Text>
-
-                {/* Discount Section */}
-                <Box mb={4}>
-                    <Text color="green.200" fontWeight="semibold" fontSize="sm">
-                        DISCOUNT
-                    </Text>
-                    <Text fontSize="md">
-                        {discount.percentage}% {discount.description}
-                    </Text>
-                </Box>
-
-                {/* Benefits Section */}
-                <Box>
-                    <Text color="green.200" fontWeight="semibold" fontSize="sm">
-                        BENEFIT TO GAME COIN (GMEX) TOKEN HOLDERS
-                    </Text>
-                    {benefits.map((benefit, index) => (
-                        <Text key={index} fontSize="md" mb={2}>
-                            {benefit.percentage}% {benefit.description}
-                        </Text>
-                    ))}
-                </Box>
+                <GCLabel>
+                    GMEX (OFFICIAL CRYPTO TOKEN OF ONFIRE ATHLETES)
+                </GCLabel>
+                <Image src={GameCoin.src} alt="Game Coin" w="180px" />
             </Box>
+
+            {/* Discount Section */}
+            <Box>
+                <GCLabel>DISCOUNT</GCLabel>
+                <GCText>20% Discount on All Purchases</GCText>
+            </Box>
+
+            {/* Benefits Section */}
+            <Box>
+                <GCLabel>BENEFIT TO GAME COIN (GMEX) TOKEN HOLDERS</GCLabel>
+                <GCText>
+                    2% of all GMEX transaction is distributed among all token
+                    holders.
+                </GCText>
+            </Box>
+            <GCText>
+                5% of every transaction is distributed to a charity wallet to
+                support underserved athletes, teams, and communities.
+            </GCText>
+
+            <GreenDivider />
 
             {/* Credit Card Section */}
             <Box>
-                <Text fontSize="xl" fontWeight="bold" mb={2}>
-                    CREDIT CARD
-                </Text>
-                <Box mb={4}>
-                    <Text color="green.200" fontWeight="semibold" fontSize="sm">
-                        DISCOUNT
-                    </Text>
-                    <Text fontSize="md">No Discount</Text>
-                </Box>
-                <Box>
-                    <Text color="green.200" fontWeight="semibold" fontSize="sm">
-                        BENEFIT TO GAME COIN (GMEX) TOKEN HOLDERS
-                    </Text>
-                    <Text fontSize="md">
-                        20% of sales value is used to purchase Game Coin (GMEX)
-                        Tokens and those tokens are then burned.
-                    </Text>
-                </Box>
+                <GCLabel>CREDIT CARD</GCLabel>
+                <Image src={CreditCardOptions.src} alt="Credit Card Options" />
+            </Box>
+            <Box>
+                <GCLabel>DISCOUNT</GCLabel>
+                <GCText>No Discount</GCText>
+            </Box>
+            <Box>
+                <GCLabel>BENEFIT TO GAME COIN (GMEX) TOKEN HOLDERS</GCLabel>
+                <GCText>
+                    20% of gross sales are used to purchase Game Coin (GMEX)
+                    tokens and those tokens are then burned.
+                </GCText>
             </Box>
 
+            <GreenDivider />
+
             {/* CTA Button */}
-            <Button colorScheme="green" size="lg" width="100%">
-                LEARN MORE ABOUT GAME COIN (GMEX)
-            </Button>
+            <Link href="/faq?category=Gamecoin">
+                <Button
+                    variant="next"
+                    fontSize="14px"
+                    fontFamily="Barlow"
+                    fontWeight="medium"
+                    letterSpacing="2px"
+                    maxW="120%"
+                >
+                    LEARN MORE ABOUT GAME COIN (GMEX)
+                </Button>
+            </Link>
 
             {/* Footer Text */}
-            <Text fontSize="sm" color="gray.400">
+            <Text fontSize="16px" fontWeight="medium" fontFamily="Barlow">
                 Game Coin (GMEX) can be purchased on Bitmart and Pancake Swap.
             </Text>
-        </VStack>
+        </SharedStack>
     );
+}
+
+function GCLabel({ children }: { children: React.ReactNode }) {
+    return (
+        <Text
+            color="green.200"
+            fontWeight="semibold"
+            fontSize="16px"
+            fontFamily="Barlow Semi Condensed"
+            letterSpacing="0.32px"
+        >
+            {children}
+        </Text>
+    );
+}
+
+function GCText({ children }: { children: React.ReactNode }) {
+    return (
+        <Text fontSize="14px" fontWeight="medium" fontFamily="Barlow">
+            {children}
+        </Text>
+    );
+}
+
+function GreenDivider() {
+    return <Box h="2px" w="full" bg="green.200" />;
 }

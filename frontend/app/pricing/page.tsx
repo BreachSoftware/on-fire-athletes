@@ -1,18 +1,17 @@
 "use client";
 import React from "react";
-import { VStack, Box, Flex, useBreakpointValue } from "@chakra-ui/react";
+import { VStack, Box, Flex } from "@chakra-ui/react";
 import NavBar from "../navbar";
 import Sidebar from "@/components/sidebar";
 import PricingCard from "./components/PricingCard";
 import GamecoinCard from "./components/GamecoinCard";
+import DarkPaper from "@/images/backgrounds/darkpaper.png";
 
 /**
  * Pricing page component
  * @returns JSX.Element
  */
 export default function Pricing() {
-    const showSidebar = useBreakpointValue({ base: false, lg: true });
-
     return (
         <>
             {/* Items around main content */}
@@ -34,31 +33,29 @@ export default function Pricing() {
                 >
                     {/* Background Image #1 */}
                     <Flex
-                        bgImage="keith-johnston-card-array.png"
+                        bgImage={DarkPaper.src}
                         bgPosition="center"
                         bgRepeat="no-repeat"
                         bgSize="cover"
                         h="100%"
                         w="100%"
-                    >
-                        <Flex
-                            bgGradient={
-                                "linear(180deg, rgba(0, 0, 0, 0.9) 0%, rgba(49, 69, 61, 0.9) 100%) 0% 0% no-repeat padding-box;"
-                            }
-                            h="100%"
-                            w="100%"
-                        />
-                    </Flex>
+                    />
                 </Flex>
 
-                {showSidebar ? (
+                <Box
+                    position="sticky"
+                    top={0}
+                    w="140px"
+                    h="100dvh"
+                    display={{ base: "none", md: "inline" }}
+                >
                     <Sidebar height="100vh" backgroundPresent={false} />
-                ) : null}
+                </Box>
                 <Box w="100%">
                     <NavBar />
 
                     {/* Page content */}
-                    <VStack pt="80px">
+                    <VStack pt="40px">
                         {/* Pricing Options */}
                         <Flex
                             gap={12}
