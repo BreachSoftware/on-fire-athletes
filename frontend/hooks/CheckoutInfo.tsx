@@ -25,6 +25,13 @@ export interface Item {
     price: number;
 }
 
+export enum DatabasePackageNames {
+    PROSPECT = "prospect",
+    ROOKIE = "rookie",
+    ALL_STAR = "allStar",
+    MVP = "mvp",
+}
+
 export default class CheckoutInfo {
     visitedSteps: number;
 
@@ -34,7 +41,7 @@ export default class CheckoutInfo {
     tax: number;
     total: number;
 
-    packageName: "rookie" | "allStar" | "mvp" | null;
+    packageName: DatabasePackageNames | null;
     onFireCard: TradingCardInfo | null;
     packageCardCount: number;
     packagePrice: number;
@@ -85,7 +92,7 @@ export default class CheckoutInfo {
         this.tax = 0;
         this.total = 0;
 
-        this.packageName = "allStar";
+        this.packageName = DatabasePackageNames.ALL_STAR;
         this.onFireCard = null;
         this.packageCardCount = 0;
         this.packagePrice = 0;

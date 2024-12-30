@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Divider, Flex, Text } from "@chakra-ui/react";
 import { CheckIcon } from "@chakra-ui/icons";
 import { useCurrentCheckout } from "@/hooks/useCheckout";
-import AddOn from "./addOn";
+import AddOn from "./selectYourPackage/addOn";
 
 /**
  * This component is responsible for rendering the select your package section of the checkout page.

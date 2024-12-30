@@ -1,0 +1,50 @@
+import { Center, Circle, Flex, Text } from "@chakra-ui/react";
+
+export default function SelectBanner({ isSelected }: { isSelected: boolean }) {
+    return (
+        <Flex
+            justify="center"
+            align="center"
+            bg={isSelected ? "#27CE01" : "#27CE0140"}
+            h="100%"
+            flexDir="column"
+            gap={2}
+        >
+            <Center pos="relative" boxSize="16px">
+                <Circle
+                    pos="absolute"
+                    top="50%"
+                    left="50%"
+                    transform="translate(-50%, -50%)"
+                    size="16px"
+                    bg="#6C6C6C"
+                    opacity={0.28}
+                    border={isSelected ? "2px solid white" : "none"}
+                />
+                <Circle
+                    pos="absolute"
+                    top="50%"
+                    left="50%"
+                    transform="translate(-50%, -50%)"
+                    size="10px"
+                    bg={isSelected ? "white" : "#27CE01"}
+                    boxShadow={isSelected ? "0px 0px 6px #27CE00" : "none"}
+                />
+            </Center>
+            {/* "Select" text, written vertically */}
+            <Text
+                fontFamily="Barlow Condensed"
+                color="white"
+                fontSize="20px"
+                fontWeight="500"
+                letterSpacing="1px"
+                sx={{
+                    writingMode: "vertical-rl",
+                    textOrientation: "mixed",
+                }}
+            >
+                SELECT
+            </Text>
+        </Flex>
+    );
+}

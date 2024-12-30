@@ -12,7 +12,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import { useEffect, useState } from "react";
 import { getWithExpiry } from "@/components/localStorageFunctions";
-import SelectYourPackage from "./components/selectYourPackageOld";
+import SelectYourPackage from "./components/selectYourPackage/selectYourPackageOld";
 import AllStarPrice from "./components/allStarPrice";
 import { getCard } from "../generate_card_asset/cardFunctions";
 import TradingCardInfo from "@/hooks/TradingCardInfo";
@@ -239,11 +239,7 @@ export default function CheckoutPage() {
                 }
             >
                 <Flex flexDir="column" flex={1}>
-                    <Flex
-                        w="100%"
-                        direction={"column"}
-                        mb={{ base: "32px", md: "48px" }}
-                    >
+                    <Flex w="100%" direction={"column"}>
                         <NavBar cryptoWalletConnected={cryptoWalletConnected} />
                     </Flex>
                     <Box w="full" flex={1}>
