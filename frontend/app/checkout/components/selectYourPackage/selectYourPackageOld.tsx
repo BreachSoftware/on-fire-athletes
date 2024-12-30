@@ -47,7 +47,7 @@ export default function SelectYourPackage() {
                     justifyContent="center"
                     marginTop="16px"
                     flexDir="column"
-                    gap="20px"
+                    gap={{ base: "20px", xl: "38px" }}
                 >
                     <Flex flexDir="column" gap="20px">
                         {/* Package Box Component */}
@@ -81,7 +81,7 @@ function PackageBoxComponent({ pkg }: { pkg: PackageType }) {
         <Flex
             overflow="hidden"
             // flexBasis={{ base: "100%", md: "30%" }}
-            backgroundColor={"#171C1B"}
+            backgroundColor={"#1B2120"}
             // padding={"20px"}
             // borderWidth={"2px"}
             // borderColor={

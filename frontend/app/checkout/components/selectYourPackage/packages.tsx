@@ -126,13 +126,35 @@ const MVPInfo: PackageType = {
     defaultPhysicalCardCount: 3,
     details: [
         {
-            text: "Receive 10 Physical Cards With 3D and A/R Interactivity",
+            text: (
+                <Text fontFamily="Barlow Condensed" color="green.100">
+                    A One-Year ONFIRE INSIDER Subscription (See below for
+                    details)
+                </Text>
+            ),
         },
-        { text: "Receive 50 Digital Cards" },
-        { text: "Ability to SELL and/or Trade Your Cards" },
-        { text: "Athlete Receives 75% of Profits*", indent: true },
-        { text: "Ability to Collect Cards" },
+        { text: "3 Physical Augmented Reality (AR) Cards" },
+        {
+            text: "One card in Magnetic Case, Two cards in Top Loader Case",
+            indent: true,
+        },
+        {
+            text: "25 Digital Cards to Sell / Trade (You received 75% of profit of cards sold)",
+        },
+        { text: "1 Bag Tag of Your Card Design" },
         { text: "Build Your Own Athlete Profile" },
+        {
+            text: "Add Additional Physical Augmented Reality (AR) Cards for only $24.99 each",
+            isAddOn: true,
+        },
+        {
+            text: "Add Additional Digital Cards $1.00 / 5",
+            isAddOn: true,
+        },
+        {
+            text: "Add a Bag Tag for only $19.99",
+            isAddOn: true,
+        },
     ],
 };
 

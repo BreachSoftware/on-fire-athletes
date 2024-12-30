@@ -9,6 +9,7 @@ export default function SelectBanner({ isSelected }: { isSelected: boolean }) {
             bg={isSelected ? "#27CE01" : "#27CE0140"}
             h="100%"
             flexDir="column"
+            w="41px"
             gap={2}
         >
             <Center pos="relative" boxSize="16px">
@@ -20,7 +21,7 @@ export default function SelectBanner({ isSelected }: { isSelected: boolean }) {
                     size="16px"
                     bg="#6C6C6C"
                     opacity={0.28}
-                    border={isSelected ? "2px solid white" : "none"}
+                    border="2px solid white"
                 />
                 <Circle
                     pos="absolute"
@@ -37,7 +38,7 @@ export default function SelectBanner({ isSelected }: { isSelected: boolean }) {
                 fontFamily="Barlow Condensed"
                 color="white"
                 fontSize="20px"
-                fontWeight="500"
+                fontWeight="400"
                 letterSpacing="1px"
                 sx={{
                     writingMode: "vertical-rl",

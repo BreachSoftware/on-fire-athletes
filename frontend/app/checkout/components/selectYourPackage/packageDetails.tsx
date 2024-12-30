@@ -1,7 +1,9 @@
 import { Circle, Flex, Text } from "@chakra-ui/react";
 import { useCurrentCheckout } from "@/hooks/useCheckout";
 import AddOn from "./addOn";
-import { PackageType } from "./packages";
+import { DatabasePackageNames } from "@/hooks/CheckoutInfo";
+import { PackageType } from "@/app/checkout/components/selectYourPackage/packages";
+import OnFireInsiderCard from "@/app/checkout/components/selectYourPackage/onFireInsiderCard";
 
 export default function PackageDetails({ pkg }: { pkg: PackageType }) {
     const curCheckout = useCurrentCheckout();
@@ -15,8 +17,8 @@ export default function PackageDetails({ pkg }: { pkg: PackageType }) {
             alignItems="flex-start"
             px={{ base: "25px", xl: "25px" }}
             pt={{ base: 0, xl: "25px" }}
-            pb={{ base: "18px", xl: "25px" }}
-            fontSize="14"
+            pb={{ base: "18px", xl: "30px" }}
+            fontSize={{ base: "12px", lg: "14px" }}
             h="max-content"
         >
             <Text
@@ -46,9 +48,7 @@ export default function PackageDetails({ pkg }: { pkg: PackageType }) {
                         <Circle size="1" bg="green.100" />
                     )}
                     {typeof detail.text === "string" ? (
-                        <Text fontFamily="Barlow Condensed" fontSize="14">
-                            {detail.text}
-                        </Text>
+                        <Text fontFamily="Barlow Condensed">{detail.text}</Text>
                     ) : (
                         detail.text
                     )}
@@ -101,43 +101,8 @@ export default function PackageDetails({ pkg }: { pkg: PackageType }) {
                         </Flex>
                     </>
                 )}
-                {pkg.title === "MVP" && (
-                    <>
-                        <Text
-                            fontFamily={"Barlow Condensed"}
-                            fontSize={"14"}
-                            textColor={"#F8F8F8"}
-                        >
-                            ADD-ONS:
-                        </Text>
-
-                        {/* Add-Ons for MVP Package */}
-
-                        <Flex
-                            flexDirection={"column"}
-                            alignItems={"center"}
-                            width={"100%"}
-                            gap={"10px"}
-                        >
-                            <AddOn
-                                title={"Additional 5 Digital Cards"}
-                                price={(checkout.digitalCardPrice * 5).toFixed(
-                                    2,
-                                )}
-                                value={
-                                    checkout.packageName === "mvp"
-                                        ? checkout.digitalCardCount / 5
-                                        : 0
-                                }
-                                onChange={(value) => {
-                                    curCheckout.setCheckout({
-                                        ...checkout,
-                                        digitalCardCount: value * 5,
-                                    });
-                                }}
-                            />
-                        </Flex>
-                    </>
+                {pkg.databaseName === DatabasePackageNames.MVP && (
+                    <OnFireInsiderCard />
                 )}
             </Flex>
         </Flex>

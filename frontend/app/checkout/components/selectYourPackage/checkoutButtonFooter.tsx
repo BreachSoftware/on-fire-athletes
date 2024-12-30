@@ -14,7 +14,7 @@ export default function CheckoutButtonFooter() {
         <Flex
             flexDirection={"row"}
             alignItems={"center"}
-            justifyContent={"space-between"}
+            justifyContent={"center"}
             marginTop={"20px"}
             width={"100%"}
             paddingLeft="15px"
