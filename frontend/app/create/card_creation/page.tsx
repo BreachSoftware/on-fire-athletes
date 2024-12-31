@@ -158,12 +158,6 @@ export default function CreationOverview({ isNil = false }: CardCreationProps) {
                                     cardBackRef={cardBackRef}
                                     mobileFlipButton={isMobile}
                                     showButton={!isMobile}
-                                    // enabledParts={{
-                                    //     interiorBorder: false,
-                                    //     interiorBorderShine: false,
-                                    //     exteriorBorderShine: false,
-                                    //     onFireLogo: false,
-                                    // }}
                                 />
                             </Box>
                         )}

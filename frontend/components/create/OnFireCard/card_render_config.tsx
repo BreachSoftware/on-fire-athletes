@@ -39,6 +39,16 @@ export function cardRenderOrder(
     const playerPhoto = gameCard.frontPhotoURL;
     const cardType = gameCard.cardType;
 
+    const logoFileName =
+        new Date().getFullYear() === 2025
+            ? "onfire-logo-year-2025"
+            : "onfire-logo-year";
+
+    const logoSrc =
+        cardType === "a"
+            ? `/card_assets/${logoFileName}.png`
+            : `/card_assets/${logoFileName}-b.png`;
+
     if (cardSide === "front") {
         if (cardType === "a") {
             const consistentElements: (
@@ -49,7 +59,7 @@ export function cardRenderOrder(
                       y?: number;
                   }
             )[] = [
-                { src: "/card_assets/onfire-logo-year.png" },
+                { src: logoSrc },
                 {
                     src: gamecardImages[CardPart.INTERIOR_BORDER],
                 },
@@ -72,7 +82,7 @@ export function cardRenderOrder(
             return consistentElements;
         } else if (cardType === "b") {
             const consistentElements = [
-                { src: "/card_assets/onfire-logo-year-b.png" },
+                { src: logoSrc },
                 { src: "/card_assets/blank.png", x: 0, y: 0 }, // These are quick fixes.
                 { src: "/card_assets/blank.png", x: 0, y: 0 }, // For some reason removing these causes cardType B to not render the back of the card properly
                 { src: gamecardImages[CardPart.INTERIOR_BORDER] },
