@@ -2,6 +2,7 @@ import { Flex, Button } from "@chakra-ui/react";
 import { useCurrentCheckout } from "@/hooks/useCheckout";
 
 import { packages } from "@/app/checkout/components/selectYourPackage/packages";
+import { DatabasePackageNames } from "@/hooks/CheckoutInfo";
 
 export default function CheckoutButtonFooter() {
     const curCheckout = useCurrentCheckout();
@@ -36,7 +37,12 @@ export default function CheckoutButtonFooter() {
                 onClick={() => {
                     if (!pkg) return;
 
-                    const shouldSkipStep = checkout.packageName === "rookie";
+                    const shouldSkipStep =
+                        checkout.packageName &&
+                        [
+                            DatabasePackageNames.PROSPECT,
+                            DatabasePackageNames.ROOKIE,
+                        ].includes(checkout.packageName);
 
                     curCheckout.setCheckout({
                         ...checkout,

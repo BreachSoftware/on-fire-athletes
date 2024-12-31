@@ -1,4 +1,3 @@
-
 // This file is auto-generated. Do not edit it manually.
 
 /**
@@ -46,11 +45,12 @@ export const API_ENDPOINTS = [
 	"users_disconnect",
 	"users_media",
 	"users_images",
-	"users_images_updates"
+	"users_images_updates",
+	"addSubscription",
 ] as const;
 
 /**
  * Type representing valid API endpoints.
  * This type is automatically updated when new endpoints are added to API_ENDPOINTS.
  */
-export type ApiEndpoint = typeof API_ENDPOINTS[number];
+export type ApiEndpoint = (typeof API_ENDPOINTS)[number];

@@ -55,6 +55,7 @@ export interface useAuthProps {
     currentSession: () => void;
     currentAuthenticatedUser: () => Promise<AuthUser>;
     dbUser: UserFields | null;
+    refreshUser: () => Promise<void>;
 }
 
 type Props = {
@@ -118,6 +119,10 @@ function useProvideAuth(): useAuthProps {
     }
 
     async function setDbUserInContext(uuid: string) {
+        if (!uuid) {
+            return;
+        }
+
         const requestOptions: RequestInit = {
             method: "GET",
             redirect: "follow",
@@ -386,6 +391,7 @@ function useProvideAuth(): useAuthProps {
         currentSession: currentSession,
         currentAuthenticatedUser: currentAuthenticatedUser,
         dbUser,
+        refreshUser: () => setDbUserInContext(dbUser?.uuid || ""),
     };
 }
 

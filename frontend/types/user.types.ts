@@ -21,4 +21,5 @@ export type UserFields = {
     tiktokLink?: string | null;
     xLink?: string | null;
     youtubeLink?: string | null;
+    subscription_expires_at?: number | null;
 };

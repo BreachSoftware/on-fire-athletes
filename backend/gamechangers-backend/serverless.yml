@@ -80,6 +80,12 @@ functions:
             - httpApi:
                   path: /createCard
                   method: post
+    addSubscription:
+        handler: lambda/handlers/addSubscription.addSubscription
+        events:
+            - httpApi:
+                  path: /addSubscription
+                  method: post
     createUser:
         handler: lambda/handlers/createUser.createUser
         events:

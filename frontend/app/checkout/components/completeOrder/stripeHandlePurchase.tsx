@@ -196,8 +196,24 @@ export async function handlePurchase(
                 return false;
             }
 
+            if (checkout.packageName === "mvp") {
+                await fetch(apiEndpoints.addSubscription(), {
+                    method: "POST",
+                    headers: myHeaders,
+                    body: JSON.stringify({
+                        userId: currentUserId,
+                        packageName: checkout.packageName,
+                        isGmex: hash ? true : false,
+                    }),
+                });
+                await auth.refreshUser();
+            }
+
             // Update card price for sellable packages
-            if (checkout.packageName !== "rookie") {
+            if (
+                checkout.packageName !== "rookie" &&
+                checkout.packageName !== "prospect"
+            ) {
                 const newCardPrice = parseFloat(checkout.cardPrice) + 5.0;
 
                 const updatePriceOptions = {

@@ -267,7 +267,10 @@ export default function CheckoutStepWrapper({
                                     } // Disable the button if it's the first step
                                     onClick={() => {
                                         if (
-                                            checkout.packageName === "rookie" &&
+                                            (checkout.packageName ===
+                                                "rookie" ||
+                                                checkout.packageName ===
+                                                    "prospect") &&
                                             stepNumber == 2
                                         ) {
                                             curCheckout.setCheckout({
@@ -308,6 +311,8 @@ export default function CheckoutStepWrapper({
                                         // Skipping the shipping details step if the user is not buying physical cards
                                         if (
                                             !buyingPhysicalCards &&
+                                            checkout.packageName !==
+                                                "prospect" &&
                                             stepNumber == 2
                                         ) {
                                             const lastVisitedStep =

@@ -23,7 +23,7 @@ import { darkTheme, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 // OnFire keys
 const STRIPE_PUBLIC_KEY =
     process.env.NEXT_PUBLIC_STRIPE_PK ||
-    "pk_live_51PssXyCEBFOTy6pM9DfyGbI7JZUqMoClqRVuFCEAVamp10DYl2O48SqCjiw7vSbeiv8CCmYPZwSgguOTCcJzbY0u00cwKkUFDZ";
+    "pk_test_51PssXyCEBFOTy6pMtubViKDQwVSljNAJRQAk5SkRyexPECtx4w8R3IHLQtI7CSNG1g7hSFk044Pc0STSYtxEWmSW00Y4VLvPII";
 /**
  * The Checkout page when purchasing a card
  * @returns JSX.Element
@@ -116,9 +116,11 @@ export default function CheckoutPage() {
                         digitalCardCount: 1,
                         physicalCardPrice: 0,
                         physicalCardCount: 1,
-                        cart: [digitalAddOn, physicalAddOn].filter((item) => {
-                            return item !== null;
-                        }),
+                        cart: [
+                            ...[digitalAddOn, physicalAddOn].filter((item) => {
+                                return item !== null;
+                            }),
+                        ],
                     });
                     setShowSpinner(false);
                 }
@@ -148,6 +150,9 @@ export default function CheckoutPage() {
             let formalPackageName = "";
             if (co.checkout.packageName) {
                 switch (co.checkout.packageName) {
+                    case "prospect":
+                        formalPackageName = "Prospect";
+                        break;
                     case "rookie":
                         formalPackageName = "Rookie";
                         break;
@@ -186,21 +191,24 @@ export default function CheckoutPage() {
 
                 let includedPhysicalAddOn = null;
 
-                includedPhysicalAddOn = {
-                    title:
-                        co.checkout.packageName === "rookie"
-                            ? "Included Physical Card"
-                            : "Included Physical Cards",
-                    card: onFireCard,
-                    numberOfCards: 1,
-                    numberOfOrders:
-                        co.checkout.packageName === "rookie"
-                            ? 1
-                            : co.checkout.packageName === "allStar"
-                              ? 5
-                              : 10,
-                    price: 0.0,
-                };
+                includedPhysicalAddOn =
+                    co.checkout.packageName === "prospect"
+                        ? null
+                        : {
+                              title:
+                                  co.checkout.packageName === "rookie"
+                                      ? "Included Physical Card"
+                                      : "Included Physical Cards",
+                              card: onFireCard,
+                              numberOfCards: 1,
+                              numberOfOrders:
+                                  co.checkout.packageName === "rookie"
+                                      ? 1
+                                      : co.checkout.packageName === "allStar"
+                                        ? 5
+                                        : 10,
+                              price: 0.0,
+                          };
 
                 // Add all items to the cart
                 co.setCheckout({

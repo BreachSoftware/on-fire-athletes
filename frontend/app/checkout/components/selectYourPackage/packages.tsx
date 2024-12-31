@@ -122,8 +122,8 @@ const MVPInfo: PackageType = {
     title: "MVP",
     databaseName: DatabasePackageNames.MVP,
     price: 79.99,
-    defaultDigitalCardCount: 25,
-    defaultPhysicalCardCount: 3,
+    defaultDigitalCardCount: 50,
+    defaultPhysicalCardCount: 10,
     details: [
         {
             text: (
