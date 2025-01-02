@@ -72,6 +72,7 @@ export const addSubscription: Handler = async (
 		});
 	}
 
+	let subscriptionId = null;
 	const purchaseTime = Math.round(Date.now() / 1000);
 	const trialEnds = purchaseTime + SECONDS_IN_YEAR;
 
@@ -84,7 +85,7 @@ export const addSubscription: Handler = async (
 			});
 		}
 
-		await stripe.subscriptions.create({
+		const subscriptionResponse = await stripe.subscriptions.create({
 			customer: userStripeCustomerId,
 			items: [
 				{
@@ -93,6 +94,8 @@ export const addSubscription: Handler = async (
 			],
 			trial_period_days: 365,
 		});
+
+		console.log(subscriptionResponse);
 	}
 
 	// Update user base subscription ends
@@ -101,9 +104,11 @@ export const addSubscription: Handler = async (
 		Key: {
 			uuid: data.userId, // Specify the primary key value
 		},
-		UpdateExpression: "set subscription_expires_at = :c",
+		UpdateExpression:
+			"set subscription_expires_at = :tEnds, subscription_id = :sId",
 		ExpressionAttributeValues: {
-			":c": trialEnds,
+			":tEnds": trialEnds,
+			":sId": subscriptionId,
 		},
 	};
 

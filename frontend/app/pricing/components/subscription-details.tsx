@@ -4,7 +4,7 @@ import { Box, StackProps, Text } from "@chakra-ui/react";
 export default function SubscriptionDetails() {
     return (
         <SharedStack
-            pl="54px"
+            pl={{ base: "16px", lg: "54px" }}
             gap={0}
             color="white"
             fontSize="10px"

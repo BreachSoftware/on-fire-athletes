@@ -20,7 +20,7 @@ export default function GamecoinCard() {
         >
             {/* Header */}
             <Text
-                fontSize="42px"
+                fontSize={{ base: "24px", lg: "42px" }}
                 textTransform="uppercase"
                 fontFamily="Brotherhood, Regular"
                 letterSpacing="0.84px"

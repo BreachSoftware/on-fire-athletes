@@ -6,6 +6,7 @@ import CompleteOrderBody from "./completeOrder/completeOrder";
 import SelectYourPackage from "./selectYourPackage/selectYourPackageOld";
 import AllStarPrice from "./allStarPrice";
 import GameCoinButton from "./GameCoinButton";
+import CheckoutAddOns from "./checkout-add-ons";
 
 class CheckoutStep {
     title: string;
@@ -33,6 +34,7 @@ class CheckoutStep {
 export const checkoutSteps: CheckoutStep[] = [
     new CheckoutStep("Select Your Package", <SelectYourPackage />),
     new CheckoutStep("All-Star Price", <AllStarPrice />),
+    new CheckoutStep("Add-Ons", <CheckoutAddOns />),
     new CheckoutStep(
         "Shipping Address",
         <AddressBody addressType={AddressType.SHIPPING} />,

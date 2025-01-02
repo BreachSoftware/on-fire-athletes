@@ -19,6 +19,7 @@ import TradingCardInfo from "@/hooks/TradingCardInfo";
 import { useTransferContext } from "@/hooks/useTransfer";
 import "../../node_modules/@rainbow-me/rainbowkit/dist/index.css";
 import { darkTheme, RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import { useAuth } from "@/hooks/useAuth";
 
 // OnFire keys
 const STRIPE_PUBLIC_KEY =
@@ -29,6 +30,7 @@ const STRIPE_PUBLIC_KEY =
  * @returns JSX.Element
  */
 export default function CheckoutPage() {
+    const { isSubscribed } = useAuth();
     const [onFireCard, setOnFireCard] = useState<TradingCardInfo | null>(null);
     const [cardObtained, setCardObtained] = useState(false);
     const [showSpinner, setShowSpinner] = useState(false);
@@ -71,10 +73,28 @@ export default function CheckoutPage() {
                         setOnFireCard(card);
                         setCardObtained(true);
                         // Set the card in the checkout context to assist with the checkout process
-                        co.setCheckout({
-                            ...checkout,
-                            onFireCard: card,
-                        });
+
+                        if (isSubscribed) {
+                            co.setCheckout({
+                                ...checkout,
+                                onFireCard: card,
+                                stepNum: 1,
+                                cart: [
+                                    {
+                                        title: `Free Digital Cards - MVP Subscription`,
+                                        card: card,
+                                        numberOfCards: 25,
+                                        numberOfOrders: 1,
+                                        price: 0,
+                                    },
+                                ],
+                            });
+                        } else {
+                            co.setCheckout({
+                                ...checkout,
+                                onFireCard: card,
+                            });
+                        }
                     });
                 }
             }
@@ -167,6 +187,17 @@ export default function CheckoutPage() {
                         break;
                 }
             }
+
+            if (
+                (formalPackageName &&
+                    co.checkout.cart.some(
+                        (item) => item.title === `${formalPackageName} Package`,
+                    )) ||
+                isSubscribed
+            ) {
+                return;
+            }
+
             if (onFireCard && formalPackageName) {
                 // Set the main package item
                 const mainPackage = {
@@ -202,11 +233,12 @@ export default function CheckoutPage() {
                               card: onFireCard,
                               numberOfCards: 1,
                               numberOfOrders:
-                                  co.checkout.packageName === "rookie"
+                                  co.checkout.packageName === "rookie" ||
+                                  co.checkout.packageName === "allStar"
                                       ? 1
-                                      : co.checkout.packageName === "allStar"
-                                        ? 5
-                                        : 10,
+                                      : co.checkout.packageName === "mvp"
+                                        ? 3
+                                        : 0,
                               price: 0.0,
                           };
 

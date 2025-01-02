@@ -123,7 +123,7 @@ export default function PricingTable() {
                             borderColor="transparent"
                             fontFamily="Brotherhood, Regular"
                             color="white"
-                            fontSize={{ base: "32px", lg: "42px" }}
+                            fontSize={{ base: "24px", lg: "42px" }}
                             fontWeight="normal"
                             pl="12px"
                             pb="18px"
@@ -136,13 +136,15 @@ export default function PricingTable() {
                                     key={tierName}
                                     borderColor="transparent"
                                     textAlign="center"
+                                    p={0}
                                 >
                                     <Heading
-                                        fontSize={{ base: "10px", lg: "16px" }}
+                                        fontSize={{ base: "12px", lg: "16px" }}
                                         color="green.200"
                                         textTransform="uppercase"
                                         fontFamily="Barlow Semi Condensed"
                                         whiteSpace="nowrap"
+                                        padding={0}
                                     >
                                         {tierName.replace("_", "-")}
                                     </Heading>
@@ -223,10 +225,10 @@ export default function PricingTable() {
                         </Td>
                         {(Object.keys(tiers) as PricingTier[]).map(
                             (tier, index) => (
-                                <Td key={index} borderColor="transparent">
+                                <Td key={index} borderColor="transparent" p={0}>
                                     <Text
                                         color="green.200"
-                                        fontSize="20px"
+                                        fontSize={{ base: "12px", lg: "20px" }}
                                         fontFamily="Barlow Semi Condensed"
                                         fontWeight="semibold"
                                     >

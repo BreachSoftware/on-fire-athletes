@@ -3,8 +3,10 @@ import { useCurrentCheckout } from "@/hooks/useCheckout";
 
 import { packages } from "@/app/checkout/components/selectYourPackage/packages";
 import { DatabasePackageNames } from "@/hooks/CheckoutInfo";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function CheckoutButtonFooter() {
+    const { isSubscribed } = useAuth();
     const curCheckout = useCurrentCheckout();
     const checkout = curCheckout.checkout;
 
@@ -50,7 +52,12 @@ export default function CheckoutButtonFooter() {
                         packageCardCount: pkg.defaultDigitalCardCount || 0,
                         physicalCardCount: pkg.defaultPhysicalCardCount || 0,
                         digitalCardCount: checkout.digitalCardCount,
+                        bagTagCount: pkg.defaultBagTagCount || 0,
                         stepNum: checkout.stepNum + (shouldSkipStep ? 2 : 1),
+                        // Apply discounts if user is subscribed
+                        ...(isSubscribed
+                            ? { bagTagPrice: 14.99, physicalCardPrice: 14.99 }
+                            : {}),
                     });
                 }}
             >

@@ -24,6 +24,13 @@ import { useCurrentCheckout } from "@/hooks/useCheckout";
 import { useState } from "react";
 import TradingCardInfo from "@/hooks/TradingCardInfo";
 import OnFireCard from "../create/OnFireCard/OnFireCard";
+import {
+    BAG_TAG_ADD_ON_TITLE,
+    DIGITAL_ADD_ON_TITLE,
+    PHYSICAL_ADD_ON_TITLE,
+} from "@/app/checkout/components/checkout-add-ons/constants";
+import CheckoutInfo from "@/hooks/CheckoutInfo";
+import { packages } from "@/app/checkout/components/selectYourPackage/packages";
 
 // props
 interface CheckItemProps {
@@ -34,6 +41,8 @@ interface CheckItemProps {
     price: number;
     canEdit: boolean;
     canRemove: boolean;
+    itemType?: "card" | "bag tag";
+    multiplier?: number;
 }
 
 /**
@@ -48,6 +57,8 @@ export default function Item({
     price,
     canEdit = true,
     canRemove = true,
+    itemType = "card",
+    multiplier = 1,
 }: CheckItemProps) {
     // leaving this commented might use in the future
     // const [ isHovered, setIsHovered ] = useState(false);
@@ -175,21 +186,42 @@ export default function Item({
                     >
                         {title}
                     </Text>
-                    <Text
-                        zIndex={2}
-                        fontFamily={"Roboto"}
-                        fontWeight={"regular"}
-                        transform={"skew(-6deg)"}
-                        // scale text size based on screen size
-                        fontSize={useBreakpointValue({
-                            base: "12px",
-                            md: "12px",
-                        })}
-                    >
-                        {cardType} Card: ${(price * numberOfOrders).toFixed(2)}{" "}
-                        ({numberOfOrders * numberOfCards} card
-                        {numberOfOrders * numberOfCards > 1 ? "s" : ""})
-                    </Text>
+                    {numberOfCards > 0 ? (
+                        <Text
+                            zIndex={2}
+                            fontFamily={"Roboto"}
+                            fontWeight={"regular"}
+                            transform={"skew(-6deg)"}
+                            // scale text size based on screen size
+                            fontSize={{
+                                base: "12px",
+                                md: "12px",
+                            }}
+                        >
+                            {itemType === "card" ? `${cardType} Card: ` : ""}$
+                            {(price * numberOfOrders).toFixed(2)} (
+                            {numberOfOrders * numberOfCards * multiplier}{" "}
+                            {itemType}
+                            {numberOfOrders * numberOfCards * multiplier > 1
+                                ? "s"
+                                : ""}
+                            )
+                        </Text>
+                    ) : (
+                        <Text
+                            zIndex={2}
+                            fontFamily={"Roboto"}
+                            fontWeight={"regular"}
+                            transform={"skew(-6deg)"}
+                            // scale text size based on screen size
+                            fontSize={{
+                                base: "12px",
+                                md: "12px",
+                            }}
+                        >
+                            ${(price * numberOfOrders).toFixed(2)}
+                        </Text>
+                    )}
                     <HStack paddingTop="10px">
                         {/* Remove Button */}
                         {canRemove && (
@@ -207,36 +239,40 @@ export default function Item({
                                 lineHeight="normal"
                                 textDecoration={"underline"}
                                 onClick={() => {
-                                    let physicalCardRemoved = false;
-                                    let amountOfPhysicalCards = 0;
                                     // remove item from cart
                                     const newCart = itemsInCart.filter(
-                                        (item) => {
-                                            if (
-                                                item.title === title &&
-                                                item.title.includes("Physical")
-                                            ) {
-                                                physicalCardRemoved = true;
-                                                amountOfPhysicalCards =
-                                                    item.numberOfOrders;
-                                            }
-                                            return item.title !== title;
-                                        },
+                                        (item) => item.title !== title,
                                     );
-                                    if (physicalCardRemoved) {
-                                        co.setCheckout({
-                                            ...checkout,
-                                            cart: newCart,
-                                            physicalCardCount:
-                                                checkout.physicalCardCount -
-                                                amountOfPhysicalCards,
-                                        });
-                                    } else {
-                                        co.setCheckout({
-                                            ...checkout,
-                                            cart: newCart,
-                                        });
+
+                                    const updatedCheckout: CheckoutInfo = {
+                                        ...checkout,
+                                        cart: newCart,
+                                    };
+
+                                    const defaults = checkout.packageName
+                                        ? packages[checkout.packageName]
+                                        : null;
+
+                                    if (title === DIGITAL_ADD_ON_TITLE) {
+                                        updatedCheckout.digitalCardCount = 0;
+                                    } else if (
+                                        title === PHYSICAL_ADD_ON_TITLE
+                                    ) {
+                                        updatedCheckout.physicalCardCount =
+                                            defaults?.defaultPhysicalCardCount ||
+                                            0;
+                                    } else if (title === BAG_TAG_ADD_ON_TITLE) {
+                                        updatedCheckout.bagTagCount =
+                                            defaults?.defaultBagTagCount || 0;
                                     }
+
+                                    console.log(
+                                        "updatedCheckout",
+                                        updatedCheckout.physicalCardCount,
+                                        updatedCheckout.digitalCardCount,
+                                    );
+
+                                    co.setCheckout(updatedCheckout);
                                 }}
                             >
                                 Remove

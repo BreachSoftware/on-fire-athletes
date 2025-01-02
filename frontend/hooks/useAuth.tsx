@@ -10,6 +10,7 @@ import {
     useContext,
     useState,
     useEffect,
+    useMemo,
 } from "react";
 import { Amplify } from "aws-amplify";
 import config from "../app/amplifyconfiguration.json";
@@ -56,6 +57,7 @@ export interface useAuthProps {
     currentAuthenticatedUser: () => Promise<AuthUser>;
     dbUser: UserFields | null;
     refreshUser: () => Promise<void>;
+    isSubscribed: boolean;
 }
 
 type Props = {
@@ -320,6 +322,19 @@ function useProvideAuth(): useAuthProps {
         fetchSession();
     }, [isAuthenticated]);
 
+    function checkIfSubscribed() {
+        const currentUnixSeconds = Math.floor(Date.now() / 1000);
+        const isSubscriptionActive =
+            !!dbUser?.subscription_expires_at &&
+            dbUser?.subscription_expires_at >= currentUnixSeconds;
+
+        // TODO: check stripe subscription for automatic refresh if subscription_id on user
+
+        return isSubscriptionActive;
+    }
+
+    const isSubscribed = useMemo(() => checkIfSubscribed(), [dbUser]);
+
     /**
      * Uses aws-amplify sdk to call the fetchAuthSession function for the current user
      */
@@ -392,6 +407,7 @@ function useProvideAuth(): useAuthProps {
         currentAuthenticatedUser: currentAuthenticatedUser,
         dbUser,
         refreshUser: () => setDbUserInContext(dbUser?.uuid || ""),
+        isSubscribed: isSubscribed,
     };
 }
 

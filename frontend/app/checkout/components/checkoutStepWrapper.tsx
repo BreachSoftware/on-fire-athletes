@@ -19,11 +19,16 @@ import TradingCardInfo from "@/hooks/TradingCardInfo";
 import { useAuth } from "@/hooks/useAuth";
 import { totalPriceInCart } from "@/utils/utils";
 import React from "react";
+import CheckoutInfo from "@/hooks/CheckoutInfo";
 
 interface CheckoutStepWrapperProps {
     onFireCard: TradingCardInfo | null;
     buyingOtherCard: boolean;
 }
+
+// Step 2: Add-ons
+// Step 3: Shipping Address
+// Step 4: Payment Details
 
 /**
  * CheckoutStepWrapper is a functional component that handles the display and navigation of checkout steps.
@@ -50,15 +55,20 @@ export default function CheckoutStepWrapper({
     // State to keep track of whether the user is buying physical cards
     const [buyingPhysicalCards, setBuyingPhysicalCards] = useState(false);
     useEffect(() => {
-        if (checkout.physicalCardCount > 0) {
+        if (checkout.physicalCardCount > 0 || checkout.bagTagCount > 0) {
             setBuyingPhysicalCards(true);
         } else {
             setBuyingPhysicalCards(false);
         }
-    }, [checkout.packageName, checkout.physicalCardCount]);
+    }, [
+        checkout.packageName,
+        checkout.physicalCardCount,
+        checkout.bagTagCount,
+    ]);
 
     // Used for the Purchase button on the last step
     const [isLoading, setIsLoading] = useState(false);
+    const totalPrice = totalPriceInCart(checkout, buyingPhysicalCards);
 
     /**
      * Function to check if the current step is incomplete
@@ -102,8 +112,15 @@ export default function CheckoutStepWrapper({
      * Function to calculate the shipping cost based on the number of physical cards
      * @returns {number} - The calculated shipping cost
      */
-    function calculateShippingCost() {
+    function calculateShippingCost(checkout: CheckoutInfo) {
         // Calculate shipping cost based on the number of physical cards
+        const physicalCardCount = checkout.physicalCardCount;
+        const bagTagCount = checkout.bagTagCount;
+
+        if (physicalCardCount > 0 || bagTagCount > 0) {
+            return 4.99;
+        }
+
         return 0;
     }
 
@@ -112,7 +129,7 @@ export default function CheckoutStepWrapper({
         curCheckout.setCheckout({
             ...checkout,
             total: totalPriceInCartInCents(),
-            shippingCost: calculateShippingCost(),
+            shippingCost: calculateShippingCost(checkout),
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [checkout.cart, checkout.stepNum, checkout.couponCode]);
@@ -223,11 +240,11 @@ export default function CheckoutStepWrapper({
                 {checkoutSteps[stepNumber].bodyElement}
 
                 {/* Footer section with the Next or Purchase button and optional bot-left element */}
-                {stepNumber !== 3 && (
+                {stepNumber !== 4 && (
                     <Flex
                         justifyContent={{
                             base: "center",
-                            lg: stepNumber === 3 ? "space-between" : "flex-end",
+                            lg: stepNumber === 4 ? "space-between" : "flex-end",
                         }}
                         flexDirection={{ base: "column", lg: "row" }}
                         alignItems="center"
@@ -250,11 +267,7 @@ export default function CheckoutStepWrapper({
                                 fontSize={"2xl"}
                                 fontWeight={"bold"}
                             >
-                                Total: $
-                                {totalPriceInCart(
-                                    checkout,
-                                    buyingPhysicalCards,
-                                ).toFixed(2)}
+                                Total: ${totalPrice.toFixed(2)}
                                 {buyingPhysicalCards ? "*" : ""}
                             </Text>
                             <Flex gap="10%">
@@ -266,6 +279,17 @@ export default function CheckoutStepWrapper({
                                         (stepNumber === 2 && buyingOtherCard)
                                     } // Disable the button if it's the first step
                                     onClick={() => {
+                                        if (
+                                            totalPrice === 0 &&
+                                            stepNumber === 5
+                                        ) {
+                                            curCheckout.setCheckout({
+                                                ...checkout,
+                                                stepNum: 2,
+                                            });
+                                            return;
+                                        }
+
                                         if (
                                             (checkout.packageName ===
                                                 "rookie" ||
@@ -307,6 +331,18 @@ export default function CheckoutStepWrapper({
                                     isDisabled={stepIsIncomplete()}
                                     isLoading={isLoading}
                                     onClick={() => {
+                                        if (
+                                            stepNumber === 2 &&
+                                            totalPrice === 0 &&
+                                            auth.isSubscribed
+                                        ) {
+                                            curCheckout.setCheckout({
+                                                ...checkout,
+                                                stepNum: 5,
+                                            });
+                                            return;
+                                        }
+
                                         // Increment the step number to go to the next step, up to the last step
                                         // Skipping the shipping details step if the user is not buying physical cards
                                         if (
@@ -404,7 +440,9 @@ export default function CheckoutStepWrapper({
                                         {/* Change button text based on whether it's the last step */}
                                         {stepNumber !== checkoutSteps.length - 1
                                             ? "Next"
-                                            : "Purchase"}
+                                            : totalPrice === 0
+                                              ? "Confirm"
+                                              : "Purchase"}
                                         <ChevronRightIcon
                                             boxSize={"30px"}
                                             mr={"-10px"}

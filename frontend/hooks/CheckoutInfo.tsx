@@ -23,6 +23,8 @@ export interface Item {
     numberOfCards: number;
     numberOfOrders: number;
     price: number;
+    itemType?: "card" | "bag tag";
+    multiplier?: number;
 }
 
 export enum DatabasePackageNames {
@@ -49,6 +51,8 @@ export default class CheckoutInfo {
     digitalCardPrice: number;
     physicalCardCount: number;
     physicalCardPrice: number;
+    bagTagCount: number;
+    bagTagPrice: number;
 
     contactInfo: ContactInfo;
 
@@ -97,9 +101,11 @@ export default class CheckoutInfo {
         this.packageCardCount = 0;
         this.packagePrice = 0;
         this.digitalCardCount = 0;
-        this.digitalCardPrice = 0.5;
+        this.digitalCardPrice = 1.0;
         this.physicalCardCount = 0;
-        this.physicalCardPrice = 9.99;
+        this.physicalCardPrice = 24.99;
+        this.bagTagCount = 0;
+        this.bagTagPrice = 19.99;
 
         this.contactInfo = {
             firstName: "",

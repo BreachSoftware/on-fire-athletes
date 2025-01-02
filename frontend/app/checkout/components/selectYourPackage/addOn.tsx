@@ -14,6 +14,7 @@ interface AddOnProps {
     price: string; // Price of one add-on
     value: number; // How many of this add-on the user wants
     onChange: (value: number) => void; // Function to handle the change in the number of add-ons
+    hidePriceStyling?: boolean;
 }
 
 /**
@@ -76,7 +77,9 @@ export default function AddOn(props: AddOnProps) {
                         fontSize={"16"}
                         textColor={"green.100"}
                     >
-                        ${props.price}/ea.
+                        {props.hidePriceStyling
+                            ? props.price
+                            : `$${props.price}/ea.`}
                     </Text>
                 </Flex>
 

@@ -1,6 +1,6 @@
 import emailjs from "@emailjs/browser";
 import { tradeBoughtCard } from "@/hooks/buyCardFunc";
-import CheckoutInfo from "@/hooks/CheckoutInfo";
+import CheckoutInfo, { DatabasePackageNames } from "@/hooks/CheckoutInfo";
 import TradingCardInfo from "@/hooks/TradingCardInfo";
 import { useAuthProps } from "@/hooks/useAuth";
 import { PaymentIntent, Stripe } from "@stripe/stripe-js";
@@ -125,6 +125,7 @@ export async function handlePurchase(
                 receiver_uuid: currentUserId,
                 physicalCardQuantity: checkout.physicalCardCount,
                 digitalCardQuantity: totalDigitalCards,
+                bagTagQuantity: checkout.bagTagCount,
                 first_name: dbUser?.first_name,
                 last_name: dbUser?.last_name,
                 email: dbUser?.email,
@@ -141,6 +142,9 @@ export async function handlePurchase(
                     : hash
                       ? PaymentMethod.GMEX
                       : PaymentMethod.Card,
+                package_name: auth.isSubscribed
+                    ? "SUBSCRIPTION"
+                    : checkout.packageName,
             }),
         };
 
@@ -214,7 +218,8 @@ export async function handlePurchase(
                 checkout.packageName !== "rookie" &&
                 checkout.packageName !== "prospect"
             ) {
-                const newCardPrice = parseFloat(checkout.cardPrice) + 5.0;
+                // THIS IS WHERE WE WOULD ADD SHIPPING IF WE WANT TO ADD IT BACK
+                const newCardPrice = parseFloat(checkout.cardPrice);
 
                 const updatePriceOptions = {
                     method: "POST",
@@ -286,22 +291,25 @@ export async function handlePurchase(
     }
 }
 
-enum EmailTemplates {
-    ROOKIE = "template_71hzb7j",
-    ALL_STAR = "template_46qvoa9",
-}
+const EmailTemplates: Record<DatabasePackageNames, string> = {
+    [DatabasePackageNames.PROSPECT]: "template_z2uq3ok",
+    [DatabasePackageNames.ROOKIE]: "template_71hzb7j",
+    [DatabasePackageNames.ALL_STAR]: "template_46qvoa9",
+    [DatabasePackageNames.MVP]: "template_830qvoo",
+};
 
 async function handlePostCheckoutEmail(checkout: CheckoutInfo) {
-    const isRookie = checkout.packageName === "rookie";
+    if (!checkout.packageName) {
+        return;
+    }
 
-    const templateToUse = isRookie
-        ? EmailTemplates.ROOKIE
-        : EmailTemplates.ALL_STAR;
+    const templateToUse = EmailTemplates[checkout.packageName];
 
     await emailjs.send(
         "service_8rtflzq",
         templateToUse,
         {
+            toName: `${checkout.contactInfo.firstName} ${checkout.contactInfo.lastName}`,
             toEmail: checkout.contactInfo.email,
             cardImage: checkout.onFireCard!.cardImage,
             profileUrl: `https://onfireathletes.com/profile?user=${checkout.onFireCard!.generatedBy}`,

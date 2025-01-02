@@ -7,6 +7,7 @@ import CheckoutInfo from "@/hooks/CheckoutInfo";
 export interface useCheckoutProperties {
     checkout: CheckoutInfo;
     setCheckout: (newCheckout: CheckoutInfo) => void;
+    updateCheckout: (fieldsToUpdate: Partial<CheckoutInfo>) => void;
 }
 
 type Props = {
@@ -31,9 +32,17 @@ export function useCurrentCheckout() {
 function useCheckout(): useCheckoutProperties {
     const [checkout, setCheckout] = useState<CheckoutInfo>(new CheckoutInfo());
 
+    function updateCheckout(fieldsToUpdate: Partial<CheckoutInfo>) {
+        setCheckout({
+            ...checkout,
+            ...fieldsToUpdate,
+        });
+    }
+
     return {
         checkout: checkout,
         setCheckout: setCheckout,
+        updateCheckout: updateCheckout,
     };
 }
 

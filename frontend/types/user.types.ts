@@ -22,4 +22,5 @@ export type UserFields = {
     xLink?: string | null;
     youtubeLink?: string | null;
     subscription_expires_at?: number | null;
+    subscription_id?: string | null;
 };

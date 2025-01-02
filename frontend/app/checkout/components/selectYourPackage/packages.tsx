@@ -12,6 +12,7 @@ export type PackageType = {
     }[];
     defaultDigitalCardCount?: number;
     defaultPhysicalCardCount?: number;
+    defaultBagTagCount?: number;
 };
 
 const ProspectInfo: PackageType = {
@@ -20,6 +21,7 @@ const ProspectInfo: PackageType = {
     price: 19.99,
     defaultDigitalCardCount: 0,
     defaultPhysicalCardCount: 0,
+    defaultBagTagCount: 1,
     details: [
         {
             text: "1 Bag Tag of Your Card Design",
@@ -47,6 +49,7 @@ const RookieInfo: PackageType = {
     price: 29.99,
     defaultDigitalCardCount: 0,
     defaultPhysicalCardCount: 1,
+    defaultBagTagCount: 0,
     details: [
         {
             text: "1 Physical Augmented Reality (AR) Card in Magnetic Case",
@@ -124,6 +127,7 @@ const MVPInfo: PackageType = {
     price: 79.99,
     defaultDigitalCardCount: 25,
     defaultPhysicalCardCount: 3,
+    defaultBagTagCount: 1,
     details: [
         {
             text: (

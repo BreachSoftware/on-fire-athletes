@@ -257,8 +257,7 @@ export default function AllStarPrice({ isNil }: { isNil?: boolean }) {
                                     mb="15px"
                                 >
                                     *Digital cards must be priced at a minimum
-                                    of $20.00. Shipping & Handling fee of $5.00
-                                    will be added.
+                                    of $25.00.
                                 </Text>
                             </Flex>
                         </Flex>
@@ -284,7 +283,7 @@ export default function AllStarPrice({ isNil }: { isNil?: boolean }) {
                             pb={{ base: "32px", md: 0 }}
                         >
                             {/* Back button to go to the previous step */}
-                            {!isNil && (
+                            {!isNil && !auth.isSubscribed && (
                                 <Button
                                     variant={"back"}
                                     width="100px"
