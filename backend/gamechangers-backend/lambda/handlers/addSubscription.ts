@@ -95,7 +95,7 @@ export const addSubscription: Handler = async (
 			trial_period_days: 365,
 		});
 
-		console.log(subscriptionResponse);
+		subscriptionId = subscriptionResponse.id;
 	}
 
 	// Update user base subscription ends

@@ -129,7 +129,12 @@ export default function SignUp() {
             const confirmed = await auth.confirm(email.trim(), code.trim());
             if (confirmed) {
                 // Sign the user in
-                const res = await auth.signIn(email, password, info);
+                const res = await auth.signIn(email, password, {
+                    ...info,
+                    firstName: firstName || info.firstName,
+                    lastName: lastName || info.lastName,
+                });
+
                 if (res.success) {
                     const user = await auth.currentAuthenticatedUser();
                     const userID = user.userId;

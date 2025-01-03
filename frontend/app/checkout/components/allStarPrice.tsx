@@ -310,7 +310,7 @@ export default function AllStarPrice({ isNil }: { isNil?: boolean }) {
                                 isDisabled={
                                     parseFloat(
                                         checkout.cardPrice.toString() || "0",
-                                    ) < 20
+                                    ) < 25
                                 }
                                 onClick={async () => {
                                     if (isNil) {

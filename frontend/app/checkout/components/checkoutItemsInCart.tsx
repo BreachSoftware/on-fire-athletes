@@ -56,8 +56,6 @@ export function ItemsInCartComponent({
                     BAG_TAG_ADD_ON_TITLE,
                 ].includes(item.title);
 
-                console.log("isAddOn", item.title, isAddOn);
-
                 return (
                     <Item
                         key={index}
@@ -237,7 +235,7 @@ export default function CheckoutItemsInCart(props: CheckoutItemsInCartProps) {
 
 function ShippingAndHandlingItem() {
     const { checkout } = useCurrentCheckout();
-    const { shippingCost, stepNum } = checkout;
+    const { shippingCost } = checkout;
 
     if (shippingCost <= 0) {
         return <></>;

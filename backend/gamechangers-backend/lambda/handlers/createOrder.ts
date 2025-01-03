@@ -123,6 +123,7 @@ export const createOrder: Handler = async (
 					receiver_uuid: data.receiver_uuid,
 					physicalCardQuantity: data.physicalCardQuantity,
 					digitalCardQuantity: data.digitalCardQuantity,
+					bagTagQuantity: data.bagTagQuantity,
 					transaction_time: currentUnixTime,
 					first_name: data.first_name,
 					last_name: data.last_name,
@@ -136,6 +137,7 @@ export const createOrder: Handler = async (
 					zip_code: data.zip_code,
 					coupon_used: data.coupon_used,
 					payment_method: data.payment_method,
+					package_name: data.package_name,
 				},
 			};
 

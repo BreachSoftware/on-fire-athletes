@@ -95,8 +95,8 @@ export default function Item({
                         display="flex"
                         justifyContent="center"
                         alignItems="center"
-                        width={useBreakpointValue({ base: "80px", md: 100 })}
-                        height={useBreakpointValue({ base: "80px", md: 100 })}
+                        width={{ base: "80px", md: 100 }}
+                        height={{ base: "80px", md: 100 }}
                     >
                         {cardType === "Digital" ? (
                             // Digital Card has just the OnFire Card
@@ -155,10 +155,10 @@ export default function Item({
                         py="1px"
                         bg="green.100"
                         color="white"
-                        fontSize={useBreakpointValue({
+                        fontSize={{
                             base: "8px",
                             md: "10px",
-                        })}
+                        }}
                         fontWeight="bold"
                         position="absolute"
                         top="-9px"
@@ -178,11 +178,11 @@ export default function Item({
                         fontWeight={"600"}
                         transform={"skew(-6deg)"}
                         // scale text size based on screen size
-                        fontSize={useBreakpointValue({
+                        fontSize={{
                             base: "20px",
                             sm: "md",
                             lg: "xl",
-                        })}
+                        }}
                     >
                         {title}
                     </Text>

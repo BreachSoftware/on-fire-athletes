@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useMemo } from "react";
 
 import { Box, Flex, Grid, GridItem, Spinner, VStack } from "@chakra-ui/react";
 import NavBar from "../navbar";
@@ -20,6 +20,7 @@ import { useTransferContext } from "@/hooks/useTransfer";
 import "../../node_modules/@rainbow-me/rainbowkit/dist/index.css";
 import { darkTheme, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { useAuth } from "@/hooks/useAuth";
+import { DatabasePackageNames } from "@/hooks/CheckoutInfo";
 
 // OnFire keys
 const STRIPE_PUBLIC_KEY =
@@ -34,6 +35,7 @@ export default function CheckoutPage() {
     const [onFireCard, setOnFireCard] = useState<TradingCardInfo | null>(null);
     const [cardObtained, setCardObtained] = useState(false);
     const [showSpinner, setShowSpinner] = useState(false);
+    const [isCardLoading, setIsCardLoading] = useState(true);
     const [buyingOtherCard, setBuyingOtherCard] = useState(false);
 
     // Game Coin integration
@@ -48,9 +50,10 @@ export default function CheckoutPage() {
     const checkout = co.checkout;
     const checkoutStep = checkout.stepNum;
 
-    const itemsInCart = checkout.cart;
+    const itemsInCart = useMemo(() => checkout.cart, [checkout.cart]);
 
-    const stripePromise = loadStripe(STRIPE_PUBLIC_KEY);
+    const stripePromise = useMemo(() => loadStripe(STRIPE_PUBLIC_KEY), []);
+
     useEffect(() => {
         /**
          * Get the card information from the API
@@ -65,41 +68,35 @@ export default function CheckoutPage() {
 
         if (!cardObtained) {
             if (typeof window !== "undefined") {
+                setIsCardLoading(true);
                 const currentCard = getWithExpiry("cardInfo");
+
                 if (currentCard) {
                     // Parse the current card object
                     const { uuid, generatedBy } = JSON.parse(currentCard);
                     getCardInfo(uuid, generatedBy).then((card) => {
                         setOnFireCard(card);
+                        co.setCheckout({
+                            ...checkout,
+                            onFireCard: card,
+                        });
                         setCardObtained(true);
                         // Set the card in the checkout context to assist with the checkout process
-
-                        if (isSubscribed) {
-                            co.setCheckout({
-                                ...checkout,
-                                onFireCard: card,
-                                stepNum: 1,
-                                cart: [
-                                    {
-                                        title: `Free Digital Cards - MVP Subscription`,
-                                        card: card,
-                                        numberOfCards: 25,
-                                        numberOfOrders: 1,
-                                        price: 0,
-                                    },
-                                ],
-                            });
-                        } else {
-                            co.setCheckout({
-                                ...checkout,
-                                onFireCard: card,
-                            });
-                        }
                     });
                 }
+                setIsCardLoading(false);
             }
         }
-    });
+    }, []);
+
+    useEffect(() => {
+        if (checkoutStep === 0 && cardObtained && isSubscribed) {
+            co.setCheckout({
+                ...checkout,
+                stepNum: 1,
+            });
+        }
+    }, [checkoutStep, cardObtained, isSubscribed]);
 
     // This useEffect is used to check if the user is buying a card from another user
     useEffect(() => {
@@ -188,12 +185,37 @@ export default function CheckoutPage() {
                 }
             }
 
-            if (
-                (formalPackageName &&
+            if (isSubscribed) {
+                if (
                     co.checkout.cart.some(
-                        (item) => item.title === `${formalPackageName} Package`,
-                    )) ||
-                isSubscribed
+                        (item) =>
+                            item.title ===
+                            "Free Digital Cards - MVP Subscription",
+                    )
+                ) {
+                    return;
+                }
+
+                const subscribedPackage = {
+                    title: `Free Digital Cards - MVP Subscription`,
+                    card: onFireCard,
+                    numberOfCards: 25,
+                    numberOfOrders: 1,
+                    price: 0,
+                };
+                co.setCheckout({
+                    ...checkout,
+                    packageName: DatabasePackageNames.MVP,
+                    cart: [subscribedPackage],
+                });
+                return;
+            }
+
+            if (
+                formalPackageName &&
+                co.checkout.cart.some(
+                    (item) => item.title === `${formalPackageName} Package`,
+                )
             ) {
                 return;
             }
@@ -257,7 +279,7 @@ export default function CheckoutPage() {
         }
         // I disabled this because it was causing an infinite loop
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [checkoutStep]);
+    }, [isSubscribed, checkoutStep]);
 
     // This useEffect is used to show the crypto wallet account balance in the NavBar
     useEffect(() => {
@@ -283,7 +305,7 @@ export default function CheckoutPage() {
                         <NavBar cryptoWalletConnected={cryptoWalletConnected} />
                     </Flex>
                     <Box w="full" flex={1}>
-                        {showSpinner ? (
+                        {showSpinner || isCardLoading ? (
                             <Box
                                 w="100%"
                                 h="100%"
