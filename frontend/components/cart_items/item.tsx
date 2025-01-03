@@ -3,7 +3,6 @@
 import {
     Flex,
     Text,
-    useBreakpointValue,
     Box,
     Circle,
     HStack,

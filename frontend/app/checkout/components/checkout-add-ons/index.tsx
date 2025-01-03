@@ -4,7 +4,7 @@ import { useCurrentCheckout } from "@/hooks/useCheckout";
 import React, { useMemo } from "react";
 import AddOnOption, { AddOnOptionType } from "./add-on-option";
 import { packages } from "../selectYourPackage/packages";
-import { SimpleGrid, Text } from "@chakra-ui/react";
+import { SimpleGrid } from "@chakra-ui/react";
 import { useAuth } from "@/hooks/useAuth";
 import {
     BAG_TAG_ADD_ON_TITLE,

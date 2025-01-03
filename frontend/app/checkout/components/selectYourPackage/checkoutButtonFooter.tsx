@@ -3,10 +3,8 @@ import { useCurrentCheckout } from "@/hooks/useCheckout";
 
 import { packages } from "@/app/checkout/components/selectYourPackage/packages";
 import { DatabasePackageNames } from "@/hooks/CheckoutInfo";
-import { useAuth } from "@/hooks/useAuth";
 
 export default function CheckoutButtonFooter() {
-    const { isSubscribed } = useAuth();
     const curCheckout = useCurrentCheckout();
     const checkout = curCheckout.checkout;
 

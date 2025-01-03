@@ -3,6 +3,7 @@ import { Button, Divider, Flex, Text } from "@chakra-ui/react";
 import { CheckIcon } from "@chakra-ui/icons";
 import { useCurrentCheckout } from "@/hooks/useCheckout";
 import AddOn from "./selectYourPackage/addOn";
+import { DatabasePackageNames } from "@/hooks/CheckoutInfo";
 
 /**
  * This component is responsible for rendering the select your package section of the checkout page.
@@ -137,10 +138,8 @@ export default function SelectYourPackage() {
                                 // Otherwise, set the package name in the checkout object
                                 curCheckout.setCheckout({
                                     ...checkout,
-                                    packageName: pkg.databaseName as
-                                        | "rookie"
-                                        | "allStar"
-                                        | "mvp",
+                                    packageName:
+                                        pkg.databaseName as DatabasePackageNames,
                                     digitalCardCount: 0,
                                 });
                             }}
