@@ -127,7 +127,7 @@ export default function CheckoutPage() {
 
                     co.setCheckout({
                         ...checkout,
-                        stepNum: 2,
+                        stepNum: 3,
                         packageName: null,
                         digitalCardPrice: onFireCard.price,
                         digitalCardCount: 1,

@@ -289,7 +289,9 @@ export default function TrendingCard({
                             >
                                 {card?.price
                                     ? `$${card?.price?.toFixed(2)}`
-                                    : "TRADE ONLY"}
+                                    : card.totalCreated > 0
+                                      ? "TRADE ONLY"
+                                      : "UNAVAILABLE"}
                             </Text>
                             {shouldShowButton && (
                                 <IconButton
@@ -371,7 +373,9 @@ export default function TrendingCard({
                                     }
                                 }}
                             >
-                                {buttonText}
+                                {card.totalCreated > 0
+                                    ? buttonText
+                                    : "UNAVAILABLE"}
                             </Button>
                         )}
                     </VStack>

@@ -127,8 +127,9 @@ export default function PricingTable() {
                             fontWeight="normal"
                             pl="12px"
                             pb="18px"
+                            textTransform="none"
                         >
-                            PRICING
+                            PRiCiNG
                         </Th>
                         {(Object.keys(tiers) as PricingTier[]).map(
                             (tierName) => (
@@ -136,7 +137,7 @@ export default function PricingTable() {
                                     key={tierName}
                                     borderColor="transparent"
                                     textAlign="center"
-                                    p={0}
+                                    p={{ base: 0, lg: 4 }}
                                 >
                                     <Heading
                                         fontSize={{ base: "12px", lg: "16px" }}
@@ -225,7 +226,11 @@ export default function PricingTable() {
                         </Td>
                         {(Object.keys(tiers) as PricingTier[]).map(
                             (tier, index) => (
-                                <Td key={index} borderColor="transparent" p={0}>
+                                <Td
+                                    key={index}
+                                    borderColor="transparent"
+                                    p={{ base: 0, lg: 4 }}
+                                >
                                     <Text
                                         color="green.200"
                                         fontSize={{ base: "12px", lg: "20px" }}

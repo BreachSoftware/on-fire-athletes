@@ -62,6 +62,10 @@ const NAV_ITEMS: Array<NavItem> = [
                 href: "/our-story",
             },
             {
+                label: "Pricing",
+                href: "/pricing",
+            },
+            {
                 label: "AR Cards",
                 href: "/newsroom/what-are-ar-cards",
             },

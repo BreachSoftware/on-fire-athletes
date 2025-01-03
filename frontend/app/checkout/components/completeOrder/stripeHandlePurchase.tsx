@@ -8,6 +8,7 @@ import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.share
 import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
 import { totalPriceInCart } from "@/utils/utils";
 import { PaymentMethod } from "@/utils/constants";
+import { UserFields } from "@/types/user.types";
 
 /**
  * Handles the purchase process for trading cards, supporting both Stripe and non-Stripe payment methods.
@@ -130,7 +131,7 @@ export async function handlePurchase(
                 first_name: dbUser?.first_name,
                 last_name: dbUser?.last_name,
                 email: dbUser?.email,
-                phone_number: checkout.contactInfo.phone,
+                phone_number: checkout.contactInfo.phone, // Always empty right now
                 shipping_firstName: dbUser?.first_name,
                 shipping_lastName: dbUser?.last_name,
                 address: checkout.shippingAddress.streetAddress,
@@ -268,13 +269,17 @@ export async function handlePurchase(
 
         if (!buyingOtherCard) {
             try {
-                await handlePostCheckoutEmail(checkout);
+                await handlePostCheckoutEmail(checkout, dbUser);
             } catch (e) {
                 console.error("Error sending post-checkout email: ", e);
             }
         } else {
             try {
-                await handleBoughtLockerRoomCardEmail(checkout, currentUserId);
+                await handleBoughtLockerRoomCardEmail(
+                    checkout,
+                    currentUserId,
+                    dbUser,
+                );
             } catch (e) {
                 console.error(
                     "Error sending bought locker room card email: ",
@@ -299,8 +304,11 @@ const EmailTemplates: Record<DatabasePackageNames, string> = {
     [DatabasePackageNames.MVP]: "template_830qvoo",
 };
 
-async function handlePostCheckoutEmail(checkout: CheckoutInfo) {
-    if (!checkout.packageName) {
+async function handlePostCheckoutEmail(
+    checkout: CheckoutInfo,
+    dbUser: UserFields | null | undefined,
+) {
+    if (!checkout.packageName || !dbUser) {
         return;
     }
 
@@ -310,8 +318,8 @@ async function handlePostCheckoutEmail(checkout: CheckoutInfo) {
         "service_8rtflzq",
         templateToUse,
         {
-            toName: `${checkout.contactInfo.firstName} ${checkout.contactInfo.lastName}`,
-            toEmail: checkout.contactInfo.email,
+            toName: `${dbUser.first_name} ${dbUser.last_name}`,
+            toEmail: dbUser.email,
             cardImage: checkout.onFireCard!.cardImage,
             profileUrl: `https://onfireathletes.com/profile?user=${checkout.onFireCard!.generatedBy}`,
         },
@@ -322,16 +330,21 @@ async function handlePostCheckoutEmail(checkout: CheckoutInfo) {
 async function handleBoughtLockerRoomCardEmail(
     checkout: CheckoutInfo,
     userId: string,
+    dbUser: UserFields | null | undefined,
 ) {
+    if (!dbUser) {
+        return;
+    }
+
     await emailjs.send(
         "service_8rtflzq",
         "template_rsncin1",
         {
-            toEmail: checkout.contactInfo.email,
+            toEmail: dbUser.email,
             cardImage: checkout.onFireCard!.cardImage,
             cardFirstName: checkout.onFireCard!.firstName,
             cardLastName: checkout.onFireCard!.lastName,
-            toName: `${checkout.contactInfo.firstName} ${checkout.contactInfo.lastName}`,
+            toName: `${dbUser.first_name} ${dbUser.last_name}`,
             cardPrice: `${totalPriceInCart(checkout, false).toFixed(2)}`,
             profileUrl: `https://onfireathletes.com/profile?user=${userId}`,
         },

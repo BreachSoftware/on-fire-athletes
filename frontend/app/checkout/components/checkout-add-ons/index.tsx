@@ -135,8 +135,11 @@ export default function CheckoutAddOns() {
             price: phsyicalCardDisplayPrice,
             value: physicalCardCount - defaultPhysicalCardCount,
             onChange: (value) => {
-                const physPrice =
-                    isSubscribed && value >= 6 ? 9.99 : physicalCardPrice;
+                const physPrice = isSubscribed
+                    ? value >= 6
+                        ? 9.99
+                        : 14.99
+                    : 24.99;
 
                 updateCheckout({
                     physicalCardCount: value + defaultPhysicalCardCount,

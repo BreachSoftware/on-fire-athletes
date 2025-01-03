@@ -276,7 +276,9 @@ export default function CheckoutStepWrapper({
                                     width="100px"
                                     isDisabled={
                                         stepNumber === 0 ||
-                                        (stepNumber === 2 && buyingOtherCard)
+                                        ((stepNumber === 2 ||
+                                            stepNumber === 3) &&
+                                            buyingOtherCard)
                                     } // Disable the button if it's the first step
                                     onClick={() => {
                                         if (
