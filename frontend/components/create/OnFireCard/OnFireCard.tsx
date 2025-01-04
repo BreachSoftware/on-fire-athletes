@@ -341,8 +341,11 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
 
             return (
                 <CardSizeBox
+                    backgroundSize="100% 100%"
                     src={src}
                     zIndex={zIndex.border + 1}
+                    top="1px"
+                    left="0px"
                     opacity={0.4}
                 />
             );
