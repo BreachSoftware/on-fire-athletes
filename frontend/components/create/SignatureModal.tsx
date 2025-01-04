@@ -132,7 +132,7 @@ function SignatureModal(props: SignatureModalProps, { ...rest }) {
         headers.append("Content-Type", "application/json");
         return (
             <ModalContent
-                backgroundColor={"grey.700"}
+                backgroundColor={"gray.500"}
                 maxW={{ base: "600px", md: "700px" }}
                 h={"auto"}
                 color={"white"}
@@ -190,7 +190,7 @@ function SignatureModal(props: SignatureModalProps, { ...rest }) {
                                 Clear Drawing
                             </Button>
                             <Button
-                                variant="ghost"
+                                variant="solid"
                                 onClick={() => {
                                     // Export paths
                                     contentsRef.current

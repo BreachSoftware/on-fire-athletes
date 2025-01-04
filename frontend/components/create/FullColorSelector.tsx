@@ -9,9 +9,10 @@ import {
     Spacer,
 } from "@chakra-ui/react";
 import { HexColorPicker } from "react-colorful";
-import { useState, Fragment, createRef, ChangeEvent } from "react";
+import { useState, Fragment, useCallback, useEffect } from "react";
 import { useCurrentCardInfo } from "@/hooks/useCurrentCardInfo";
 import TradingCardInfo from "@/hooks/TradingCardInfo";
+import debounce from "lodash/debounce";
 
 export interface FullColorPickerProps {
     type: keyof TradingCardInfo;
@@ -19,298 +20,189 @@ export interface FullColorPickerProps {
     isDisabled?: boolean;
 }
 
-/**
- * This is a color picker component that allows a user to select any hex color
- *
- * @returns Color picker component
- */
+const presetColorsRow1 = [
+    "#6600FF", // purple
+    "#FFFF00", // yellow
+    "#FF6600", // orange
+    "#0000FF", // blue
+] as const;
+
+const presetColorsRow2 = [
+    "#FF0000", // red
+    "#00FF00", // green
+    "#FF00FF", // pink
+    "#000000", // black
+] as const;
+
+const colorAttributes: Array<keyof TradingCardInfo> = [
+    "borderColor",
+    "numberColor",
+    "signatureColor",
+    "backgroundMainColor",
+    "backgroundAccentColor",
+    "nameColor",
+    "backgroundTextColor",
+];
+
 export default function FullColorPicker({
     type,
     setColor,
     isDisabled = false,
 }: FullColorPickerProps) {
     const card = useCurrentCardInfo();
-
-    const color = card.curCard[type];
-
-    if (typeof color !== "string") {
-        throw new Error("Type must be a string color value");
-    }
-
-    // make a state var of color chosen
+    const color = card.curCard[type] as string;
     const [pickerColor, setPickerColor] = useState<string>(color);
 
-    /**
-     *  Handles the color selection
-     * @param event
-     */
-    function handleColorSelect(event: ChangeEvent<HTMLInputElement>): void {
-        if (event.target.value) {
-            setPickerColor(event.target.value);
-        }
-    }
-
-    const colorInputRef = createRef<HTMLInputElement>();
-
-    /**
-     *  Handles the color selection
-     * @param event clicking on the button
-     */
-    function handleColorFinalize(newColor: string): void {
-        if (newColor) {
-            setPickerColor(newColor);
+    // Create a debounced update function
+    const debouncedUpdateColor = useCallback(
+        debounce((newColor: string) => {
             if (setColor) {
                 setColor(newColor);
-            } else {
-                // Determine which part of the card to recolor
-                if (type === "nameColor") {
-                    card.setCurCard({
-                        ...card.curCard,
-                        [type]: newColor,
-                        ["topCardTextColor"]: newColor,
-                    });
-                } else {
-                    card.setCurCard({
-                        ...card.curCard,
-                        [type]: newColor,
-                    });
-                }
-            }
-        }
-    }
-
-    /**
-     *
-     * Sets the picker color with a delay to allow the picker to close
-     *
-     */
-    function setPickerWithDelay(): void {
-        setTimeout(() => {
-            if (setColor) {
-                setColor(pickerColor);
             } else if (type === "nameColor") {
                 card.setCurCard({
                     ...card.curCard,
-                    [type]: pickerColor,
-                    ["topCardTextColor"]: pickerColor,
+                    nameColor: newColor,
+                    topCardTextColor: newColor,
                 });
             } else {
                 card.setCurCard({
                     ...card.curCard,
-                    [type]: pickerColor,
+                    [type]: newColor,
                 });
             }
-        }, 100);
-    }
+        }, 250),
+        [card, setColor, type],
+    );
 
-    const colorAttributes: Array<keyof TradingCardInfo> = [
-        "borderColor",
-        "numberColor",
-        "signatureColor",
-        "backgroundMainColor",
-        "backgroundAccentColor",
-        "nameColor",
-        "backgroundTextColor",
-    ];
-
-    const presetColorsRow1: Array<string> = [
-        "#6600FF", // purple
-        "#FFFF00", // yellow
-        "#FF6600", // orange
-        "#0000FF", // blue
-    ];
-
-    const presetColorsRow2: Array<string> = [
-        "#FF0000", // red
-        "#00FF00", // green
-        "#FF00FF", // pink
-        "#000000", // black
-    ];
-
-    const colorindex = colorAttributes.indexOf(type);
-
-    // take out the color that is being opened
-    colorAttributes.splice(colorindex, 1);
+    // Update color whenever pickerColor changes
+    useEffect(() => {
+        debouncedUpdateColor(pickerColor);
+        return () => debouncedUpdateColor.cancel();
+    }, [pickerColor, debouncedUpdateColor]);
 
     const uniqueColorsSet = new Set<string>();
-
-    /**
-     * Checks if the color is unique
-     */
-    function showColor(color: string, uniqueColorsSet: Set<string>): boolean {
+    const isColorUnique = (color: string): boolean => {
         if (
             uniqueColorsSet.has(color) ||
-            presetColorsRow1.includes(color) ||
-            presetColorsRow2.includes(color) ||
-            color == pickerColor
+            presetColorsRow1.includes(color as any) ||
+            presetColorsRow2.includes(color as any) ||
+            color === pickerColor
         ) {
             return false;
         }
         uniqueColorsSet.add(color);
         return true;
-    }
+    };
 
-    let userAgent = "";
-    if (typeof window !== "undefined") {
-        userAgent = navigator.userAgent.toLowerCase();
-    }
     const isMobile =
+        typeof window !== "undefined" &&
         /mobile|android|ipad|iphone|ipod|blackberry|iemobile|opera mini/i.test(
-            userAgent,
+            navigator.userAgent.toLowerCase(),
         );
 
-    return (
-        <>
-            {isMobile ? (
-                // Mobile Color Picker
-                <HStack>
-                    <input
-                        style={{
-                            width: "40px",
-                            height: "40px",
-                            backgroundColor: pickerColor,
-                            border: "2px solid white",
-                        }}
-                        onChange={handleColorSelect}
-                        onBlur={() => {
-                            handleColorFinalize(pickerColor);
-                        }}
-                        value={pickerColor}
-                        type={"color"}
-                        color={"tomato"}
-                        ref={colorInputRef}
-                        disabled={isDisabled}
-                    />
-                    <Spacer />
-                </HStack>
-            ) : (
-                // Desktop Color Picker
-                <Popover
-                    onClose={() => {
-                        return setPickerWithDelay();
-                    }}
-                >
-                    <PopoverTrigger>
-                        <Circle
-                            marginRight={"10px"}
-                            cursor={isDisabled ? "not-allowed" : "pointer"}
-                            border={"2px solid white"}
-                            size="40px"
-                            bg={pickerColor}
-                        />
-                    </PopoverTrigger>
-                    {isDisabled ? null : (
-                        <PopoverContent width={"100%"}>
-                            <PopoverArrow padding={0} margin={0} />
-                            <Box
-                                backgroundColor={"gray.600"}
-                                width={"100%"}
-                                display="flex"
-                                justifyContent="center"
-                            >
-                                <HexColorPicker
-                                    color={color}
-                                    onChange={setPickerColor}
-                                />
-                            </Box>
-                            <Box>
-                                <HStack
-                                    backgroundColor={"gray.600"}
-                                    width={"100%"}
-                                    minH={"40px"}
-                                >
-                                    {/* map circles based on */}
-                                    <Spacer />
-                                    {colorAttributes.map((color, index) => {
-                                        const currentColor = String(
-                                            card.curCard[color],
-                                        );
+    const filteredColorAttributes = colorAttributes.filter(
+        (attr) => attr !== type,
+    );
 
-                                        if (
-                                            showColor(
-                                                currentColor,
-                                                uniqueColorsSet,
-                                            )
-                                        ) {
-                                            return (
-                                                <Fragment key={index}>
-                                                    <Circle
-                                                        cursor={"pointer"}
-                                                        border={
-                                                            "2px solid white"
-                                                        }
-                                                        size="30px"
-                                                        bg={currentColor}
-                                                        onClick={() => {
-                                                            setPickerColor(
-                                                                currentColor,
-                                                            );
-                                                        }}
-                                                    />
-                                                    <Spacer />
-                                                </Fragment>
-                                            );
-                                        }
-                                        return <Fragment key={index} />; // Skip rendering if the color is not unique
-                                    })}
-                                </HStack>
-                            </Box>
-                            <Box>
-                                <HStack
-                                    backgroundColor={"gray.600"}
-                                    width={"100%"}
-                                    minH={"40px"}
-                                >
-                                    {/* map circles based on */}
-                                    <Spacer />
-                                    {presetColorsRow1.map((color, index) => {
-                                        return (
-                                            <Fragment key={index}>
-                                                <Circle
-                                                    cursor={"pointer"}
-                                                    border={"2px solid white"}
-                                                    size="30px"
-                                                    bg={color}
-                                                    onClick={() => {
-                                                        setPickerColor(color);
-                                                    }}
-                                                />
-                                                <Spacer />
-                                            </Fragment>
-                                        );
-                                    })}
-                                </HStack>
-                            </Box>
-                            <Box>
-                                <HStack
-                                    backgroundColor={"gray.600"}
-                                    width={"100%"}
-                                    minH={"40px"}
-                                >
-                                    {/* map circles based on */}
-                                    <Spacer />
-                                    {presetColorsRow2.map((color, index) => {
-                                        return (
-                                            <Fragment key={index}>
-                                                <Circle
-                                                    cursor={"pointer"}
-                                                    border={"2px solid white"}
-                                                    size="30px"
-                                                    bg={color}
-                                                    onClick={() => {
-                                                        setPickerColor(color);
-                                                    }}
-                                                />
-                                                <Spacer />
-                                            </Fragment>
-                                        );
-                                    })}
-                                </HStack>
-                            </Box>
-                        </PopoverContent>
-                    )}
-                </Popover>
+    if (isMobile) {
+        return (
+            <HStack>
+                <input
+                    style={{
+                        width: "40px",
+                        height: "40px",
+                        backgroundColor: pickerColor,
+                        border: "2px solid white",
+                    }}
+                    onChange={(e) => setPickerColor(e.target.value)}
+                    value={pickerColor}
+                    type="color"
+                    disabled={isDisabled}
+                />
+                <Spacer />
+            </HStack>
+        );
+    }
+
+    const ColorRow = ({ colors }: { colors: readonly string[] }) => (
+        <Box>
+            <HStack backgroundColor="gray.600" width="100%" minH="40px">
+                <Spacer />
+                {colors.map((color, index) => (
+                    <Fragment key={index}>
+                        <Circle
+                            cursor="pointer"
+                            border="2px solid white"
+                            size="30px"
+                            bg={color}
+                            onClick={() => setPickerColor(color)}
+                        />
+                        <Spacer />
+                    </Fragment>
+                ))}
+            </HStack>
+        </Box>
+    );
+
+    return (
+        <Popover>
+            <PopoverTrigger>
+                <Circle
+                    marginRight="10px"
+                    cursor={isDisabled ? "not-allowed" : "pointer"}
+                    border="2px solid white"
+                    size="40px"
+                    bg={pickerColor}
+                />
+            </PopoverTrigger>
+            {!isDisabled && (
+                <PopoverContent width="100%">
+                    <PopoverArrow padding={0} margin={0} />
+                    <Box
+                        backgroundColor="gray.600"
+                        width="100%"
+                        display="flex"
+                        justifyContent="center"
+                    >
+                        <HexColorPicker
+                            color={pickerColor}
+                            onChange={setPickerColor}
+                        />
+                    </Box>
+                    <Box>
+                        <HStack
+                            backgroundColor="gray.600"
+                            width="100%"
+                            minH="40px"
+                        >
+                            <Spacer />
+                            {filteredColorAttributes.map((colorAttr, index) => {
+                                const currentColor = String(
+                                    card.curCard[colorAttr],
+                                );
+                                if (!isColorUnique(currentColor)) return null;
+
+                                return (
+                                    <Fragment key={index}>
+                                        <Circle
+                                            cursor="pointer"
+                                            border="2px solid white"
+                                            size="30px"
+                                            bg={currentColor}
+                                            onClick={() =>
+                                                setPickerColor(currentColor)
+                                            }
+                                        />
+                                        <Spacer />
+                                    </Fragment>
+                                );
+                            })}
+                        </HStack>
+                    </Box>
+                    <ColorRow colors={presetColorsRow1} />
+                    <ColorRow colors={presetColorsRow2} />
+                </PopoverContent>
             )}
-        </>
+        </Popover>
     );
 }

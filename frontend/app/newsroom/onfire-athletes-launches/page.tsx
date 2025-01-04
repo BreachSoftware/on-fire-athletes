@@ -7,7 +7,6 @@ import ArticleHeader from "../components/article-header";
 import ArticleBody from "../components/article-body";
 import ArticleParagraph from "../components/paragraph";
 import ArticleSpan from "../components/span";
-import ArticleSubtitle from "../components/subtitle";
 import ReturnHomeButton from "../components/home-button";
 /**
  * The article page component.
@@ -17,110 +16,140 @@ export default function Article() {
     return (
         <Box w="full">
             <ArticleHeader
-                title="ONFIRE ATHLETES LAUNCHES!"
+                title="GAME COIN LAUNCHES PLATFORM!"
                 image={BackgroundImage.src}
             />
             <ArticleBody>
                 <ArticleParagraph>
                     <ArticleSpan fontWeight="bold">
-                        ONFIRE Athletes,
+                    Game Coin Launches its ONFIRE ATHLETES Platform, Merging Digital and Physical Sports Cards with Augmented Reality 
                     </ArticleSpan>{" "}
-                    fueled by Game Coin, is introducing a platform where
-                    athletes of all backgrounds can immortalize their pivotal
-                    moments. Whether it's the first time they held a bat, scored
-                    a game-winning goal, or achieved a career-defining victory,
-                    ONFIRE Athletes offers a way to ensure those memories are
-                    never forgotten.
                 </ArticleParagraph>
-                <ArticleSubtitle>Capturing the Moment</ArticleSubtitle>
-                <ArticleParagraph>
-                    “Every athlete has a story,” the founders of ONFIRE Athletes
-                    explain. “They all have a moment—the one that defines them.
-                    Too often, these moments get lost in the noise of social
-                    media, swiped away and forgotten.”
+                <ArticleParagraph>   
+                    Game Coin, proudly announces the official launch of its
+                        platform, ONFIRE ATHLETES, which incorporates
+                        groundbreaking technology with the nostalgia of
+                        traditional sports trading cards, combining the best of
+                        both worlds. 
                 </ArticleParagraph>
-                <ArticleParagraph>
-                    But ONFIRE Athletes asks a bold question: What if we could
-                    capture that moment forever? The platform combines the
-                    nostalgia of traditional sports card trading with modern
-                    technology, allowing athletes to save and showcase their
-                    defining moments in a way that's both tangible and lasting.
-                    It's more than just a social media post; it's a personal
-                    legacy, held in the palm of your hand.
+                
+                <ArticleParagraph>             
+                        Years in the making, the ONFIRE ATHLETES
+                        platform empowers athletes to create, showcase, trade,
+                        and print personalized sports cards that come to life
+                        through Augmented Reality (AR).     
                 </ArticleParagraph>
-                <ArticleSubtitle>
-                    A New Way to Build Your Legacy
-                </ArticleSubtitle>
+
                 <ArticleParagraph>
-                    Through ONFIRE Athletes, users can create their own custom
-                    sports cards. This isn't just for the elite
-                    professionals—it's for everyone. From kids in community
-                    leagues to aspiring athletes in high school and college, the
-                    platform is designed to democratize the process of building
-                    a personal brand. “What if you didn't need a PR firm or professional 
-                    representation?” the creators of ONFIRE Athletes ask. “What if you 
-                    could create your own hype, your own sports card, and chart your own success?”
+                    ONFIRE ATHLETES is unlike any other platform, enabling
+                    athletes of all levels—from Heisman hopefuls and World
+                    Series MVPs to little leaguers and dance teams and every
+                    athlete in between —to create and print their own custom
+                    cards which can be traded or sold. Each physical card is
+                    crafted using high-end materials, including holographic
+                    finishes, and comes with AR capabilities, giving fans an
+                    interactive experience like never before. By making this
+                    advanced technology accessible to every athlete, ONFIRE
+                    ATHLETES empowers anyone to build their brand, engage fans,
+                    fund raise and create memorable collectibles.
                 </ArticleParagraph>
+
                 <ArticleParagraph>
-                    This revolutionary approach gives athletes full control of
-                    their narratives, allowing them to preserve their
-                    achievements without gatekeepers.
-                </ArticleParagraph>
-                <ArticleSubtitle>
-                    Empowering the Future of Sports
-                </ArticleSubtitle>
-                <ArticleParagraph>
-                    ONFIRE Athletes is built on a mission to remove barriers and
-                    increase access to sports participation for all kids. “Too
-                    many young athletes are overlooked or never given a chance
-                    to fully participate in sports, despite the clear benefits,”
-                    the company emphasizes. By providing a platform where every
-                    athlete can shine, ONFIRE Athletes is committed to changing
-                    the narrative.
+                    “After beta tests and invaluable feedback from our
+                    community, I am thrilled to launch ONFIRE ATHLETES,” said
+                    David Mahler, Founder and CEO of Game Coin, LLC. “Our
+                    platform is built to bring athletes closer to their friends,
+                    family, and fans through an immersive and personalized
+                    experience. This launch is just the beginning, and we are
+                    excited to see ONFIRE ATHLETES evolve as we continue to
+                    grow.”
                 </ArticleParagraph>
                 <ArticleParagraph>
-                    The physical, social, and academic benefits of sports are
-                    well-documented, yet opportunities often remain limited to
-                    certain groups. ONFIRE Athletes aims to bring attention to
-                    every athlete, no matter where they come from or which sport
-                    they play. “The court, the field, the arena—they don't care
-                    where you're from. The athlete is all that matters.”
+                    Through the end of the year, ONFIRE ATHLETES will
+                    concentrate on gathering user insights and refining the
+                    platform to ensure a seamless experience for all users. As
+                    part of this phase, ONFIRE ATHLETES is also offering NIL
+                    (Name, Image, Likeness) partnerships with verified
+                    collegiate athletes, allowing them to create their custom
+                    sports cards free of charge. This initiative supports
+                    college athletes in building their brand while connecting
+                    with fans in new ways. The feedback from these users will be
+                    vital as ONFIRE ATHLETES prepares for a major marketing and
+                    advertising campaign launching in 2025 to reach an even
+                    broader audience.
                 </ArticleParagraph>
-                <ArticleSubtitle>
-                    Combining Nostalgia with Technology
-                </ArticleSubtitle>
+
                 <ArticleParagraph>
-                    At the heart of ONFIRE Athletes' innovation is a platform
-                    that blends the nostalgia of traditional sports cards with
-                    cutting-edge technology. Athletes can fully customize their
-                    cards, trade them, or sell them on the platform's Locker
-                    Room Marketplace. What sets these cards apart is their
-                    unique integration with augmented reality (AR), bringing
-                    physical sports cards to life in a way that's never been
-                    done before.
-                </ArticleParagraph>
-                <ArticleParagraph>
-                    The AR feature allows athletes to showcase their best
-                    moments by scanning their physical card, which then plays a
-                    video highlight, creating a dynamic and interactive
-                    experience. “It's a sports card that comes to life, and it's a
-                    moment you can relive,” say the founders.
-                </ArticleParagraph>
-                <ArticleSubtitle>A Global Vision</ArticleSubtitle>
-                <ArticleParagraph>
-                    With a commitment to inclusion and accessibility, ONFIRE
-                    Athletes is making this platform available to athletes
-                    across every sport, every level, and every country. This
-                    isn't just about building a personal brand—it's about
-                    creating a lasting legacy that transcends boundaries. ONFIRE
-                    Athletes is leading the way for the future of athlete-driven
-                    content, where the story is in their hands—literally.
+                    Reflecting on the development process, Mahler noted, “In
+                    2021 GMEX, a crypto currency now held by nearly 10,000
+                    account holders, was launched as a utility token to be used
+                    on a platform envisioned to connect athletes with their
+                    fans, friends, and family. Bringing that vision to life was
+                    slowed by unforeseen obstacles, detours and diligence on how
+                    best to implement the platform, which took longer than
+                    expected. However, those challenges only made us and the
+                    platform better and more resilient. We’re launching a
+                    platform that’s not only robust and accessible but
+                    sustainable.”
                 </ArticleParagraph>
                 <ArticleParagraph>
-                    As the sports world continues to evolve, ONFIRE Athletes is
-                    setting the stage for a new era, where every athlete, no
-                    matter their background, has the opportunity to capture,
-                    share, and celebrate their story.
+                    In mid-2023, Game Coin strategically acquired VerifiedInk, a
+                    platform that enabled athletes to create/mint NFT’s. The
+                    acquisition was fueled by VerifiedInk’s impressive,
+                    augmented reality (AR) technology, which seamlessly
+                    complemented Game Coin’s advanced digital card creation
+                    platform.
+                </ArticleParagraph>
+                <ArticleParagraph>
+                    This acquisition of VerifiedInk allowed Game Coin to not
+                    just offer a digital asset as originally planned but also to
+                    offer a physical sports card with AR capabilities using Game
+                    Coin’s robust customization tools. The platform now offers a
+                    unique “full circle” experience, where athletes can create
+                    not only highly customizable digital sports cards, but also
+                    physical cards embedded with digital technology and
+                    holographic print details.
+                </ArticleParagraph>
+                <ArticleParagraph>
+                    “We've given users not just a unique digital asset but also
+                    a one-of-a-kind physical asset enhanced with AR features,”
+                    said Mahler. “This combination brings both digital assets
+                    and physical cards together, creating an experience that’s
+                    unlike anything seen in the sports and collectibles world.”
+                </ArticleParagraph>
+                <ArticleParagraph>
+                    Game Coin’s ONFIRE ATHLETES platform also bridges the gap
+                    between crypto and mainstream users by operating as a hybrid
+                    platform. “We’ve never seen a platform where athletes can
+                    create both custom digital and physical sports cards that
+                    connect the crypto and non-crypto payment worlds,” added
+                    Mahler. “By accommodating dual payment options, the platform
+                    will accommodate a broader user base and a more diverse
+                    audience.”
+                </ArticleParagraph>
+
+                <ArticleParagraph>
+                    By consolidating VerifiedInk’s offerings, Game Coin acquired
+                    a competitor in the digital sports card space while
+                    enhancing its own product lineup. This strategic acquisition
+                    strengthens Game Coin’s position and expands its reach by
+                    combining Verified Ink’s loyal user base with nearly 10,000
+                    GMEX token holders.
+                </ArticleParagraph>
+                <ArticleParagraph>
+                    Mahler also announced that “GMEX token holders transacting
+                    on the ONFIRE ATHLETES platform will receive a 20% discount
+                    on their purchases. Additionally, on credit card
+                    transactions, 20% of the gross sales will be used to
+                    purchase GMEX tokens, which will then be retired, benefiting
+                    token holders by increasing the GMEX liquidity pool and
+                    creating greater scarcity of the GMEX token.”
+                </ArticleParagraph>
+                <ArticleParagraph>
+                    ONFIRE ATHLETES combines traditional sports cards with an
+                    interactive AR experience to make each sports card an
+                    authentic and unique physical and digital asset that will
+                    redefine the fan-athlete connection for the modern era.
                 </ArticleParagraph>
                 <Center color="white" pt={6} pb={4}>
                     <ReturnHomeButton size="lg" />

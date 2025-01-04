@@ -7,7 +7,7 @@ import "@fontsource/chakra-petch/600.css";
 import CardMaskReverseImage from "@/public/card_assets/card-mask-reverse.png";
 import ArCardBackgroundImage from "@/public/card_assets/ar-card-background-interior.png";
 import CardMaskReverse from "@/public/card_assets/card-mask-reverse.png";
-import CardOutlineNew from "@/public/card_assets/card-outline-new.png";
+import CardOutlineNew from "@/public/card_assets/card-outline-thick.png";
 // import CardOutlineShine from "@/public/card_assets/card-outline-shine.png";
 import OnFireLogo from "@/images/logos/small-logo-white.png";
 import TradingCardInfo from "@/hooks/TradingCardInfo";
@@ -437,7 +437,8 @@ export async function generateArCardBackImage(
 }
 
 export async function generatePrintCardFrontImage(
-    card: TradingCardInfo,
+    cardImageSrc: string,
+    cardBorderColor: string,
     {
         forPrint = true,
     }: {
@@ -462,8 +463,8 @@ export async function generatePrintCardFrontImage(
         const imagePromises = [
             new Promise((resolve) => {
                 const img = new Image();
-                img.onload = () => resolve(card.cardImage);
-                img.src = card.cardImage;
+                img.onload = () => resolve(cardImageSrc);
+                img.src = cardImageSrc;
             }),
         ];
 
@@ -471,21 +472,11 @@ export async function generatePrintCardFrontImage(
 
         const recoloredOutline = await recolor(
             CardOutlineNew.src,
-            card.borderColor,
+            cardBorderColor,
             undefined,
             true,
         ).catch((error) => {
             console.error("Error recoloring the card outline", error);
-            return null;
-        });
-
-        const recoloredInteriorBorder = await recolor(
-            `/card_assets/card-interior-border-${card.cardType}.png`,
-            card.borderColor,
-            undefined,
-            true,
-        ).catch((error) => {
-            console.error("Error recoloring the interior border", error);
             return null;
         });
 
@@ -499,12 +490,12 @@ export async function generatePrintCardFrontImage(
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
-                        background: card.borderColor,
+                        background: cardBorderColor,
                     },
                 },
                 [
                     createElement("img", {
-                        src: card.cardImage,
+                        src: cardImageSrc,
                         style: {
                             display: "flex",
                             justifyContent: "center",
@@ -522,45 +513,6 @@ export async function generatePrintCardFrontImage(
                             width: "350px",
                             position: "absolute",
                             left: "50%",
-                            top: "50%",
-                            transform: "translate(-50%, -50%)",
-                            zIndex: 11,
-                            objectFit: "cover",
-                        },
-                    }),
-                    createElement("img", {
-                        src: recoloredInteriorBorder,
-                        style: {
-                            height: "490px",
-                            width: "350px",
-                            position: "absolute",
-                            left: "50%",
-                            top: "50%",
-                            transform: "translate(-50%, -50%)",
-                            zIndex: 11,
-                            objectFit: "cover",
-                        },
-                    }),
-                    createElement("img", {
-                        src: recoloredInteriorBorder,
-                        style: {
-                            height: "490px",
-                            width: "350px",
-                            position: "absolute",
-                            left: "50%",
-                            top: "50.2%",
-                            transform: "translate(-50%, -50%)",
-                            zIndex: 11,
-                            objectFit: "cover",
-                        },
-                    }),
-                    createElement("img", {
-                        src: recoloredInteriorBorder,
-                        style: {
-                            height: "490px",
-                            width: "350px",
-                            position: "absolute",
-                            left: "50.2%",
                             top: "50%",
                             transform: "translate(-50%, -50%)",
                             zIndex: 11,
@@ -605,7 +557,10 @@ export async function generateAllCardFronts(fetchedCards: TradingCardInfo[]) {
     > = {};
     for (let i = 0; i < fetchedCards.length; i++) {
         const card = fetchedCards[i];
-        const image = await generatePrintCardFrontImage(card);
+        const image = await generatePrintCardFrontImage(
+            card.cardImage,
+            card.borderColor,
+        );
         results[`${card.firstName}_${card.lastName}`] = {
             imgData: image,
             uuid: card.uuid,

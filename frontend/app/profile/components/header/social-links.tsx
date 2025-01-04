@@ -5,21 +5,21 @@ import {
     FaXTwitter,
     FaFacebookF,
     FaInstagram,
-} from 'react-icons/fa6'
-import { Icon } from '@chakra-ui/icons'
-import { IconButton } from '@chakra-ui/button'
-import { Link, Center } from '@chakra-ui/layout'
+} from "react-icons/fa6";
+import { Icon } from "@chakra-ui/icons";
+import { IconButton } from "@chakra-ui/button";
+import { Link, Center } from "@chakra-ui/layout";
 
-import { ProfileInfo } from '../../page'
-import { IconType } from 'react-icons/lib'
-import SharedStack from '@/components/shared/wrappers/shared-stack'
-import IconButtonWithTooltip from '@/components/shared/buttons/icon-button-with-tooltip'
-import { FaPlusSquare } from 'react-icons/fa'
+import { ProfileInfo } from "@/app/profile/components/profile.client";
+import { IconType } from "react-icons/lib";
+import SharedStack from "@/components/shared/wrappers/shared-stack";
+import IconButtonWithTooltip from "@/components/shared/buttons/icon-button-with-tooltip";
+import { FaPlusSquare } from "react-icons/fa";
 
 interface Props {
-    profileInfo: ProfileInfo | undefined
-    isOnPrivateProfile: boolean
-    onOpen: () => void
+    profileInfo: ProfileInfo | undefined;
+    isOnPrivateProfile: boolean;
+    onOpen: () => void;
 }
 
 export default function UserSocialLinks({
@@ -30,40 +30,40 @@ export default function UserSocialLinks({
     const links = [
         {
             icon: FaXTwitter,
-            label: 'Twitter',
+            label: "Twitter",
             href: profileInfo?.xLink,
         },
         {
             icon: FaTiktok,
-            label: 'TikTok',
+            label: "TikTok",
             href: profileInfo?.tiktokLink,
         },
         {
             icon: FaFacebookF,
-            label: 'Facebook',
+            label: "Facebook",
             href: profileInfo?.facebookLink,
         },
         {
             icon: FaInstagram,
-            label: 'Instagram',
+            label: "Instagram",
             href: profileInfo?.instagramLink,
         },
         {
             icon: FaYoutube,
-            label: 'YouTube',
+            label: "YouTube",
             href: profileInfo?.youtubeLink,
         },
         {
             icon: FaSnapchat,
-            label: 'Snapchat',
+            label: "Snapchat",
             href: profileInfo?.snapchatLink,
         },
-    ]
+    ];
 
     return (
         <SharedStack row fit>
             {links.map((social, index) => {
-                if (social && social.href !== undefined && social.href !== '') {
+                if (social && social.href !== undefined && social.href !== "") {
                     return (
                         <SocialLink
                             key={index}
@@ -71,7 +71,7 @@ export default function UserSocialLinks({
                             label={social.label}
                             href={social.href}
                         />
-                    )
+                    );
                 }
             })}
             {isOnPrivateProfile && (
@@ -84,8 +84,8 @@ export default function UserSocialLinks({
                             <Icon
                                 as={FaPlusSquare}
                                 style={{
-                                    width: '18px',
-                                    height: '18px',
+                                    width: "18px",
+                                    height: "18px",
                                 }}
                             />
                         }
@@ -94,17 +94,17 @@ export default function UserSocialLinks({
                         color="green.100"
                         _hover={{
                             md: {
-                                color: 'white',
+                                color: "white",
                             },
                         }}
                         onClick={() => {
-                            onOpen()
+                            onOpen();
                         }}
                     />
                 </Center>
             )}
         </SharedStack>
-    )
+    );
 }
 
 function SocialLink({
@@ -112,9 +112,9 @@ function SocialLink({
     label,
     href,
 }: {
-    icon: IconType
-    label: string
-    href: string
+    icon: IconType;
+    label: string;
+    href: string;
 }) {
     return (
         <Center w="22px">
@@ -126,8 +126,8 @@ function SocialLink({
                         <Icon
                             as={icon}
                             style={{
-                                width: '18px',
-                                height: '18px',
+                                width: "18px",
+                                height: "18px",
                             }}
                         />
                     }
@@ -136,11 +136,11 @@ function SocialLink({
                     color="white"
                     _hover={{
                         md: {
-                            color: 'green.600',
+                            color: "green.600",
                         },
                     }}
                 />
             </Link>
         </Center>
-    )
+    );
 }

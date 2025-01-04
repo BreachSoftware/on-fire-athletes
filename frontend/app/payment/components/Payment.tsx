@@ -5,6 +5,7 @@ import CheckoutForm from "./CheckoutForm";
 import { Box, useToast, Spinner } from "@chakra-ui/react";
 import { useCurrentCheckout } from "@/hooks/useCheckout";
 import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
+import { useAuth } from "@/hooks/useAuth";
 
 interface PaymentProps {
     checkoutScreen?: boolean;
@@ -15,24 +16,22 @@ interface PaymentProps {
 const STRIPE_PUBLIC_KEY =
     process.env.NEXT_PUBLIC_STRIPE_PK ||
     "pk_live_51PssXyCEBFOTy6pM9DfyGbI7JZUqMoClqRVuFCEAVamp10DYl2O48SqCjiw7vSbeiv8CCmYPZwSgguOTCcJzbY0u00cwKkUFDZ";
-
 /**
  * Payment component
  * @param {*} props
  * @returns
  */
 export default function Payment(props: PaymentProps) {
-    const curCheckout = useCurrentCheckout();
+    const { dbUser } = useAuth();
+    const { checkout, setCheckout } = useCurrentCheckout();
     const toast = useToast();
     const stripePromise = loadStripe(STRIPE_PUBLIC_KEY);
     const [clientSecret, setClientSecret] = useState<string>("");
-    const [setupIntnetCreated, setSetupIntentCreated] =
+    const [setupIntentCreated, setSetupIntentCreated] =
         useState<boolean>(false);
     const appearance = useRef<Appearance>({
         theme: "night",
     });
-
-    console.log("STRIPE PUBLIC KEY", STRIPE_PUBLIC_KEY);
 
     useEffect(() => {
         /**
@@ -40,23 +39,31 @@ export default function Payment(props: PaymentProps) {
          * @returns {void}
          */
         async function createSetupIntent() {
-            // Create a new customer
-            const customerResponse = await fetch(
-                apiEndpoints.createCustomer(),
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        email: curCheckout.checkout.contactInfo.email,
-                        name: `${curCheckout.checkout.contactInfo.firstName} ${curCheckout.checkout.contactInfo.lastName}`,
-                    }),
-                },
-            );
+            let customerId: string = dbUser?.stripe_customer_id || "";
 
-            const data = await customerResponse.json();
-            const customerId = data.id;
+            if (customerId) {
+                console.log("Found customer! Skipping create...");
+            }
+
+            if (!customerId && !!dbUser) {
+                console.log("No customer id, creating customer");
+
+                // Create a new customer
+                const customerResponse = await fetch(
+                    apiEndpoints.createCustomer(),
+                    {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            email: dbUser?.email,
+                            name: `${dbUser?.first_name} ${dbUser?.last_name}`,
+                            userId: dbUser?.uuid,
+                        }),
+                    },
+                );
+                const data = await customerResponse.json();
+                customerId = data.id;
+            }
 
             if (!customerId) {
                 toast({
@@ -84,24 +91,22 @@ export default function Payment(props: PaymentProps) {
             const setupIntentData = await createSetupIntentResponse.json();
             const clientSecret = setupIntentData.setupIntent.client_secret;
 
-            console.log("SETUP INTENT", setupIntentData.setupIntent);
-
             setClientSecret(clientSecret);
             setSetupIntentCreated(true);
 
-            curCheckout.setCheckout({
-                ...curCheckout.checkout,
+            setCheckout({
+                ...checkout,
                 customerId: customerId,
                 clientSecret: clientSecret,
                 paymentInfoEntered: false,
             });
         }
 
-        if (!setupIntnetCreated) {
+        if (!setupIntentCreated) {
             createSetupIntent();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [curCheckout.checkout.clientSecret]);
+    }, [checkout.clientSecret]);
 
     useEffect(() => {
         if (props.checkoutScreen) {

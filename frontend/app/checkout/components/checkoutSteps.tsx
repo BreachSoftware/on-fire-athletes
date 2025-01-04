@@ -1,6 +1,5 @@
 // eslint-disable-next-line no-use-before-define
 import React from "react";
-import ContactInformationBody from "./contactInformationBody";
 import CreditCardInformationBody from "./creditCardInformationBody";
 import AddressBody, { AddressType } from "./addressBody";
 import CompleteOrderBody from "./completeOrder/completeOrder";
@@ -31,11 +30,9 @@ class CheckoutStep {
 }
 
 // If needed, the Box components can be replaced with imported React elements to make this look a lot cleaner
-
 export const checkoutSteps: CheckoutStep[] = [
     new CheckoutStep("Select Your Package", <SelectYourPackage />),
     new CheckoutStep("All-Star Price", <AllStarPrice />),
-    new CheckoutStep("Contact Information", <ContactInformationBody />),
     new CheckoutStep(
         "Shipping Address",
         <AddressBody addressType={AddressType.SHIPPING} />,

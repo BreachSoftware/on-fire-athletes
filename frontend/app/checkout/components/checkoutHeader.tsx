@@ -1,6 +1,7 @@
 import { useCurrentCheckout } from "@/hooks/useCheckout";
 import useCreateNavigation from "@/hooks/useCreateNavigation";
 import { Box, Divider, Flex, Text } from "@chakra-ui/react";
+import React from "react";
 
 /**
  * The navigation bar for the checkout page
@@ -27,7 +28,7 @@ function NavigationBar() {
                     const isLast = index === CREATE_PAGES.length - 1;
 
                     return (
-                        <>
+                        <React.Fragment key={page.name}>
                             <Text
                                 key={name}
                                 color={isCurrent ? "limegreen" : "white"}
@@ -45,7 +46,7 @@ function NavigationBar() {
                                 {name}
                             </Text>
                             {!isLast && <Text color="white">/</Text>}
-                        </>
+                        </React.Fragment>
                     );
                 })}
             </Flex>

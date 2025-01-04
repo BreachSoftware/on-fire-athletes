@@ -1,7 +1,16 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { Box, Image, Text, Flex, Heading, Skeleton } from "@chakra-ui/react";
+import React, { useEffect, useRef, useState } from "react";
+import {
+    Box,
+    Image,
+    Text,
+    Flex,
+    Heading,
+    Skeleton,
+    Checkbox,
+    Button,
+} from "@chakra-ui/react";
 import "@fontsource/barlow-condensed/500-italic.css";
 import { getCard } from "../generate_card_asset/cardFunctions";
 import {
@@ -10,6 +19,11 @@ import {
 } from "@/components/create/OnFireCard/generate-card-images";
 import SharedStack from "@/components/shared/wrappers/shared-stack";
 import TradingCardInfo from "@/hooks/TradingCardInfo";
+import OnFireCard, {
+    PartsToShowType,
+} from "@/components/create/OnFireCard/OnFireCard";
+import { generateCardImage } from "@/components/create/StepWrapper";
+import CardMask from "@/public/card_assets/card-mask.png";
 
 /**
  * Returns the Profile page.
@@ -20,12 +34,31 @@ export default function Profile() {
     const [printFrontImg, setPrintFrontImg] = useState<string | undefined>(
         undefined,
     );
+    const [partsToShow, setPartsToShow] = useState<PartsToShowType>({
+        onFireLogo: false,
+        interiorBorder: false,
+        interiorBorderShine: false,
+        exteriorBorderShine: false,
+        cardShadow: true,
+        exteriorBorder: true,
+        background: true,
+        name: true,
+        backgroundName: true,
+        number: true,
+        position: true,
+        team: true,
+        hero: true,
+        signature: true,
+    });
+    const [loading, setLoading] = useState(false);
     const [printBackImg, setPrintBackImg] = useState<string | undefined>(
         undefined,
     );
 
+    const onFireCardRef = useRef(null);
+
     const cardFrontFilename = `${card?.uuid}_v${card?.cardType === "a" ? "1" : "2"}_X_X_${card?.firstName}_${card?.lastName}.png`;
-    const cardBackFilename = `${card?.uuid}_v${card?.cardType === "a" ? "1" : "2"}_X_X_${card?.firstName}_${card?.lastName}.png`;
+    const cardBackFilename = `${card?.uuid}_v${card?.cardType === "a" ? "1" : "2"}_X_X_${card?.firstName}_${card?.lastName}_back.png`;
 
     useEffect(() => {
         (async () => {
@@ -33,24 +66,48 @@ export default function Profile() {
             const userId = queryParams.get("user");
             const selectedCardId = queryParams.get("card");
 
-            if (!selectedCardId || !userId) {
+            if (!selectedCardId) {
                 return;
             }
 
-            const card = await getCard(selectedCardId, userId);
+            const card = await getCard(selectedCardId, userId || undefined);
 
             if (card) {
                 setCard(card);
                 const backImg = await generateArCardBackImage(card, {
                     noNumber: true,
                 });
-                const frontImg = await generatePrintCardFrontImage(card);
 
                 setPrintBackImg(backImg);
-                setPrintFrontImg(frontImg);
+                generatePrintFront();
             }
         })();
     }, []);
+
+    async function generatePrintFront() {
+        // Ensure images are displayed correctly for html2canvas
+        const style = document.createElement("style");
+        document.head.appendChild(style);
+        // @ts-expect-error - style.sheet is not defined
+        style.sheet?.insertRule(
+            "body > div:last-child img { display: inline-block; }",
+        );
+        setLoading(true);
+        const frontImg = await generateCardImage(
+            onFireCardRef,
+            CardMask.src,
+            "cardFront",
+        );
+        const printFrontImg = await generatePrintCardFrontImage(
+            frontImg,
+            card?.borderColor || "#ffffff",
+            {
+                forPrint: true,
+            },
+        );
+        setPrintFrontImg(printFrontImg);
+        setLoading(false);
+    }
 
     return (
         <Flex
@@ -64,18 +121,58 @@ export default function Profile() {
                 <SharedStack>
                     <Box>
                         <Heading size="lg" color="white">
+                            Dynamic Front Card
+                        </Heading>
+                        <SharedStack row p={8}>
+                            <OnFireCard
+                                key={card?.uuid}
+                                card={card}
+                                showButton={false}
+                                cardFrontRef={onFireCardRef}
+                                shouldFlipOnClick
+                                enabledParts={partsToShow}
+                            />
+                            <SharedStack p={4} color="white">
+                                <Heading size="md">Parts to show</Heading>
+                                {Object.entries(partsToShow).map(
+                                    ([key, value]) => (
+                                        <Checkbox
+                                            key={key}
+                                            isChecked={value}
+                                            onChange={() =>
+                                                setPartsToShow({
+                                                    ...partsToShow,
+                                                    [key]: !value,
+                                                })
+                                            }
+                                        >
+                                            {key}
+                                        </Checkbox>
+                                    ),
+                                )}
+                            </SharedStack>
+                        </SharedStack>
+
+                        <Button
+                            bg="blue.500"
+                            color="white"
+                            onClick={generatePrintFront}
+                        >
+                            Re-Generate Print Front
+                        </Button>
+                        <Heading size="lg" color="white">
                             Print Card Front
                         </Heading>
                         <Text color="white">{cardFrontFilename}</Text>
-                        {printFrontImg ? (
+                        {loading ? (
+                            <Skeleton w="385px" h="525px" borderRadius="md" />
+                        ) : (
                             <Image
                                 w="385px"
                                 h="525px"
                                 src={printFrontImg}
                                 alt="Print Front"
                             />
-                        ) : (
-                            <Skeleton w="385px" h="525px" borderRadius="md" />
                         )}
                     </Box>
                     <Box>

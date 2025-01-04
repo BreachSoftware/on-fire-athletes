@@ -12,12 +12,12 @@ import {
     Box,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import FullColorPicker from "./FullColorSelector";
 import { useCurrentCardInfo } from "@/hooks/useCurrentCardInfo";
 import { CardPart } from "@/hooks/TradingCardInfo";
 import RadioPicker from "./RadioPicker";
 import StatusIcon from "./StatusIcon";
 import { CARD_BACKGROUNDS } from "./card-backgrounds";
+import IOSColorPicker from "../shared/ios-color-picker";
 
 /**
  * This component contains the content of Step 4 in the card creation process
@@ -238,8 +238,8 @@ export default function Step4() {
                                         justifyContent={"flex-start"}
                                         flexDir={"row"}
                                     >
-                                        <FullColorPicker
-                                            type={"borderColor"}
+                                        <IOSColorPicker
+                                            color={borderColor}
                                             setColor={setBorderColor}
                                         />
                                         <Text>Border</Text>
@@ -257,8 +257,8 @@ export default function Step4() {
                                     >
                                         {card.curCard.number ? (
                                             <>
-                                                <FullColorPicker
-                                                    type="numberColor"
+                                                <IOSColorPicker
+                                                    color={numberColor}
                                                     setColor={setNumberColor}
                                                 />
                                                 <Text>Number</Text>
@@ -276,8 +276,8 @@ export default function Step4() {
                                                     }}
                                                     alignItems={"center"}
                                                 >
-                                                    <FullColorPicker
-                                                        type="numberColor"
+                                                    <IOSColorPicker
+                                                        color={numberColor}
                                                         setColor={
                                                             setNumberColor
                                                         }
@@ -306,8 +306,8 @@ export default function Step4() {
                                     >
                                         {card.curCard.signature ? (
                                             <>
-                                                <FullColorPicker
-                                                    type="signatureColor"
+                                                <IOSColorPicker
+                                                    color={signatureColor}
                                                     setColor={setSignatureColor}
                                                 />
                                                 <Text>Signature</Text>
@@ -325,8 +325,8 @@ export default function Step4() {
                                                     }}
                                                     alignItems={"center"}
                                                 >
-                                                    <FullColorPicker
-                                                        type="signatureColor"
+                                                    <IOSColorPicker
+                                                        color={signatureColor}
                                                         setColor={
                                                             setSignatureColor
                                                         }
@@ -354,8 +354,8 @@ export default function Step4() {
                                         justifyContent={"flex-start"}
                                         flexDir={"row"}
                                     >
-                                        <FullColorPicker
-                                            type="nameColor"
+                                        <IOSColorPicker
+                                            color={nameColor}
                                             setColor={setNameColor}
                                         />
                                         <Text>Name</Text>
@@ -536,24 +536,23 @@ export default function Step4() {
                                 lg: "row",
                             }}
                         >
-                            <FullColorPicker
-                                type="backgroundMainColor"
+                            <IOSColorPicker
+                                color={backgroundMainColor}
                                 setColor={setBackgroundMainColor}
                             />
                             <Text>Primary</Text>
                             <Spacer />
-                            <FullColorPicker
-                                type="backgroundAccentColor"
+                            <IOSColorPicker
+                                color={backgroundAccentColor}
                                 setColor={setBackgroundAccentColor}
                             />
                             <Text>Secondary</Text>
                             <Spacer />
                             {card.curCard.cardType === "a" ? (
                                 <>
-                                    <FullColorPicker
-                                        type="backgroundTextColor"
+                                    <IOSColorPicker
+                                        color={backgroundTextColor}
                                         setColor={setBackgroundTextColor}
-                                        isDisabled={false}
                                     />
                                     <Text>Last Name</Text>
                                 </>
@@ -570,8 +569,8 @@ export default function Step4() {
                                         }}
                                         alignItems={"center"}
                                     >
-                                        <FullColorPicker
-                                            type="backgroundTextColor"
+                                        <IOSColorPicker
+                                            color={backgroundTextColor}
                                             setColor={setBackgroundTextColor}
                                             isDisabled={true}
                                         />
