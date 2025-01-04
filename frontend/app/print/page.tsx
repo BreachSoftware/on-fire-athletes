@@ -66,11 +66,11 @@ export default function Profile() {
             const userId = queryParams.get("user");
             const selectedCardId = queryParams.get("card");
 
-            if (!selectedCardId || !userId) {
+            if (!selectedCardId) {
                 return;
             }
 
-            const card = await getCard(selectedCardId, userId);
+            const card = await getCard(selectedCardId, userId || undefined);
 
             if (card) {
                 setCard(card);

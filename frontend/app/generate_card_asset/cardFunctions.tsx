@@ -8,11 +8,15 @@ import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
  * @param generatedBy: string - The UUID of the user who generated the card
  * @returns The card object
  */
-export async function getCard(uuid: string, generatedBy: string) {
+export async function getCard(uuid: string, generatedBy?: string) {
     try {
-        const response = await fetch(
-            `${apiEndpoints.getCard()}?uuid=${uuid}&generatedBy=${generatedBy}`,
-        );
+        const apiUrl = new URL(apiEndpoints.getCard());
+        apiUrl.searchParams.set("uuid", uuid);
+        if (generatedBy) {
+            apiUrl.searchParams.set("generatedBy", generatedBy);
+        }
+
+        const response = await fetch(apiUrl.toString());
         const data = await response.json();
 
         return new TradingCardInfo({
