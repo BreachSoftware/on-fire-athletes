@@ -1,8 +1,10 @@
 "use client";
 import {
     Box,
+    Center,
     Flex,
     HStack,
+    Spinner,
     useBreakpointValue,
     VStack,
 } from "@chakra-ui/react";
@@ -19,6 +21,8 @@ import { useCurrentCardInfo } from "@/hooks/useCurrentCardInfo";
 import TradingCardInfo from "@/hooks/TradingCardInfo";
 import { useEffect, useRef, useState } from "react";
 import MobileStepWrapper from "@/components/create/mobile/MobileStepWrapper";
+import { useSearchParams } from "next/navigation";
+import { getCard } from "@/app/generate_card_asset/cardFunctions";
 
 interface CardCreationProps {
     isNil?: boolean;
@@ -35,8 +39,22 @@ export default function CreationOverview({ isNil = false }: CardCreationProps) {
     const backgroundRef = useRef(null);
     const cardBackRef = useRef(null);
     const cardPrintRef = useRef(null);
+
+    const [isLoading, setIsLoading] = useState(false);
+
+    const searchParams = useSearchParams();
+
     useEffect(() => {
-        currentInfo.setCurCard(new TradingCardInfo());
+        (async () => {
+            if (searchParams.get("card")) {
+                setIsLoading(true);
+                const card = await getCard(searchParams.get("card") as string);
+                currentInfo.setCurCard({ ...card, stepNumber: 2 });
+            } else {
+                currentInfo.setCurCard(new TradingCardInfo());
+            }
+            setIsLoading(false);
+        })();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -53,6 +71,8 @@ export default function CreationOverview({ isNil = false }: CardCreationProps) {
         const navBarHeight = 66;
         const stepHeight = 224;
         const maxScaleFactor = 0.7;
+
+        if (!window) return 1;
 
         if (
             window.innerHeight >
@@ -104,6 +124,13 @@ export default function CreationOverview({ isNil = false }: CardCreationProps) {
             stepTitle: "Description",
         },
     ];
+
+    if (isLoading)
+        return (
+            <Center h="100vh">
+                <Spinner size="xl" />
+            </Center>
+        );
 
     return (
         <Box
