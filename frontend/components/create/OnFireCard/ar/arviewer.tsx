@@ -93,9 +93,8 @@ function ARViewer() {
         console.log("Decoded result:", result);
 
         // Get all the OnFire cards
-        const fetchedCard = await fetch(
-            `${apiEndpoints.getCard()}?uuid=${cardUUID}`,
-        );
+        const onFireCards = await fetch(apiEndpoints.getAllCards());
+        const cards: TradingCardInfo[] = await onFireCards.json();
 
         // Get the card UUID from the QR code
         const stringedResult =
@@ -109,6 +108,8 @@ function ARViewer() {
         found = false;
         readCard = new TradingCardInfo();
         isDefaultBack = false;
+
+        const fetchedCard = cards.find((card) => card.uuid === cardUUID);
 
         if (!fetchedCard) {
             console.error("Card not found");
