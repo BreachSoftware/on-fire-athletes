@@ -177,6 +177,10 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
             setIsFlipped(flip);
         }
 
+        useEffect(() => {
+            setIsFlipped(curCard.frontIsShowing);
+        }, [curCard.frontIsShowing]);
+
         /**
          *
          * Handles card flips
