@@ -10,7 +10,7 @@ export default function CardSizeBox({
         <Box
             pos="absolute"
             top="0"
-            left="0"
+            left="-0.5px"
             w="100%"
             h="100%"
             bgImage={src}
