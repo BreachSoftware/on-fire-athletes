@@ -47,6 +47,7 @@ export default function CheckoutStepWrapper({
     const checkout = curCheckout.checkout;
     const stepNumber = checkout.stepNum;
     const visitedSteps = checkout.visitedSteps;
+    const isGift = curCheckout.isGift;
 
     const [hasAddedListeners, setHasAddedListeners] = useState(false);
 
@@ -156,7 +157,7 @@ export default function CheckoutStepWrapper({
                     </Heading>
 
                     {/* Navigation section for steps */}
-                    {!screenTooSmall && (
+                    {!screenTooSmall && !isGift && (
                         <Flex flexDirection={{ base: "column", lg: "row" }}>
                             {checkoutSteps.map((step, index) => {
                                 if (index !== 0 && index !== 1) {
@@ -422,6 +423,9 @@ export default function CheckoutStepWrapper({
                                                 router,
                                                 buyingOtherCard,
                                                 auth,
+                                                undefined,
+                                                undefined,
+                                                isGift,
                                             ).then((result) => {
                                                 if (!result) {
                                                     setIsLoading(false);

@@ -31,6 +31,7 @@ export async function handlePurchase(
     auth: useAuthProps,
     hash?: string,
     isNil?: boolean,
+    isGift?: boolean,
 ): Promise<boolean> {
     try {
         // Get the current user's ID
@@ -110,7 +111,7 @@ export async function handlePurchase(
 
         // Get a total count of digital cards (including cards provided by the package)
         const totalDigitalCards =
-            (auth.isSubscribed ? 25 : checkout.packageCardCount) +
+            (auth.isSubscribed && !isGift ? 25 : checkout.packageCardCount) +
             checkout.digitalCardCount * 5;
 
         // Create an order
@@ -118,12 +119,12 @@ export async function handlePurchase(
             method: "POST",
             headers: myHeaders,
             body: JSON.stringify({
-                card_uuid: onFireCard!.uuid,
-                card_generatedBy: onFireCard!.generatedBy,
+                card_uuid: onFireCard?.uuid,
+                card_generatedBy: onFireCard?.generatedBy,
                 cost_paid: checkout.total,
                 sender_uuid: checkout.packageName
                     ? "GamechangersAdmin"
-                    : onFireCard!.generatedBy,
+                    : onFireCard?.generatedBy,
                 receiver_uuid: currentUserId,
                 physicalCardQuantity: checkout.physicalCardCount,
                 digitalCardQuantity: totalDigitalCards,
@@ -144,9 +145,12 @@ export async function handlePurchase(
                     : hash
                       ? PaymentMethod.GMEX
                       : PaymentMethod.Card,
-                package_name: auth.isSubscribed
-                    ? "SUBSCRIPTION"
-                    : checkout.packageName?.toUpperCase(),
+                package_name: isGift
+                    ? `GIFT - ${checkout.packageName?.toUpperCase()}`
+                    : auth.isSubscribed
+                      ? "SUBSCRIPTION"
+                      : checkout.packageName?.toUpperCase(),
+                is_gift: isGift,
             }),
         };
 
@@ -179,7 +183,7 @@ export async function handlePurchase(
                 );
                 return false;
             }
-        } else {
+        } else if (!isGift) {
             const updateAvailableCardsOptions = {
                 method: "POST",
                 headers: myHeaders,
@@ -266,27 +270,35 @@ export async function handlePurchase(
             // Add flag if the order is for NIL
             successUrl = `${successUrl}${successUrl.includes("?") ? "&" : ""}nil=true`;
         }
+        if (isGift) {
+            // Add flag if the order is for a gift
+            successUrl = `${successUrl}${successUrl.includes("?") ? "&" : ""}gift=true`;
+        }
 
-        if (!buyingOtherCard) {
-            try {
-                await handlePostCheckoutEmail(checkout, dbUser);
-            } catch (e) {
-                console.error("Error sending post-checkout email: ", e);
-            }
-        } else {
-            try {
-                await handleBoughtLockerRoomCardEmail(
-                    checkout,
-                    currentUserId,
-                    dbUser,
-                );
-            } catch (e) {
-                console.error(
-                    "Error sending bought locker room card email: ",
-                    e,
-                );
+        if (!isGift) {
+            if (!buyingOtherCard) {
+                try {
+                    await handlePostCheckoutEmail(checkout, dbUser);
+                } catch (e) {
+                    console.error("Error sending post-checkout email: ", e);
+                }
+            } else {
+                try {
+                    await handleBoughtLockerRoomCardEmail(
+                        checkout,
+                        currentUserId,
+                        dbUser,
+                    );
+                } catch (e) {
+                    console.error(
+                        "Error sending bought locker room card email: ",
+                        e,
+                    );
+                }
             }
         }
+
+        console.log("Success URL: ", successUrl);
 
         // Navigate to the success page
         router.push(successUrl);

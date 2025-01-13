@@ -56,6 +56,8 @@ export default function SignUp() {
     let generatedByUUID: string | null = "";
     let cardSentUUID: string | null = "";
     let senderUUID: string | null = "";
+    let giftPackage: string | null = "";
+    let searchParamString: string = "";
 
     // Extract UUID query parameters if on client-side
     if (typeof window !== "undefined") {
@@ -64,6 +66,8 @@ export default function SignUp() {
         generatedByUUID = queryParams.get("generatedByUUID");
         cardSentUUID = queryParams.get("cardUUID");
         senderUUID = queryParams.get("fromUUID");
+        giftPackage = queryParams.get("giftPackage");
+        searchParamString = queryParams.toString();
     }
 
     const [checkedAuth, setCheckedAuth] = useState(false);
@@ -185,6 +189,11 @@ export default function SignUp() {
                         }
                     }
 
+                    if (giftPackage) {
+                        window.location.href = "/checkout?gift=true";
+                        return true;
+                    }
+
                     // Handle card saving and trading
                     const card = TradingCardInfo.loadCard();
                     if (card) {
@@ -249,7 +258,7 @@ export default function SignUp() {
                 `/login?generatedByUUID=${generatedByUUID}&cardUUID=${cardSentUUID}&fromUUID=${senderUUID}`,
             );
         } else {
-            router.push("/login");
+            router.push(`/login?${searchParamString}`);
         }
     }
 

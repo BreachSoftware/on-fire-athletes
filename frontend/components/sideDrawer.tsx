@@ -113,6 +113,15 @@ const navItems: Array<MobileNavSection> = [
             },
         ],
     },
+    {
+        header: "Gift",
+        children: [
+            {
+                title: "Gift a card",
+                href: "/checkout?gift=true",
+            },
+        ],
+    },
 ];
 
 /**

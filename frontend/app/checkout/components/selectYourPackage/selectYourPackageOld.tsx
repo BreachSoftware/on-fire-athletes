@@ -10,10 +10,13 @@ import CheckoutButtonFooter from "@/app/checkout/components/selectYourPackage/ch
 import SelectBannerVertical from "@/app/checkout/components/selectYourPackage/selectBannerVertical";
 import SelectBannerHorizontal from "@/app/checkout/components/selectYourPackage/selectBannerHorizontal";
 import SharedStack from "@/components/shared/wrappers/shared-stack";
+
 /**
  * This component is responsible for rendering the select your package section of the checkout page.
  */
 export default function SelectYourPackage() {
+    const { isGift } = useCurrentCheckout();
+
     return (
         <Flex
             width={"100%"}
@@ -26,17 +29,35 @@ export default function SelectYourPackage() {
             py={{ base: "24px", md: "55px" }}
         >
             {/* Header */}
-            <Text
-                fontFamily="Brotherhood"
-                color="white"
-                fontWeight={"100"}
-                width={"100%"}
-                fontSize={{ base: "46px", sm: "54px", md: "64px", lg: "76px" }}
-                textAlign={{ base: "center", md: "left" }}
-                letterSpacing={"3.0px"}
-            >
-                Select A Package
-            </Text>
+            <SharedStack direction={{ base: "column", md: "row" }} spaced>
+                <Text
+                    fontFamily="Brotherhood"
+                    color="white"
+                    fontWeight={"100"}
+                    width={"100%"}
+                    fontSize={{
+                        base: "46px",
+                        sm: "54px",
+                        md: "64px",
+                        lg: "76px",
+                    }}
+                    textAlign={{ base: "center", md: "left" }}
+                    letterSpacing={"3.0px"}
+                >
+                    Select A Package {isGift ? "to gift" : ""}
+                </Text>
+                {isGift && (
+                    <Text
+                        color="white"
+                        fontFamily="Barlow Condensed"
+                        fontWeight="medium"
+                        textAlign="center"
+                    >
+                        You will receive an e-gift card with a unique code to
+                        share with your recipient to use at checkout
+                    </Text>
+                )}
+            </SharedStack>
 
             {/* Package Options */}
             <SharedStack>
