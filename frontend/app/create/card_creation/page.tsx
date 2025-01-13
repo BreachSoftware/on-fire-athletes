@@ -34,6 +34,7 @@ export default function CreationOverview({ isNil = false }: CardCreationProps) {
     const foregroundRef = useRef(null);
     const backgroundRef = useRef(null);
     const cardBackRef = useRef(null);
+    const cardPrintRef = useRef(null);
     useEffect(() => {
         currentInfo.setCurCard(new TradingCardInfo());
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -154,8 +155,6 @@ export default function CreationOverview({ isNil = false }: CardCreationProps) {
                             >
                                 <OnfireCard
                                     cardFrontRef={cardFrontRef}
-                                    cardForegroundRef={foregroundRef}
-                                    cardBackgroundRef={backgroundRef}
                                     cardBackRef={cardBackRef}
                                     mobileFlipButton={isMobile}
                                     showButton={!isMobile}
@@ -171,6 +170,7 @@ export default function CreationOverview({ isNil = false }: CardCreationProps) {
                                 currentInfo={currentInfo}
                                 foregroundRef={foregroundRef}
                                 backgroundRef={backgroundRef}
+                                cardPrintRef={cardPrintRef}
                                 isNil={isNil}
                             />
                         ) : (
@@ -185,6 +185,7 @@ export default function CreationOverview({ isNil = false }: CardCreationProps) {
                                     foregroundRef={foregroundRef}
                                     backgroundRef={backgroundRef}
                                     cardBackRef={cardBackRef}
+                                    cardPrintRef={cardPrintRef}
                                     isNil={isNil}
                                 />
                             </Flex>
@@ -198,6 +199,19 @@ export default function CreationOverview({ isNil = false }: CardCreationProps) {
                     <Sidebar height={"auto"} />
                 </Box>
             </HStack>
+            <Box visibility="hidden" pos="absolute" left="-9999px" top={0}>
+                <OnfireCard
+                    cardFrontRef={cardPrintRef}
+                    mobileFlipButton={isMobile}
+                    showButton={!isMobile}
+                    enabledParts={{
+                        interiorBorder: false,
+                        interiorBorderShine: false,
+                        exteriorBorderShine: false,
+                        onFireLogo: false,
+                    }}
+                />
+            </Box>
         </Box>
     );
 }

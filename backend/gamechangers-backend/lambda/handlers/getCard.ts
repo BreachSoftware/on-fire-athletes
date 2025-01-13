@@ -1,5 +1,9 @@
 /* eslint-disable func-style */
-import { Handler, APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
+import {
+	Handler,
+	APIGatewayProxyEvent,
+	APIGatewayProxyResult,
+} from "aws-lambda";
 import { DynamoDB } from "aws-sdk";
 import { sendResponse } from "../utils/responseFunctions";
 import { dbTables } from "../../EnvironmentManager/EnvironmentManager";
@@ -8,19 +12,19 @@ import { dbTables } from "../../EnvironmentManager/EnvironmentManager";
 const dynamoDb = new DynamoDB.DocumentClient();
 
 interface Response {
-    headers: { [key: string]: string | number | boolean };
-    statusCode: number;
-    body: string;
+	headers: { [key: string]: string | number | boolean };
+	statusCode: number;
+	body: string;
 }
-
 
 /**
  * Gets a pre-existing card.
  * @param event - The API Gateway event object.
  * @returns A promise that resolves to the API Gateway proxy result.
  */
-export const getCard: Handler = async(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-
+export const getCard: Handler = async (
+	event: APIGatewayProxyEvent,
+): Promise<APIGatewayProxyResult> => {
 	const headers = {
 		"Content-Type": "application/json",
 	};
@@ -32,7 +36,7 @@ export const getCard: Handler = async(event: APIGatewayProxyEvent): Promise<APIG
 			success: false,
 			message: "Error getting images for user",
 			input: event,
-		})
+		}),
 	};
 
 	if (!event.queryStringParameters) {
@@ -48,54 +52,59 @@ export const getCard: Handler = async(event: APIGatewayProxyEvent): Promise<APIG
 	const queryStringParameters = event.queryStringParameters;
 
 	const uuid = queryStringParameters.uuid;
-	const generatedBy = queryStringParameters.generatedBy;
+	const _generatedBy = queryStringParameters.generatedBy;
 
-	if (!uuid || !generatedBy) {
+	if (!uuid) {
 		return Promise.resolve({
 			statusCode: 400,
 			headers: headers,
 			body: JSON.stringify({
 				success: false,
-				message: "Error! Missing one or more required query parameters. uuid or generatedBy is null.",
-			})
+				message:
+					"Error! Missing one or more required query parameters. uuid or generatedBy is null.",
+			}),
 		});
-	} else if (typeof uuid !== "string" || typeof generatedBy !== "string") {
+	} else if (typeof uuid !== "string") {
 		return Promise.resolve({
 			statusCode: 400,
 			headers: headers,
 			body: JSON.stringify({
 				success: false,
-				message: "Error! Incorrect type for one or more query parameters. uuid and generatedBy should be strings.",
-			})
+				message:
+					"Error! Incorrect type for one or more query parameters. uuid and generatedBy should be strings.",
+			}),
 		});
 	}
 
-
 	try {
-		// Define the parameters for the DynamoDB get operation
+		// Define the parameters for the DynamoDB scan operation
 		const params = {
 			TableName: dbTables.GamechangersCards(),
-			Key: {
-				uuid: uuid,
-				generatedBy: generatedBy,
+			FilterExpression: "#uuidKey = :uuidVal",
+			ExpressionAttributeNames: {
+				"#uuidKey": "uuid",
+			},
+			ExpressionAttributeValues: {
+				":uuidVal": uuid,
 			},
 		};
 
-		// Retrieve the card item from the DynamoDB table
-		const data = await dynamoDb.get(params).promise();
+		// Retrieve the card items from DynamoDB using scan
+		const data = await dynamoDb.scan(params).promise();
 
-		// Check if the card item exists
-		if (!data.Item) {
+		// Check if any items were returned
+		if (!data.Items || data.Items.length === 0) {
 			return sendResponse(404, { error: "The card does not exist" });
 		}
 
-		return sendResponse(200, data.Item as object);
-
+		// If items exist, send the first item back
+		return sendResponse(200, data.Items[0] as object);
 	} catch (error) {
-
 		console.error("Error:", error);
 
 		// Return an error response with a 500 status code
-		return sendResponse(500, { error: "An error occurred when retrieving the card" });
+		return sendResponse(500, {
+			error: "An error occurred when retrieving the card",
+		});
 	}
 };

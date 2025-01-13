@@ -286,8 +286,6 @@ function useProvideAuth(): useAuthProps {
                     autoSignIn: true,
                 },
             });
-
-            await setDbUserInContext((await getCurrentUser()).userId);
         } catch (error) {
             return { success: false, message: "account exists" };
         }

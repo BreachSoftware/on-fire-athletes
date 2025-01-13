@@ -34,6 +34,8 @@ export async function handlePurchase(
     try {
         // Get the current user's ID
         const currentUserId = (await auth.currentAuthenticatedUser()).userId;
+        const { dbUser } = auth;
+
         let paymentIntent: PaymentIntent | null = null;
         let shouldByPassPayment = false;
 
@@ -123,12 +125,12 @@ export async function handlePurchase(
                 receiver_uuid: currentUserId,
                 physicalCardQuantity: checkout.physicalCardCount,
                 digitalCardQuantity: totalDigitalCards,
-                first_name: checkout.contactInfo.firstName,
-                last_name: checkout.contactInfo.lastName,
-                email: checkout.contactInfo.email,
+                first_name: dbUser?.first_name,
+                last_name: dbUser?.last_name,
+                email: dbUser?.email,
                 phone_number: checkout.contactInfo.phone,
-                shipping_firstName: checkout.shippingAddress.firstName,
-                shipping_lastName: checkout.shippingAddress.lastName,
+                shipping_firstName: dbUser?.first_name,
+                shipping_lastName: dbUser?.last_name,
                 address: checkout.shippingAddress.streetAddress,
                 city: checkout.shippingAddress.city,
                 state: checkout.shippingAddress.state,
@@ -194,9 +196,9 @@ export async function handlePurchase(
                 return false;
             }
 
-            // Update card price for "allStar" package
+            // Update card price for sellable packages
             if (checkout.packageName !== "rookie") {
-                const newCardPrice = parseFloat(checkout.cardPrice) + 3.0;
+                const newCardPrice = parseFloat(checkout.cardPrice) + 5.0;
 
                 const updatePriceOptions = {
                     method: "POST",
