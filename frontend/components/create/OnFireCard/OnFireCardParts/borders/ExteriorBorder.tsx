@@ -29,6 +29,7 @@ export default function ExteriorBorder({
                 alignItems="center"
                 width="351px"
                 height="490px"
+                left="-1px"
             >
                 <CardOutline width="100%" height="100%" fill={color} />
             </CardSizeBox>
