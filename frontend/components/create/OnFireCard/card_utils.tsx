@@ -11,10 +11,11 @@ export const gameCardHeight = 1720;
  * @returns the darkened hex value
  */
 export function darkenHexString(hexString: string) {
-	const noHashtag = hexString.replace("#", "");
-	const intVal = parseInt(noHashtag, 16);
-	return `#${ (((intVal & 0x7E7E7E) >> 1) |
-	(intVal & 0x808080)).toString(16).padStart(6, "0") }`;
+    const noHashtag = hexString.replace("#", "");
+    const intVal = parseInt(noHashtag, 16);
+    return `#${(((intVal & 0x7e7e7e) >> 1) | (intVal & 0x808080))
+        .toString(16)
+        .padStart(6, "0")}`;
 }
 
 /**
@@ -23,11 +24,11 @@ export function darkenHexString(hexString: string) {
  * @returns the rgb values of the hex color
  */
 export function hexToRgb(hex: string) {
-	const bigint = parseInt(hex.slice(1), 16);
-	const r = (bigint >> 16) & 255;
-	const g = (bigint >> 8) & 255;
-	const b = bigint & 255;
-	return [ r, g, b ];
+    const bigint = parseInt(hex.slice(1), 16);
+    const r = (bigint >> 16) & 255;
+    const g = (bigint >> 8) & 255;
+    const b = bigint & 255;
+    return [r, g, b];
 }
 
 /**
@@ -38,7 +39,7 @@ export function hexToRgb(hex: string) {
  * @returns the hex string of the rgb color
  */
 export function rgbToHex(r: number, g: number, b: number): string {
-	return `#${ ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase()}`;
+    return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase()}`;
 }
 
 /**
@@ -48,30 +49,63 @@ export function rgbToHex(r: number, g: number, b: number): string {
  * @param b
  * @returns the hsl values of the rgb color
  */
-export function rgbToHsl(r: number, g: number, b: number): [number, number, number] {
-	// eslint-disable-next-line no-param-reassign
-	r = r / 255;
-	// eslint-disable-next-line no-param-reassign
-	g = g / 255;
-	// eslint-disable-next-line no-param-reassign
-	b = b / 255;
-	const max = Math.max(r, g, b), min = Math.min(r, g, b);
-	// eslint-disable-next-line prefer-const
-	let h = 0, s = 0, l = (max + min) / 2;
+export function rgbToHsl(
+    r: number,
+    g: number,
+    b: number,
+): [number, number, number] {
+    // eslint-disable-next-line no-param-reassign
+    r = r / 255;
+    // eslint-disable-next-line no-param-reassign
+    g = g / 255;
+    // eslint-disable-next-line no-param-reassign
+    b = b / 255;
+    const max = Math.max(r, g, b),
+        min = Math.min(r, g, b);
+    // eslint-disable-next-line prefer-const
+    let h = 0,
+        s = 0,
+        l = (max + min) / 2;
 
-	if (max != min) {
-		const d = max - min;
-		s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-		// eslint-disable-next-line default-case
-		switch (max) {
-		case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-		case g: h = (b - r) / d + 2; break;
-		case b: h = (r - g) / d + 4; break;
-		}
-		h = h / 6;
-	}
+    if (max != min) {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        // eslint-disable-next-line default-case
+        switch (max) {
+            case r:
+                h = (g - b) / d + (g < b ? 6 : 0);
+                break;
+            case g:
+                h = (b - r) / d + 2;
+                break;
+            case b:
+                h = (r - g) / d + 4;
+                break;
+        }
+        h = h / 6;
+    }
 
-	return [ h, s, l ];
+    return [h, s, l];
+}
+
+export function getColorAsHex(color: string) {
+    if (color.startsWith("#")) {
+        return color;
+    }
+    if (color.startsWith("rgb")) {
+        const rgb = color.split("(")[1].split(")")[0].split(",");
+        return rgbToHex(parseInt(rgb[0]), parseInt(rgb[1]), parseInt(rgb[2]));
+    }
+    if (color.startsWith("hsl")) {
+        const hsl = color.split("(")[1].split(")")[0].split(",");
+        const h = parseFloat(hsl[0]) / 360;
+        const s = parseFloat(hsl[1]) / 100;
+        const l = parseFloat(hsl[2]) / 100;
+        console.log({ h, s, l });
+        const rgb = hslToRgb(h, s, l);
+        return rgbToHex(rgb[0], rgb[1], rgb[2]);
+    }
+    return color;
 }
 
 /**
@@ -81,43 +115,49 @@ export function rgbToHsl(r: number, g: number, b: number): [number, number, numb
  * @param l
  * @returns the rgb values of the hsl color
  */
-export function hslToRgb(h: number, s: number, l: number): [number, number, number] {
-	let r = 0, g = 0, b = 0;
+export function hslToRgb(
+    h: number,
+    s: number,
+    l: number,
+): [number, number, number] {
+    let r = 0,
+        g = 0,
+        b = 0;
 
-	if (s === 0) {
-		r = g = b = l; // achromatic
-	} else {
-		// eslint-disable-next-line func-style
-		const hue2rgb = (p: number, q: number, t: number): number => {
-			if (t < 0) {
-				// eslint-disable-next-line no-param-reassign
-				t = t + 1;
-			}
-			if (t > 1) {
-				// eslint-disable-next-line no-param-reassign
-				t = t - 1;
-			}
-			if (t < 1 / 6) {
-				return p + (q - p) * 6 * t;
-			}
-			if (t < 1 / 2) {
-				return q;
-			}
-			if (t < 2 / 3) {
-				return p + (q - p) * (2 / 3 - t) * 6;
-			}
-			return p;
-		};
+    if (s === 0) {
+        r = g = b = l; // achromatic
+    } else {
+        // eslint-disable-next-line func-style
+        const hue2rgb = (p: number, q: number, t: number): number => {
+            if (t < 0) {
+                // eslint-disable-next-line no-param-reassign
+                t = t + 1;
+            }
+            if (t > 1) {
+                // eslint-disable-next-line no-param-reassign
+                t = t - 1;
+            }
+            if (t < 1 / 6) {
+                return p + (q - p) * 6 * t;
+            }
+            if (t < 1 / 2) {
+                return q;
+            }
+            if (t < 2 / 3) {
+                return p + (q - p) * (2 / 3 - t) * 6;
+            }
+            return p;
+        };
 
-		const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-		const p = 2 * l - q;
+        const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+        const p = 2 * l - q;
 
-		r = hue2rgb(p, q, h + 1 / 3);
-		g = hue2rgb(p, q, h);
-		b = hue2rgb(p, q, h - 1 / 3);
-	}
+        r = hue2rgb(p, q, h + 1 / 3);
+        g = hue2rgb(p, q, h);
+        b = hue2rgb(p, q, h - 1 / 3);
+    }
 
-	return [ Math.round(r * 255), Math.round(g * 255), Math.round(b * 255) ];
+    return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
 }
 
 /**
@@ -128,24 +168,24 @@ export function hslToRgb(h: number, s: number, l: number): [number, number, numb
  * @returns
  */
 export function saturateHex(hex: string, amount: number = 1): string {
-	// Ensure the hex string is in the correct format
-	if (!(/^#([0-9A-F]{6})$/i).test(hex)) {
-		throw new Error("Invalid hex color format");
-	}
+    // Ensure the hex string is in the correct format
+    if (!/^#([0-9A-F]{6})$/i.test(hex)) {
+        throw new Error("Invalid hex color format");
+    }
 
-	// Convert hex to RGB
-	const [ r, g, b ] = hexToRgb(hex);
+    // Convert hex to RGB
+    const [r, g, b] = hexToRgb(hex);
 
-	// Convert RGB to HSL
-	// eslint-disable-next-line prefer-const
-	let [ h, s, l ] = rgbToHsl(r, g, b);
+    // Convert RGB to HSL
+    // eslint-disable-next-line prefer-const
+    let [h, s, l] = rgbToHsl(r, g, b);
 
-	// Increase saturation
-	s = Math.min(1, s * amount);
+    // Increase saturation
+    s = Math.min(1, s * amount);
 
-	// Convert HSL back to RGB
-	const [ newR, newG, newB ] = hslToRgb(h, s, l);
+    // Convert HSL back to RGB
+    const [newR, newG, newB] = hslToRgb(h, s, l);
 
-	// Convert RGB back to hex
-	return rgbToHex(newR, newG, newB);
+    // Convert RGB back to hex
+    return rgbToHex(newR, newG, newB);
 }

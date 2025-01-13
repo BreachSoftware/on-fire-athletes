@@ -11,6 +11,7 @@ import {
     hslToRgb,
     rgbToHex,
     saturateHex,
+    getColorAsHex,
 } from "../create/OnFireCard/card_utils";
 import OnFireCard, { OnFireCardRef } from "../create/OnFireCard/OnFireCard";
 import LockerRoomBackground from "../../public/card_assets/locker-room-background.png";
@@ -54,7 +55,7 @@ function lightenColor(hex: string, minimum: number = 125): string {
  * @returns the hex string of the color to use
  */
 function decideColor(card: TradingCardInfo) {
-    let chosenColor = card.borderColor;
+    let chosenColor = getColorAsHex(card.borderColor);
 
     const threshold = 150;
     if (colorTooDark(chosenColor, threshold)) {
