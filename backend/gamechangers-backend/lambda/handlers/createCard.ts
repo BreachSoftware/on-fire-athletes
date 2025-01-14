@@ -1,8 +1,13 @@
 /* eslint-disable func-style */
-import { Handler, APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
+import {
+	Handler,
+	APIGatewayProxyEvent,
+	APIGatewayProxyResult,
+} from "aws-lambda";
 import { DynamoDB } from "aws-sdk";
 import { v4 as uuidv4 } from "uuid";
 import { dbTables } from "../../EnvironmentManager/EnvironmentManager";
+import { runMindCompilerTask } from "../../ecsRunner/runMindCompilerTask";
 
 // Create an instance of the DynamoDB DocumentClient
 const dynamoDb = new DynamoDB.DocumentClient();
@@ -12,7 +17,9 @@ const dynamoDb = new DynamoDB.DocumentClient();
  * @param event - The API Gateway event object.
  * @returns A promise that resolves to the API Gateway proxy result.
  */
-export const createCard: Handler = async(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+export const createCard: Handler = async (
+	event: APIGatewayProxyEvent,
+): Promise<APIGatewayProxyResult> => {
 	const uuid: string = uuidv4();
 	const currentUnixTime: number = Math.floor(Date.now() / 1000);
 	try {
@@ -25,27 +32,35 @@ export const createCard: Handler = async(event: APIGatewayProxyEvent): Promise<A
 				return {
 					statusCode: 400,
 					headers: { "Content-Type": "text/plain" },
-					body: JSON.stringify({ error: "The request body must contain a generatedBy property" }),
+					body: JSON.stringify({
+						error: "The request body must contain a generatedBy property",
+					}),
 				};
 			} else if (data.generatedBy === "") {
 				return {
 					statusCode: 400,
 					headers: { "Content-Type": "text/plain" },
-					body: JSON.stringify({ error: "The generatedBy property cannot be empty" }),
+					body: JSON.stringify({
+						error: "The generatedBy property cannot be empty",
+					}),
 				};
 			} else if (typeof data.generatedBy !== "string") {
 				return {
 					statusCode: 400,
 					headers: { "Content-Type": "text/plain" },
-					body: JSON.stringify({ error: "The generatedBy property must be of type string" }),
+					body: JSON.stringify({
+						error: "The generatedBy property must be of type string",
+					}),
 				};
 			}
 
-			if(data.price > 10000.00) {
+			if (data.price > 10000.0) {
 				return {
 					statusCode: 400,
 					headers: { "Content-Type": "text/plain" },
-					body: JSON.stringify({ error: "The price must be less than or equal to $10,000" }),
+					body: JSON.stringify({
+						error: "The price must be less than or equal to $10,000",
+					}),
 				};
 			}
 
@@ -108,12 +123,15 @@ export const createCard: Handler = async(event: APIGatewayProxyEvent): Promise<A
 					signatureColor: data.signatureColor, // hex color
 					partsToRecolor: data.partsToRecolor,
 					paymentStatus: data.paymentStatus,
-					tradeStatus: data.tradeStatus // Trade status parameter
+					tradeStatus: data.tradeStatus, // Trade status parameter
 				},
 			};
 
 			// Insert the card item into the DynamoDB table
 			await dynamoDb.put(params).promise();
+
+			// Trigger Fargate to compile .mind file once the card is created:
+			await runMindCompilerTask({ cardId: uuid }); // or data.uuid if you prefer
 
 			// Return a success response with the created card item
 			return {

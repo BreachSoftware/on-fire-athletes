@@ -1,0 +1,12 @@
+{
+    "name": "mind-compiler",
+    "version": "1.0.0",
+    "description": "Compiles .mind files for AR tracking",
+    "main": "compile.js",
+    "dependencies": {
+        "aws-sdk": "^2.1467.0",
+        "axios": "^1.5.0",
+        "puppeteer": "^21.1.1",
+        "sharp": "^0.32.1"
+    }
+}

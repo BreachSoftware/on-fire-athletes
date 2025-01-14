@@ -54,6 +54,17 @@ provider:
                       - ses:SendEmail
                   Resource:
                       - "*"
+                - Effect: Allow
+                  Action:
+                      - ecs:StopTask
+                  Resource: "arn:aws:ecs:us-east-1:*:task/*"
+                - Effect: Allow
+                  Action:
+                      - s3:PutObject
+                      - s3:GetObject
+                  Resource:
+                      - "arn:aws:s3:::onfireathletes-media-uploads/mind-ar/*"
+                      - "arn:aws:s3:::onfireathletes-media-uploads/*"
 
 functions:
     resize:
