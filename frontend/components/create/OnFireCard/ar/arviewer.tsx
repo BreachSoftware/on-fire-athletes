@@ -486,6 +486,57 @@ function ARViewer() {
                         cloak
                     ></a-entity>
                 </a-entity>
+                {/* Bag Tag Back Video (targetIndex 4) */}
+                <a-entity mindar-image-target="targetIndex: 4" id="back-entity">
+                    {/* Render the video if the video source is set */}
+                    {isVideoSourceSet && (
+                        <a-entity
+                            position={`${videoXOffset} ${videoYOffset} 0`}
+                            rotation={`0 0 -${videoRotation}`}
+                            scale={`${scale} ${scale} 1`}
+                        >
+                            <a-video
+                                src="#card-video"
+                                height={height}
+                                width={width}
+                            ></a-video>
+                        </a-entity>
+                    )}
+                    <a-entity
+                        obj-model="obj: url(/ar/ofamask-rev-lg.obj); mtl: #obj-mtl"
+                        rotation="0 0 -90"
+                        position={`0 0 0.01`}
+                        scale="0.058 0.058 0.058"
+                        cloak
+                    ></a-entity>
+                </a-entity>
+                {/* Bag Tag Back Video Inverted for Android (targetIndex 5) */}
+                <a-entity
+                    mindar-image-target="targetIndex: 5"
+                    id="back-entity-invert"
+                >
+                    {/* Render the video if the video source is set */}
+                    {isVideoSourceSet && (
+                        <a-entity
+                            position={`${videoXOffset} ${videoYOffset} 0`}
+                            rotation={`0 0 -${videoRotation}`}
+                            scale={`-${scale} ${scale} 1`}
+                        >
+                            <a-video
+                                src="#card-video"
+                                height={height}
+                                width={width}
+                            ></a-video>
+                        </a-entity>
+                    )}
+                    <a-entity
+                        obj-model="obj: url(/ar/ofamask-rev-lg.obj); mtl: #obj-mtl"
+                        rotation="0 0 -90"
+                        position={`0 0 0.01`}
+                        scale="0.058 -0.058 0.058"
+                        cloak
+                    ></a-entity>
+                </a-entity>
             </a-scene>
 
             {/* Render a hidden video element for QR code scanning */}
