@@ -19,16 +19,12 @@ import TradingCardInfo from "@/hooks/TradingCardInfo";
 import { useAuth } from "@/hooks/useAuth";
 import { totalPriceInCart } from "@/utils/utils";
 import React from "react";
-import CheckoutInfo from "@/hooks/CheckoutInfo";
+import CheckoutInfo, { stepNum } from "@/hooks/CheckoutInfo";
 
 interface CheckoutStepWrapperProps {
     onFireCard: TradingCardInfo | null;
     buyingOtherCard: boolean;
 }
-
-// Step 2: Add-ons
-// Step 3: Shipping Address
-// Step 4: Payment Details
 
 /**
  * CheckoutStepWrapper is a functional component that handles the display and navigation of checkout steps.
@@ -45,7 +41,7 @@ export default function CheckoutStepWrapper({
     const toast = useToast();
     const auth = useAuth();
     const checkout = curCheckout.checkout;
-    const stepNumber = checkout.stepNum;
+    const stepNumber: stepNum = checkout.stepNum;
     const visitedSteps = checkout.visitedSteps;
 
     const [hasAddedListeners, setHasAddedListeners] = useState(false);
@@ -70,12 +66,37 @@ export default function CheckoutStepWrapper({
     const [isLoading, setIsLoading] = useState(false);
     const totalPrice = totalPriceInCart(checkout, buyingPhysicalCards);
 
+    const filteredSteps = getCheckoutSteps(
+        buyingPhysicalCards,
+        auth.isSubscribed,
+        totalPrice,
+    );
+
+    function getCheckoutSteps(
+        buyingPhysicalCards: boolean,
+        isSubscribed: boolean,
+        totalPrice: number,
+    ) {
+        if (buyingPhysicalCards) {
+            return checkoutSteps;
+        }
+
+        if (isSubscribed && totalPrice === 0) {
+            return checkoutSteps.filter((_, index) => index !== 2); // Skips 'Add-Ons' step
+        }
+
+        if (!buyingPhysicalCards) {
+            return checkoutSteps.filter((_, index) => index !== 3); // Skips 'Shipping Address' step
+        }
+        return checkoutSteps;
+    }
+
     /**
      * Function to check if the current step is incomplete
      * @returns {boolean} - Whether the current step is incomplete
      */
     function stepIsIncomplete() {
-        if (stepNumber === 3) {
+        if (stepNumber === stepNum.SHIPPING_ADDRESS) {
             // Check if the street address is the correct format
             const validStreetAddress =
                 checkout.shippingAddress.streetAddress.match(
@@ -126,13 +147,101 @@ export default function CheckoutStepWrapper({
 
     //  useEffect to update the total price in the cart when the cart changes
     useEffect(() => {
-        curCheckout.setCheckout({
-            ...checkout,
+        curCheckout.updateCheckout({
             total: totalPriceInCartInCents(),
             shippingCost: calculateShippingCost(checkout),
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [checkout.cart, checkout.stepNum, checkout.couponCode]);
+
+    function handleBackClick() {
+        const prevStep = stepNumber - 1;
+
+        // Ensure the previous step exists and is valid
+        if (prevStep >= 0 && filteredSteps[prevStep]) {
+            curCheckout.updateCheckout({
+                stepNum: prevStep,
+            });
+        }
+    }
+
+    function handleNextClick() {
+        if (
+            stepNumber === stepNum.ADD_ONS &&
+            totalPrice === 0 &&
+            auth.isSubscribed
+        ) {
+            curCheckout.updateCheckout({
+                stepNum: stepNum.REVIEW_ORDER,
+            });
+            return;
+        }
+
+        if (
+            !buyingPhysicalCards &&
+            checkout.packageName !== "prospect" &&
+            stepNumber == stepNum.ADD_ONS
+        ) {
+            const lastVisitedStep =
+                stepNumber + 2 > visitedSteps ? stepNumber + 2 : visitedSteps;
+            curCheckout.updateCheckout({
+                stepNum: stepNumber + 2,
+                visitedSteps: lastVisitedStep,
+            });
+        } else if (stepNumber >= 0 && stepNumber < filteredSteps.length - 1) {
+            let advance = false;
+            if (stepNumber === (stepNum.PAYMENT_DETAILS as stepNum)) {
+                const saveDetailsButton = document.getElementById(
+                    "save-details-button",
+                );
+                if (saveDetailsButton) {
+                    saveDetailsButton.click();
+                    setIsLoading(true);
+                }
+
+                if (!hasAddedListeners) {
+                    addEventListener("resetLoadingButton", () => {
+                        setIsLoading(false);
+                    });
+
+                    setHasAddedListeners(true);
+                }
+            } else {
+                advance = true;
+            }
+            if (advance) {
+                const lastVisitedStep =
+                    stepNumber + 1 > visitedSteps
+                        ? stepNumber + 1
+                        : visitedSteps;
+                curCheckout.updateCheckout({
+                    stepNum: stepNumber + 1,
+                    visitedSteps: lastVisitedStep,
+                });
+            }
+        } else if (stepNumber === filteredSteps.length - 1) {
+            setIsLoading(true);
+            handlePurchase(
+                checkout,
+                onFireCard,
+                stripe,
+                router,
+                buyingOtherCard,
+                auth,
+            ).then((result) => {
+                if (!result) {
+                    setIsLoading(false);
+                    toast({
+                        title: "Error",
+                        description: "An error occurred during the purchase.",
+                        status: "error",
+                        duration: 3000,
+                        isClosable: true,
+                    });
+                }
+            });
+        }
+    }
 
     return (
         <Flex width={"100%"} bg="#171C1B" h={"100%"} borderRadius={"8px"}>
@@ -152,13 +261,13 @@ export default function CheckoutStepWrapper({
                         mb={{ base: "25px", lg: "0px" }}
                     >
                         {/* Display the title of the current step based on the stepNumber */}
-                        {checkoutSteps[stepNumber].title}
+                        {filteredSteps[stepNumber].title}
                     </Heading>
 
                     {/* Navigation section for steps */}
                     {!screenTooSmall && (
                         <Flex flexDirection={{ base: "column", lg: "row" }}>
-                            {checkoutSteps.map((step, index) => {
+                            {filteredSteps.map((step, index) => {
                                 if (index !== 0 && index !== 1) {
                                     return (
                                         // Fragment is used to avoid adding extra nodes to the DOM
@@ -201,9 +310,8 @@ export default function CheckoutStepWrapper({
                                                         ) {
                                                             // do nothing, as it's disabled
                                                         } else {
-                                                            curCheckout.setCheckout(
+                                                            curCheckout.updateCheckout(
                                                                 {
-                                                                    ...checkout,
                                                                     stepNum:
                                                                         index,
                                                                 },
@@ -223,7 +331,7 @@ export default function CheckoutStepWrapper({
                                                 userSelect={"none"}
                                             >
                                                 {index ===
-                                                checkoutSteps.length - 1
+                                                filteredSteps.length - 1
                                                     ? ""
                                                     : "/"}
                                             </Text>
@@ -237,14 +345,18 @@ export default function CheckoutStepWrapper({
                 </Flex>
 
                 {/* Content area for the current step, displaying the component from checkoutSteps */}
-                {checkoutSteps[stepNumber].bodyElement}
+                {filteredSteps[stepNumber].bodyElement}
 
                 {/* Footer section with the Next or Purchase button and optional bot-left element */}
-                {stepNumber !== 4 && (
+                {stepNumber !== stepNum.PAYMENT_DETAILS && (
                     <Flex
                         justifyContent={{
                             base: "center",
-                            lg: stepNumber === 4 ? "space-between" : "flex-end",
+                            lg:
+                                stepNumber ===
+                                (stepNum.PAYMENT_DETAILS as stepNum)
+                                    ? "space-between"
+                                    : "flex-end",
                         }}
                         flexDirection={{ base: "column", lg: "row" }}
                         alignItems="center"
@@ -253,7 +365,7 @@ export default function CheckoutStepWrapper({
                         mt={"15px"}
                     >
                         {/* Bottom left element rendering at the beginning of this HStack */}
-                        {checkoutSteps[stepNumber].cornerElement}
+                        {filteredSteps[stepNumber].cornerElement}
 
                         <Flex
                             direction={{ base: "column", lg: "row" }}
@@ -275,49 +387,14 @@ export default function CheckoutStepWrapper({
                                     variant={"back"}
                                     width="100px"
                                     isDisabled={
-                                        stepNumber === 0 ||
-                                        ((stepNumber === 2 ||
-                                            stepNumber === 3) &&
+                                        stepNumber ===
+                                            stepNum.SELECT_YOUR_PACKAGE ||
+                                        ((stepNumber === stepNum.ADD_ONS ||
+                                            stepNumber ===
+                                                stepNum.SHIPPING_ADDRESS) &&
                                             buyingOtherCard)
                                     } // Disable the button if it's the first step
-                                    onClick={() => {
-                                        if (
-                                            totalPrice === 0 &&
-                                            stepNumber === 5
-                                        ) {
-                                            curCheckout.setCheckout({
-                                                ...checkout,
-                                                stepNum: 2,
-                                            });
-                                            return;
-                                        }
-
-                                        if (
-                                            (checkout.packageName ===
-                                                "rookie" ||
-                                                checkout.packageName ===
-                                                    "prospect") &&
-                                            stepNumber == 2
-                                        ) {
-                                            curCheckout.setCheckout({
-                                                ...checkout,
-                                                stepNum: stepNumber - 2,
-                                            });
-                                        } else if (
-                                            !buyingPhysicalCards &&
-                                            stepNumber == 4
-                                        ) {
-                                            curCheckout.setCheckout({
-                                                ...checkout,
-                                                stepNum: stepNumber - 2,
-                                            });
-                                        } else {
-                                            curCheckout.setCheckout({
-                                                ...checkout,
-                                                stepNum: stepNumber - 1,
-                                            });
-                                        }
-                                    }}
+                                    onClick={handleBackClick}
                                 >
                                     Back
                                 </Button>
@@ -332,115 +409,11 @@ export default function CheckoutStepWrapper({
                                     }}
                                     isDisabled={stepIsIncomplete()}
                                     isLoading={isLoading}
-                                    onClick={() => {
-                                        if (
-                                            stepNumber === 2 &&
-                                            totalPrice === 0 &&
-                                            auth.isSubscribed
-                                        ) {
-                                            curCheckout.setCheckout({
-                                                ...checkout,
-                                                stepNum: 5,
-                                            });
-                                            return;
-                                        }
-
-                                        // Increment the step number to go to the next step, up to the last step
-                                        // Skipping the shipping details step if the user is not buying physical cards
-                                        if (
-                                            !buyingPhysicalCards &&
-                                            checkout.packageName !==
-                                                "prospect" &&
-                                            stepNumber == 2
-                                        ) {
-                                            const lastVisitedStep =
-                                                stepNumber + 2 > visitedSteps
-                                                    ? stepNumber + 2
-                                                    : visitedSteps;
-                                            curCheckout.setCheckout({
-                                                ...checkout,
-                                                stepNum: stepNumber + 2,
-                                                visitedSteps: lastVisitedStep,
-                                            });
-                                            // Advancing like normal
-                                        } else if (
-                                            stepNumber >= 0 &&
-                                            stepNumber <
-                                                checkoutSteps.length - 1
-                                        ) {
-                                            let advance = false;
-                                            // Special next button logic for the payment details step
-                                            if (stepNumber === 4) {
-                                                // Click the button on the screen with id "save-details-button"
-                                                // This button is within the CheckoutForm, and it seems like the easier option for the short-term
-                                                const saveDetailsButton =
-                                                    document.getElementById(
-                                                        "save-details-button",
-                                                    );
-                                                if (saveDetailsButton) {
-                                                    saveDetailsButton.click();
-                                                    setIsLoading(true);
-                                                }
-
-                                                if (!hasAddedListeners) {
-                                                    // Bug fix event listener to stop loading button from always being loading
-                                                    // Also gets triggered if the checkout process fails
-                                                    addEventListener(
-                                                        "resetLoadingButton",
-                                                        () => {
-                                                            setIsLoading(false);
-                                                        },
-                                                    );
-
-                                                    setHasAddedListeners(true);
-                                                }
-                                            } else {
-                                                advance = true;
-                                            }
-                                            if (advance) {
-                                                const lastVisitedStep =
-                                                    stepNumber + 1 >
-                                                    visitedSteps
-                                                        ? stepNumber + 1
-                                                        : visitedSteps;
-                                                curCheckout.setCheckout({
-                                                    ...checkout,
-                                                    stepNum: stepNumber + 1,
-                                                    visitedSteps:
-                                                        lastVisitedStep,
-                                                });
-                                            }
-                                        } else if (
-                                            stepNumber ===
-                                            checkoutSteps.length - 1
-                                        ) {
-                                            setIsLoading(true);
-                                            handlePurchase(
-                                                checkout,
-                                                onFireCard,
-                                                stripe,
-                                                router,
-                                                buyingOtherCard,
-                                                auth,
-                                            ).then((result) => {
-                                                if (!result) {
-                                                    setIsLoading(false);
-                                                    toast({
-                                                        title: "Error",
-                                                        description:
-                                                            "An error occurred during the purchase.",
-                                                        status: "error",
-                                                        duration: 3000,
-                                                        isClosable: true,
-                                                    });
-                                                }
-                                            });
-                                        }
-                                    }}
+                                    onClick={handleNextClick}
                                 >
                                     <Flex alignItems={"center"}>
                                         {/* Change button text based on whether it's the last step */}
-                                        {stepNumber !== checkoutSteps.length - 1
+                                        {stepNumber !== filteredSteps.length - 1
                                             ? "Next"
                                             : totalPrice === 0
                                               ? "Confirm"
