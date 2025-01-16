@@ -3,13 +3,18 @@ import { useCurrentCheckout } from "@/hooks/useCheckout";
 
 import { packages } from "@/app/checkout/components/selectYourPackage/packages";
 import { DatabasePackageNames } from "@/hooks/CheckoutInfo";
+import { useAuth } from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
 
 export default function CheckoutButtonFooter() {
+    const { dbUser } = useAuth();
     const curCheckout = useCurrentCheckout();
     const checkout = curCheckout.checkout;
 
     const pkgName = checkout.packageName;
     const pkg = pkgName ? packages[pkgName] : null;
+
+    const router = useRouter();
 
     return (
         <Flex
@@ -36,6 +41,35 @@ export default function CheckoutButtonFooter() {
                 width={"40%"}
                 onClick={() => {
                     if (!pkg) return;
+
+                    if (!dbUser) {
+                        router.push(`/signup?giftPackage=${pkg.databaseName}`);
+                        return;
+                    }
+
+                    if (curCheckout.isGift) {
+                        curCheckout.setCheckout({
+                            ...checkout,
+                            cart: [
+                                {
+                                    title: `GIFT - ${pkg.title} Package`,
+                                    card: null,
+                                    numberOfCards: 0,
+                                    numberOfOrders: 1,
+                                    price: pkg.price,
+                                    itemType: "package",
+                                },
+                            ],
+                            packageCardCount: 0,
+                            physicalCardCount: 0,
+                            digitalCardCount: 0,
+                            bagTagCount: 0,
+                            packagePrice: pkg.price,
+                            stepNum: checkout.stepNum + 4,
+                        });
+
+                        return;
+                    }
 
                     const shouldSkipStep =
                         checkout.packageName &&

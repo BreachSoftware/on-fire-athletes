@@ -30,6 +30,7 @@ import {
 } from "@/app/checkout/components/checkout-add-ons/constants";
 import CheckoutInfo from "@/hooks/CheckoutInfo";
 import { packages } from "@/app/checkout/components/selectYourPackage/packages";
+import DemarioCardSrc from "@/images/mockups/demario-card.png";
 
 // props
 interface CheckItemProps {
@@ -40,7 +41,7 @@ interface CheckItemProps {
     price: number;
     canEdit: boolean;
     canRemove: boolean;
-    itemType?: "card" | "bag tag";
+    itemType?: "card" | "bag tag" | "package";
     multiplier?: number;
 }
 
@@ -99,40 +100,53 @@ export default function Item({
                     >
                         {cardType === "Digital" ? (
                             // Digital Card has just the OnFire Card
-                            <Box
-                                transform={{
-                                    base: "scale(0.10)",
-                                    md: "scale(0.12)",
-                                }}
-                                // disable draggable images on cards in the checkout flow
-                                pointerEvents="none"
-                            >
-                                <OnFireCard
-                                    key={card!.uuid}
-                                    card={card!}
-                                    slim
-                                    showButton={false}
-                                />
-                            </Box>
-                        ) : (
-                            // Physical Card has the OnFire Card and AR Card Back
-                            <>
+                            card ? (
                                 <Box
                                     transform={{
-                                        base: "scale(0.07) rotate(348deg) translate(-150px)",
-                                        md: "scale(0.1) rotate(348deg) translate(-150px)",
+                                        base: "scale(0.10)",
+                                        md: "scale(0.12)",
                                     }}
-                                    zIndex={1}
                                     // disable draggable images on cards in the checkout flow
                                     pointerEvents="none"
                                 >
                                     <OnFireCard
                                         key={card!.uuid}
                                         card={card!}
-                                        showButton={false}
                                         slim
+                                        showButton={false}
                                     />
                                 </Box>
+                            ) : (
+                                <DemarioCard />
+                            )
+                        ) : (
+                            // Physical Card has the OnFire Card and AR Card Back
+                            <>
+                                {card ? (
+                                    <Box
+                                        transform={{
+                                            base: "scale(0.07) rotate(348deg) translate(-150px)",
+                                            md: "scale(0.1) rotate(348deg) translate(-150px)",
+                                        }}
+                                        zIndex={1}
+                                        // disable draggable images on cards in the checkout flow
+                                        pointerEvents="none"
+                                    >
+                                        <OnFireCard
+                                            key={card!.uuid}
+                                            card={card!}
+                                            showButton={false}
+                                            slim
+                                        />
+                                    </Box>
+                                ) : (
+                                    <Box
+                                        transform={"translate(-8px)"}
+                                        zIndex={1}
+                                    >
+                                        <DemarioCard />
+                                    </Box>
+                                )}
                                 <Image
                                     // Temporary Asset for AR Card Back
                                     src={arCardBack.src}
@@ -198,13 +212,17 @@ export default function Item({
                             }}
                         >
                             {itemType === "card" ? `${cardType} Card: ` : ""}$
-                            {(price * numberOfOrders).toFixed(2)} (
-                            {numberOfOrders * numberOfCards * multiplier}{" "}
-                            {itemType}
-                            {numberOfOrders * numberOfCards * multiplier > 1
-                                ? "s"
-                                : ""}
-                            )
+                            {(price * numberOfOrders).toFixed(2)}{" "}
+                            {itemType === "package"
+                                ? ""
+                                : `(${numberOfOrders * numberOfCards * multiplier} ${itemType}${
+                                      numberOfOrders *
+                                          numberOfCards *
+                                          multiplier >
+                                      1
+                                          ? "s"
+                                          : ""
+                                  })`}
                         </Text>
                     ) : (
                         <Text
@@ -370,5 +388,17 @@ export default function Item({
                 <Spacer />
             </Flex>
         </>
+    );
+}
+
+function DemarioCard() {
+    return (
+        <Image
+            src={DemarioCardSrc.src}
+            alt="Your Card"
+            mt={"1%"}
+            transform={`rotate(348deg) scale(0.5)`}
+            zIndex={1}
+        />
     );
 }

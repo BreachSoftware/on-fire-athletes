@@ -75,6 +75,8 @@ export default function GameCoinButton() {
                 curCheckout.checkout.packageName === null,
                 auth,
                 transferContext.hash,
+                undefined,
+                curCheckout.isGift,
             );
         }
         // We only want to run this effect when the isComplete variable changes

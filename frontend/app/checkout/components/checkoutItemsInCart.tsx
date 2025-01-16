@@ -27,7 +27,7 @@ interface CheckoutItemsAttributes {
     numberOfCards: number;
     numberOfOrders: number;
     price: number;
-    itemType?: "card" | "bag tag";
+    itemType?: "card" | "bag tag" | "package";
     multiplier?: number;
 }
 interface CheckoutItemsInCartProps {

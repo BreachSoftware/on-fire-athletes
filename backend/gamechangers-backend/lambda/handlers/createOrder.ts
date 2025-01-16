@@ -14,6 +14,70 @@ import { dbTables } from "../../EnvironmentManager/EnvironmentManager";
 const dynamoDb = new DynamoDB.DocumentClient();
 
 /**
+ * Handles the creation of a gift order.
+ * @param data - The data for the gift order.
+ * @returns A promise that resolves to the API Gateway proxy result.
+ */
+async function handleGiftOrder(
+	uuid: string,
+	currentUnixTime: number,
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	data: any,
+) {
+	// Verify that the receiver_uuid exists in the database
+	const receiverResponse = await checkIfUserExists(data.receiver_uuid);
+
+	if (receiverResponse.statusCode === 404) {
+		receiverResponse.body = JSON.stringify({
+			error: "The receiver_uuid does not exist in the Users database",
+		});
+		return receiverResponse;
+	}
+
+	// Define the parameters for the DynamoDB put operation
+	const params = {
+		TableName: dbTables.GamechangersOrders(),
+		Item: {
+			uuid: uuid,
+			card_uuid: "GIFT",
+			card_generatedBy: "GIFT",
+			cost_paid: data.cost_paid,
+			sender_uuid: data.sender_uuid,
+			receiver_uuid: data.receiver_uuid,
+			physicalCardQuantity: data.physicalCardQuantity,
+			digitalCardQuantity: data.digitalCardQuantity,
+			bagTagQuantity: data.bagTagQuantity,
+			transaction_time: currentUnixTime,
+			first_name: data.first_name,
+			last_name: data.last_name,
+			email: data.email,
+			phone_number: data.phone_number,
+			shipping_firstName: data.shipping_firstName,
+			shipping_lastName: data.shipping_lastName,
+			address: data.address,
+			city: data.city,
+			state: data.state,
+			zip_code: data.zip_code,
+			coupon_used: data.coupon_used,
+			payment_method: data.payment_method,
+			package_name: data.package_name,
+		},
+	};
+
+	console.log("Creating a new gift order with the following parameters: ");
+	console.log(params);
+
+	// Insert the card item into the DynamoDB table
+	await dynamoDb.put(params).promise();
+
+	// Return a success response with the created order item
+	return {
+		statusCode: 200,
+		body: JSON.stringify(params.Item),
+	};
+}
+
+/**
  * Creates a new order.
  * @param event - The API Gateway event object.
  * @returns A promise that resolves to the API Gateway proxy result.
@@ -23,10 +87,20 @@ export const createOrder: Handler = async (
 ): Promise<APIGatewayProxyResult> => {
 	const uuid: string = uuidv4();
 	const currentUnixTime: number = Math.floor(Date.now() / 1000);
+
 	try {
 		if (event.body) {
 			// Parse the request body from the event
 			const data = JSON.parse(event.body as string);
+
+			if (data.is_gift) {
+				const response = await handleGiftOrder(
+					uuid,
+					currentUnixTime,
+					data,
+				);
+				return response;
+			}
 
 			// Error Checking
 			if (

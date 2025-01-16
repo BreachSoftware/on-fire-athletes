@@ -138,6 +138,18 @@ export default function CheckoutForm({ buyCard }: CheckoutFormProps) {
                             variant={"back"}
                             width="100px"
                             onClick={() => {
+                                if (curCheckout.isGift) {
+                                    let newStepNum = stepNumber - 1;
+                                    if (stepNumber === 4) {
+                                        newStepNum = 0;
+                                    }
+                                    curCheckout.setCheckout({
+                                        ...checkout,
+                                        stepNum: newStepNum,
+                                    });
+                                    return;
+                                }
+
                                 if (!buyingPhysicalCards) {
                                     curCheckout.setCheckout({
                                         ...checkout,
