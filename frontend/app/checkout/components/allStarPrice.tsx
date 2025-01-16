@@ -22,6 +22,7 @@ import { useRouter } from "next/navigation";
 import { handlePurchase } from "./completeOrder/stripeHandlePurchase";
 import { useAuth } from "@/hooks/useAuth";
 import CheckoutInfo from "@/hooks/CheckoutInfo";
+import { packages } from "./selectYourPackage/packages";
 
 /**
  * This component is responsible for rendering the all-star price section of the checkout page.
@@ -34,6 +35,8 @@ export default function AllStarPrice({ isNil }: { isNil?: boolean }) {
 
     const auth = useAuth();
     const router = useRouter();
+
+    const pkg = checkout.packageName ? packages[checkout.packageName] : null;
 
     const card = checkout.onFireCard;
 
@@ -150,7 +153,9 @@ export default function AllStarPrice({ isNil }: { isNil?: boolean }) {
                                     fontFamily={"Barlow Condensed"}
                                     fontWeight={600}
                                 >
-                                    YOU&apos;VE SELECTED THE ALL-STAR PACKAGE
+                                    {auth.isSubscribed
+                                        ? "TIME TO PRICE YOUR CARD!"
+                                        : `YOU'VE SELECTED THE ${pkg?.title || "ALL-STAR"} PACKAGE`}
                                 </Heading>
                             </Flex>
                             <Divider borderWidth={2} borderColor="gray.1700" />
@@ -198,7 +203,7 @@ export default function AllStarPrice({ isNil }: { isNil?: boolean }) {
                                     {/* Input for the price, with validation to ensure correct format */}
                                     <Input
                                         variant={"basicInput"}
-                                        placeholder="20.00*"
+                                        placeholder="25.00*"
                                         paddingLeft={{
                                             base: "36px",
                                             md: "33px",

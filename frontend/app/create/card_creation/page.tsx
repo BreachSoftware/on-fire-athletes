@@ -124,14 +124,18 @@ export default function CreationOverview({ isNil = false }: CardCreationProps) {
         >
             <HStack w="100%" h="100%" align="top" spacing={0}>
                 <VStack w="100%" flexGrow={1} height="100%">
-                    <Flex
-                        w="100%"
-                        direction={"column"}
-                        h={"100px"}
-                        mb={{ base: 0, md: "48px" }}
-                    >
-                        <NavBar />
-                    </Flex>
+                    {isNil ? (
+                        <Box w="100%" mb={{ base: "24px", md: "96px" }} />
+                    ) : (
+                        <Flex
+                            w="100%"
+                            direction={"column"}
+                            h={"100px"}
+                            mb={{ base: 0, md: "48px" }}
+                        >
+                            <NavBar />
+                        </Flex>
+                    )}
                     <HStack
                         w="100%"
                         alignItems="flex-start"
@@ -198,12 +202,14 @@ export default function CreationOverview({ isNil = false }: CardCreationProps) {
                         )}
                     </HStack>
                 </VStack>
-                <Box
-                    h={{ base: "0vh", md: "100vh" }}
-                    display={{ base: "none", sm: "none", md: "inherit" }}
-                >
-                    <Sidebar height={"auto"} />
-                </Box>
+                {!isNil && (
+                    <Box
+                        h={{ base: "0vh", md: "100vh" }}
+                        display={{ base: "none", sm: "none", md: "inherit" }}
+                    >
+                        <Sidebar height={"auto"} />
+                    </Box>
+                )}
             </HStack>
             <Box visibility="hidden" pos="absolute" left="-9999px" top={0}>
                 <OnfireCard

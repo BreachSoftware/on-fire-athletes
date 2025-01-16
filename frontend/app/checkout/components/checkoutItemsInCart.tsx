@@ -233,7 +233,11 @@ export default function CheckoutItemsInCart(props: CheckoutItemsInCartProps) {
     );
 }
 
-function ShippingAndHandlingItem() {
+export function ShippingAndHandlingItem({
+    isUnderTotal = false,
+}: {
+    isUnderTotal?: boolean;
+}) {
     const { checkout } = useCurrentCheckout();
     const { shippingCost } = checkout;
 
@@ -249,7 +253,9 @@ function ShippingAndHandlingItem() {
             color={"#808080"}
             transform={"skew(-10deg)"}
         >
-            * Shipping & Handling: ${shippingCost}
+            {isUnderTotal
+                ? `* Includes S&H: $${shippingCost}`
+                : `* Shipping & Handling: $${shippingCost}`}
         </Text>
     );
 }

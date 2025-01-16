@@ -31,6 +31,7 @@ import {
 import CheckoutInfo from "@/hooks/CheckoutInfo";
 import { packages } from "@/app/checkout/components/selectYourPackage/packages";
 import DemarioCardSrc from "@/images/mockups/demario-card.png";
+import { useAuth } from "@/hooks/useAuth";
 
 // props
 interface CheckItemProps {
@@ -60,6 +61,8 @@ export default function Item({
     itemType = "card",
     multiplier = 1,
 }: CheckItemProps) {
+    const { isSubscribed } = useAuth();
+
     // leaving this commented might use in the future
     // const [ isHovered, setIsHovered ] = useState(false);
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -276,11 +279,16 @@ export default function Item({
                                         title === PHYSICAL_ADD_ON_TITLE
                                     ) {
                                         updatedCheckout.physicalCardCount =
-                                            defaults?.defaultPhysicalCardCount ||
-                                            0;
+                                            isSubscribed
+                                                ? 0
+                                                : defaults?.defaultPhysicalCardCount ||
+                                                  0;
                                     } else if (title === BAG_TAG_ADD_ON_TITLE) {
                                         updatedCheckout.bagTagCount =
-                                            defaults?.defaultBagTagCount || 0;
+                                            isSubscribed
+                                                ? 0
+                                                : defaults?.defaultBagTagCount ||
+                                                  0;
                                     }
 
                                     console.log(

@@ -25,6 +25,7 @@ export default function CompleteOrderBody() {
 
     // Determines if there are physical cards present in the checkout cart
     const physicalCardCount = checkout.physicalCardCount;
+    const bagTagCount = checkout.bagTagCount;
 
     const isMobile = useBreakpointValue({ base: true, lg: false });
 
@@ -67,7 +68,7 @@ export default function CompleteOrderBody() {
                             />
                         </Box>
                         {/* Section for the shipping address summary */}
-                        {physicalCardCount > 0 && (
+                        {(physicalCardCount > 0 || bagTagCount > 0) && (
                             <Box w={"100%"} flex={1}>
                                 <CompleteOrderSection
                                     categoryTitle="Shipping To"

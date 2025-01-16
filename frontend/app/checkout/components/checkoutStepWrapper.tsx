@@ -1,6 +1,7 @@
 "use client";
 // Import necessary components and hooks from Chakra UI and React
 import {
+    Box,
     Button,
     Flex,
     Heading,
@@ -20,6 +21,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { totalPriceInCart } from "@/utils/utils";
 import React from "react";
 import CheckoutInfo from "@/hooks/CheckoutInfo";
+import { ShippingAndHandlingItem } from "./checkoutItemsInCart";
 
 interface CheckoutStepWrapperProps {
     onFireCard: TradingCardInfo | null;
@@ -262,15 +264,20 @@ export default function CheckoutStepWrapper({
                             alignItems={"center"}
                         >
                             {/* total price of all items in cart */}
-                            <Text
-                                fontFamily={"Barlow"}
-                                transform={"skewX(-6deg)"}
-                                fontSize={"2xl"}
-                                fontWeight={"bold"}
-                            >
-                                Total: ${totalPrice.toFixed(2)}
-                                {buyingPhysicalCards ? "*" : ""}
-                            </Text>
+                            <Box>
+                                <Text
+                                    fontFamily={"Barlow"}
+                                    transform={"skewX(-6deg)"}
+                                    fontSize={"2xl"}
+                                    fontWeight={"bold"}
+                                >
+                                    Total: ${totalPrice.toFixed(2)}
+                                    {buyingPhysicalCards ? "*" : ""}
+                                </Text>
+                                {buyingPhysicalCards && (
+                                    <ShippingAndHandlingItem isUnderTotal />
+                                )}
+                            </Box>
                             <Flex gap="10%">
                                 <Button
                                     variant={"back"}

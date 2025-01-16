@@ -1,8 +1,6 @@
 "use client";
-import Sidebar from "@/components/sidebar";
 import { Box, Flex, Spinner } from "@chakra-ui/react";
 import AllStarPrice from "../checkout/components/allStarPrice";
-import NavBar from "../navbar";
 import { useEffect, useState } from "react";
 import { getCard } from "../generate_card_asset/cardFunctions";
 import { getWithExpiry } from "@/components/localStorageFunctions";
@@ -54,13 +52,6 @@ export default function NilPricePage() {
             }
         >
             <Flex flexDir="column" flex={1}>
-                <Flex
-                    w="100%"
-                    direction={"column"}
-                    mb={{ base: "32px", md: "48px" }}
-                >
-                    <NavBar />
-                </Flex>
                 <Box w="full" flex={1}>
                     {!checkout.onFireCard ? (
                         <Box
@@ -77,15 +68,6 @@ export default function NilPricePage() {
                     )}
                 </Box>
             </Flex>
-            <Box
-                position="sticky"
-                top={0}
-                w="140px"
-                h="100dvh"
-                display={{ base: "none", md: "inline" }}
-            >
-                <Sidebar height="100dvh" backgroundPresent />
-            </Box>
         </Flex>
     );
 }

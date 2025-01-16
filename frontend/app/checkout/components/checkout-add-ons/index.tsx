@@ -126,7 +126,7 @@ export default function CheckoutAddOns() {
     );
 
     const phsyicalCardDisplayPrice = isSubscribed
-        ? `$14.99/ea ($9.99/ea if 6+)`
+        ? `$14.99/ea ($9.99/ea after 6)`
         : `$24.99/ea`;
 
     const physicalCardOption: AddOnOptionType = useMemo(
@@ -135,9 +135,9 @@ export default function CheckoutAddOns() {
             price: phsyicalCardDisplayPrice,
             value: physicalCardCount - defaultPhysicalCardCount,
             onChange: (value) => {
-                const physPrice = isSubscribed
-                    ? value >= 6
-                        ? 9.99
+                const avgPrice = isSubscribed
+                    ? value > 6
+                        ? (6 * 14.99 + (value - 6) * 9.99) / value
                         : 14.99
                     : 24.99;
 
@@ -147,7 +147,7 @@ export default function CheckoutAddOns() {
                         PHYSICAL_ADD_ON_TITLE,
                         value,
                         "card",
-                        physPrice,
+                        avgPrice,
                     ),
                 });
             },
