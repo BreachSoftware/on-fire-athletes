@@ -7,9 +7,9 @@ import React from "react";
  * The navigation bar for the checkout page
  * @returns JSX.Element
  */
-function NavigationBar() {
+function NavigationBar({ buyingOtherCard }: { buyingOtherCard: boolean }) {
     const { checkout, setCheckout } = useCurrentCheckout();
-    const CREATE_PAGES = useCreateNavigation();
+    const CREATE_PAGES = useCreateNavigation(buyingOtherCard);
 
     return (
         <Box>
@@ -59,7 +59,11 @@ function NavigationBar() {
  * The header component for the checkout page
  * @returns JSX.Element
  */
-export default function CheckoutHeader() {
+export default function CheckoutHeader({
+    buyingOtherCard,
+}: {
+    buyingOtherCard: boolean;
+}) {
     return (
         <>
             <Box
@@ -88,7 +92,7 @@ export default function CheckoutHeader() {
                     </Flex>
                 </Flex>
                 <Divider borderColor="#31453D" />
-                <NavigationBar />
+                <NavigationBar buyingOtherCard={buyingOtherCard} />
             </Box>
         </>
     );

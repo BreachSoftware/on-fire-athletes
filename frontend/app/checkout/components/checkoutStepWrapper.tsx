@@ -159,7 +159,7 @@ export default function CheckoutStepWrapper({
                     </Heading>
 
                     {/* Navigation section for steps */}
-                    {!screenTooSmall && !isGift && (
+                    {!screenTooSmall && !isGift && !buyingOtherCard && (
                         <Flex flexDirection={{ base: "column", lg: "row" }}>
                             {checkoutSteps.map((step, index) => {
                                 if (index !== 0 && index !== 1) {

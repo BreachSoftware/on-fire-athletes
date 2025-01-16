@@ -11,16 +11,15 @@ type CreatePage = {
  * Hook to manage steps in the checkout header navigation bar
  * @returns JSX.Element
  */
-export default function useCreateNavigation() {
-    const { checkout } = useCurrentCheckout();
-    const { shippingAddress } = checkout;
+export default function useCreateNavigation(buyingOtherCard: boolean) {
+    const { checkout, isGift } = useCurrentCheckout();
+    const { shippingAddress, physicalCardCount, bagTagCount } = checkout;
 
-    const shouldExcludeShipping = checkout.packageName === "rookie";
+    const shouldExcludeAddOns = isGift || buyingOtherCard;
+    const shouldExcludeShipping = physicalCardCount === 0 && bagTagCount === 0;
 
     const isShippingAddressComplete =
         shippingAddress.city &&
-        shippingAddress.firstName &&
-        shippingAddress.lastName &&
         shippingAddress.state &&
         shippingAddress.streetAddress &&
         shippingAddress.zipCode;
@@ -34,6 +33,11 @@ export default function useCreateNavigation() {
         : !isShippingAddressComplete;
 
     const CREATE_PAGES: CreatePage[] = [
+        {
+            name: "Add-ons",
+            stepNum: 2,
+            shouldHide: shouldExcludeAddOns,
+        },
         {
             name: "Shipping Address",
             stepNum: 3,

@@ -332,7 +332,9 @@ export default function CheckoutPage() {
                                     px="24px"
                                     pb="32px"
                                 >
-                                    <CheckoutHeader />
+                                    <CheckoutHeader
+                                        buyingOtherCard={buyingOtherCard}
+                                    />
                                     <CheckoutItemsInCart
                                         items={itemsInCart}
                                         buyingOtherCard={buyingOtherCard}
