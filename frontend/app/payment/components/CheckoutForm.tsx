@@ -37,6 +37,8 @@ export default function CheckoutForm({ buyCard }: CheckoutFormProps) {
         dispatchEvent(new Event("resetLoadingButton"));
     }, 3000);
 
+    // NEW CODE FOR COMMIT
+
     /**
      *
      * Handles the form submission.
