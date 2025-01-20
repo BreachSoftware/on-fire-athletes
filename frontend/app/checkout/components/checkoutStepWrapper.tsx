@@ -68,30 +68,46 @@ export default function CheckoutStepWrapper({
     const totalPrice = totalPriceInCart(checkout, buyingPhysicalCards);
 
     const filteredSteps = getCheckoutSteps(
+        isGift,
         buyingPhysicalCards,
         auth.isSubscribed,
         totalPrice,
+        buyingOtherCard,
     );
 
     function getCheckoutSteps(
+        isGift: boolean,
         buyingPhysicalCards: boolean,
         isSubscribed: boolean,
         totalPrice: number,
+        buyingOtherCard: boolean,
     ) {
-        if (buyingPhysicalCards) {
-            return checkoutSteps;
-        }
+        return checkoutSteps.filter((_, index) => {
+            // Skip "Add-Ons" step if: the order is a gift or user is clicking "Buy Now" on an existing card
+            if (index === stepNum.ADD_ONS && (isGift || buyingOtherCard)) {
+                return false;
+            }
+            // Skip "Shipping Address" step if: order is a gift, or user is subscribed and not buying physical cards
+            if (
+                index === stepNum.SHIPPING_ADDRESS &&
+                (isGift || (isSubscribed && !buyingPhysicalCards))
+            ) {
+                return false;
+            }
 
-        if (isSubscribed && totalPrice === 0) {
-            return checkoutSteps.filter((_, index) => index !== 2); // Skips 'Add-Ons' step
-        }
+            // Skip "Payment Info" step if: user is subscribed and there are no add-ons
+            if (
+                index === stepNum.PAYMENT_DETAILS &&
+                isSubscribed &&
+                totalPrice === 0
+            ) {
+                return false;
+            }
 
-        if (!buyingPhysicalCards) {
-            return checkoutSteps.filter((_, index) => index !== 3); // Skips 'Shipping Address' step
-        }
-        return checkoutSteps;
+            // Include all other steps
+            return true;
+        });
     }
-
     /**
      * Function to check if the current step is incomplete
      * @returns {boolean} - Whether the current step is incomplete
@@ -167,29 +183,7 @@ export default function CheckoutStepWrapper({
     }
 
     function handleNextClick() {
-        if (
-            stepNumber === stepNum.ADD_ONS &&
-            totalPrice === 0 &&
-            auth.isSubscribed
-        ) {
-            curCheckout.updateCheckout({
-                stepNum: stepNum.REVIEW_ORDER,
-            });
-            return;
-        }
-
-        if (
-            !buyingPhysicalCards &&
-            checkout.packageName !== "prospect" &&
-            stepNumber == stepNum.ADD_ONS
-        ) {
-            const lastVisitedStep =
-                stepNumber + 2 > visitedSteps ? stepNumber + 2 : visitedSteps;
-            curCheckout.updateCheckout({
-                stepNum: stepNumber + 2,
-                visitedSteps: lastVisitedStep,
-            });
-        } else if (stepNumber >= 0 && stepNumber < filteredSteps.length - 1) {
+        if (stepNumber >= 0 && stepNumber < filteredSteps.length - 1) {
             let advance = false;
             if (stepNumber === (stepNum.PAYMENT_DETAILS as stepNum)) {
                 const saveDetailsButton = document.getElementById(
@@ -265,7 +259,7 @@ export default function CheckoutStepWrapper({
                         mb={{ base: "25px", lg: "0px" }}
                     >
                         {/* Display the title of the current step based on the stepNumber */}
-                        {filteredSteps[stepNumber].title}
+                        {checkoutSteps[stepNumber].title}
                     </Heading>
 
                     {/* Navigation section for steps */}
@@ -349,7 +343,7 @@ export default function CheckoutStepWrapper({
                 </Flex>
 
                 {/* Content area for the current step, displaying the component from checkoutSteps */}
-                {filteredSteps[stepNumber].bodyElement}
+                {checkoutSteps[stepNumber].bodyElement}
 
                 {/* Footer section with the Next or Purchase button and optional bot-left element */}
                 {stepNumber !== stepNum.PAYMENT_DETAILS && (
@@ -369,7 +363,7 @@ export default function CheckoutStepWrapper({
                         mt={"15px"}
                     >
                         {/* Bottom left element rendering at the beginning of this HStack */}
-                        {filteredSteps[stepNumber].cornerElement}
+                        {checkoutSteps[stepNumber].cornerElement}
 
                         <Flex
                             direction={{ base: "column", lg: "row" }}

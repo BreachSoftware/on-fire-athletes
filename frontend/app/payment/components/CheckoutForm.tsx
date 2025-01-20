@@ -4,7 +4,7 @@ import { useStripe, useElements } from "@stripe/react-stripe-js";
 import { Text, Button, Flex, useToast } from "@chakra-ui/react";
 import { useCurrentCheckout } from "@/hooks/useCheckout";
 import { checkoutSteps } from "@/app/checkout/components/checkoutSteps";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
 import CouponInput from "./coupon-input";
@@ -33,10 +33,13 @@ export default function CheckoutForm({ buyCard }: CheckoutFormProps) {
     const [isLoading, setIsLoading] = useState(false);
 
     // dispatch the Event on an interval to ensure that the button is never stuck perpetually loading
-    setInterval(() => {
-        dispatchEvent(new Event("resetLoadingButton"));
-    }, 3000);
+    useEffect(() => {
+        const interval = setInterval(() => {
+            dispatchEvent(new Event("resetLoadingButton"));
+        }, 3000);
 
+        return () => clearInterval(interval);
+    }, []);
     /**
      *
      * Handles the form submission.
@@ -143,21 +146,18 @@ export default function CheckoutForm({ buyCard }: CheckoutFormProps) {
                                     if (stepNumber === 4) {
                                         newStepNum = 0;
                                     }
-                                    curCheckout.setCheckout({
-                                        ...checkout,
+                                    curCheckout.updateCheckout({
                                         stepNum: newStepNum,
                                     });
                                     return;
                                 }
 
                                 if (!buyingPhysicalCards) {
-                                    curCheckout.setCheckout({
-                                        ...checkout,
+                                    curCheckout.updateCheckout({
                                         stepNum: stepNumber - 2,
                                     });
                                 } else {
-                                    curCheckout.setCheckout({
-                                        ...checkout,
+                                    curCheckout.updateCheckout({
                                         stepNum: stepNumber - 1,
                                     });
                                 }
