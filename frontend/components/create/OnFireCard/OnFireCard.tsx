@@ -131,7 +131,14 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
 
         headers.append("Content-Type", "application/json");
 
-        const [isFlipped, setIsFlipped] = useState(true);
+        const [isFlipped, setIsFlipped] = useState(false);
+        const [hasBeenFlipped, setHasBeenFlipped] = useState(false);
+
+        useEffect(() => {
+            if (!isFlipped && !hasBeenFlipped) {
+                handleFlip(true);
+            }
+        }, [isFlipped, hasBeenFlipped]);
 
         const frontCardFlip = {
             visible: { transform: "rotateY(0deg)" },
@@ -173,13 +180,10 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                 });
                 return;
             }
+            setHasBeenFlipped(true);
             setCard({ ...curCard, frontIsShowing: flip });
             setIsFlipped(flip);
         }
-
-        useEffect(() => {
-            setIsFlipped(curCard.frontIsShowing);
-        }, [curCard.frontIsShowing]);
 
         /**
          *
