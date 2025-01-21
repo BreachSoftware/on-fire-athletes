@@ -65,6 +65,7 @@ export function rgbToHsl(
     // eslint-disable-next-line prefer-const
     let h = 0,
         s = 0,
+        // eslint-disable-next-line prefer-const
         l = (max + min) / 2;
 
     if (max != min) {
