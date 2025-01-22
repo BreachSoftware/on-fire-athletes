@@ -190,3 +190,36 @@ export function saturateHex(hex: string, amount: number = 1): string {
     // Convert RGB back to hex
     return rgbToHex(newR, newG, newB);
 }
+
+/**
+ * Function that determines if a color is too dark to be used as a background color
+ * @param hex the string to check
+ * @returns true if the color is too dark, false otherwise
+ */
+export function colorTooDark(hex: string, threshold: number = 125): boolean {
+    const rgb = hexToRgb(hex);
+    const brightness = (rgb[0] * 299 + rgb[1] * 587 + rgb[2] * 114) / 1000;
+    return brightness < threshold;
+}
+
+/**
+ * Lightens a hex string if it is too dark
+ * @param hex the hex string to lighten
+ * @returns the lightened hex string
+ */
+export function lightenColor(hex: string, minimum: number = 125): string {
+    // Convert hex to RGB
+    const rgb = hexToRgb(hex);
+
+    // Convert RGB to HSL
+    const hsl = rgbToHsl(rgb[0], rgb[1], rgb[2]);
+
+    // Adjust the lightness (L) to 125 (assuming L is in the range 0-255)
+    hsl[2] = minimum / 255; // Convert to the HSL scale (0-1)
+
+    // Convert back to RGB
+    const newRgb = hslToRgb(hsl[0], hsl[1], hsl[2]);
+
+    // Convert the new RGB back to hex
+    return rgbToHex(newRgb[0], newRgb[1], newRgb[2]);
+}
