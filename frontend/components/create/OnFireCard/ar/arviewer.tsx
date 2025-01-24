@@ -130,65 +130,77 @@ function ARViewer() {
             : readCard.backVideoURL;
 
         const { width, height } = await getVideoDimensions(backVideoUrl);
+
+        console.log({ width, height });
         const dbWidth = fetchedCard.backVideoWidth;
-        // const dbHeight = fetchedCard.backVideoHeight;
 
         const aspectRatio = width / height;
 
         let targetHeight = HEIGHT_OF_CARD;
         let targetWidth = targetHeight * aspectRatio;
 
-        // const baseTargetWidth = targetWidth;
         const rotation = fetchedCard.backVideoRotation;
         const isRotated = rotation === 90 || rotation === 270;
 
-        // console.log({ rotation });
+        console.log("Rotation is", rotation, "isRotated is", isRotated);
 
         const scale = isDefaultBack
             ? 1
             : dbWidth / (isRotated ? BASE_PIXEL_HEIGHT : BASE_PIXEL_WIDTH);
 
-        // console.log({ scale });
+        console.log("Original scale is", scale);
 
         const videoXOff =
-            fetchedCard.backVideoXOffset / PIXEL_AFRAME_CONVERSION;
+            fetchedCard.backVideoXOffset / PIXEL_AFRAME_CONVERSION +
+            (fetchedCard.arVideoXOffset ?? 0);
         const videoYOff =
-            fetchedCard.backVideoYOffset / PIXEL_AFRAME_CONVERSION;
+            fetchedCard.backVideoYOffset / PIXEL_AFRAME_CONVERSION +
+            (fetchedCard.arVideoYOffset ?? 0);
 
         setScale(scale);
 
         const effectiveWidth = targetWidth * scale;
 
-        if (effectiveWidth < WIDTH_OF_CARD) {
+        if (!isRotated && effectiveWidth < WIDTH_OF_CARD) {
+            console.log("Effective width is less than the card width");
             const widthScaleAdjustment = WIDTH_OF_CARD / effectiveWidth;
             targetWidth = effectiveWidth * widthScaleAdjustment;
-
-            // console.log({ effectiveWidth, widthScaleAdjustment, targetWidth });
-
             targetHeight *= widthScaleAdjustment;
         }
 
-        // const additionalOffset = targetHeight * effectiveScale - targetHeight;
-        // videoYOff -= additionalOffset / 2;
+        if (isRotated && effectiveWidth < HEIGHT_OF_CARD) {
+            console.log("Effective width is less than the card height");
+            const widthScaleAdjustment = HEIGHT_OF_CARD / effectiveWidth;
+            targetWidth = effectiveWidth * widthScaleAdjustment;
+            targetHeight *= widthScaleAdjustment;
+        }
 
-        // console.log({
-        //     width,
-        //     height,
-        //     targetHeight,
-        //     targetWidth,
-        //     dbWidth,
-        //     dbHeight,
-        //     videoXOff,
-        //     videoYOff,
-        //     scale: dbWidth / width,
-        //     baseTargetWidth,
-        // });
+        console.log({
+            width,
+            height,
+            targetHeight,
+            targetWidth,
+            dbWidth,
+            // dbHeight,
+            videoXOff,
+            videoYOff,
+            scale: dbWidth / width,
+            // baseTargetWidth,
+        });
 
-        // if (rotation === 90 || rotation === 270) {
-        //     const temp = targetHeight;
-        //     targetHeight = targetWidth;
-        //     targetWidth = temp;
-        // }
+        if (isRotated) {
+            const temp = targetHeight;
+            targetHeight = targetWidth;
+            targetWidth = temp;
+
+            const adjustedScale = isDefaultBack
+                ? 1
+                : dbWidth / BASE_PIXEL_WIDTH;
+
+            console.log({ adjustedScale });
+            console.log("Adjusted scale is", adjustedScale);
+            setScale(adjustedScale);
+        }
 
         setHeight(targetHeight);
         setWidth(targetWidth);
@@ -356,8 +368,8 @@ function ARViewer() {
                 mindar-image={`imageTargetSrc: ${determineMindFile()};`} // Also have front and back
                 renderer="colorManagement: true, physicallyCorrectLights"
                 vr-mode-ui="enabled: false"
-                filterMinCF="0.001"
-                filterBeta="100"
+                filterMinCF="0.0001"
+                filterBeta="1000"
                 missTolerance="20" // warmupTolerance="100" missTolerance="1000"
                 xr-mode-ui="enabled: false"
                 device-orientation-permission-ui="enabled: false"
