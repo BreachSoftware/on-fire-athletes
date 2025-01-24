@@ -437,6 +437,8 @@ export async function submitCardWithAuth({
             cardImage: cardUrls.cardS3URL,
             cardBackS3URL: printCardUrls.cardBackS3URL,
             cardPrintS3URL: printCardUrls.cardPrintS3URL,
+            frontPrintBagTagS3URL: printCardUrls.frontPrintBagTagS3URL,
+            backPrintBagTagS3URL: printCardUrls.backPrintBagTagS3URL,
             cardForegroundS3URL: cardUrls.cardForegroundS3URL,
             cardBackgroundS3URL: cardUrls.cardBackgroundS3URL,
             submitted: true,

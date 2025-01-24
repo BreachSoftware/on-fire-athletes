@@ -208,7 +208,7 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
         const [isVideoLoaded, setIsVideoLoaded] = useState(false);
 
         useEffect(() => {
-            if (curCard.backVideoURL && !isVideoLoaded) {
+            if (!card && curCard.backVideoURL && !isVideoLoaded) {
                 setIsVideoLoaded(true);
                 handleFlip(false);
             }
