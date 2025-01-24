@@ -72,8 +72,8 @@ async function compileMindFile(cardId) {
             cardData.cardBackS3URL,
             // cardData.frontPrintTradingCard,
             // cardData.backPrintTradingCard,
-            // cardData.frontPrintBagTag,
-            // cardData.backPrintBagTag,
+            // cardData.frontPrintBagTagS3URL,
+            // cardData.backPrintBagTagS3URL,
         ].filter(Boolean);
 
         const imageBase64Array = await Promise.all(

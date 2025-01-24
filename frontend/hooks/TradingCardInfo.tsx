@@ -47,6 +47,8 @@ export default class TradingCardInfo {
     cardPrintS3URL: string;
     cardForegroundS3URL: string;
     cardBackgroundS3URL: string;
+    frontPrintBagTagS3URL: string;
+    backPrintBagTagS3URL: string;
     stepNumber: number;
     totalCreated: number;
     currentlyAvailable: number;
@@ -116,6 +118,8 @@ export default class TradingCardInfo {
         cardPrintS3URL?: string;
         cardForegroundS3URL?: string;
         cardBackgroundS3URL?: string;
+        frontPrintBagTagS3URL?: string;
+        backPrintBagTagS3URL?: string;
         stepNumber?: number;
         totalCreated?: number;
         currentlyAvailable?: number;
@@ -180,6 +184,8 @@ export default class TradingCardInfo {
         this.cardPrintS3URL = options?.cardPrintS3URL || "";
         this.cardForegroundS3URL = options?.cardForegroundS3URL || "";
         this.cardBackgroundS3URL = options?.cardBackgroundS3URL || "";
+        this.frontPrintBagTagS3URL = options?.frontPrintBagTagS3URL || "";
+        this.backPrintBagTagS3URL = options?.backPrintBagTagS3URL || "";
         this.stepNumber = options?.stepNumber || 1;
         this.totalCreated = options?.totalCreated || 0;
         this.currentlyAvailable = options?.currentlyAvailable || 0;
@@ -201,8 +207,6 @@ export default class TradingCardInfo {
         this.heroXOffset = options?.heroXOffset || 0;
         this.heroYOffset = options?.heroYOffset || 0;
         this.heroWidth = options?.heroWidth || 350;
-        this.cardForegroundS3URL = options?.cardForegroundS3URL || "";
-        this.cardBackgroundS3URL = options?.cardBackgroundS3URL || "";
         this.signature = options?.signature || "";
         this.signatureS3URL = options?.signatureS3URL || "";
         this.signatureXOffset = options?.signatureXOffset || 0;
@@ -273,6 +277,8 @@ export default class TradingCardInfo {
 			heroWidth: ${cardInfo.heroWidth}
 			cardForegroundS3URL: ${cardInfo.cardForegroundS3URL}
 			cardBackgroundS3URL: ${cardInfo.cardBackgroundS3URL}
+			frontPrintBagTagS3URL: ${cardInfo.frontPrintBagTagS3URL}  
+			backPrintBagTagS3URL: ${cardInfo.backPrintBagTagS3URL}
 			backVideoURL: ${cardInfo.backVideoURL.substring(0, 100)}
 			backVideoS3URL: ${cardInfo.backVideoS3URL}
 			backVideoURL: ${cardInfo.backVideoURL.substring(0, 100)}

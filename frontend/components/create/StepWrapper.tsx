@@ -74,6 +74,8 @@ interface CardImageData {
 interface PrintCardImageData {
     cardBackImageBase64: string;
     cardPrintImageBase64: string;
+    frontPrintBagTagBase64: string;
+    backPrintBagTagBase64: string;
 }
 
 interface CardUrls {
@@ -85,6 +87,8 @@ interface CardUrls {
 interface PrintCardUrls {
     cardBackS3URL: string;
     cardPrintS3URL: string;
+    frontPrintBagTagS3URL: string;
+    backPrintBagTagS3URL: string;
 }
 
 class CardSubmissionError extends Error {
@@ -285,22 +289,48 @@ async function uploadImages(
 
 async function uploadPrintImages(
     filename: string,
-    { cardBackImageBase64, cardPrintImageBase64 }: PrintCardImageData,
+    {
+        cardBackImageBase64,
+        cardPrintImageBase64,
+        frontPrintBagTagBase64,
+        backPrintBagTagBase64,
+    }: PrintCardImageData,
 ): Promise<PrintCardUrls> {
-    const [cardBackBlob, cardPrintBlob] = await Promise.all([
+    const [
+        cardBackBlob,
+        cardPrintBlob,
+        frontPrintBagTagBlob,
+        backPrintBagTagBlob,
+    ] = await Promise.all([
         b64toBlob(cardBackImageBase64),
         b64toBlob(cardPrintImageBase64),
+        b64toBlob(frontPrintBagTagBase64),
+        b64toBlob(backPrintBagTagBase64),
     ]);
 
     await Promise.all([
         uploadAssetToS3(filename, cardBackBlob, "card-back", "image/png"),
         uploadAssetToS3(filename, cardPrintBlob, "card-print", "image/png"),
+        uploadAssetToS3(
+            filename,
+            frontPrintBagTagBlob,
+            "front-print-bag-tag",
+            "image/png",
+        ),
+        uploadAssetToS3(
+            filename,
+            backPrintBagTagBlob,
+            "back-print-bag-tag",
+            "image/png",
+        ),
     ]);
 
     const baseUrl = "https://onfireathletes-media-uploads.s3.amazonaws.com";
     return {
         cardBackS3URL: `${baseUrl}/card-back/${filename}`,
         cardPrintS3URL: `${baseUrl}/card-print/${filename}`,
+        frontPrintBagTagS3URL: `${baseUrl}/front-print-bag-tag/${filename}`,
+        backPrintBagTagS3URL: `${baseUrl}/back-print-bag-tag/${filename}`,
     };
 }
 

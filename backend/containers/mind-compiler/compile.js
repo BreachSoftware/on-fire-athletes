@@ -43,6 +43,8 @@ async function uploadToS3(cardId, buffer) {
  * @returns {Promise<string>} - The S3 URL of the uploaded .mind file
  */
 async function compileMindFile(cardId) {
+    console.log("[compileMindFile] Starting compilation for cardId:", cardId);
+
     const browser = await puppeteer.launch({
         headless: "new",
         args: [
@@ -55,10 +57,14 @@ async function compileMindFile(cardId) {
     const page = await browser.newPage();
 
     try {
-        // 1. Get card data from API
+        console.log(
+            "[compileMindFile] Fetching card data from:",
+            `${API_BASE}/getCard?uuid=${cardId}`,
+        );
         const { data: cardData } = await axios.get(
             `${API_BASE}/getCard?uuid=${cardId}`,
         );
+        console.log("[compileMindFile] cardData:", cardData);
 
         if (!cardData.cardImage) {
             throw new Error("Card does not have required images");
@@ -70,15 +76,17 @@ async function compileMindFile(cardId) {
             cardData.cardBackS3URL,
             // cardData.frontPrintTradingCard,
             // cardData.backPrintTradingCard,
-            // cardData.frontPrintBagTag,
-            // cardData.backPrintBagTag,
+            // cardData.frontPrintBagTagS3URL,
+            // cardData.backPrintBagTagS3URL,
         ].filter(Boolean);
 
+        console.log(`[compileMindFile] Got ${images.length} images...`);
         const imageBase64Array = await Promise.all(
             images.map(async (imageUrl) => {
                 const response = await axios.get(imageUrl, {
                     responseType: "arraybuffer",
                 });
+                console.log(`[compileMindFile] Got image ${imageUrl}...`);
                 return Buffer.from(response.data).toString("base64");
             }),
         );
@@ -104,6 +112,7 @@ async function compileMindFile(cardId) {
 
         // 4. Combine original + flipped images
         const allImages = [...imageBase64Array, ...validFlippedImages];
+        console.log(`[compileMindFile] All images: ${allImages.length}`);
 
         // 5. Load HTML page with MindAR compiler
         await page.goto("about:blank");
@@ -195,41 +204,27 @@ async function compileMindFile(cardId) {
             });
 
         // 6. Run MindAR compiler with better error handling
-        const compiledData = await page
-            .evaluate(async () => {
-                try {
-                    const result = await window.compile();
-                    if (!result) {
-                        throw new Error("Compilation returned no data");
-                    }
-                    return Array.from(new Uint8Array(result));
-                } catch (error) {
-                    console.error("Compilation status:", window.compileStatus);
-                    throw error;
-                }
-            })
-            .catch(async (error) => {
-                // Get any additional error context from the page
-                const errorContext = await page.evaluate(() => ({
-                    mindArPresent: !!window.MINDAR,
-                    mindArImagePresent: window.MINDAR && !!window.MINDAR.IMAGE,
-                    compileStatus: window.compileStatus,
-                }));
-
-                console.error("Compilation failed:", error);
-                console.error("Error context:", errorContext);
-                throw error;
-            });
+        const compiledData = await page.evaluate(async () => {
+            console.log("[Browser] Starting MindAR compiler...");
+            const result = await window.compile();
+            console.log(
+                "[Browser] MindAR compile result size:",
+                result?.byteLength || 0,
+            );
+            return Array.from(new Uint8Array(result));
+        });
 
         // Convert array of bytes into a Node.js Buffer
         const buffer = Buffer.from(compiledData);
 
         // 7. Upload the .mind file to S3
         const s3Url = await uploadToS3(cardId, buffer);
-        console.log(`Mind file uploaded successfully to ${s3Url}`);
+        console.log(
+            `[compileMindFile] Mind file uploaded successfully to ${s3Url}`,
+        );
         return s3Url;
     } catch (err) {
-        console.error("Error compiling Mind file:", err);
+        console.error("[compileMindFile] Error compiling Mind file:", err);
         throw err;
     } finally {
         await browser.close();
@@ -247,25 +242,29 @@ async function compileMindFile(cardId) {
     const taskArn = process.env.AWS_ECS_TASK_ARN;
 
     try {
+        console.log("[Main] Starting compile for cardId:", cardId);
         const s3Url = await compileMindFile(cardId);
         console.log(
-            `Mind file compilation complete. File available at: ${s3Url}`,
+            `[Main] Mind file compilation complete. File available at: ${s3Url}`,
         );
 
-        // Stop the task after completion
-        try {
+        // Stop the task after completion (only if ARN is set)
+        if (!taskArn) {
+            console.warn(
+                "[Main] No AWS_ECS_TASK_ARN provided. Skipping ECS task stop.",
+            );
+        } else {
+            console.log("[Main] Stopping ECS task with ARN:", taskArn);
             await ecs
                 .stopTask({
                     cluster: "OnFireCluster",
                     task: taskArn,
                 })
                 .promise();
-            console.log("ECS task stopped successfully.");
-        } catch (ecsError) {
-            console.error("Error stopping ECS task:", ecsError);
+            console.log("[Main] ECS task stopped successfully.");
         }
     } catch (error) {
-        console.error("Fatal error:", error);
+        console.error("[Main] Fatal error:", error);
         process.exit(1);
     }
 })();

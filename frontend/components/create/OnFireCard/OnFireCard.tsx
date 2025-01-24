@@ -205,6 +205,15 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [cardHook.curCard]);
 
+        const [isVideoLoaded, setIsVideoLoaded] = useState(false);
+
+        useEffect(() => {
+            if (curCard.backVideoURL && !isVideoLoaded) {
+                setIsVideoLoaded(true);
+                handleFlip(false);
+            }
+        }, [curCard.backVideoURL]);
+
         /*
          * An array of base64 strings of the recolored images.
          * This is in a state variable to allow the component to re-render when the user edits card colors.

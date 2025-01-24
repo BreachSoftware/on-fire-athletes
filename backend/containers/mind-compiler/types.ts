@@ -1,8 +1,8 @@
 export interface CardData {
     frontPrintTradingCard: string | null;
     backPrintTradingCard?: string | null;
-    frontPrintBagTag?: string | null;
-    backPrintBagTag?: string | null;
+    frontPrintBagTagS3URL?: string | null;
+    backPrintBagTagS3URL?: string | null;
 }
 
 export interface CompilationResult {
