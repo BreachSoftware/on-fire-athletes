@@ -32,6 +32,8 @@ import CardMaskReverse from "../../public/card_assets/card-mask-reverse.png";
 import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
 import { generateArCardBackImage } from "./OnFireCard/generate_card_images/generate-print-card-back";
 import { generatePrintCardFrontImage } from "./OnFireCard/generate_card_images/generate-print-card-front";
+import { generateBagTagFrontImage } from "./OnFireCard/generate_card_images/generate-bag-tag-front";
+import { generateBagTagBackImage } from "./OnFireCard/generate_card_images/generate-bag-tag-back";
 
 interface StepWrapperProps {
     numSteps: number;
@@ -190,8 +192,15 @@ async function generatePrintCardImages(
 ): Promise<{
     cardBackImageBase64: string;
     cardPrintImageBase64: string;
+    frontPrintBagTagBase64: string;
+    backPrintBagTagBase64: string;
 }> {
-    const [cardBackImageBase64, cardPrintImageBase64] = await Promise.all([
+    const [
+        cardBackImageBase64,
+        cardPrintImageBase64,
+        frontPrintBagTagBase64,
+        backPrintBagTagBase64,
+    ] = await Promise.all([
         generateArCardBackImage(cardInfo, {
             forPrint: true,
             editionNumber: 1,
@@ -200,11 +209,18 @@ async function generatePrintCardImages(
         generatePrintCardFrontImage(frontCardImageSrc, cardInfo.borderColor, {
             forPrint: true,
         }),
+        generateBagTagFrontImage(cardInfo.frontPhotoURL, cardInfo.borderColor),
+        generateBagTagBackImage(cardInfo, {
+            editionNumber: 1,
+            totalOverride: 1,
+        }),
     ]);
 
     return {
         cardBackImageBase64: cardBackImageBase64,
         cardPrintImageBase64: cardPrintImageBase64,
+        frontPrintBagTagBase64: frontPrintBagTagBase64,
+        backPrintBagTagBase64: backPrintBagTagBase64,
     };
 }
 

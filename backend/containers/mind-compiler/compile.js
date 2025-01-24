@@ -66,10 +66,12 @@ async function compileMindFile(cardId) {
 
         // 2. Download all images
         const images = [
-            cardData.frontPrintTradingCard,
-            cardData.backPrintTradingCard,
-            cardData.frontPrintBagTag,
-            cardData.backPrintBagTag,
+            cardData.cardPrintS3URL,
+            cardData.cardBackS3URL,
+            // cardData.frontPrintTradingCard,
+            // cardData.backPrintTradingCard,
+            // cardData.frontPrintBagTag,
+            // cardData.backPrintBagTag,
         ].filter(Boolean);
 
         const imageBase64Array = await Promise.all(

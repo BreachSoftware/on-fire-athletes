@@ -105,7 +105,7 @@ export async function generateArCardBackImage(
         CardFonts.BrotherhoodSansSerif,
     );
 
-    const textDefaultTop = 108;
+    const textDefaultTop = 148;
 
     // Calculate name positions
     const firstNameTop = textDefaultTop + ((7 - firstNameScale) / 7) * 100; // Adjust the multiplier (40) to control how much it moves
@@ -360,8 +360,8 @@ export async function generateArCardBackImage(
                                             width: "202px",
                                             height: "1px",
                                             background: "white",
-                                            marginTop: "-10px",
-                                            marginBottom: "4px",
+                                            marginTop: "-14px",
+                                            marginBottom: "5px",
                                         },
                                     }),
                                     createElement(
@@ -372,6 +372,7 @@ export async function generateArCardBackImage(
                                                 fontWeight: 400,
                                                 fontFamily: "Barlow",
                                                 lineHeight: "8px",
+                                                marginBottom: "-4px",
                                             },
                                         },
                                         [
@@ -396,6 +397,8 @@ export async function generateArCardBackImage(
                                                 // letterSpacing: "1px",
                                                 fontWeight: 600,
                                                 fontFamily: "Barlow",
+                                                marginBottom: "-6px",
+                                                marginTop: "6px",
                                             },
                                         },
                                         "©2024 ONFIRE ATHLETES",

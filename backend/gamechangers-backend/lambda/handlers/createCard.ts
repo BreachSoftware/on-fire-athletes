@@ -80,6 +80,8 @@ export const createCard: Handler = async (
 					cardBackS3URL: data.cardBackS3URL, // cardInfo.cardBackS3URL
 					cardForegroundS3URL: data.cardForegroundS3URL,
 					cardBackgroundS3URL: data.cardBackgroundS3URL,
+					frontPrintBagTag: data.frontPrintBagTag,
+					backPrintBagTag: data.backPrintBagTag,
 					stepNumber: data.stepNumber,
 					totalCreated: data.totalCreated,
 					currentlyAvailable: data.totalCreated,
