@@ -30,6 +30,8 @@ import { maskImageToCard, resize } from "../image_filters";
 import CardMask from "../../public/card_assets/card-mask.png";
 import CardMaskReverse from "../../public/card_assets/card-mask-reverse.png";
 import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
+import { generateArCardBackImage } from "./OnFireCard/generate_card_images/generate-print-card-back";
+import { generatePrintCardFrontImage } from "./OnFireCard/generate_card_images/generate-print-card-front";
 
 interface StepWrapperProps {
     numSteps: number;
@@ -65,6 +67,9 @@ interface CardImageData {
     cardImageBase64: string;
     cardForegroundImageBase64: string;
     cardBackgroundImageBase64: string;
+}
+
+interface PrintCardImageData {
     cardBackImageBase64: string;
     cardPrintImageBase64: string;
 }
@@ -73,6 +78,9 @@ interface CardUrls {
     cardS3URL: string;
     cardForegroundS3URL: string;
     cardBackgroundS3URL: string;
+}
+
+interface PrintCardUrls {
     cardBackS3URL: string;
     cardPrintS3URL: string;
 }
@@ -146,8 +154,6 @@ async function generateCardImages(
     entireCardRef: React.RefObject<HTMLDivElement>,
     foregroundRef: React.RefObject<HTMLDivElement>,
     backgroundRef: React.RefObject<HTMLDivElement>,
-    cardBackRef: React.RefObject<HTMLDivElement>,
-    cardPrintRef: React.RefObject<HTMLDivElement>,
 ): Promise<CardImageData> {
     // Ensure images are displayed correctly for html2canvas
     const style = document.createElement("style");
@@ -161,8 +167,6 @@ async function generateCardImages(
         cardImageBase64,
         cardForegroundImageBase64,
         cardBackgroundImageBase64,
-        cardBackImageBase64,
-        cardPrintImageBase64,
     ] = await Promise.all([
         generateCardImage(entireCardRef, CardMask.src, "entireCard"),
         foregroundRef.current
@@ -171,14 +175,34 @@ async function generateCardImages(
         backgroundRef.current
             ? generateCardImage(backgroundRef, CardMask.src, "background")
             : Promise.resolve(""),
-        generateCardImage(cardPrintRef, CardMask.src, "cardPrint"),
-        generateCardImage(cardBackRef, CardMaskReverse.src, "cardBack"),
     ]);
 
     return {
         cardImageBase64: cardImageBase64,
         cardForegroundImageBase64: cardForegroundImageBase64,
         cardBackgroundImageBase64: cardBackgroundImageBase64,
+    };
+}
+
+async function generatePrintCardImages(
+    cardInfo: TradingCardInfo,
+    frontCardImageSrc: string,
+): Promise<{
+    cardBackImageBase64: string;
+    cardPrintImageBase64: string;
+}> {
+    const [cardBackImageBase64, cardPrintImageBase64] = await Promise.all([
+        generateArCardBackImage(cardInfo, {
+            forPrint: true,
+            editionNumber: 1,
+            totalOverride: 1,
+        }),
+        generatePrintCardFrontImage(frontCardImageSrc, cardInfo.borderColor, {
+            forPrint: true,
+        }),
+    ]);
+
+    return {
         cardBackImageBase64: cardBackImageBase64,
         cardPrintImageBase64: cardPrintImageBase64,
     };
@@ -210,23 +234,14 @@ async function uploadImages(
         cardImageBase64,
         cardForegroundImageBase64,
         cardBackgroundImageBase64,
-        cardBackImageBase64,
-        cardPrintImageBase64,
     }: CardImageData,
 ): Promise<CardUrls> {
-    const [
-        cardBlob,
-        cardForegroundBlob,
-        cardBackgroundBlob,
-        cardBackBlob,
-        cardPrintBlob,
-    ] = await Promise.all([
-        b64toBlob(cardImageBase64),
-        b64toBlob(cardForegroundImageBase64),
-        b64toBlob(cardBackgroundImageBase64),
-        b64toBlob(cardBackImageBase64),
-        b64toBlob(cardPrintImageBase64),
-    ]);
+    const [cardBlob, cardForegroundBlob, cardBackgroundBlob] =
+        await Promise.all([
+            b64toBlob(cardImageBase64),
+            b64toBlob(cardForegroundImageBase64),
+            b64toBlob(cardBackgroundImageBase64),
+        ]);
 
     await Promise.all([
         uploadAssetToS3(filename, cardBlob, "card", "image/png"),
@@ -242,8 +257,6 @@ async function uploadImages(
             "card-background",
             "image/png",
         ),
-        uploadAssetToS3(filename, cardBackBlob, "card-back", "image/png"),
-        uploadAssetToS3(filename, cardPrintBlob, "card-print", "image/png"),
     ]);
 
     const baseUrl = "https://onfireathletes-media-uploads.s3.amazonaws.com";
@@ -251,6 +264,25 @@ async function uploadImages(
         cardS3URL: `${baseUrl}/card/${filename}`,
         cardForegroundS3URL: `${baseUrl}/card-foreground/${filename}`,
         cardBackgroundS3URL: `${baseUrl}/card-background/${filename}`,
+    };
+}
+
+async function uploadPrintImages(
+    filename: string,
+    { cardBackImageBase64, cardPrintImageBase64 }: PrintCardImageData,
+): Promise<PrintCardUrls> {
+    const [cardBackBlob, cardPrintBlob] = await Promise.all([
+        b64toBlob(cardBackImageBase64),
+        b64toBlob(cardPrintImageBase64),
+    ]);
+
+    await Promise.all([
+        uploadAssetToS3(filename, cardBackBlob, "card-back", "image/png"),
+        uploadAssetToS3(filename, cardPrintBlob, "card-print", "image/png"),
+    ]);
+
+    const baseUrl = "https://onfireathletes-media-uploads.s3.amazonaws.com";
+    return {
         cardBackS3URL: `${baseUrl}/card-back/${filename}`,
         cardPrintS3URL: `${baseUrl}/card-print/${filename}`,
     };
@@ -340,17 +372,27 @@ export async function submitCardWithAuth({
             entireCardRef,
             foregroundRef,
             backgroundRef,
-            cardBackRef,
-            cardPrintRef,
         );
         const filename = generateFilename(userID);
         const cardUrls = await uploadImages(filename, cardImages);
+
+        const printCardImages = await generatePrintCardImages(
+            currentInfo.curCard,
+            cardUrls.cardS3URL,
+        );
+        const printCardUrls = await uploadPrintImages(
+            filename,
+            printCardImages,
+        );
 
         const newCardData = {
             ...currentInfo.curCard,
             ...cardUrls,
             cardImage: cardUrls.cardS3URL,
-            cardBackS3URL: cardUrls.cardBackS3URL,
+            cardBackS3URL: printCardUrls.cardBackS3URL,
+            cardPrintS3URL: printCardUrls.cardPrintS3URL,
+            cardForegroundS3URL: cardUrls.cardForegroundS3URL,
+            cardBackgroundS3URL: cardUrls.cardBackgroundS3URL,
             submitted: true,
             paymentStatus: PaymentStatus.PENDING,
             tradeStatus: TradeStatus.TRADE_ONLY,

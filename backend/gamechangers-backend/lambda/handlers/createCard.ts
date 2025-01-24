@@ -76,7 +76,10 @@ export const createCard: Handler = async (
 					price: data.price,
 					// Trading Card Parameters
 					cardImage: data.cardImage, // cardInfo.cardImage
+					cardPrintS3URL: data.cardPrintS3URL,
 					cardBackS3URL: data.cardBackS3URL, // cardInfo.cardBackS3URL
+					cardForegroundS3URL: data.cardForegroundS3URL,
+					cardBackgroundS3URL: data.cardBackgroundS3URL,
 					stepNumber: data.stepNumber,
 					totalCreated: data.totalCreated,
 					currentlyAvailable: data.totalCreated,
@@ -131,7 +134,7 @@ export const createCard: Handler = async (
 			await dynamoDb.put(params).promise();
 
 			// Trigger Fargate to compile .mind file once the card is created:
-			await runMindCompilerTask({ cardId: uuid }); // or data.uuid if you prefer
+			// await runMindCompilerTask({ cardId: uuid }); // or data.uuid if you prefer
 
 			// Return a success response with the created card item
 			return {

@@ -105,7 +105,7 @@ export async function generateArCardBackImage(
         CardFonts.BrotherhoodSansSerif,
     );
 
-    const textDefaultTop = 98;
+    const textDefaultTop = 108;
 
     // Calculate name positions
     const firstNameTop = textDefaultTop + ((7 - firstNameScale) / 7) * 100; // Adjust the multiplier (40) to control how much it moves
@@ -360,6 +360,8 @@ export async function generateArCardBackImage(
                                             width: "202px",
                                             height: "1px",
                                             background: "white",
+                                            marginTop: "-10px",
+                                            marginBottom: "4px",
                                         },
                                     }),
                                     createElement(

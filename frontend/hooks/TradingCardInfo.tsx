@@ -44,6 +44,9 @@ export default class TradingCardInfo {
     generatedBy: string;
     cardImage: string;
     cardBackS3URL: string;
+    cardPrintS3URL: string;
+    cardForegroundS3URL: string;
+    cardBackgroundS3URL: string;
     stepNumber: number;
     totalCreated: number;
     currentlyAvailable: number;
@@ -67,8 +70,6 @@ export default class TradingCardInfo {
     heroXOffset: number;
     heroYOffset: number;
     heroWidth: number;
-    cardForegroundS3URL: string;
-    cardBackgroundS3URL: string;
     signature: string; // Assuming this is going to be an S3 link or something
     signatureS3URL: string;
     signatureXOffset: number;
@@ -112,6 +113,9 @@ export default class TradingCardInfo {
         generatedBy?: string;
         cardImage?: string;
         cardBackS3URL?: string;
+        cardPrintS3URL?: string;
+        cardForegroundS3URL?: string;
+        cardBackgroundS3URL?: string;
         stepNumber?: number;
         totalCreated?: number;
         currentlyAvailable?: number;
@@ -134,8 +138,6 @@ export default class TradingCardInfo {
         heroXOffset?: number;
         heroYOffset?: number;
         heroWidth?: number;
-        cardForegroundS3URL?: string;
-        cardBackgroundS3URL?: string;
         signature?: string;
         signatureS3URL?: string;
         signatureXOffset?: number;
@@ -175,6 +177,9 @@ export default class TradingCardInfo {
         this.generatedBy = options?.generatedBy || "";
         this.cardImage = options?.cardImage || "";
         this.cardBackS3URL = options?.cardBackS3URL || "";
+        this.cardPrintS3URL = options?.cardPrintS3URL || "";
+        this.cardForegroundS3URL = options?.cardForegroundS3URL || "";
+        this.cardBackgroundS3URL = options?.cardBackgroundS3URL || "";
         this.stepNumber = options?.stepNumber || 1;
         this.totalCreated = options?.totalCreated || 0;
         this.currentlyAvailable = options?.currentlyAvailable || 0;
@@ -335,11 +340,6 @@ export default class TradingCardInfo {
                 cardInfo.backVideoS3URL =
                     "https://onfireathletes-media-uploads.s3.amazonaws.com/";
             }
-        }
-
-        // Check if the card back image S3 URL is empty, if it is, use the card back image URL
-        if (!cardInfo.cardBackS3URL && cardInfo.cardBackS3URL) {
-            cardInfo.cardBackS3URL = cardInfo.cardBackS3URL;
         }
 
         let frontPhotoS3URL = cardInfo.frontPhotoS3URL;

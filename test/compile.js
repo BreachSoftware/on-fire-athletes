@@ -3,6 +3,8 @@ const { ECS, S3 } = require("aws-sdk");
 const axios = require("axios");
 const sharp = require("sharp");
 
+const CARD_ID = "a9b0b608-9070-40d7-b184-ad779093b2c2";
+
 // Configure AWS SDK
 const ecs = new ECS({
     credentials: undefined,
@@ -66,10 +68,12 @@ async function compileMindFile(cardId) {
 
         // 2. Download all images
         const images = [
-            cardData.frontPrintTradingCard,
-            cardData.backPrintTradingCard,
-            cardData.frontPrintBagTag,
-            cardData.backPrintBagTag,
+            cardData.cardPrintS3URL,
+            cardData.cardBackS3URL,
+            // cardData.frontPrintTradingCard,
+            // cardData.backPrintTradingCard,
+            // cardData.frontPrintBagTag,
+            // cardData.backPrintBagTag,
         ].filter(Boolean);
 
         const imageBase64Array = await Promise.all(
@@ -236,7 +240,7 @@ async function compileMindFile(cardId) {
 
 // Main execution
 (async () => {
-    const cardId = process.env.CARD_ID;
+    const cardId = CARD_ID; //process.env.CARD_ID;
     if (!cardId) {
         console.error("CARD_ID environment variable not set.");
         process.exit(1);
