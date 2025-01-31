@@ -112,7 +112,7 @@ export async function generateBagTagBackImage(
         CardFonts.BrotherhoodSansSerif,
     );
 
-    const textDefaultTop = 98;
+    const textDefaultTop = 136;
 
     // Calculate name positions
     const firstNameTop = textDefaultTop + ((7 - firstNameScale) / 7) * 100; // Adjust the multiplier (40) to control how much it moves
