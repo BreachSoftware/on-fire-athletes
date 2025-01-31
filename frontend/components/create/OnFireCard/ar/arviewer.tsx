@@ -29,11 +29,13 @@ import React, { useEffect, useRef, useState } from "react";
 import { Result, useZxing } from "react-zxing";
 // import { getCard } from "@/app/generate_card_asset/cardFunctions";
 import { useRouter } from "next/navigation";
-import { Box, Button, Center, Text } from "@chakra-ui/react";
+import { Box, Button, Center, Text, Image, Link } from "@chakra-ui/react";
 import TradingCardInfo from "@/hooks/TradingCardInfo";
 import "aframe";
 import "mind-ar/dist/mindar-image-aframe.prod.js";
 import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
+import OnFireLogo from "@/images/logos/small-logo-white.png";
+import SharedStack from "@/components/shared/wrappers/shared-stack";
 
 /**
  * The MindAR ARViewer component that renders the video on the OnFire card.
@@ -49,6 +51,8 @@ function ARViewer() {
     const BASE_PIXEL_HEIGHT = 1920;
 
     // const card = useCurrentCardInfo();
+    const [userId, setUserId] = useState<string>("");
+    const [cardUUID, setCardUUID] = useState<string>("");
     const [isVideoSourceSet, setIsVideoSourceSet] = useState(false);
     const [imgSource, setImgSource] = useState("");
     const [qrResult, setQRResult] = useState<string>("");
@@ -103,7 +107,6 @@ function ARViewer() {
         const cardUUID = queryParams.get("card");
 
         setQRResult(cardUUID);
-
         // Find the OnFire card that matches the UUID of the QR code
         found = false;
         readCard = new TradingCardInfo();
@@ -124,7 +127,8 @@ function ARViewer() {
                 "https://onfireathletes-media-uploads.s3.amazonaws.com/";
 
         setImgSource(fetchedCard.cardImage);
-
+        setUserId(fetchedCard.generatedBy);
+        setCardUUID(fetchedCard.uuid);
         const backVideoUrl = isDefaultBack
             ? "https://onfireathletes-media-uploads.s3.amazonaws.com/onfire-athletes-back-default.mov"
             : readCard.backVideoURL;
@@ -361,6 +365,63 @@ function ARViewer() {
                     </Button>
                 </Center>
             )}
+            <SharedStack
+                align="stretch"
+                row
+                spaced
+                position="absolute"
+                w="calc(100% - 16px)"
+                zIndex={3}
+                margin="8px"
+                bottom="0px"
+                fontFamily="Barlow Condensed"
+                fontWeight="bold"
+                color="white"
+                textTransform="uppercase"
+                letterSpacing="wide"
+            >
+                <Link href={`https://onfireathletes.com/`} isExternal>
+                    <Center p="8px" rounded="4px" bgColor="rgba(0, 0, 0, 0.2)">
+                        <Image
+                            src={OnFireLogo.src}
+                            alt="OnFire Logo"
+                            boxSize="24px"
+                        />
+                    </Center>
+                </Link>
+                <Link
+                    display="flex"
+                    flex={1}
+                    href={`https://onfireathletes.com/create/card_creation`}
+                    isExternal
+                >
+                    <Center
+                        flex={1}
+                        py="8px"
+                        px="4px"
+                        rounded="4px"
+                        bgColor="rgba(0, 0, 0, 0.2)"
+                    >
+                        <Text>Create Your Card</Text>
+                    </Center>
+                </Link>
+                <Link
+                    display="flex"
+                    flex={1}
+                    href={`https://onfireathletes.com/profile?user=${userId}&card=${cardUUID}`}
+                    isExternal
+                >
+                    <Center
+                        flex={1}
+                        py="8px"
+                        px="4px"
+                        rounded="4px"
+                        bgColor="rgba(0, 0, 0, 0.2)"
+                    >
+                        <Text>Athlete Profile</Text>
+                    </Center>
+                </Link>
+            </SharedStack>
 
             {/* Render the AR scene for Front Image */}
             <a-scene
