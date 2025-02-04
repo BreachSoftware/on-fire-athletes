@@ -53,6 +53,7 @@ function ARViewer() {
     // const card = useCurrentCardInfo();
     const [userId, setUserId] = useState<string>("");
     const [cardUUID, setCardUUID] = useState<string>("");
+    const [shouldShowProfile, setShouldShowProfile] = useState(false);
     const [isVideoSourceSet, setIsVideoSourceSet] = useState(false);
     const [imgSource, setImgSource] = useState("");
     const [qrResult, setQRResult] = useState<string>("");
@@ -129,6 +130,7 @@ function ARViewer() {
         setImgSource(fetchedCard.cardImage);
         setUserId(fetchedCard.generatedBy);
         setCardUUID(fetchedCard.uuid);
+        setShouldShowProfile(fetchedCard.paymentStatus === 1);
         const backVideoUrl = isDefaultBack
             ? "https://onfireathletes-media-uploads.s3.amazonaws.com/onfire-athletes-back-default.mov"
             : readCard.backVideoURL;
@@ -405,22 +407,24 @@ function ARViewer() {
                         <Text>Create Your Card</Text>
                     </Center>
                 </Link>
-                <Link
-                    display="flex"
-                    flex={1}
-                    href={`https://onfireathletes.com/profile?user=${userId}&card=${cardUUID}`}
-                    isExternal
-                >
-                    <Center
+                {shouldShowProfile && (
+                    <Link
+                        display="flex"
                         flex={1}
-                        py="8px"
-                        px="4px"
-                        rounded="4px"
-                        bgColor="rgba(0, 0, 0, 0.2)"
+                        href={`https://onfireathletes.com/profile?user=${userId}&card=${cardUUID}`}
+                        isExternal
                     >
-                        <Text>Athlete Profile</Text>
-                    </Center>
-                </Link>
+                        <Center
+                            flex={1}
+                            py="8px"
+                            px="4px"
+                            rounded="4px"
+                            bgColor="rgba(0, 0, 0, 0.2)"
+                        >
+                            <Text>Athlete Profile</Text>
+                        </Center>
+                    </Link>
+                )}
             </SharedStack>
 
             {/* Render the AR scene for Front Image */}
