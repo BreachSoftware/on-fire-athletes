@@ -11,8 +11,10 @@ export async function generatePrintCardFrontImage(
     cardBorderColor: string,
     {
         forPrint = true,
+        asPng = false,
     }: {
         forPrint?: boolean;
+        asPng?: boolean;
     } = {},
 ): Promise<string> {
     const width = forPrint ? 385 : 350;
@@ -108,7 +110,8 @@ export async function generatePrintCardFrontImage(
             backgroundColor: "#000000",
         });
 
-        const imageBase64 = canvas.toDataURL("image/png", 1.0);
+        const imageType = asPng ? "image/png" : "image/jpeg";
+        const imageBase64 = canvas.toDataURL(imageType, 1.0);
         // We can do masking here if we want
         const resultingImage = imageBase64;
         return resultingImage;

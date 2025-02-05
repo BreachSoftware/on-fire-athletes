@@ -12,6 +12,11 @@ import { colorTooDark } from "../card_utils";
 export async function generateBagTagFrontImage(
     cardImageSrc: string,
     cardBorderColor: string,
+    {
+        asPng = false,
+    }: {
+        asPng?: boolean;
+    } = {},
 ): Promise<string> {
     const width = 385;
     const height = 611.5;
@@ -122,7 +127,8 @@ export async function generateBagTagFrontImage(
             backgroundColor: "#000000",
         });
 
-        const imageBase64 = canvas.toDataURL("image/png", 1.0);
+        const imageType = asPng ? "image/png" : "image/jpeg";
+        const imageBase64 = canvas.toDataURL(imageType, 1.0);
         // We can do masking here if we want
         const resultingImage = imageBase64;
         return resultingImage;

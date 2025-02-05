@@ -60,7 +60,10 @@ async function calculateTextScale(
     const actualWidth = await calculateTextWidth(text, fullFont);
     const scale = Math.min(5, targetWidth / actualWidth);
 
-    return scale;
+    const adjustedScale =
+        text.slice(-1).toLowerCase() === "t" ? scale * 0.9 : scale;
+
+    return adjustedScale;
 }
 
 export async function generateArCardBackImage(
@@ -70,11 +73,13 @@ export async function generateArCardBackImage(
         totalOverride,
         forPrint = true,
         noNumber = false,
+        asPng = false,
     }: {
         editionNumber?: number;
         totalOverride?: number;
         forPrint?: boolean;
         noNumber?: boolean;
+        asPng?: boolean;
     } = {},
 ): Promise<string> {
     // Generate QR code
@@ -423,7 +428,9 @@ export async function generateArCardBackImage(
 
         const mask = CardMaskReverse.src;
 
-        const imageBase64 = canvas.toDataURL("image/png", 1.0);
+        const imageType = asPng ? "image/png" : "image/jpeg";
+
+        const imageBase64 = canvas.toDataURL(imageType, 1.0);
         const resizedMask = await resize(mask, width * scale, height * scale);
         const resultingImage = forPrint
             ? imageBase64
