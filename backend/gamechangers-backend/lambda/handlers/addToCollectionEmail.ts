@@ -9,7 +9,9 @@ import { addToCollectionEmailBody } from "../utils/addToCollectionEmailBody";
  * @param {APIGatewayProxyEvent} event - The API Gateway proxy event.
  * @returns {Promise<APIGatewayProxyResult | undefined>} The API Gateway proxy result.
  */
-export async function addToCollectionEmail(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult | undefined> {
+export async function addToCollectionEmail(
+	event: APIGatewayProxyEvent,
+): Promise<APIGatewayProxyResult | undefined> {
 	try {
 		// Check if the event body exists
 		if (!event.body) {
@@ -41,10 +43,11 @@ export async function addToCollectionEmail(event: APIGatewayProxyEvent): Promise
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify(
-					{ error: "The request body must contain the uuids for the creator, the card, the sender, and the recepient's first name," +
-						" as well as the card's first name, last name, and image" }
-				),
+				body: JSON.stringify({
+					error:
+						"The request body must contain the uuids for the creator, the card, the sender, and the recepient's first name," +
+						" as well as the card's first name, last name, and image",
+				}),
 			};
 		}
 
@@ -64,7 +67,9 @@ export async function addToCollectionEmail(event: APIGatewayProxyEvent): Promise
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify({ error: "None of the properties can be empty" }),
+				body: JSON.stringify({
+					error: "None of the properties can be empty",
+				}),
 			};
 		}
 
@@ -84,20 +89,22 @@ export async function addToCollectionEmail(event: APIGatewayProxyEvent): Promise
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify({ error: "All properties must be of type string" }),
+				body: JSON.stringify({
+					error: "All properties must be of type string",
+				}),
 			};
 		}
 
 		// This checks that if the requester doesn't have a full first and last name, they must have an email
-		if (
-			(data.requesterEmail === undefined || data.requesterEmail === "")
-		) {
+		if (data.requesterEmail === undefined || data.requesterEmail === "") {
 			return {
 				statusCode: 400,
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify({ error: "The request body must contain either the requester's email" }),
+				body: JSON.stringify({
+					error: "The request body must contain either the requester's email",
+				}),
 			};
 		}
 
@@ -109,13 +116,13 @@ export async function addToCollectionEmail(event: APIGatewayProxyEvent): Promise
 			data.cardLastName,
 			data.cardImage,
 			data.requesterEmail,
-			data.recipientFirstName
+			data.recipientFirstName,
 		);
 
 		// Set up the email parameters
 		const params = {
 			Destination: {
-				ToAddresses: [ data.toEmail ],
+				ToAddresses: [data.toEmail],
 			},
 			Message: {
 				Body: {
@@ -129,14 +136,16 @@ export async function addToCollectionEmail(event: APIGatewayProxyEvent): Promise
 					Data: "A user has requested to add your card to their collection",
 				},
 			},
-			Source: "Gamechangers Team <mail@zenithsoftware.dev>",
-			ReplyToAddresses: [ "blake@zenithsoftware.dev" ],
+			Source: "Gamechangers Team <support@onfireathletes.com>",
+			ReplyToAddresses: ["support@onfireathletes.com"],
 		};
 
 		console.log("Sending email to: ", data.toEmail);
 
 		// Create the promise and SES service object
-		const sendPromise = new SES({ apiVersion: "2010-12-01" }).sendEmail(params).promise();
+		const sendPromise = new SES({ apiVersion: "2010-12-01" })
+			.sendEmail(params)
+			.promise();
 
 		try {
 			// Send the email
@@ -151,7 +160,9 @@ export async function addToCollectionEmail(event: APIGatewayProxyEvent): Promise
 			};
 		} catch (error) {
 			// Log the error if an exception occurs when sending the email
-			console.error("The following error occurred when sending the email: ");
+			console.error(
+				"The following error occurred when sending the email: ",
+			);
 			console.error(error);
 
 			return {
@@ -176,4 +187,4 @@ export async function addToCollectionEmail(event: APIGatewayProxyEvent): Promise
 			body: JSON.stringify({ error: error }),
 		};
 	}
-};
+}
