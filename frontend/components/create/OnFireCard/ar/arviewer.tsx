@@ -29,11 +29,13 @@ import React, { useEffect, useRef, useState } from "react";
 import { Result, useZxing } from "react-zxing";
 // import { getCard } from "@/app/generate_card_asset/cardFunctions";
 import { useRouter } from "next/navigation";
-import { Box, Button, Center, Text } from "@chakra-ui/react";
+import { Box, Button, Center, Text, Image, Link } from "@chakra-ui/react";
 import TradingCardInfo from "@/hooks/TradingCardInfo";
 import "aframe";
 import "mind-ar/dist/mindar-image-aframe.prod.js";
 import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
+import OnFireLogo from "@/images/logos/small-logo-white.png";
+import SharedStack from "@/components/shared/wrappers/shared-stack";
 
 /**
  * The MindAR ARViewer component that renders the video on the OnFire card.
@@ -49,6 +51,9 @@ function ARViewer() {
     const BASE_PIXEL_HEIGHT = 1920;
 
     // const card = useCurrentCardInfo();
+    const [userId, setUserId] = useState<string>("");
+    const [cardUUID, setCardUUID] = useState<string>("");
+    const [shouldShowProfile, setShouldShowProfile] = useState(false);
     const [isVideoSourceSet, setIsVideoSourceSet] = useState(false);
     const [imgSource, setImgSource] = useState("");
     const [qrResult, setQRResult] = useState<string>("");
@@ -93,9 +98,8 @@ function ARViewer() {
         console.log("Decoded result:", result);
 
         // Get all the OnFire cards
-        const fetchedCard = await fetch(
-            `${apiEndpoints.getCard()}?uuid=${cardUUID}`,
-        );
+        const onFireCards = await fetch(apiEndpoints.getAllCards());
+        const cards: TradingCardInfo[] = await onFireCards.json();
 
         // Get the card UUID from the QR code
         const stringedResult =
@@ -104,11 +108,12 @@ function ARViewer() {
         const cardUUID = queryParams.get("card");
 
         setQRResult(cardUUID);
-
         // Find the OnFire card that matches the UUID of the QR code
         found = false;
         readCard = new TradingCardInfo();
         isDefaultBack = false;
+
+        const fetchedCard = cards.find((card) => card.uuid === cardUUID);
 
         if (!fetchedCard) {
             console.error("Card not found");
@@ -123,71 +128,85 @@ function ARViewer() {
                 "https://onfireathletes-media-uploads.s3.amazonaws.com/";
 
         setImgSource(fetchedCard.cardImage);
-
+        setUserId(fetchedCard.generatedBy);
+        setCardUUID(fetchedCard.uuid);
+        setShouldShowProfile(fetchedCard.paymentStatus === 1);
         const backVideoUrl = isDefaultBack
             ? "https://onfireathletes-media-uploads.s3.amazonaws.com/onfire-athletes-back-default.mov"
             : readCard.backVideoURL;
 
         const { width, height } = await getVideoDimensions(backVideoUrl);
+
+        console.log({ width, height });
         const dbWidth = fetchedCard.backVideoWidth;
-        // const dbHeight = fetchedCard.backVideoHeight;
 
         const aspectRatio = width / height;
 
         let targetHeight = HEIGHT_OF_CARD;
         let targetWidth = targetHeight * aspectRatio;
 
-        // const baseTargetWidth = targetWidth;
         const rotation = fetchedCard.backVideoRotation;
         const isRotated = rotation === 90 || rotation === 270;
 
-        // console.log({ rotation });
+        console.log("Rotation is", rotation, "isRotated is", isRotated);
 
         const scale = isDefaultBack
             ? 1
             : dbWidth / (isRotated ? BASE_PIXEL_HEIGHT : BASE_PIXEL_WIDTH);
 
-        // console.log({ scale });
+        console.log("Original scale is", scale);
 
         const videoXOff =
-            fetchedCard.backVideoXOffset / PIXEL_AFRAME_CONVERSION;
+            fetchedCard.backVideoXOffset / PIXEL_AFRAME_CONVERSION +
+            (fetchedCard.arVideoXOffset ?? 0);
         const videoYOff =
-            fetchedCard.backVideoYOffset / PIXEL_AFRAME_CONVERSION;
+            fetchedCard.backVideoYOffset / PIXEL_AFRAME_CONVERSION +
+            (fetchedCard.arVideoYOffset ?? 0);
 
         setScale(scale);
 
         const effectiveWidth = targetWidth * scale;
 
-        if (effectiveWidth < WIDTH_OF_CARD) {
+        if (!isRotated && effectiveWidth < WIDTH_OF_CARD) {
+            console.log("Effective width is less than the card width");
             const widthScaleAdjustment = WIDTH_OF_CARD / effectiveWidth;
             targetWidth = effectiveWidth * widthScaleAdjustment;
-
-            // console.log({ effectiveWidth, widthScaleAdjustment, targetWidth });
-
             targetHeight *= widthScaleAdjustment;
         }
 
-        // const additionalOffset = targetHeight * effectiveScale - targetHeight;
-        // videoYOff -= additionalOffset / 2;
+        if (isRotated && effectiveWidth < HEIGHT_OF_CARD) {
+            console.log("Effective width is less than the card height");
+            const widthScaleAdjustment = HEIGHT_OF_CARD / effectiveWidth;
+            targetWidth = effectiveWidth * widthScaleAdjustment;
+            targetHeight *= widthScaleAdjustment;
+        }
 
-        // console.log({
-        //     width,
-        //     height,
-        //     targetHeight,
-        //     targetWidth,
-        //     dbWidth,
-        //     dbHeight,
-        //     videoXOff,
-        //     videoYOff,
-        //     scale: dbWidth / width,
-        //     baseTargetWidth,
-        // });
+        console.log({
+            width,
+            height,
+            targetHeight,
+            targetWidth,
+            dbWidth,
+            // dbHeight,
+            videoXOff,
+            videoYOff,
+            scale: dbWidth / width,
+            // baseTargetWidth,
+        });
 
-        // if (rotation === 90 || rotation === 270) {
-        //     const temp = targetHeight;
-        //     targetHeight = targetWidth;
-        //     targetWidth = temp;
-        // }
+        if (isRotated) {
+            const temp = targetHeight;
+            targetHeight = targetWidth;
+            targetWidth = temp;
+
+            const adjustedScale = isDefaultBack
+                ? 1
+                : dbWidth / BASE_PIXEL_WIDTH;
+
+            console.log({ adjustedScale });
+            console.log("Adjusted scale is", adjustedScale);
+            setScale(adjustedScale);
+        }
 
         setHeight(targetHeight);
         setWidth(targetWidth);
@@ -348,6 +367,65 @@ function ARViewer() {
                     </Button>
                 </Center>
             )}
+            <SharedStack
+                align="stretch"
+                row
+                spaced
+                position="absolute"
+                w="calc(100% - 16px)"
+                zIndex={3}
+                margin="8px"
+                bottom="0px"
+                fontFamily="Barlow Condensed"
+                fontWeight="bold"
+                color="white"
+                textTransform="uppercase"
+                letterSpacing="wide"
+            >
+                <Link href={`https://onfireathletes.com/`} isExternal>
+                    <Center p="8px" rounded="4px" bgColor="rgba(0, 0, 0, 0.2)">
+                        <Image
+                            src={OnFireLogo.src}
+                            alt="OnFire Logo"
+                            boxSize="24px"
+                        />
+                    </Center>
+                </Link>
+                <Link
+                    display="flex"
+                    flex={1}
+                    href={`https://onfireathletes.com/create/card_creation`}
+                    isExternal
+                >
+                    <Center
+                        flex={1}
+                        py="8px"
+                        px="4px"
+                        rounded="4px"
+                        bgColor="rgba(0, 0, 0, 0.2)"
+                    >
+                        <Text>Create Your Card</Text>
+                    </Center>
+                </Link>
+                {shouldShowProfile && (
+                    <Link
+                        display="flex"
+                        flex={1}
+                        href={`https://onfireathletes.com/profile?user=${userId}&card=${cardUUID}`}
+                        isExternal
+                    >
+                        <Center
+                            flex={1}
+                            py="8px"
+                            px="4px"
+                            rounded="4px"
+                            bgColor="rgba(0, 0, 0, 0.2)"
+                        >
+                            <Text>Athlete Profile</Text>
+                        </Center>
+                    </Link>
+                )}
+            </SharedStack>
 
             {/* Render the AR scene for Front Image */}
             <a-scene
@@ -355,8 +433,8 @@ function ARViewer() {
                 mindar-image={`imageTargetSrc: ${determineMindFile()};`} // Also have front and back
                 renderer="colorManagement: true, physicallyCorrectLights"
                 vr-mode-ui="enabled: false"
-                filterMinCF="0.001"
-                filterBeta="100"
+                filterMinCF="0.0001"
+                filterBeta="1000"
                 missTolerance="20" // warmupTolerance="100" missTolerance="1000"
                 xr-mode-ui="enabled: false"
                 device-orientation-permission-ui="enabled: false"
@@ -476,6 +554,57 @@ function ARViewer() {
                             ></a-video>
                         </a-entity>
                         // Potentially show a spinner if not loaded or something
+                    )}
+                    <a-entity
+                        obj-model="obj: url(/ar/ofamask-rev-lg.obj); mtl: #obj-mtl"
+                        rotation="0 0 -90"
+                        position={`0 0 0.01`}
+                        scale="0.058 -0.058 0.058"
+                        cloak
+                    ></a-entity>
+                </a-entity>
+                {/* Bag Tag Back Video (targetIndex 4) */}
+                <a-entity mindar-image-target="targetIndex: 4" id="back-entity">
+                    {/* Render the video if the video source is set */}
+                    {isVideoSourceSet && (
+                        <a-entity
+                            position={`${videoXOffset} ${videoYOffset} 0`}
+                            rotation={`0 0 -${videoRotation}`}
+                            scale={`${scale} ${scale} 1`}
+                        >
+                            <a-video
+                                src="#card-video"
+                                height={height}
+                                width={width}
+                            ></a-video>
+                        </a-entity>
+                    )}
+                    <a-entity
+                        obj-model="obj: url(/ar/ofamask-rev-lg.obj); mtl: #obj-mtl"
+                        rotation="0 0 -90"
+                        position={`0 0 0.01`}
+                        scale="0.058 0.058 0.058"
+                        cloak
+                    ></a-entity>
+                </a-entity>
+                {/* Bag Tag Back Video Inverted for Android (targetIndex 5) */}
+                <a-entity
+                    mindar-image-target="targetIndex: 5"
+                    id="back-entity-invert"
+                >
+                    {/* Render the video if the video source is set */}
+                    {isVideoSourceSet && (
+                        <a-entity
+                            position={`${videoXOffset} ${videoYOffset} 0`}
+                            rotation={`0 0 -${videoRotation}`}
+                            scale={`-${scale} ${scale} 1`}
+                        >
+                            <a-video
+                                src="#card-video"
+                                height={height}
+                                width={width}
+                            ></a-video>
+                        </a-entity>
                     )}
                     <a-entity
                         obj-model="obj: url(/ar/ofamask-rev-lg.obj); mtl: #obj-mtl"

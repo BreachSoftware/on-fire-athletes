@@ -7,12 +7,13 @@ import "@fontsource/chakra-petch/600.css";
 import CardMaskReverseImage from "@/public/card_assets/card-mask-reverse.png";
 import ArCardBackgroundImage from "@/public/card_assets/ar-card-background-interior.png";
 import CardMaskReverse from "@/public/card_assets/card-mask-reverse.png";
-import CardOutlineNew from "@/public/card_assets/card-outline-thick.png";
-// import CardOutlineShine from "@/public/card_assets/card-outline-shine.png";
 import OnFireLogo from "@/images/logos/small-logo-white.png";
 import TradingCardInfo from "@/hooks/TradingCardInfo";
 import { CardFonts } from "@/components/create/create-helpers";
-import { maskImageToCard, recolor, resize } from "@/components/image_filters";
+import { maskImageToCard, resize } from "@/components/image_filters";
+import BagTagTitleWhite from "@/public/card_assets/bag-tag-title.png";
+import BagTagTitleBlack from "@/public/card_assets/bag-tag-title-black.png";
+import { colorTooDark } from "../card_utils";
 
 async function calculateTextWidth(text: string, font: string): Promise<number> {
     // Create a hidden div for more accurate font measurement
@@ -62,21 +63,26 @@ async function calculateTextScale(
     const actualWidth = await calculateTextWidth(text, fullFont);
     const scale = Math.min(5, targetWidth / actualWidth);
 
-    return scale;
+    const adjustedScale =
+        text.slice(-1).toLowerCase() === "t" ? scale * 0.9 : scale;
+
+    return adjustedScale;
 }
 
-export async function generateArCardBackImage(
+export async function generateBagTagBackImage(
     card: TradingCardInfo,
     {
         editionNumber,
         totalOverride,
         forPrint = true,
         noNumber = false,
+        asPng = false,
     }: {
         editionNumber?: number;
         totalOverride?: number;
         forPrint?: boolean;
         noNumber?: boolean;
+        asPng?: boolean;
     } = {},
 ): Promise<string> {
     // Generate QR code
@@ -90,6 +96,10 @@ export async function generateArCardBackImage(
             light: "#ffffff",
         },
     });
+
+    const bagTagTitle = colorTooDark(card.borderColor)
+        ? BagTagTitleWhite
+        : BagTagTitleBlack;
 
     // Calculate text scaling
     const firstNameWidth = forPrint ? 240 : 200;
@@ -107,15 +117,15 @@ export async function generateArCardBackImage(
         CardFonts.BrotherhoodSansSerif,
     );
 
-    const textDefaultTop = 98;
+    const textDefaultTop = 136;
 
     // Calculate name positions
     const firstNameTop = textDefaultTop + ((7 - firstNameScale) / 7) * 100; // Adjust the multiplier (40) to control how much it moves
     const lastNameTop = textDefaultTop + 94; // default last name buffer
     // Math.max(-18, (card.lastName.length || 0) * -2); // if last name is longer, move up
 
-    const width = forPrint ? 385 : 350;
-    const height = forPrint ? 525 : 490;
+    const width = 385;
+    const height = 611.5;
 
     // Create a temporary container
     const container = document.createElement("div");
@@ -160,9 +170,21 @@ export async function generateArCardBackImage(
                         justifyContent: "center",
                         alignItems: "center",
                         background: card.borderColor,
+                        position: "relative",
                     },
                 },
                 [
+                    // Bag Tag Logo
+                    createElement("img", {
+                        src: bagTagTitle.src,
+                        style: {
+                            position: "absolute",
+                            width: "222.5px",
+                            // height: "42px",
+                            left: "80px",
+                            top: "72px",
+                        },
+                    }),
                     createElement(
                         "div",
                         {
@@ -172,7 +194,8 @@ export async function generateArCardBackImage(
                                 alignItems: "center",
                                 height: "490px",
                                 width: "350px",
-                                position: "relative",
+                                position: "absolute",
+                                top: "102px",
                             },
                         },
                         [
@@ -189,7 +212,7 @@ export async function generateArCardBackImage(
                                 },
                             }),
 
-                            // Center content (QR code, logo, edition number)
+                            // Center content (logo, edition number)
                             createElement(
                                 "div",
                                 {
@@ -215,8 +238,8 @@ export async function generateArCardBackImage(
                                                 background: "black",
                                                 width: "fit-content",
                                                 padding: "8px",
-                                                paddingTop: "124px",
-                                                marginTop: "-100px",
+                                                paddingTop: "18px",
+                                                marginTop: "12.5px",
                                                 left: "50%",
                                                 transform: "translateX(-50%)",
                                             },
@@ -316,92 +339,16 @@ export async function generateArCardBackImage(
                                 src: qrCodeData,
                                 style: {
                                     position: "absolute",
-                                    right: "26px",
-                                    bottom: "32px",
-                                    width: "72px",
-                                    height: "72px",
+                                    width: "96px",
+                                    height: "96px",
+                                    left: "127px",
+                                    bottom: "66px",
                                     padding: "1px",
                                     background: "white",
                                     borderRadius: "1px",
                                     objectFit: "contain",
                                 },
                             }),
-                            // Footer text
-                            createElement(
-                                "div",
-                                {
-                                    style: {
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        justifyContent: "flex-end",
-                                        alignItems: "flex-end",
-                                        position: "absolute",
-                                        right: "106px",
-                                        bottom: "36px",
-                                        color: "white",
-                                        textAlign: "right",
-                                    },
-                                },
-                                [
-                                    createElement(
-                                        "div",
-                                        {
-                                            style: {
-                                                fontSize: "24px",
-                                                fontFamily:
-                                                    CardFonts.BrotherhoodSansSerif,
-                                                marginBottom: "16px",
-                                                letterSpacing: "0.2px",
-                                                marginRight: "10px",
-                                            },
-                                        },
-                                        "LIGHT IT UP!",
-                                    ),
-                                    createElement("div", {
-                                        style: {
-                                            width: "202px",
-                                            height: "1px",
-                                            background: "white",
-                                        },
-                                    }),
-                                    createElement(
-                                        "div",
-                                        {
-                                            style: {
-                                                fontSize: "8.5px",
-                                                fontWeight: 400,
-                                                fontFamily: "Barlow",
-                                                lineHeight: "8px",
-                                            },
-                                        },
-                                        [
-                                            createElement(
-                                                "i",
-                                                {},
-                                                "This card is solely ",
-                                            ),
-                                            createElement("b", {}, "licensed"),
-                                            createElement(
-                                                "i",
-                                                {},
-                                                " by the depicted player",
-                                            ),
-                                        ],
-                                    ),
-                                    createElement(
-                                        "div",
-                                        {
-                                            style: {
-                                                fontSize: "10.5px",
-                                                // letterSpacing: "1px",
-                                                fontWeight: 600,
-                                                fontFamily: "Barlow",
-                                            },
-                                        },
-                                        "©2024 ONFIRE ATHLETES",
-                                    ),
-                                ],
-                            ),
                         ],
                     ),
                 ],
@@ -425,7 +372,8 @@ export async function generateArCardBackImage(
 
         const mask = CardMaskReverse.src;
 
-        const imageBase64 = canvas.toDataURL("image/png", 1.0);
+        const imageType = asPng ? "image/png" : "image/jpeg";
+        const imageBase64 = canvas.toDataURL(imageType, 1.0);
         const resizedMask = await resize(mask, width * scale, height * scale);
         const resultingImage = forPrint
             ? imageBase64
@@ -434,203 +382,4 @@ export async function generateArCardBackImage(
     } finally {
         document.body.removeChild(container);
     }
-}
-
-export async function generatePrintCardFrontImage(
-    cardImageSrc: string,
-    cardBorderColor: string,
-    {
-        forPrint = true,
-    }: {
-        forPrint?: boolean;
-    } = {},
-): Promise<string> {
-    const width = forPrint ? 385 : 350;
-    const height = forPrint ? 525 : 490;
-
-    // Create a temporary container
-    const container = document.createElement("div");
-    container.style.position = "fixed"; // Changed from absolute
-    container.style.top = "0";
-    container.style.left = "0";
-    container.style.width = `${width}px`;
-    container.style.height = `${height}px`;
-    container.style.backgroundColor = "#000"; // Add background color for debugging
-    container.style.zIndex = "-1000"; // Keep it behind everything
-
-    try {
-        // Load all images first
-        const imagePromises = [
-            new Promise((resolve) => {
-                const img = new Image();
-                img.onload = () => resolve(cardImageSrc);
-                img.src = cardImageSrc;
-            }),
-        ];
-
-        await Promise.all(imagePromises);
-
-        const recoloredOutline = await recolor(
-            CardOutlineNew.src,
-            cardBorderColor,
-            undefined,
-            true,
-        ).catch((error) => {
-            console.error("Error recoloring the card outline", error);
-            return null;
-        });
-
-        const html = renderToStaticMarkup(
-            createElement(
-                "div",
-                {
-                    style: {
-                        width: `${width}px`,
-                        height: `${height}px`,
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        background: cardBorderColor,
-                    },
-                },
-                [
-                    createElement("img", {
-                        src: cardImageSrc,
-                        style: {
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            height: "490px",
-                            width: "350px",
-                            position: "relative",
-                            zIndex: 10,
-                        },
-                    }),
-                    createElement("img", {
-                        src: recoloredOutline,
-                        style: {
-                            height: "490px",
-                            width: "350px",
-                            position: "absolute",
-                            left: "50%",
-                            top: "50%",
-                            transform: "translate(-50%, -50%)",
-                            zIndex: 11,
-                            objectFit: "cover",
-                        },
-                    }),
-                ],
-            ),
-        );
-
-        container.innerHTML = html;
-        document.body.appendChild(container);
-
-        const scale = 2;
-
-        console.log("Starting html2canvas capture...");
-        const canvas = await html2canvas(container, {
-            width: width,
-            height: height,
-            scale: scale,
-            useCORS: true,
-            logging: true,
-            backgroundColor: "#000000",
-        });
-
-        const imageBase64 = canvas.toDataURL("image/png", 1.0);
-        // We can do masking here if we want
-        const resultingImage = imageBase64;
-        return resultingImage;
-    } finally {
-        document.body.removeChild(container);
-    }
-}
-
-export async function generateAllCardFronts(fetchedCards: TradingCardInfo[]) {
-    const results: Record<
-        string,
-        {
-            imgData: string;
-            uuid: string;
-        }
-    > = {};
-    for (let i = 0; i < fetchedCards.length; i++) {
-        const card = fetchedCards[i];
-        const image = await generatePrintCardFrontImage(
-            card.cardImage,
-            card.borderColor,
-        );
-        results[`${card.firstName}_${card.lastName}`] = {
-            imgData: image,
-            uuid: card.uuid,
-        };
-    }
-
-    // write results to file
-    const jsonString = JSON.stringify(results, null, 2);
-    writeJsonToFile(jsonString, "card-fronts.json");
-}
-
-export async function generateAllCardBacks(fetchedCards: TradingCardInfo[]) {
-    const results: Record<
-        string,
-        {
-            imgData: string;
-            uuid: string;
-        }
-    > = {};
-
-    for (let i = 0; i < fetchedCards.length; i++) {
-        console.log(i);
-
-        const card = fetchedCards[i];
-        const arCardBack = await generateArCardBackImage(card, {
-            totalOverride: 1,
-            forPrint: true,
-            noNumber: true,
-        });
-        const fileName1of1 =
-            `${card.firstName}_${card.lastName}`.trim() + "_0of0";
-        // `${card.firstName}_${card.lastName}`.trim() + "_1of1";
-        results[fileName1of1] = {
-            imgData: arCardBack,
-            uuid: card.uuid,
-        };
-        // const promises = [...new Array(card.totalCreated)].map(
-        //     async (_, index) => {
-        //         const editionNumber = index + 1;
-        //         const fileName =
-        //             `${card.firstName}_${card.lastName}`.trim() +
-        //             `_${editionNumber}of${card.totalCreated}`;
-        //         const arCardBack = await generateArCardBackImage(card, {
-        //             editionNumber,
-        //             forPrint: true,
-        //         });
-        //         results[fileName] = {
-        //             imgData: arCardBack,
-        //             uuid: card.uuid,
-        //         };
-        //     },
-        // );
-        // await Promise.all(promises);
-    }
-
-    // write results to file, without using fs
-    const jsonString = JSON.stringify(results, null, 2);
-    writeJsonToFile(jsonString, "card-backs.json");
-}
-
-function writeJsonToFile(jsonString: string, fileName?: string) {
-    const blob = new Blob([jsonString], {
-        type: "application/json",
-    });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    // @ts-ignore
-    a.href = url;
-    // @ts-ignore
-    a.download = fileName || "download.json";
-    // @ts-ignore
-    a.click();
 }
