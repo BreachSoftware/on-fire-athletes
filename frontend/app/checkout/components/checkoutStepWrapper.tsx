@@ -1,16 +1,14 @@
 "use client";
 // Import necessary components and hooks from Chakra UI and React
 import {
-    Button,
     Flex,
     Heading,
     Text,
     useBreakpointValue,
     useToast,
 } from "@chakra-ui/react";
-import { checkoutSteps } from "./checkoutSteps";
-import { ChevronRightIcon } from "@chakra-ui/icons";
 import { useCurrentCheckout } from "@/hooks/useCheckout";
+import { useFilteredSteps } from "@/hooks/useFilteredSteps";
 import { useStripe } from "@stripe/react-stripe-js";
 import { handlePurchase } from "./completeOrder/stripeHandlePurchase";
 import { useEffect, useState } from "react";
@@ -19,7 +17,9 @@ import TradingCardInfo from "@/hooks/TradingCardInfo";
 import { useAuth } from "@/hooks/useAuth";
 import { totalPriceInCart } from "@/utils/utils";
 import React from "react";
-import CheckoutInfo, { stepNum } from "@/hooks/CheckoutInfo";
+import CheckoutInfo, { StepNum } from "@/hooks/CheckoutInfo";
+import { checkoutSteps } from "./checkoutSteps";
+import CheckoutFooter from "./checkoutFooter";
 
 interface CheckoutStepWrapperProps {
     onFireCard: TradingCardInfo | null;
@@ -34,14 +34,14 @@ interface CheckoutStepWrapperProps {
 export default function CheckoutStepWrapper({
     onFireCard: onFireCard,
     buyingOtherCard,
-}: CheckoutStepWrapperProps) {
+}: CheckoutStepWrapperProps): JSX.Element {
     const curCheckout = useCurrentCheckout();
     const stripe = useStripe();
     const router = useRouter();
     const toast = useToast();
     const auth = useAuth();
     const checkout = curCheckout.checkout;
-    const stepNumber: stepNum = checkout.stepNum;
+    const stepNumber: StepNum = checkout.stepNum;
     const visitedSteps = checkout.visitedSteps;
     const isGift = curCheckout.isGift;
 
@@ -67,53 +67,13 @@ export default function CheckoutStepWrapper({
     const [isLoading, setIsLoading] = useState(false);
     const totalPrice = totalPriceInCart(checkout, buyingPhysicalCards);
 
-    const filteredSteps = getCheckoutSteps(
-        isGift,
-        buyingPhysicalCards,
-        auth.isSubscribed,
-        totalPrice,
-        buyingOtherCard,
-    );
-
-    function getCheckoutSteps(
-        isGift: boolean,
-        buyingPhysicalCards: boolean,
-        isSubscribed: boolean,
-        totalPrice: number,
-        buyingOtherCard: boolean,
-    ) {
-        return checkoutSteps.filter((_, index) => {
-            // Skip "Add-Ons" step if: the order is a gift or user is clicking "Buy Now" on an existing card
-            if (index === stepNum.ADD_ONS && (isGift || buyingOtherCard)) {
-                return false;
-            }
-            // Skip "Shipping Address" step if: order is a gift, or user is subscribed and not buying physical cards
-            if (
-                index === stepNum.SHIPPING_ADDRESS &&
-                (isGift || (isSubscribed && !buyingPhysicalCards))
-            ) {
-                return false;
-            }
-
-            // Skip "Payment Info" step if: user is subscribed and there are no add-ons
-            if (
-                index === stepNum.PAYMENT_DETAILS &&
-                isSubscribed &&
-                totalPrice === 0
-            ) {
-                return false;
-            }
-
-            // Include all other steps
-            return true;
-        });
-    }
+    const filteredSteps = useFilteredSteps();
     /**
      * Function to check if the current step is incomplete
      * @returns {boolean} - Whether the current step is incomplete
      */
     function stepIsIncomplete() {
-        if (stepNumber === stepNum.SHIPPING_ADDRESS) {
+        if (stepNumber === StepNum.SHIPPING_ADDRESS) {
             // Check if the street address is the correct format
             const validStreetAddress =
                 checkout.shippingAddress.streetAddress.match(
@@ -172,49 +132,59 @@ export default function CheckoutStepWrapper({
     }, [checkout.cart, checkout.stepNum, checkout.couponCode]);
 
     function handleBackClick() {
-        const prevStep = stepNumber - 1;
+        if (checkout.stepIndex > 0) {
+            const prevStep = checkout.stepIndex - 1;
 
-        // Ensure the previous step exists and is valid
-        if (prevStep >= 0 && filteredSteps[prevStep]) {
             curCheckout.updateCheckout({
-                stepNum: prevStep,
+                stepIndex: prevStep, // Move back one step
             });
         }
     }
 
     function handleNextClick() {
-        if (stepNumber >= 0 && stepNumber < filteredSteps.length - 1) {
-            let advance = false;
-            if (stepNumber === (stepNum.PAYMENT_DETAILS as stepNum)) {
-                const saveDetailsButton = document.getElementById(
-                    "save-details-button",
-                );
-                if (saveDetailsButton) {
-                    saveDetailsButton.click();
-                    setIsLoading(true);
-                }
+        const currentStepIndex = filteredSteps.findIndex(
+            (filteredStep) => filteredStep.stepIndex === checkout.stepIndex,
+        );
 
-                if (!hasAddedListeners) {
-                    addEventListener("resetLoadingButton", () => {
-                        setIsLoading(false);
-                    });
+        if (currentStepIndex === -1) {
+            console.error("Invalid step index!");
+            return;
+        }
 
-                    setHasAddedListeners(true);
-                }
-            } else {
-                advance = true;
+        const nextStep = filteredSteps[currentStepIndex];
+        console.log(
+            `Advancing to next step: ${nextStep.step.title} (Index: ${nextStep.stepIndex})`,
+        );
+
+        let advance = true;
+
+        if (nextStep.stepIndex === StepNum.PAYMENT_DETAILS) {
+            const saveDetailsButton = document.getElementById(
+                "save-details-button",
+            );
+            if (saveDetailsButton) {
+                saveDetailsButton.click();
+                setIsLoading(true);
             }
-            if (advance) {
-                const lastVisitedStep =
-                    stepNumber + 1 > visitedSteps
-                        ? stepNumber + 1
-                        : visitedSteps;
-                curCheckout.updateCheckout({
-                    stepNum: stepNumber + 1,
-                    visitedSteps: lastVisitedStep,
+
+            if (!hasAddedListeners) {
+                addEventListener("resetLoadingButton", () => {
+                    setIsLoading(false);
                 });
+                setHasAddedListeners(true);
             }
-        } else if (stepNumber === filteredSteps.length - 1) {
+
+            advance = false;
+        }
+
+        if (advance) {
+            console.log("StepIndex before advance: ", checkout.stepIndex);
+            curCheckout.updateCheckout({
+                stepIndex: nextStep.stepIndex,
+                visitedSteps: Math.max(visitedSteps, nextStep.stepIndex),
+            });
+            console.log("StepIndex after update: ", checkout.stepIndex);
+        } else {
             setIsLoading(true);
             handlePurchase(
                 checkout,
@@ -240,7 +210,6 @@ export default function CheckoutStepWrapper({
             });
         }
     }
-
     return (
         <Flex width={"100%"} bg="#171C1B" h={"100%"} borderRadius={"8px"}>
             {/* Main container for the content of the checkout step, with padding and background color */}
@@ -269,7 +238,7 @@ export default function CheckoutStepWrapper({
                                 if (index !== 0 && index !== 1) {
                                     return (
                                         // Fragment is used to avoid adding extra nodes to the DOM
-                                        <React.Fragment key={step.title}>
+                                        <React.Fragment key={step.step.title}>
                                             <Text
                                                 key={index} // Unique key for each step to help React manage re-renders
                                                 // Change text color based on whether the step is completed or not.
@@ -318,7 +287,7 @@ export default function CheckoutStepWrapper({
                                                     }
                                                 }}
                                             >
-                                                {step.title}
+                                                {step.step.title}
                                             </Text>
                                             {/* Separator for steps, avoids adding for the last step */}
                                             <Text
@@ -345,87 +314,17 @@ export default function CheckoutStepWrapper({
                 {/* Content area for the current step, displaying the component from checkoutSteps */}
                 {checkoutSteps[stepNumber].bodyElement}
 
-                {/* Footer section with the Next or Purchase button and optional bot-left element */}
-                {stepNumber !== stepNum.PAYMENT_DETAILS && (
-                    <Flex
-                        justifyContent={{
-                            base: "center",
-                            lg:
-                                stepNumber ===
-                                (stepNum.PAYMENT_DETAILS as stepNum)
-                                    ? "space-between"
-                                    : "flex-end",
-                        }}
-                        flexDirection={{ base: "column", lg: "row" }}
-                        alignItems="center"
-                        gap="25px"
-                        w="100%"
-                        mt={"15px"}
-                    >
-                        {/* Bottom left element rendering at the beginning of this HStack */}
-                        {checkoutSteps[stepNumber].cornerElement}
-
-                        <Flex
-                            direction={{ base: "column", lg: "row" }}
-                            gap={{ base: "25px", lg: "31px" }}
-                            alignItems={"center"}
-                        >
-                            {/* total price of all items in cart */}
-                            <Text
-                                fontFamily={"Barlow"}
-                                transform={"skewX(-6deg)"}
-                                fontSize={"2xl"}
-                                fontWeight={"bold"}
-                            >
-                                Total: ${totalPrice.toFixed(2)}
-                                {buyingPhysicalCards ? "*" : ""}
-                            </Text>
-                            <Flex gap="10%">
-                                <Button
-                                    variant={"back"}
-                                    width="100px"
-                                    isDisabled={
-                                        stepNumber ===
-                                            stepNum.SELECT_YOUR_PACKAGE ||
-                                        ((stepNumber === stepNum.ADD_ONS ||
-                                            stepNumber ===
-                                                stepNum.SHIPPING_ADDRESS) &&
-                                            buyingOtherCard)
-                                    } // Disable the button if it's the first step
-                                    onClick={handleBackClick}
-                                >
-                                    Back
-                                </Button>
-                                <Button
-                                    variant="next"
-                                    w="115px"
-                                    _hover={{
-                                        md: {
-                                            filter: "drop-shadow(0px 0px 5px #27CE00)",
-                                            width: "115px",
-                                        },
-                                    }}
-                                    isDisabled={stepIsIncomplete()}
-                                    isLoading={isLoading}
-                                    onClick={handleNextClick}
-                                >
-                                    <Flex alignItems={"center"}>
-                                        {/* Change button text based on whether it's the last step */}
-                                        {stepNumber !== filteredSteps.length - 1
-                                            ? "Next"
-                                            : totalPrice === 0
-                                              ? "Confirm"
-                                              : "Purchase"}
-                                        <ChevronRightIcon
-                                            boxSize={"30px"}
-                                            mr={"-10px"}
-                                        />
-                                    </Flex>
-                                </Button>
-                            </Flex>
-                        </Flex>
-                    </Flex>
-                )}
+                <CheckoutFooter
+                    stepNumber={stepNumber}
+                    filteredSteps={filteredSteps}
+                    totalPrice={totalPrice}
+                    buyingPhysicalCards={buyingPhysicalCards}
+                    buyingOtherCard={buyingOtherCard}
+                    isLoading={isLoading}
+                    stepIsIncomplete={stepIsIncomplete}
+                    handleBackClick={handleBackClick}
+                    handleNextClick={handleNextClick}
+                />
             </Flex>
         </Flex>
     );

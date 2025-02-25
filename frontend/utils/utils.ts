@@ -25,12 +25,13 @@ export function totalPriceInCart(
     checkout: CheckoutInfo,
     buyingPhysicalCards: boolean,
 ): number {
-    const { couponCentsOff, couponPercentOff } = checkout;
+    const { couponCentsOff = 0, couponPercentOff = 0 } = checkout || {};
 
     let total = 0;
-    for (let i = 0; i < checkout.cart.length; i++) {
-        total =
-            total + checkout.cart[i].price * checkout.cart[i].numberOfOrders;
+    if (checkout && checkout.cart) {
+        for (let i = 0; i < checkout.cart.length; i++) {
+            total += checkout.cart[i].price * checkout.cart[i].numberOfOrders;
+        }
     }
     if (buyingPhysicalCards) {
         total = total + checkout.shippingCost;

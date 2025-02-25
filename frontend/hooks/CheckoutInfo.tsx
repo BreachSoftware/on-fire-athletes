@@ -34,7 +34,7 @@ export enum DatabasePackageNames {
     MVP = "mvp",
 }
 
-export enum stepNum {
+export enum StepNum {
     SELECT_YOUR_PACKAGE = 0,
     ALL_STAR_PRICE = 1,
     ADD_ONS = 2,
@@ -79,7 +79,8 @@ export default class CheckoutInfo {
     couponCentsOff: number;
     couponPercentOff: number;
 
-    stepNum: stepNum;
+    stepNum: StepNum;
+    stepIndex: number;
     shippingCards: boolean;
     shippingAddress: StreetAddress;
     billingAddress: StreetAddress;
@@ -136,6 +137,7 @@ export default class CheckoutInfo {
         this.couponPercentOff = 0;
 
         this.stepNum = 0;
+        this.stepIndex = 0;
         this.shippingCards = false;
         this.shippingAddress = {
             firstName: "",

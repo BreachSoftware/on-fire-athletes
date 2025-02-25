@@ -3,13 +3,14 @@ import { PaymentElement } from "@stripe/react-stripe-js";
 import { useStripe, useElements } from "@stripe/react-stripe-js";
 import { Text, Button, Flex, useToast } from "@chakra-ui/react";
 import { useCurrentCheckout } from "@/hooks/useCheckout";
-import { checkoutSteps } from "@/app/checkout/components/checkoutSteps";
 import { useState, useEffect } from "react";
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
 import CouponInput from "./coupon-input";
 import { totalPriceInCart } from "@/utils/utils";
 import { useRouter } from "next/navigation";
+import { useFilteredSteps } from "@/hooks/useFilteredSteps";
+import { checkoutSteps } from "@/app/checkout/components/checkoutSteps";
 
 interface CheckoutFormProps {
     buyCard?: boolean;
@@ -31,6 +32,7 @@ export default function CheckoutForm({ buyCard }: CheckoutFormProps) {
     const stepNumber = checkout.stepNum;
 
     const [isLoading, setIsLoading] = useState(false);
+    const filteredSteps = useFilteredSteps();
 
     // dispatch the Event on an interval to ensure that the button is never stuck perpetually loading
     useEffect(() => {
@@ -187,8 +189,8 @@ export default function CheckoutForm({ buyCard }: CheckoutFormProps) {
                                     setCheckout({
                                         ...curCheckout.checkout,
                                         paymentInfoEntered: true,
-                                        stepNum: checkoutSteps.length - 1,
-                                        visitedSteps: checkoutSteps.length - 1,
+                                        stepNum: filteredSteps.length - 1,
+                                        visitedSteps: filteredSteps.length - 1,
                                     });
 
                                     setIsLoading(false);
@@ -288,14 +290,14 @@ export default function CheckoutForm({ buyCard }: CheckoutFormProps) {
                                     paymentCardLastFour:
                                         paymentMethod.card.last4,
                                     paymentInfoEntered: true,
-                                    stepNum: checkoutSteps.length - 1,
-                                    visitedSteps: checkoutSteps.length - 1,
+                                    stepNum: filteredSteps.length - 1,
+                                    visitedSteps: filteredSteps.length - 1,
                                 });
                             }}
                         >
                             <Flex alignItems={"center"}>
                                 {/* Change button text based on whether it's the last step */}
-                                {stepNumber !== checkoutSteps.length - 1
+                                {stepNumber !== filteredSteps.length - 1
                                     ? "Next"
                                     : "Purchase"}
                                 <ChevronRightIcon

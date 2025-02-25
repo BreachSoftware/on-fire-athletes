@@ -2,6 +2,11 @@
 
 import { FC, ReactNode, createContext, useContext, useState } from "react";
 import CheckoutInfo from "@/hooks/CheckoutInfo";
+import { useAuth } from "./useAuth";
+import {
+    getFilteredSteps,
+    updateStepIndex,
+} from "@/app/checkout/components/checkoutSteps";
 
 // The properties of the useCurrentCheckout hook
 export interface useCheckoutProperties {
@@ -30,22 +35,45 @@ export function useCurrentCheckout() {
  * The useCheckout hook is used to provide the data to the useCurrentCheckoutInfo hook
  * @returns The data to be used by the useCurrentCheckoutInfo hook
  */
-function useCheckout(): useCheckoutProperties {
+function useCheckout({
+    buyingOtherCard = false,
+}: { buyingOtherCard?: boolean } = {}): useCheckoutProperties {
+    const curCheckout = useCurrentCheckout();
+    const auth = useAuth();
     const [checkout, setCheckout] = useState<CheckoutInfo>(new CheckoutInfo());
-
     let isGift: boolean = false;
-
     if (typeof window !== "undefined") {
         const queryParams = new URLSearchParams(window.location.search);
         isGift = queryParams.get("gift") === "true";
     }
 
-    function updateCheckout(fieldsToUpdate: Partial<CheckoutInfo>) {
-        setCheckout({
-            ...checkout,
-            ...fieldsToUpdate,
-        });
-    }
+    const filteredSteps = getFilteredSteps(
+        checkout,
+        isGift,
+        auth.isSubscribed,
+        buyingOtherCard,
+    );
+
+    const updateCheckout = (fieldsToUpdate: Partial<CheckoutInfo>) => {
+        updateStepIndex(checkout, filteredSteps);
+
+        if (checkout && filteredSteps.length > 0) {
+            if (fieldsToUpdate.stepIndex !== undefined) {
+                const updatedStep = filteredSteps.find(
+                    (stepObj) => stepObj.stepIndex === fieldsToUpdate.stepIndex,
+                );
+
+                if (updatedStep) {
+                    fieldsToUpdate.stepNum = updatedStep.stepIndex + 1;
+                }
+            }
+
+            setCheckout({
+                ...checkout,
+                ...fieldsToUpdate,
+            });
+        }
+    };
 
     return {
         checkout: checkout,
