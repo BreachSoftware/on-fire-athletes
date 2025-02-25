@@ -37,6 +37,52 @@ async function uploadToS3(cardId, buffer) {
     return `s3://onfireathletes-media-uploads/${key}`;
 }
 
+async function getMindFileBaseImages(cardData) {
+    const images = [
+        cardData.cardPrintS3URL,
+        cardData.cardBackS3URL,
+        // cardData.frontPrintTradingCard,
+        // cardData.backPrintTradingCard,
+        // cardData.frontPrintBagTagS3URL,
+    ].filter(Boolean);
+
+    console.log(`[compileMindFile] Got ${images.length} images...`);
+    const imageBase64Array = await Promise.all(
+        images.map(async (imageUrl) => {
+            const response = await axios.get(imageUrl, {
+                responseType: "arraybuffer",
+            });
+            console.log(`[compileMindFile] Got image ${imageUrl}...`);
+            return Buffer.from(response.data).toString("base64");
+        }),
+    );
+
+    return imageBase64Array;
+}
+
+/**
+ * Flips images in Node.js using "sharp"
+ * @param {string[]} imageBase64Array - The array of base64 encoded images
+ * @returns {Promise<string[]>} - The array of flipped base64 encoded images
+ */
+async function flipImages(imageBase64Array) {
+    return Promise.all(
+        imageBase64Array.map(async (base64) => {
+            try {
+                const originalBuffer = Buffer.from(base64, "base64");
+                const flippedBuffer = await sharp(originalBuffer)
+                    .flip() // vertical flip
+                    .toBuffer();
+                // Re-encode as base64
+                return flippedBuffer.toString("base64");
+            } catch (err) {
+                console.error("Failed to flip image in Node.js", err);
+                return null; // Skip problem images if needed
+            }
+        }),
+    );
+}
+
 /**
  * Compiles a .mind file for a given card
  * @param {string} cardId - The UUID of the card to compile a .mind file for
@@ -71,42 +117,10 @@ async function compileMindFile(cardId) {
         }
 
         // 2. Download all images
-        const images = [
-            cardData.cardPrintS3URL,
-            cardData.cardBackS3URL,
-            // cardData.frontPrintTradingCard,
-            // cardData.backPrintTradingCard,
-            // cardData.frontPrintBagTagS3URL,
-            // cardData.backPrintBagTagS3URL,
-        ].filter(Boolean);
-
-        console.log(`[compileMindFile] Got ${images.length} images...`);
-        const imageBase64Array = await Promise.all(
-            images.map(async (imageUrl) => {
-                const response = await axios.get(imageUrl, {
-                    responseType: "arraybuffer",
-                });
-                console.log(`[compileMindFile] Got image ${imageUrl}...`);
-                return Buffer.from(response.data).toString("base64");
-            }),
-        );
+        const imageBase64Array = await getMindFileBaseImages(cardData);
 
         // 3. Flip images directly in Node using "sharp"
-        const flippedBase64Array = await Promise.all(
-            imageBase64Array.map(async (base64) => {
-                try {
-                    const originalBuffer = Buffer.from(base64, "base64");
-                    const flippedBuffer = await sharp(originalBuffer)
-                        .flip() // vertical flip
-                        .toBuffer();
-                    // Re-encode as base64
-                    return flippedBuffer.toString("base64");
-                } catch (err) {
-                    console.error("Failed to flip image in Node.js", err);
-                    return null; // Skip problem images if needed
-                }
-            }),
-        );
+        const flippedBase64Array = await flipImages(imageBase64Array);
         // Filter null out
         const validFlippedImages = flippedBase64Array.filter(Boolean);
 
@@ -232,7 +246,9 @@ async function compileMindFile(cardId) {
 }
 
 // Main execution
-(async () => {
+async function main() {
+    console.log("[Main] Starting compile...");
+
     const cardId = process.env.CARD_ID;
     if (!cardId) {
         console.error("CARD_ID environment variable not set.");
@@ -267,4 +283,6 @@ async function compileMindFile(cardId) {
         console.error("[Main] Fatal error:", error);
         process.exit(1);
     }
-})();
+}
+
+main();

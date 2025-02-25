@@ -3,7 +3,7 @@ const { ECS, S3 } = require("aws-sdk");
 const axios = require("axios");
 const sharp = require("sharp");
 
-const CARD_ID = "a9b0b608-9070-40d7-b184-ad779093b2c2";
+const CARD_ID = "9a9278e1-703c-4e9a-94ee-0ce115e0c381";
 
 // Configure AWS SDK
 const ecs = new ECS({
@@ -39,12 +39,60 @@ async function uploadToS3(cardId, buffer) {
     return `s3://onfireathletes-media-uploads/${key}`;
 }
 
+async function getMindFileBaseImages(cardData) {
+    const images = [
+        cardData.cardPrintS3URL,
+        cardData.cardBackS3URL,
+        // cardData.frontPrintTradingCard,
+        // cardData.backPrintTradingCard,
+        // cardData.frontPrintBagTagS3URL,
+    ].filter(Boolean);
+
+    console.log(`[compileMindFile] Got ${images.length} images...`);
+    const imageBase64Array = await Promise.all(
+        images.map(async (imageUrl) => {
+            const response = await axios.get(imageUrl, {
+                responseType: "arraybuffer",
+            });
+            console.log(`[compileMindFile] Got image ${imageUrl}...`);
+            return Buffer.from(response.data).toString("base64");
+        }),
+    );
+
+    return imageBase64Array;
+}
+
+/**
+ * Flips images in Node.js using "sharp"
+ * @param {string[]} imageBase64Array - The array of base64 encoded images
+ * @returns {Promise<string[]>} - The array of flipped base64 encoded images
+ */
+async function flipImages(imageBase64Array) {
+    return Promise.all(
+        imageBase64Array.map(async (base64) => {
+            try {
+                const originalBuffer = Buffer.from(base64, "base64");
+                const flippedBuffer = await sharp(originalBuffer)
+                    .flip() // vertical flip
+                    .toBuffer();
+                // Re-encode as base64
+                return flippedBuffer.toString("base64");
+            } catch (err) {
+                console.error("Failed to flip image in Node.js", err);
+                return null; // Skip problem images if needed
+            }
+        }),
+    );
+}
+
 /**
  * Compiles a .mind file for a given card
  * @param {string} cardId - The UUID of the card to compile a .mind file for
  * @returns {Promise<string>} - The S3 URL of the uploaded .mind file
  */
 async function compileMindFile(cardId) {
+    console.log("[compileMindFile] Starting compilation for cardId:", cardId);
+
     const browser = await puppeteer.launch({
         headless: "new",
         args: [
@@ -57,55 +105,30 @@ async function compileMindFile(cardId) {
     const page = await browser.newPage();
 
     try {
-        // 1. Get card data from API
+        console.log(
+            "[compileMindFile] Fetching card data from:",
+            `${API_BASE}/getCard?uuid=${cardId}`,
+        );
         const { data: cardData } = await axios.get(
             `${API_BASE}/getCard?uuid=${cardId}`,
         );
+        console.log("[compileMindFile] cardData:", cardData);
 
         if (!cardData.cardImage) {
             throw new Error("Card does not have required images");
         }
 
         // 2. Download all images
-        const images = [
-            cardData.cardPrintS3URL,
-            cardData.cardBackS3URL,
-            // cardData.frontPrintTradingCard,
-            // cardData.backPrintTradingCard,
-            // cardData.frontPrintBagTagS3URL,
-            // cardData.backPrintBagTagS3URL,
-        ].filter(Boolean);
-
-        const imageBase64Array = await Promise.all(
-            images.map(async (imageUrl) => {
-                const response = await axios.get(imageUrl, {
-                    responseType: "arraybuffer",
-                });
-                return Buffer.from(response.data).toString("base64");
-            }),
-        );
+        const imageBase64Array = await getMindFileBaseImages(cardData);
 
         // 3. Flip images directly in Node using "sharp"
-        const flippedBase64Array = await Promise.all(
-            imageBase64Array.map(async (base64) => {
-                try {
-                    const originalBuffer = Buffer.from(base64, "base64");
-                    const flippedBuffer = await sharp(originalBuffer)
-                        .flip() // vertical flip
-                        .toBuffer();
-                    // Re-encode as base64
-                    return flippedBuffer.toString("base64");
-                } catch (err) {
-                    console.error("Failed to flip image in Node.js", err);
-                    return null; // Skip problem images if needed
-                }
-            }),
-        );
+        const flippedBase64Array = await flipImages(imageBase64Array);
         // Filter null out
         const validFlippedImages = flippedBase64Array.filter(Boolean);
 
         // 4. Combine original + flipped images
         const allImages = [...imageBase64Array, ...validFlippedImages];
+        console.log(`[compileMindFile] All images: ${allImages.length}`);
 
         // 5. Load HTML page with MindAR compiler
         await page.goto("about:blank");
@@ -197,41 +220,27 @@ async function compileMindFile(cardId) {
             });
 
         // 6. Run MindAR compiler with better error handling
-        const compiledData = await page
-            .evaluate(async () => {
-                try {
-                    const result = await window.compile();
-                    if (!result) {
-                        throw new Error("Compilation returned no data");
-                    }
-                    return Array.from(new Uint8Array(result));
-                } catch (error) {
-                    console.error("Compilation status:", window.compileStatus);
-                    throw error;
-                }
-            })
-            .catch(async (error) => {
-                // Get any additional error context from the page
-                const errorContext = await page.evaluate(() => ({
-                    mindArPresent: !!window.MINDAR,
-                    mindArImagePresent: window.MINDAR && !!window.MINDAR.IMAGE,
-                    compileStatus: window.compileStatus,
-                }));
-
-                console.error("Compilation failed:", error);
-                console.error("Error context:", errorContext);
-                throw error;
-            });
+        const compiledData = await page.evaluate(async () => {
+            console.log("[Browser] Starting MindAR compiler...");
+            const result = await window.compile();
+            console.log(
+                "[Browser] MindAR compile result size:",
+                result?.byteLength || 0,
+            );
+            return Array.from(new Uint8Array(result));
+        });
 
         // Convert array of bytes into a Node.js Buffer
         const buffer = Buffer.from(compiledData);
 
         // 7. Upload the .mind file to S3
         const s3Url = await uploadToS3(cardId, buffer);
-        console.log(`Mind file uploaded successfully to ${s3Url}`);
+        console.log(
+            `[compileMindFile] Mind file uploaded successfully to ${s3Url}`,
+        );
         return s3Url;
     } catch (err) {
-        console.error("Error compiling Mind file:", err);
+        console.error("[compileMindFile] Error compiling Mind file:", err);
         throw err;
     } finally {
         await browser.close();
@@ -239,8 +248,10 @@ async function compileMindFile(cardId) {
 }
 
 // Main execution
-(async () => {
-    const cardId = CARD_ID; //process.env.CARD_ID;
+async function main() {
+    console.log("[Main] Starting compile...");
+
+    const cardId = process.env.CARD_ID || CARD_ID;
     if (!cardId) {
         console.error("CARD_ID environment variable not set.");
         process.exit(1);
@@ -249,25 +260,31 @@ async function compileMindFile(cardId) {
     const taskArn = process.env.AWS_ECS_TASK_ARN;
 
     try {
+        console.log("[Main] Starting compile for cardId:", cardId);
         const s3Url = await compileMindFile(cardId);
         console.log(
-            `Mind file compilation complete. File available at: ${s3Url}`,
+            `[Main] Mind file compilation complete. File available at: ${s3Url}`,
         );
 
-        // Stop the task after completion
-        try {
+        // Stop the task after completion (only if ARN is set)
+        if (!taskArn) {
+            console.warn(
+                "[Main] No AWS_ECS_TASK_ARN provided. Skipping ECS task stop.",
+            );
+        } else {
+            console.log("[Main] Stopping ECS task with ARN:", taskArn);
             await ecs
                 .stopTask({
                     cluster: "OnFireCluster",
                     task: taskArn,
                 })
                 .promise();
-            console.log("ECS task stopped successfully.");
-        } catch (ecsError) {
-            console.error("Error stopping ECS task:", ecsError);
+            console.log("[Main] ECS task stopped successfully.");
         }
     } catch (error) {
-        console.error("Fatal error:", error);
+        console.error("[Main] Fatal error:", error);
         process.exit(1);
     }
-})();
+}
+
+main();
