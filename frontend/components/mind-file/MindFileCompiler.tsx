@@ -74,6 +74,8 @@ export default function MindFileCompiler({
         });
     };
 
+    const frontImage = card?.cardPrintS3URL || card?.cardImage;
+
     const handleCompileMindFile = async (): Promise<void> => {
         if (!card) {
             addDebugInfo("Error: No card data available");
@@ -108,14 +110,14 @@ export default function MindFileCompiler({
 
         try {
             // Verify the card has necessary images
-            if (!card.cardPrintS3URL || !card.cardBackS3URL) {
+            if (!frontImage || !card.cardBackS3URL) {
                 throw new Error(
                     "Card is missing required images for AR tracking",
                 );
             }
 
             addDebugInfo(`Found card images:
-- Front: ${card.cardPrintS3URL ? "Yes" : "No"}
+- Front: ${frontImage ? "Yes" : "No"}
 - Back: ${card.cardBackS3URL ? "Yes" : "No"}`);
 
             // Compile mind file with progress updates
@@ -211,12 +213,8 @@ export default function MindFileCompiler({
                         <Badge colorScheme={card ? "green" : "red"}>
                             {card ? "✓ Card Data Available" : "✗ No Card Data"}
                         </Badge>
-                        <Badge
-                            colorScheme={card?.cardPrintS3URL ? "green" : "red"}
-                        >
-                            {card?.cardPrintS3URL
-                                ? "✓ Front Image"
-                                : "✗ No Front Image"}
+                        <Badge colorScheme={frontImage ? "green" : "red"}>
+                            {frontImage ? "✓ Front Image" : "✗ No Front Image"}
                         </Badge>
                         <Badge
                             colorScheme={card?.cardBackS3URL ? "green" : "red"}
