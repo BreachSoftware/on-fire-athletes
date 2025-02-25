@@ -36,6 +36,7 @@ import "mind-ar/dist/mindar-image-aframe.prod.js";
 import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
 import OnFireLogo from "@/images/logos/small-logo-white.png";
 import SharedStack from "@/components/shared/wrappers/shared-stack";
+import Head from "next/head";
 
 /**
  * The MindAR ARViewer component that renders the video on the OnFire card.
@@ -333,6 +334,14 @@ function ARViewer() {
 
     return (
         <>
+            <Head>
+                <meta
+                    httpEquiv="Cache-Control"
+                    content="no-cache, no-store, must-revalidate"
+                />
+                <meta httpEquiv="Pragma" content="no-cache" />
+                <meta httpEquiv="Expires" content="0" />
+            </Head>
             {/* Apply global styles */}
             <style>{`
                 * {
