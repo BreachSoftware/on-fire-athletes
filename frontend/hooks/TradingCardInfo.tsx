@@ -43,6 +43,7 @@ export default class TradingCardInfo {
     uuid: string;
     generatedBy: string;
     cardImage: string;
+    cardPrintS3URL: string;
     cardBackS3URL: string;
     stepNumber: number;
     totalCreated: number;
@@ -113,6 +114,7 @@ export default class TradingCardInfo {
         uuid?: string;
         generatedBy?: string;
         cardImage?: string;
+        cardPrintS3URL?: string;
         cardBackS3URL?: string;
         stepNumber?: number;
         totalCreated?: number;
@@ -178,6 +180,7 @@ export default class TradingCardInfo {
         this.uuid = options?.uuid || "";
         this.generatedBy = options?.generatedBy || "";
         this.cardImage = options?.cardImage || "";
+        this.cardPrintS3URL = options?.cardPrintS3URL || "";
         this.cardBackS3URL = options?.cardBackS3URL || "";
         this.stepNumber = options?.stepNumber || 1;
         this.totalCreated = options?.totalCreated || 0;
@@ -250,6 +253,7 @@ export default class TradingCardInfo {
 			uuid: ${cardInfo.uuid}
 			generatedBy: ${cardInfo.generatedBy}
 			cardImage: ${cardInfo.cardImage.substring(0, 100)}
+			cardPrintS3URL: ${cardInfo.cardPrintS3URL.substring(0, 100)}
 			cardBackS3URL: ${cardInfo.cardBackS3URL.substring(0, 100)}
 			stepNumber: ${cardInfo.stepNumber}
 			totalCreated: ${cardInfo.totalCreated}
