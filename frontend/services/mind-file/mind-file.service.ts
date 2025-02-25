@@ -52,7 +52,9 @@ export class MindFileService {
 
         return new Promise<void>((resolve, reject) => {
             try {
-                const script = document.createElement("script");
+                const script = document.createElement(
+                    "script",
+                ) as unknown as HTMLScriptElement;
                 script.id = scriptId;
                 script.src =
                     "https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js";
@@ -139,7 +141,9 @@ export class MindFileService {
         const flippedImagePromises = images.map(async (img) => {
             try {
                 // Create a canvas to draw and flip the image
-                const canvas = document.createElement("canvas");
+                const canvas = document.createElement(
+                    "canvas",
+                ) as unknown as HTMLCanvasElement;
                 const width = img.width;
                 const height = img.height;
 
