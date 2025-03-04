@@ -10,7 +10,9 @@ import { contactEmailBodyAttachment } from "../utils/contactEmailBodyAttachment"
  * @param {APIGatewayProxyEvent} event - The API Gateway proxy event.
  * @returns {Promise<APIGatewayProxyResult | undefined>} The API Gateway proxy result.
  */
-export async function contactEmail(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult | undefined> {
+export async function contactEmail(
+	event: APIGatewayProxyEvent,
+): Promise<APIGatewayProxyResult | undefined> {
 	try {
 		// Check if the event body exists
 		if (!event.body) {
@@ -39,9 +41,9 @@ export async function contactEmail(event: APIGatewayProxyEvent): Promise<APIGate
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify(
-					{ error: "The request body must contain the first name, last name, email, subject, message" }
-				),
+				body: JSON.stringify({
+					error: "The request body must contain the first name, last name, email, subject, message",
+				}),
 			};
 		}
 
@@ -58,7 +60,9 @@ export async function contactEmail(event: APIGatewayProxyEvent): Promise<APIGate
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify({ error: "None of the properties can be empty" }),
+				body: JSON.stringify({
+					error: "None of the properties can be empty",
+				}),
 			};
 		}
 
@@ -75,32 +79,33 @@ export async function contactEmail(event: APIGatewayProxyEvent): Promise<APIGate
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify({ error: "All properties must be of type string" }),
+				body: JSON.stringify({
+					error: "All properties must be of type string",
+				}),
 			};
 		}
 
-		const emailBody = data.attachment === "" ?
-			contactEmailBody(
-				data.firstName,
-				data.lastName,
-				data.email,
-				data.subject,
-				data.message,
-			) :
-			contactEmailBodyAttachment(
-				data.firstName,
-				data.lastName,
-				data.email,
-				data.subject,
-				data.message,
-				data.attachment
-			)
-		;
-
+		const emailBody =
+			data.attachment === ""
+				? contactEmailBody(
+						data.firstName,
+						data.lastName,
+						data.email,
+						data.subject,
+						data.message,
+					)
+				: contactEmailBodyAttachment(
+						data.firstName,
+						data.lastName,
+						data.email,
+						data.subject,
+						data.message,
+						data.attachment,
+					);
 		// Set up the email parameters
 		const params = {
 			Destination: {
-				ToAddresses: [ "support@onfireathletes.com" ],
+				ToAddresses: ["support@onfireathletes.com"],
 			},
 			Message: {
 				Body: {
@@ -114,13 +119,15 @@ export async function contactEmail(event: APIGatewayProxyEvent): Promise<APIGate
 					Data: "You have received a message from the OnFireAthletes site",
 				},
 			},
-			Source: "OnFire Contact Form <mail@zenithsoftware.dev>",
+			Source: "OnFire Contact Form <support@onfireathletes.com>",
 		};
 
 		console.log("Sending email ");
 
 		// Create the promise and SES service object
-		const sendPromise = new SES({ apiVersion: "2010-12-01" }).sendEmail(params).promise();
+		const sendPromise = new SES({ apiVersion: "2010-12-01" })
+			.sendEmail(params)
+			.promise();
 
 		try {
 			// Send the email
@@ -135,7 +142,9 @@ export async function contactEmail(event: APIGatewayProxyEvent): Promise<APIGate
 			};
 		} catch (error) {
 			// Log the error if an exception occurs when sending the email
-			console.error("The following error occurred when sending the email: ");
+			console.error(
+				"The following error occurred when sending the email: ",
+			);
 			console.error(error);
 
 			return {
@@ -160,4 +169,4 @@ export async function contactEmail(event: APIGatewayProxyEvent): Promise<APIGate
 			body: JSON.stringify({ error: error }),
 		};
 	}
-};
+}

@@ -1,9 +1,9 @@
 /* eslint-disable no-undef */
 /* eslint-disable require-jsdoc */
 import type { Metadata } from "next";
-import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 import { Providers } from "./Providers";
+import { GoogleAnalytics, GoogleTagManager } from "@next/third-parties/google";
 
 export const metadata: Metadata = {
     title: "OnFire Athletes",
@@ -36,8 +36,10 @@ export default function RootLayout({
             </head>
             <body>
                 <Providers>{children}</Providers>
+
+                <GoogleTagManager gtmId="GTM-NRCRM7QX" />
+                <GoogleAnalytics gaId="G-ZJV6CBJX4Q" />
             </body>
-            <GoogleAnalytics gaId="G-F76G8L172V" />
         </html>
     );
 }

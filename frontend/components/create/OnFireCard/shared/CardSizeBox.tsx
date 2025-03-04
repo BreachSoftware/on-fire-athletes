@@ -14,7 +14,9 @@ export default function CardSizeBox({
             w="100%"
             h="100%"
             bgImage={src}
-            backgroundSize="cover"
+            backgroundSize="100% 100%"
+            backgroundPosition="center"
+            backgroundRepeat="no-repeat"
             pointerEvents="none"
             {...rest}
         />

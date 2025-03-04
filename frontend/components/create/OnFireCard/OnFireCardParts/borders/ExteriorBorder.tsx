@@ -18,6 +18,7 @@ export default function ExteriorBorder({
             justifyContent="center"
             alignItems="center"
             src={undefined}
+            position="relative"
         >
             <CardSizeBox
                 zIndex={back ? zIndex.cardBackVideo + 1 : zIndex.border}
@@ -27,7 +28,8 @@ export default function ExteriorBorder({
                 justifyContent="center"
                 alignItems="center"
                 width="351px"
-                height="491px"
+                height="490px"
+                left="-1px"
             >
                 <CardOutline width="100%" height="100%" fill={color} />
             </CardSizeBox>
@@ -42,6 +44,8 @@ export function ExteriorBorderShine({ back = false }: { back?: boolean }) {
             zIndex={back ? zIndex.cardBackVideo + 1 : zIndex.border}
             opacity={0.25}
             transform={back ? "scaleX(-1)" : "scaleX(1)"}
+            width="350px"
+            height="490.5px"
         />
     );
 }
