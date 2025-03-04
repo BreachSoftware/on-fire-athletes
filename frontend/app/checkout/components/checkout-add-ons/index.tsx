@@ -1,6 +1,6 @@
 import SharedStack from "@/components/shared/wrappers/shared-stack";
 import CheckoutInfo, { DatabasePackageNames } from "@/hooks/CheckoutInfo";
-import { useCheckoutPrices, useCurrentCheckout } from "@/hooks/useCheckout";
+import { useCurrentCheckout } from "@/hooks/useCheckout";
 import React, { useMemo } from "react";
 import AddOnOption, { AddOnOptionType } from "./add-on-option";
 import { packages } from "../selectYourPackage/packages";

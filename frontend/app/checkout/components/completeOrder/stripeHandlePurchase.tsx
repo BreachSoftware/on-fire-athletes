@@ -148,7 +148,9 @@ export async function handlePurchase(
                     ? `GIFT - ${checkout.packageName?.toUpperCase()}`
                     : auth.isSubscribed
                       ? "SUBSCRIPTION"
-                      : checkout.packageName?.toUpperCase(),
+                      : isNil
+                        ? "NIL"
+                        : checkout.packageName?.toUpperCase(),
                 is_gift: isGift,
             }),
         };

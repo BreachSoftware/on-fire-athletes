@@ -253,8 +253,8 @@ export default class TradingCardInfo {
 			uuid: ${cardInfo.uuid}
 			generatedBy: ${cardInfo.generatedBy}
 			cardImage: ${cardInfo.cardImage.substring(0, 100)}
-			cardPrintS3URL: ${cardInfo.cardPrintS3URL.substring(0, 100)}
-			cardBackS3URL: ${cardInfo.cardBackS3URL.substring(0, 100)}
+			cardPrintS3URL: ${cardInfo.cardPrintS3URL?.substring(0, 100)}
+			cardBackS3URL: ${cardInfo.cardBackS3URL?.substring(0, 100)}
 			stepNumber: ${cardInfo.stepNumber}
 			totalCreated: ${cardInfo.totalCreated}
 			currentlyAvailable: ${cardInfo.currentlyAvailable}
