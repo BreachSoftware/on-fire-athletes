@@ -1,20 +1,12 @@
-import { MinusIcon, AddIcon } from "@chakra-ui/icons";
-import {
-    Button,
-    Checkbox,
-    Flex,
-    HStack,
-    Input,
-    Text,
-    useNumberInput,
-} from "@chakra-ui/react";
+import GenericSelect from "@/components/shared/generic-select";
+import { Checkbox, Flex, Select, Text } from "@chakra-ui/react";
 
 interface AddOnProps {
     title: string; // Title of the add-on
-    price: string; // Price of one add-on
     value: number; // How many of this add-on the user wants
     onChange: (value: number) => void; // Function to handle the change in the number of add-ons
     hidePriceStyling?: boolean;
+    pricingOptions: number[];
 }
 
 /**
@@ -22,22 +14,6 @@ interface AddOnProps {
  * @returns JSX.Element
  */
 export default function AddOn(props: AddOnProps) {
-    const { getInputProps, getIncrementButtonProps, getDecrementButtonProps } =
-        useNumberInput({
-            step: 1,
-            defaultValue: 0,
-            min: 0,
-            max: 99,
-            value: props.value,
-            onChange: (valueString) => {
-                return props.onChange(parseInt(valueString));
-            },
-        });
-
-    const inc = getIncrementButtonProps();
-    const dec = getDecrementButtonProps();
-    const input = getInputProps();
-
     return (
         <>
             <Flex
@@ -72,18 +48,26 @@ export default function AddOn(props: AddOnProps) {
                     >
                         {props.title}
                     </Text>
-                    <Text
-                        fontFamily={"Barlow Condensed"}
-                        fontSize={"16"}
-                        textColor={"green.100"}
-                    >
-                        {props.hidePriceStyling
-                            ? props.price
-                            : `$${props.price}/ea.`}
-                    </Text>
                 </Flex>
 
-                <HStack width="140px">
+                <GenericSelect
+                    options={props.pricingOptions}
+                    selectedValue={props.value}
+                    setSelectedValue={props.onChange}
+                />
+
+                {/* <Select
+                    value={props.value}
+                    onChange={(e) => props.onChange(parseInt(e.target.value))}
+                >
+                    {props.pricingOptions.map((o) => (
+                        <option key={o} value={o}>
+                            {o}
+                        </option>
+                    ))}
+                </Select> */}
+
+                {/* <HStack width="140px">
                     <Button
                         {...dec}
                         padding="0"
@@ -118,7 +102,7 @@ export default function AddOn(props: AddOnProps) {
                     >
                         <AddIcon width={3} height={3} />
                     </Button>
-                </HStack>
+                </HStack> */}
             </Flex>
         </>
     );

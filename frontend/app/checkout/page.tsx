@@ -20,7 +20,14 @@ import { useTransferContext } from "@/hooks/useTransfer";
 import "../../node_modules/@rainbow-me/rainbowkit/dist/index.css";
 import { darkTheme, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { useAuth } from "@/hooks/useAuth";
-import { DatabasePackageNames } from "@/hooks/CheckoutInfo";
+import { DatabasePackageNames, Item } from "@/hooks/CheckoutInfo";
+import { BAG_TAG_PRICES } from "@/utils/constants";
+import { DIGITAL_CARD_PRICES, PHYSICAL_CARD_PRICES } from "@/utils/constants";
+import {
+    DIGITAL_ADD_ON_TITLE,
+    BAG_TAG_ADD_ON_TITLE,
+    PHYSICAL_ADD_ON_TITLE,
+} from "./components/checkout-add-ons/constants";
 
 // OnFire keys
 const STRIPE_PUBLIC_KEY =
@@ -76,8 +83,7 @@ export default function CheckoutPage() {
                     const { uuid, generatedBy } = JSON.parse(currentCard);
                     getCardInfo(uuid, generatedBy).then((card) => {
                         setOnFireCard(card);
-                        co.setCheckout({
-                            ...checkout,
+                        co.updateCheckout({
                             onFireCard: card,
                         });
                         setCardObtained(true);
@@ -91,8 +97,7 @@ export default function CheckoutPage() {
 
     useEffect(() => {
         if (checkoutStep === 0 && cardObtained && isSubscribed) {
-            co.setCheckout({
-                ...checkout,
+            co.updateCheckout({
                 stepNum: 1,
             });
         }
@@ -125,7 +130,7 @@ export default function CheckoutPage() {
                         price: 0,
                     };
 
-                    co.setCheckout({
+                    co.updateCheckout({
                         ...checkout,
                         stepNum: 3,
                         packageName: null,
@@ -149,11 +154,9 @@ export default function CheckoutPage() {
 
     useEffect(() => {
         if (checkoutStep === 0 && !buyingOtherCard) {
-            co.setCheckout({
+            co.updateCheckout({
                 ...checkout,
                 cart: [],
-                physicalCardCount: 0,
-                digitalCardCount: 0,
                 cardPrice: "",
             });
         }
@@ -163,7 +166,14 @@ export default function CheckoutPage() {
 
     // This useEffect is used to set the cart items when the user is not buying a card from another user
     useEffect(() => {
-        if (checkoutStep === 2 && !buyingOtherCard) {
+        console.log(
+            "IN CHECKOUT USE EFFECT",
+            checkoutStep,
+            "isGift",
+            co.isGift,
+        );
+
+        if (checkoutStep === (co.isGift ? 4 : 3) && !buyingOtherCard) {
             let formalPackageName = "";
             if (co.checkout.packageName) {
                 switch (co.checkout.packageName) {
@@ -203,8 +213,7 @@ export default function CheckoutPage() {
                     numberOfOrders: 1,
                     price: 0,
                 };
-                co.setCheckout({
-                    ...checkout,
+                co.updateCheckout({
                     packageName: DatabasePackageNames.MVP,
                     cart: [subscribedPackage],
                 });
@@ -217,69 +226,96 @@ export default function CheckoutPage() {
                     (item) => item.title === `${formalPackageName} Package`,
                 )
             ) {
+                console.log("EARLY RETURN FOR CART SET");
                 return;
             }
 
-            if (onFireCard && formalPackageName) {
-                // Set the main package item
-                const mainPackage = {
-                    title: `${formalPackageName} Package`,
-                    card: onFireCard,
-                    numberOfCards: co.checkout.packageCardCount,
-                    numberOfOrders: 1,
-                    price: co.checkout.packagePrice,
-                };
+            if (onFireCard || co.isGift) {
+                if (formalPackageName === "MVP") {
+                    // Set the main package item
+                    const mainPackage = {
+                        title: `${formalPackageName} Package`,
+                        card: onFireCard,
+                        numberOfCards: co.checkout.packageCardCount,
+                        numberOfOrders: 1,
+                        price: co.checkout.packagePrice,
+                    };
 
-                // If the user has selected to add a digital or physical card, set the add-on items
-                let digitalAddOn = null;
-                if (co.checkout.digitalCardCount > 0) {
-                    digitalAddOn = {
-                        title: "Digital Card Add-On",
+                    const includedPhysicalAddOn = {
+                        title: "Included Physical Cards",
                         card: onFireCard,
                         numberOfCards: 1,
-                        numberOfOrders: co.checkout.digitalCardCount,
-                        price: co.checkout.digitalCardPrice,
+                        numberOfOrders: 3,
+                        price: 0.0,
                     };
+
+                    const includedBagTagItems = {
+                        title: "Included Bag Tag",
+                        card: onFireCard,
+                        itemType: "bag tag",
+                        numberOfCards: 1,
+                        numberOfOrders: 1,
+                        price: 0.0,
+                    };
+
+                    // Add all items to the cart
+                    co.updateCheckout({
+                        cart: [
+                            mainPackage,
+                            includedPhysicalAddOn,
+                            includedBagTagItems,
+                        ].filter((item) => {
+                            return item !== null;
+                        }),
+                    });
+                } else {
+                    const checkoutCart: Item[] = [];
+
+                    if (checkout.physicalCardCount > 0) {
+                        checkoutCart.push({
+                            title: PHYSICAL_ADD_ON_TITLE,
+                            card: onFireCard,
+                            numberOfCards: checkout.physicalCardCount,
+                            numberOfOrders: 1,
+                            price: PHYSICAL_CARD_PRICES[
+                                checkout.physicalCardCount
+                            ],
+                        });
+                    }
+
+                    if (checkout.digitalCardCount > 0) {
+                        checkoutCart.push({
+                            title: DIGITAL_ADD_ON_TITLE,
+                            card: onFireCard,
+                            numberOfCards: checkout.digitalCardCount,
+                            numberOfOrders: 1,
+                            price: DIGITAL_CARD_PRICES[
+                                checkout.digitalCardCount
+                            ],
+                        });
+                    }
+
+                    if (checkout.bagTagCount > 0) {
+                        checkoutCart.push({
+                            title: BAG_TAG_ADD_ON_TITLE,
+                            card: onFireCard,
+                            itemType: "bag tag",
+                            numberOfCards: checkout.bagTagCount,
+                            numberOfOrders: 1,
+                            price: BAG_TAG_PRICES[checkout.bagTagCount],
+                        });
+                    }
+
+                    console.log("CHECKOUT CART", checkoutCart);
+                    co.updateCheckout({
+                        cart: checkoutCart,
+                    });
                 }
-
-                let includedPhysicalAddOn = null;
-
-                includedPhysicalAddOn =
-                    co.checkout.packageName === "prospect"
-                        ? null
-                        : {
-                              title:
-                                  co.checkout.packageName === "rookie"
-                                      ? "Included Physical Card"
-                                      : "Included Physical Cards",
-                              card: onFireCard,
-                              numberOfCards: 1,
-                              numberOfOrders:
-                                  co.checkout.packageName === "rookie" ||
-                                  co.checkout.packageName === "allStar"
-                                      ? 1
-                                      : co.checkout.packageName === "mvp"
-                                        ? 3
-                                        : 0,
-                              price: 0.0,
-                          };
-
-                // Add all items to the cart
-                co.setCheckout({
-                    ...checkout,
-                    cart: [
-                        mainPackage,
-                        includedPhysicalAddOn,
-                        digitalAddOn,
-                    ].filter((item) => {
-                        return item !== null;
-                    }),
-                });
             }
         }
         // I disabled this because it was causing an infinite loop
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isSubscribed, checkoutStep]);
+    }, [isSubscribed, checkoutStep, co.isGift]);
 
     // This useEffect is used to show the crypto wallet account balance in the NavBar
     useEffect(() => {
@@ -358,7 +394,9 @@ export default function CheckoutPage() {
                                     width={"100%"}
                                 >
                                     <GridItem area={"header"}>
-                                        <CheckoutHeader />
+                                        <CheckoutHeader
+                                            buyingOtherCard={buyingOtherCard}
+                                        />
                                     </GridItem>
                                     <GridItem area={"itemsInCart"}>
                                         <CheckoutItemsInCart

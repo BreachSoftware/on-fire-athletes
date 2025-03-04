@@ -20,7 +20,7 @@ import TradingCardInfo from "@/hooks/TradingCardInfo";
 import { useAuth } from "@/hooks/useAuth";
 import { totalPriceInCart } from "@/utils/utils";
 import React from "react";
-import CheckoutInfo from "@/hooks/CheckoutInfo";
+import CheckoutInfo, { DatabasePackageNames } from "@/hooks/CheckoutInfo";
 import { ShippingAndHandlingItem } from "./checkoutItemsInCart";
 
 interface CheckoutStepWrapperProps {
@@ -129,8 +129,7 @@ export default function CheckoutStepWrapper({
 
     //  useEffect to update the total price in the cart when the cart changes
     useEffect(() => {
-        curCheckout.setCheckout({
-            ...checkout,
+        curCheckout.updateCheckout({
             total: totalPriceInCartInCents(),
             shippingCost: calculateShippingCost(checkout),
         });
@@ -162,7 +161,7 @@ export default function CheckoutStepWrapper({
                     {!screenTooSmall && !isGift && !buyingOtherCard && (
                         <Flex flexDirection={{ base: "column", lg: "row" }}>
                             {checkoutSteps.map((step, index) => {
-                                if (index !== 0 && index !== 1) {
+                                if (index !== 0 && index !== 1 && index !== 2) {
                                     return (
                                         // Fragment is used to avoid adding extra nodes to the DOM
                                         <React.Fragment key={step.title}>
@@ -204,9 +203,8 @@ export default function CheckoutStepWrapper({
                                                         ) {
                                                             // do nothing, as it's disabled
                                                         } else {
-                                                            curCheckout.setCheckout(
+                                                            curCheckout.updateCheckout(
                                                                 {
-                                                                    ...checkout,
                                                                     stepNum:
                                                                         index,
                                                                 },
@@ -293,8 +291,7 @@ export default function CheckoutStepWrapper({
                                             totalPrice === 0 &&
                                             stepNumber === 5
                                         ) {
-                                            curCheckout.setCheckout({
-                                                ...checkout,
+                                            curCheckout.updateCheckout({
                                                 stepNum: 2,
                                             });
                                             return;
@@ -307,21 +304,23 @@ export default function CheckoutStepWrapper({
                                                     "prospect") &&
                                             stepNumber == 2
                                         ) {
-                                            curCheckout.setCheckout({
-                                                ...checkout,
+                                            curCheckout.updateCheckout({
                                                 stepNum: stepNumber - 2,
                                             });
                                         } else if (
                                             !buyingPhysicalCards &&
                                             stepNumber == 4
                                         ) {
-                                            curCheckout.setCheckout({
-                                                ...checkout,
+                                            curCheckout.updateCheckout({
+                                                stepNum: stepNumber - 2,
+                                            });
+                                            // Always skip Add-ons
+                                        } else if (stepNumber == 3) {
+                                            curCheckout.updateCheckout({
                                                 stepNum: stepNumber - 2,
                                             });
                                         } else {
-                                            curCheckout.setCheckout({
-                                                ...checkout,
+                                            curCheckout.updateCheckout({
                                                 stepNum: stepNumber - 1,
                                             });
                                         }
@@ -346,8 +345,7 @@ export default function CheckoutStepWrapper({
                                             totalPrice === 0 &&
                                             auth.isSubscribed
                                         ) {
-                                            curCheckout.setCheckout({
-                                                ...checkout,
+                                            curCheckout.updateCheckout({
                                                 stepNum: 5,
                                             });
                                             return;
@@ -365,8 +363,7 @@ export default function CheckoutStepWrapper({
                                                 stepNumber + 2 > visitedSteps
                                                     ? stepNumber + 2
                                                     : visitedSteps;
-                                            curCheckout.setCheckout({
-                                                ...checkout,
+                                            curCheckout.updateCheckout({
                                                 stepNum: stepNumber + 2,
                                                 visitedSteps: lastVisitedStep,
                                             });
@@ -411,8 +408,7 @@ export default function CheckoutStepWrapper({
                                                     visitedSteps
                                                         ? stepNumber + 1
                                                         : visitedSteps;
-                                                curCheckout.setCheckout({
-                                                    ...checkout,
+                                                curCheckout.updateCheckout({
                                                     stepNum: stepNumber + 1,
                                                     visitedSteps:
                                                         lastVisitedStep,

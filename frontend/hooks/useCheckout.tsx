@@ -1,6 +1,13 @@
 "use client";
 
-import { FC, ReactNode, createContext, useContext, useState } from "react";
+import {
+    FC,
+    ReactNode,
+    createContext,
+    useContext,
+    useMemo,
+    useState,
+} from "react";
 import CheckoutInfo from "@/hooks/CheckoutInfo";
 
 // The properties of the useCurrentCheckout hook
@@ -41,6 +48,8 @@ function useCheckout(): useCheckoutProperties {
     }
 
     function updateCheckout(fieldsToUpdate: Partial<CheckoutInfo>) {
+        console.log("UPDATE CHECKOUT", fieldsToUpdate);
+
         setCheckout({
             ...checkout,
             ...fieldsToUpdate,

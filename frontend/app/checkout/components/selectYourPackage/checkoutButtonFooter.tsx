@@ -47,9 +47,11 @@ export default function CheckoutButtonFooter() {
                         return;
                     }
 
-                    if (curCheckout.isGift) {
-                        curCheckout.setCheckout({
-                            ...checkout,
+                    if (
+                        curCheckout.isGift &&
+                        checkout.packageName === DatabasePackageNames.MVP
+                    ) {
+                        curCheckout.updateCheckout({
                             cart: [
                                 {
                                     title: `GIFT - ${pkg.title} Package`,
@@ -71,22 +73,21 @@ export default function CheckoutButtonFooter() {
                         return;
                     }
 
-                    const shouldSkipStep =
-                        checkout.packageName &&
-                        [
-                            DatabasePackageNames.PROSPECT,
-                            DatabasePackageNames.ROOKIE,
-                        ].includes(checkout.packageName);
-
-                    curCheckout.setCheckout({
-                        ...checkout,
-                        packagePrice: pkg.price,
-                        packageCardCount: pkg.defaultDigitalCardCount || 0,
-                        physicalCardCount: pkg.defaultPhysicalCardCount || 0,
-                        digitalCardCount: checkout.digitalCardCount,
-                        bagTagCount: pkg.defaultBagTagCount || 0,
-                        stepNum: checkout.stepNum + (shouldSkipStep ? 2 : 1),
-                    });
+                    if (checkout.packageName === DatabasePackageNames.MVP) {
+                        curCheckout.updateCheckout({
+                            packagePrice: pkg.price,
+                            packageCardCount: pkg.defaultDigitalCardCount || 0,
+                            physicalCardCount:
+                                pkg.defaultPhysicalCardCount || 0,
+                            digitalCardCount: checkout.digitalCardCount,
+                            bagTagCount: pkg.defaultBagTagCount || 0,
+                            stepNum: checkout.stepNum + 1,
+                        });
+                    } else {
+                        curCheckout.updateCheckout({
+                            stepNum: checkout.stepNum + 1,
+                        });
+                    }
                 }}
             >
                 CHECKOUT

@@ -407,7 +407,7 @@ function useProvideAuth(): useAuthProps {
         currentAuthenticatedUser: currentAuthenticatedUser,
         dbUser,
         refreshUser: () => setDbUserInContext(dbUser?.uuid || ""),
-        isSubscribed: isSubscribed,
+        isSubscribed: false, // isSubscribed,
     };
 }
 

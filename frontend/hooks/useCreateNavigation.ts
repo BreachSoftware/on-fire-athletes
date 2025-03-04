@@ -15,7 +15,7 @@ export default function useCreateNavigation(buyingOtherCard: boolean) {
     const { checkout, isGift } = useCurrentCheckout();
     const { shippingAddress, physicalCardCount, bagTagCount } = checkout;
 
-    const shouldExcludeAddOns = isGift || buyingOtherCard;
+    const shouldExcludeAddOns = true;
     const shouldExcludeShipping = physicalCardCount === 0 && bagTagCount === 0;
 
     const isShippingAddressComplete =

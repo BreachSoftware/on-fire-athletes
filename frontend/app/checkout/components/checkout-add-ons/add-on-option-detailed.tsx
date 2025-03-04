@@ -19,18 +19,24 @@ export default function AddOnOption({
     hidePriceStyling,
     pricingOptions,
 }: AddOnOptionType) {
+    const isSelected = value > 0;
+
     return (
         <SharedStack
             gap={"8px"}
             backgroundColor={"#171C1B"}
             padding={"20px"}
             flexDirection={"column"}
+            borderWidth={"2px"}
+            borderColor={"green.300"}
+            boxShadow={isSelected ? "0 0 10px green" : "none"}
+            borderRadius={"10px"}
             transition={
                 "border-color 0.2s, box-shadow 0.2s, background-color 0.2s"
             }
         >
             {/* Header and Price */}
-            {/* <SharedStack row spaced alignItems={"center"}>
+            <SharedStack row spaced alignItems={"center"}>
                 <Text
                     fontFamily="Barlow Condensed"
                     color="white"
@@ -43,19 +49,7 @@ export default function AddOnOption({
                 >
                     {title}
                 </Text>
-                <Text
-                    fontFamily="Barlow Condensed"
-                    color="green.100"
-                    fontSize={{
-                        base: "16px",
-                        lg: "20px",
-                    }}
-                    textAlign={"center"}
-                    transform={"skew(-5deg)"}
-                >
-                    {hidePriceStyling ? price : `$${price}`}
-                </Text>
-            </SharedStack> */}
+            </SharedStack>
 
             {/* Subtitle */}
             {subtitle && (

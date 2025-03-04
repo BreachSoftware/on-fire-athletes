@@ -20,7 +20,7 @@ import { useAuth } from "@/hooks/useAuth";
  */
 export default function CompleteOrderBody() {
     const { dbUser } = useAuth();
-    const { checkout } = useCurrentCheckout();
+    const { checkout, isGift } = useCurrentCheckout();
     const [determiningMobileView, setDeterminingMobileView] = useState(true);
 
     // Determines if there are physical cards present in the checkout cart
@@ -68,38 +68,44 @@ export default function CompleteOrderBody() {
                             />
                         </Box>
                         {/* Section for the shipping address summary */}
-                        {(physicalCardCount > 0 || bagTagCount > 0) && (
-                            <Box w={"100%"} flex={1}>
-                                <CompleteOrderSection
-                                    categoryTitle="Shipping To"
-                                    categoryInformation={
-                                        <AddressSummary
-                                            firstName={
-                                                checkout.shippingAddress
-                                                    .firstName
-                                            }
-                                            lastName={
-                                                checkout.shippingAddress
-                                                    .lastName
-                                            }
-                                            address={
-                                                checkout.shippingAddress
-                                                    .streetAddress
-                                            }
-                                            city={checkout.shippingAddress.city}
-                                            state={
-                                                checkout.shippingAddress.state
-                                            }
-                                            zipCode={
-                                                checkout.shippingAddress.zipCode
-                                            }
-                                        />
-                                    }
-                                    redirectToStepNumber={3}
-                                    mobileView={isMobile}
-                                />
-                            </Box>
-                        )}
+                        {!isGift &&
+                            (physicalCardCount > 0 || bagTagCount > 0) && (
+                                <Box w={"100%"} flex={1}>
+                                    <CompleteOrderSection
+                                        categoryTitle="Shipping To"
+                                        categoryInformation={
+                                            <AddressSummary
+                                                firstName={
+                                                    checkout.shippingAddress
+                                                        .firstName
+                                                }
+                                                lastName={
+                                                    checkout.shippingAddress
+                                                        .lastName
+                                                }
+                                                address={
+                                                    checkout.shippingAddress
+                                                        .streetAddress
+                                                }
+                                                city={
+                                                    checkout.shippingAddress
+                                                        .city
+                                                }
+                                                state={
+                                                    checkout.shippingAddress
+                                                        .state
+                                                }
+                                                zipCode={
+                                                    checkout.shippingAddress
+                                                        .zipCode
+                                                }
+                                            />
+                                        }
+                                        redirectToStepNumber={3}
+                                        mobileView={isMobile}
+                                    />
+                                </Box>
+                            )}
                     </Flex>
                     {/* If the program is in mobile view, show the items in the cart below the order summary and shipping address */}
                     {isMobile && (

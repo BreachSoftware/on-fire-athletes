@@ -83,10 +83,10 @@ const NAV_ITEMS: Array<NavItem> = [
             },
         ],
     },
-    {
-        label: "Gift a card",
-        href: "/checkout?gift=true",
-    },
+    // {
+    //     label: "Gift a card",
+    //     href: "/checkout?gift=true",
+    // },
     {
         label: "Profile",
         href: "/profile",

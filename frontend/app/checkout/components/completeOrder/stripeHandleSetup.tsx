@@ -13,7 +13,7 @@ export async function handleSetup(
     elements: ReturnType<typeof useElements>,
     toast: ReturnType<typeof useToast>,
     curCheckout: ReturnType<typeof useCurrentCheckout>,
-    setCheckout: (c: CheckoutInfo) => void,
+    updateCheckout: (c: Partial<CheckoutInfo>) => void,
 ) {
     // Call elements.submit() to trigger the form submission
     const { error: submitError } = await elements!.submit();
@@ -60,8 +60,7 @@ export async function handleSetup(
         | string
         | undefined;
 
-    setCheckout({
-        ...curCheckout.checkout,
+    updateCheckout({
         clientSecret: clientSecret,
         paymentMethodId: paymentMethodId,
         paymentInfoEntered: true,

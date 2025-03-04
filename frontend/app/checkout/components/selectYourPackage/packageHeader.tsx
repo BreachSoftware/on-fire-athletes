@@ -2,7 +2,7 @@ import { Flex, Text } from "@chakra-ui/react";
 
 interface PackageHeaderProps {
     title: string;
-    price: number;
+    price?: string;
 }
 
 export default function PackageHeader({ title, price }: PackageHeaderProps) {
@@ -11,9 +11,8 @@ export default function PackageHeader({ title, price }: PackageHeaderProps) {
             flexDirection={{ base: "row", xl: "column" }}
             alignItems="flex-start"
             justifyContent={{ base: "space-between", xl: "flex-start" }}
-            py={{ base: "15px", xl: "25px" }}
-            px={{ base: "22px", xl: "36px" }}
-            w={{ base: "100%", xl: "30%" }}
+            py={{ base: "16px", xl: "16px" }}
+            px={{ base: "24px", xl: "24px" }}
             minW="180px"
             gap="8px"
         >
@@ -27,17 +26,19 @@ export default function PackageHeader({ title, price }: PackageHeaderProps) {
             >
                 {title}
             </Text>
-            <Text
-                m={0}
-                fontFamily="Barlow Condensed"
-                color="green.100"
-                fontSize={{ base: "32px", xl: "40px" }}
-                fontWeight="600"
-                transform="skew(-5deg)"
-                lineHeight="36px"
-            >
-                ${price}
-            </Text>
+            {price && (
+                <Text
+                    m={0}
+                    fontFamily="Barlow Condensed"
+                    color="green.100"
+                    fontSize={{ base: "32px", xl: "40px" }}
+                    fontWeight="600"
+                    transform="skew(-5deg)"
+                    lineHeight="36px"
+                >
+                    ${price}
+                </Text>
+            )}
         </Flex>
     );
 }

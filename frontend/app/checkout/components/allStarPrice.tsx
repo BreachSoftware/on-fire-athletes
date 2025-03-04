@@ -21,7 +21,7 @@ import DemarioCard from "@/images/mockups/demario-card.png";
 import { useRouter } from "next/navigation";
 import { handlePurchase } from "./completeOrder/stripeHandlePurchase";
 import { useAuth } from "@/hooks/useAuth";
-import CheckoutInfo from "@/hooks/CheckoutInfo";
+import CheckoutInfo, { DatabasePackageNames } from "@/hooks/CheckoutInfo";
 import { packages } from "./selectYourPackage/packages";
 
 /**
@@ -240,8 +240,7 @@ export default function AllStarPrice({ isNil }: { isNil?: boolean }) {
                                             checkIfPrice(e);
                                         }}
                                         onChange={(e) => {
-                                            curCheckout.setCheckout({
-                                                ...curCheckout.checkout,
+                                            curCheckout.updateCheckout({
                                                 cardPrice: e.target.value,
                                             });
                                         }}
@@ -293,8 +292,7 @@ export default function AllStarPrice({ isNil }: { isNil?: boolean }) {
                                     variant={"back"}
                                     width="100px"
                                     onClick={() => {
-                                        curCheckout.setCheckout({
-                                            ...curCheckout.checkout,
+                                        curCheckout.updateCheckout({
                                             stepNum: stepNumber - 1,
                                         });
                                     }}
@@ -346,12 +344,18 @@ export default function AllStarPrice({ isNil }: { isNil?: boolean }) {
                                         stepNumber >= 0 &&
                                         stepNumber < checkoutSteps.length - 1
                                     ) {
-                                        curCheckout.setCheckout({
-                                            ...checkout,
+                                        const shouldSkipAddOns = true;
+
+                                        curCheckout.updateCheckout({
                                             cardPrice: parseFloat(
                                                 checkout.cardPrice,
                                             ).toFixed(2),
-                                            stepNum: stepNumber + 1,
+                                            stepNum:
+                                                stepNumber +
+                                                (shouldSkipAddOns ? 2 : 1),
+                                            visitedSteps:
+                                                stepNumber +
+                                                (shouldSkipAddOns ? 2 : 1),
                                         });
                                     }
                                 }}

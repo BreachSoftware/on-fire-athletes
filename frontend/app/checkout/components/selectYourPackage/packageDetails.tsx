@@ -4,6 +4,8 @@ import AddOn from "./addOn";
 import { DatabasePackageNames } from "@/hooks/CheckoutInfo";
 import { PackageType } from "@/app/checkout/components/selectYourPackage/packages";
 import OnFireInsiderCard from "@/app/checkout/components/selectYourPackage/onFireInsiderCard";
+import SharedStack from "@/components/shared/wrappers/shared-stack";
+import PackageHeader from "./packageHeader";
 
 export default function PackageDetails({ pkg }: { pkg: PackageType }) {
     const curCheckout = useCurrentCheckout();
@@ -29,82 +31,13 @@ export default function PackageDetails({ pkg }: { pkg: PackageType }) {
             >
                 INCLUDES:
             </Text>
-
-            {details.map((detail, index) => (
-                <Flex
-                    color="white"
-                    key={index}
-                    alignItems="center"
-                    gap="10px"
-                    style={{
-                        paddingLeft: detail.indent ? "25px" : "0",
-                    }}
-                >
-                    {detail.isAddOn ? (
-                        <Text color="green.100" fontSize="10">
-                            +
-                        </Text>
-                    ) : (
-                        <Circle size="1" bg="green.100" />
-                    )}
-                    {typeof detail.text === "string" ? (
-                        <Text fontFamily="Barlow Condensed">{detail.text}</Text>
-                    ) : (
-                        detail.text
-                    )}
-                </Flex>
-            ))}
-            {/* Add-Ons */}
-            {/* We use this flex for other sections so that the bottom portion is all in the same position for the packages */}
-            <Flex
-                flexDirection={"column"}
-                alignItems={"flex-start"}
-                gap={"10px"}
-                flexGrow={1}
-            >
-                {/* {pkg.title === "ALL-STAR" && ( */}
-                {false && (
-                    <>
-                        <Text
-                            fontFamily={"Barlow Condensed"}
-                            fontSize={"14"}
-                            textColor={"#F8F8F8"}
-                        >
-                            ADD-ONS:
-                        </Text>
-
-                        {/* Add-Ons for MVP Package */}
-
-                        <Flex
-                            flexDirection={"column"}
-                            alignItems={"center"}
-                            width={"100%"}
-                            gap={"10px"}
-                        >
-                            <AddOn
-                                title={"Additional 5 Digital Cards"}
-                                price={(checkout.digitalCardPrice * 5).toFixed(
-                                    2,
-                                )}
-                                value={
-                                    checkout.packageName === "allStar"
-                                        ? checkout.digitalCardCount / 5
-                                        : 0
-                                }
-                                onChange={(value) => {
-                                    curCheckout.setCheckout({
-                                        ...checkout,
-                                        digitalCardCount: value * 5,
-                                    });
-                                }}
-                            />
-                        </Flex>
-                    </>
+            <SharedStack>
+                {["50 digital cards", "10 physical AR cards", "1 bag tag"].map(
+                    (item) => (
+                        <PackageHeader key={item} title={item} />
+                    ),
                 )}
-                {pkg.databaseName === DatabasePackageNames.MVP && (
-                    <OnFireInsiderCard />
-                )}
-            </Flex>
+            </SharedStack>
         </Flex>
     );
 }

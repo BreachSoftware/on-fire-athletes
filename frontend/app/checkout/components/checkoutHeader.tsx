@@ -8,7 +8,7 @@ import React from "react";
  * @returns JSX.Element
  */
 function NavigationBar({ buyingOtherCard }: { buyingOtherCard: boolean }) {
-    const { checkout, setCheckout } = useCurrentCheckout();
+    const { checkout, updateCheckout } = useCurrentCheckout();
     const CREATE_PAGES = useCreateNavigation(buyingOtherCard);
 
     return (
@@ -36,7 +36,7 @@ function NavigationBar({ buyingOtherCard }: { buyingOtherCard: boolean }) {
                                     isDisabled
                                         ? undefined
                                         : () => {
-                                              setCheckout({
+                                              updateCheckout({
                                                   ...checkout,
                                                   stepNum: page.stepNum,
                                               });
@@ -64,6 +64,8 @@ export default function CheckoutHeader({
 }: {
     buyingOtherCard: boolean;
 }) {
+    const { isGift } = useCurrentCheckout();
+
     return (
         <>
             <Box
@@ -87,7 +89,7 @@ export default function CheckoutHeader({
                             textAlign={{ base: "center", md: "left" }}
                             letterSpacing={"3.0px"}
                         >
-                            Checkout
+                            {isGift ? "Checkout - Gift" : "Checkout"}
                         </Text>
                     </Flex>
                 </Flex>

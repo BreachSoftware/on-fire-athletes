@@ -8,7 +8,7 @@ import { useCurrentCheckout } from "@/hooks/useCheckout";
 
 export default function NilPricePage() {
     const [cardObtained, setCardObtained] = useState(false);
-    const { checkout, setCheckout } = useCurrentCheckout();
+    const { checkout, updateCheckout } = useCurrentCheckout();
 
     // Copied from checkout because I couldn't get it to work otherwise
     useEffect(() => {
@@ -32,8 +32,7 @@ export default function NilPricePage() {
                     getCardInfo(uuid, generatedBy).then((card) => {
                         setCardObtained(true);
                         // Set the card in the checkout context to assist with the checkout process
-                        setCheckout({
-                            ...checkout,
+                        updateCheckout({
                             onFireCard: card,
                         });
                     });

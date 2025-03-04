@@ -111,8 +111,7 @@ export async function handlePurchase(
 
         // Get a total count of digital cards (including cards provided by the package)
         const totalDigitalCards =
-            (auth.isSubscribed && !isGift ? 25 : checkout.packageCardCount) +
-            checkout.digitalCardCount * 5;
+            checkout.packageCardCount + checkout.digitalCardCount;
 
         // Create an order
         const orderOptions = {

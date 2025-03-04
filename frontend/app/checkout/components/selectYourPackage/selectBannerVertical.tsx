@@ -1,6 +1,12 @@
 import { Center, Circle, Flex, Text } from "@chakra-ui/react";
 
-export default function SelectBanner({ isSelected }: { isSelected: boolean }) {
+export default function SelectBanner({
+    isSelected,
+    onClick,
+}: {
+    isSelected: boolean;
+    onClick?: () => void;
+}) {
     return (
         <Flex
             display={{ base: "none", xl: "flex" }}
@@ -11,6 +17,9 @@ export default function SelectBanner({ isSelected }: { isSelected: boolean }) {
             flexDir="column"
             w="41px"
             gap={2}
+            cursor={"pointer"}
+            onClick={onClick}
+            roundedLeft={"10px"}
         >
             <Center pos="relative" boxSize="16px">
                 <Circle

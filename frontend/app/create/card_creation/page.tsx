@@ -19,7 +19,7 @@ import OnfireCard from "@/components/create/OnFireCard/OnFireCard";
 import { useCurrentCardInfo } from "@/hooks/useCurrentCardInfo";
 import TradingCardInfo from "@/hooks/TradingCardInfo";
 import MobileStepWrapper from "@/components/create/mobile/MobileStepWrapper";
-
+import { PREFILLED_TRADING_CARD } from "./prefilledCard";
 interface CardCreationProps {
     isNil?: boolean;
 }
@@ -35,10 +35,19 @@ export default function CreationOverview({ isNil = false }: CardCreationProps) {
     const backgroundRef = useRef(null);
     const cardBackRef = useRef(null);
     const cardPrintRef = useRef(null);
+    const usePrefilledCard =
+        process.env.NEXT_PUBLIC_USE_PREFILLED_CARD === "true";
     useEffect(() => {
-        currentInfo.setCurCard(new TradingCardInfo());
+        console.log("usePrefilledCard", usePrefilledCard);
+
+        if (usePrefilledCard) {
+            console.log("setting prefilled card", PREFILLED_TRADING_CARD);
+            currentInfo.setCurCard(PREFILLED_TRADING_CARD);
+        } else {
+            currentInfo.setCurCard(new TradingCardInfo());
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [usePrefilledCard]);
 
     const isMobile = useBreakpointValue({ base: true, lg: false });
 

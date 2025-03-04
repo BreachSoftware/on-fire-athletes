@@ -84,9 +84,9 @@ const RookieInfo: PackageType = {
 const AllStarInfo: PackageType = {
     title: "ALL-STAR",
     databaseName: DatabasePackageNames.ALL_STAR,
-    price: 39.99,
-    defaultDigitalCardCount: 15,
-    defaultPhysicalCardCount: 1,
+    price: 0,
+    defaultDigitalCardCount: 0,
+    defaultPhysicalCardCount: 0,
     details: [
         {
             text: "1 Physical Augmented Reality (AR) Card in Magnetic Case",
@@ -124,9 +124,9 @@ const AllStarInfo: PackageType = {
 const MVPInfo: PackageType = {
     title: "MVP",
     databaseName: DatabasePackageNames.MVP,
-    price: 79.99,
-    defaultDigitalCardCount: 25,
-    defaultPhysicalCardCount: 3,
+    price: 59.99,
+    defaultDigitalCardCount: 50,
+    defaultPhysicalCardCount: 10,
     defaultBagTagCount: 1,
     details: [
         {

@@ -23,7 +23,7 @@ const STRIPE_PUBLIC_KEY =
  */
 export default function Payment(props: PaymentProps) {
     const { dbUser, refreshUser } = useAuth();
-    const { checkout, setCheckout } = useCurrentCheckout();
+    const { checkout, updateCheckout } = useCurrentCheckout();
     const toast = useToast();
     const stripePromise = loadStripe(STRIPE_PUBLIC_KEY);
     const [clientSecret, setClientSecret] = useState<string>("");
@@ -96,8 +96,7 @@ export default function Payment(props: PaymentProps) {
             setClientSecret(clientSecret);
             setSetupIntentCreated(true);
 
-            setCheckout({
-                ...checkout,
+            updateCheckout({
                 customerId: customerId,
                 clientSecret: clientSecret,
                 paymentInfoEntered: false,

@@ -66,7 +66,7 @@ export function ItemsInCartComponent({
                         itemType={item.itemType}
                         price={item.price}
                         canEdit={false}
-                        canRemove={isAddOn}
+                        canRemove={false} // isAddOn}
                         multiplier={item.multiplier}
                     />
                 );

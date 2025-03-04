@@ -1,6 +1,6 @@
 import SharedStack from "@/components/shared/wrappers/shared-stack";
 import CheckoutInfo, { DatabasePackageNames } from "@/hooks/CheckoutInfo";
-import { useCurrentCheckout } from "@/hooks/useCheckout";
+import { useCheckoutPrices, useCurrentCheckout } from "@/hooks/useCheckout";
 import React, { useMemo } from "react";
 import AddOnOption, { AddOnOptionType } from "./add-on-option";
 import { packages } from "../selectYourPackage/packages";
@@ -11,18 +11,18 @@ import {
     DIGITAL_ADD_ON_TITLE,
     PHYSICAL_ADD_ON_TITLE,
 } from "./constants";
+import AddOnOptionDetailed from "./add-on-option-detailed";
+import {
+    BAG_TAG_PRICES,
+    DIGITAL_CARD_PRICES,
+    PHYSICAL_CARD_PRICES,
+} from "@/utils/constants";
 
 export default function CheckoutAddOns() {
     const { isSubscribed } = useAuth();
     const { checkout, updateCheckout } = useCurrentCheckout();
-    const {
-        packageName,
-        bagTagCount,
-        digitalCardCount,
-        physicalCardCount,
-        bagTagPrice,
-        physicalCardPrice,
-    } = checkout;
+    const { packageName, bagTagCount, digitalCardCount, physicalCardCount } =
+        checkout;
 
     const packageDefaults = packageName ? packages[packageName] : null;
 
@@ -38,7 +38,6 @@ export default function CheckoutAddOns() {
         value: number,
         type: "card" | "bag tag",
         price: number,
-        multiplier: number = 1,
     ): Partial<CheckoutInfo> {
         const cartItem = checkout.cart.find((item) => item.title === title);
 
@@ -59,8 +58,7 @@ export default function CheckoutAddOns() {
                     {
                         ...cartItem,
                         numberOfCards: value,
-                        price: price * value,
-                        multiplier: multiplier,
+                        price: price,
                     },
                 ],
             };
@@ -77,11 +75,10 @@ export default function CheckoutAddOns() {
                     {
                         title,
                         numberOfCards: value,
-                        price: price * value,
+                        price: price,
                         card: checkout.onFireCard,
                         numberOfOrders: 1,
                         itemType: type,
-                        multiplier: multiplier,
                     },
                 ],
             };
@@ -91,21 +88,23 @@ export default function CheckoutAddOns() {
     const bagTagOption: AddOnOptionType = useMemo(
         () => ({
             title: "Additional Bag Tag",
-            price: String(bagTagPrice),
             value: bagTagCount - defaultBagTagCount,
             onChange: (value) => {
+                const price = BAG_TAG_PRICES[value];
+
                 updateCheckout({
                     bagTagCount: value + defaultBagTagCount,
                     ...getCartUpdate(
                         BAG_TAG_ADD_ON_TITLE,
                         value,
                         "bag tag",
-                        bagTagPrice,
+                        price,
                     ),
                 });
             },
+            pricingOptions: [1, 2, 3, 4, 5],
         }),
-        [bagTagPrice, defaultBagTagCount, checkout.cart],
+        [defaultBagTagCount, checkout.cart],
     );
 
     // NOTE: we don't need to adjust for defaults because the default is saved on packageCardCount
@@ -115,12 +114,20 @@ export default function CheckoutAddOns() {
             price: "$1.00 / 5 cards",
             value: digitalCardCount,
             onChange: (value) => {
+                const price = DIGITAL_CARD_PRICES[value];
+
                 updateCheckout({
                     digitalCardCount: value,
-                    ...getCartUpdate(DIGITAL_ADD_ON_TITLE, value, "card", 1, 5),
+                    ...getCartUpdate(
+                        DIGITAL_ADD_ON_TITLE,
+                        value,
+                        "card",
+                        price,
+                    ),
                 });
             },
             hidePriceStyling: true,
+            pricingOptions: Array.from({ length: 20 }, (_, i) => 25 + i * 25),
         }),
         [digitalCardCount, checkout.cart],
     );
@@ -135,11 +142,7 @@ export default function CheckoutAddOns() {
             price: phsyicalCardDisplayPrice,
             value: physicalCardCount - defaultPhysicalCardCount,
             onChange: (value) => {
-                const avgPrice = isSubscribed
-                    ? value > 6
-                        ? (6 * 14.99 + (value - 6) * 9.99) / value
-                        : 14.99
-                    : 24.99;
+                const price = PHYSICAL_CARD_PRICES[value];
 
                 updateCheckout({
                     physicalCardCount: value + defaultPhysicalCardCount,
@@ -147,13 +150,14 @@ export default function CheckoutAddOns() {
                         PHYSICAL_ADD_ON_TITLE,
                         value,
                         "card",
-                        avgPrice,
+                        price,
                     ),
                 });
             },
             hidePriceStyling: true,
+            pricingOptions: [1, 5, 10, 15, 20, 25],
         }),
-        [physicalCardPrice, defaultPhysicalCardCount, checkout.cart],
+        [defaultPhysicalCardCount, checkout.cart],
     );
 
     const addOnOptions: Record<DatabasePackageNames, AddOnOptionType[]> =
@@ -188,7 +192,7 @@ export default function CheckoutAddOns() {
                 w="full"
             >
                 {availableAddOns.map((a) => (
-                    <AddOnOption key={a.title} {...a} />
+                    <AddOnOptionDetailed key={a.title} {...a} />
                 ))}
             </SimpleGrid>
         </SharedStack>
