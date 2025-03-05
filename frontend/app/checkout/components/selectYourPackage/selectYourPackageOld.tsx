@@ -109,7 +109,7 @@ export default function SelectYourPackage() {
                 });
             },
             // 25 to 500 in increments of 25
-            pricingOptions: [1, 2, 3, 4, 5],
+            pricingOptions: BAG_TAG_PRICES,
         }),
         [checkout.cart],
     );
@@ -136,7 +136,7 @@ export default function SelectYourPackage() {
             },
             hidePriceStyling: true,
             // 25 to 500 in increments of 25
-            pricingOptions: Array.from({ length: 20 }, (_, i) => 25 + i * 25),
+            pricingOptions: DIGITAL_CARD_PRICES,
         }),
         [checkout.cart],
     );
@@ -165,7 +165,7 @@ export default function SelectYourPackage() {
                 });
             },
             hidePriceStyling: true,
-            pricingOptions: [1, 5, 10, 15, 20, 25],
+            pricingOptions: PHYSICAL_CARD_PRICES,
         }),
         [checkout.cart],
     );

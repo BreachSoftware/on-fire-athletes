@@ -102,7 +102,7 @@ export default function CheckoutAddOns() {
                     ),
                 });
             },
-            pricingOptions: [1, 2, 3, 4, 5],
+            pricingOptions: BAG_TAG_PRICES,
         }),
         [defaultBagTagCount, checkout.cart],
     );
@@ -127,7 +127,7 @@ export default function CheckoutAddOns() {
                 });
             },
             hidePriceStyling: true,
-            pricingOptions: Array.from({ length: 20 }, (_, i) => 25 + i * 25),
+            pricingOptions: DIGITAL_CARD_PRICES,
         }),
         [digitalCardCount, checkout.cart],
     );
@@ -155,7 +155,7 @@ export default function CheckoutAddOns() {
                 });
             },
             hidePriceStyling: true,
-            pricingOptions: [1, 5, 10, 15, 20, 25],
+            pricingOptions: PHYSICAL_CARD_PRICES,
         }),
         [defaultPhysicalCardCount, checkout.cart],
     );

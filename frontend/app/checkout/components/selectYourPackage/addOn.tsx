@@ -6,7 +6,7 @@ interface AddOnProps {
     value: number; // How many of this add-on the user wants
     onChange: (value: number) => void; // Function to handle the change in the number of add-ons
     hidePriceStyling?: boolean;
-    pricingOptions: number[];
+    pricingOptions: Record<number, number>;
 }
 
 /**
@@ -51,7 +51,12 @@ export default function AddOn(props: AddOnProps) {
                 </Flex>
 
                 <GenericSelect
-                    options={props.pricingOptions}
+                    options={Object.keys(props.pricingOptions).map((key) =>
+                        parseInt(key),
+                    )}
+                    displayTransformer={(o) =>
+                        `${o} - $${props.pricingOptions[o].toFixed(2)}`
+                    }
                     selectedValue={props.value}
                     setSelectedValue={props.onChange}
                 />

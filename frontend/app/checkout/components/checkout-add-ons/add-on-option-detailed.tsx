@@ -8,7 +8,7 @@ export type AddOnOptionType = {
     value: number;
     onChange: (value: number) => void;
     hidePriceStyling?: boolean;
-    pricingOptions: number[];
+    pricingOptions: Record<number, number>;
 };
 
 export default function AddOnOption({
