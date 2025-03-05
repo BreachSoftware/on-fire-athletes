@@ -91,10 +91,10 @@ const navItems: Array<MobileNavSection> = [
                 title: "Our Story",
                 href: "/our-story",
             },
-            {
-                title: "Pricing",
-                href: "/pricing",
-            },
+            // {
+            //     title: "Pricing",
+            //     href: "/pricing",
+            // },
             {
                 title: "AR Card",
                 href: "newsroom/what-are-ar-cards",

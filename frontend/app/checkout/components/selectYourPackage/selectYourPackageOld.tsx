@@ -197,7 +197,7 @@ export default function SelectYourPackage() {
                     textAlign={{ base: "center", md: "left" }}
                     letterSpacing={"3.0px"}
                 >
-                    Select A Package {isGift ? "to gift" : ""}
+                    Select A Product {isGift ? "to gift" : ""}
                 </Text>
                 {isGift && (
                     <Text
@@ -294,12 +294,12 @@ function PackageItemSelect({
                     onChange={pkg.onChange}
                     pricingOptions={pkg.pricingOptions}
                 />
-                {/* Select Banner (Mobile Only) */}
-                <SelectBannerHorizontal
-                    isSelected={isSelected}
-                    onClick={() => pkg.onChange(isSelected ? 0 : 1)}
-                />
             </SharedStack>
+            {/* Select Banner (Mobile Only) */}
+            <SelectBannerHorizontal
+                isSelected={isSelected}
+                onClick={() => pkg.onChange(isSelected ? 0 : 1)}
+            />
         </Flex>
     );
 }

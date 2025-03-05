@@ -61,10 +61,10 @@ const NAV_ITEMS: Array<NavItem> = [
                 label: "Our Story",
                 href: "/our-story",
             },
-            {
-                label: "Pricing",
-                href: "/pricing",
-            },
+            // {
+            //     label: "Pricing",
+            //     href: "/pricing",
+            // },
             {
                 label: "AR Cards",
                 href: "/newsroom/what-are-ar-cards",
