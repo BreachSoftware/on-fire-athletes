@@ -13,7 +13,7 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY, {
 
 // Gamechangers keys
 const STRIPE_PUBLIC_KEY =
-	"pk_test_51PssXyCEBFOTy6pMtubViKDQwVSljNAJRQAk5SkRyexPECtx4w8R3IHLQtI7CSNG1g7hSFk044Pc0STSYtxEWmSW00Y4VLvPII";
+	"pk_live_51PssXyCEBFOTy6pM9DfyGbI7JZUqMoClqRVuFCEAVamp10DYl2O48SqCjiw7vSbeiv8CCmYPZwSgguOTCcJzbY0u00cwKkUFDZ";
 /**
  * Creates a payment intent for a new payment.
  */
