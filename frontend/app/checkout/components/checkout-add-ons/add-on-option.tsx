@@ -28,6 +28,7 @@ export default function AddOnOption({
             transition={
                 "border-color 0.2s, box-shadow 0.2s, background-color 0.2s"
             }
+            roundedBottomRight="10px"
         >
             {/* Header and Price */}
             {/* <SharedStack row spaced alignItems={"center"}>

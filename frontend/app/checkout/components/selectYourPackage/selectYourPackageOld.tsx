@@ -294,10 +294,12 @@ function PackageItemSelect({
                     onChange={pkg.onChange}
                     pricingOptions={pkg.pricingOptions}
                 />
+                {/* Select Banner (Mobile Only) */}
+                <SelectBannerHorizontal
+                    isSelected={isSelected}
+                    onClick={() => pkg.onChange(isSelected ? 0 : 1)}
+                />
             </SharedStack>
-
-            {/* Select Banner (Mobile Only) */}
-            <SelectBannerHorizontal isSelected={isSelected} />
         </Flex>
     );
 }

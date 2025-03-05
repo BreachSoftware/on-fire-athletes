@@ -37,7 +37,15 @@ export default function CheckoutButtonFooter() {
                         backgroundColor: "green.300",
                     },
                 }}
-                isDisabled={!pkg}
+                isDisabled={
+                    !pkg ||
+                    (pkg.databaseName !== DatabasePackageNames.MVP &&
+                        !(
+                            checkout.bagTagCount ||
+                            checkout.physicalCardCount ||
+                            checkout.digitalCardCount
+                        ))
+                }
                 width={"40%"}
                 onClick={() => {
                     if (!pkg) return;
