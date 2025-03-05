@@ -15,11 +15,6 @@ import TradingCardInfo from "@/hooks/TradingCardInfo";
 import { useCurrentCheckout } from "@/hooks/useCheckout";
 import { JSX, SVGProps } from "react";
 import SharedStack from "@/components/shared/wrappers/shared-stack";
-import {
-    BAG_TAG_ADD_ON_TITLE,
-    DIGITAL_ADD_ON_TITLE,
-    PHYSICAL_ADD_ON_TITLE,
-} from "./checkout-add-ons/constants";
 
 interface CheckoutItemsAttributes {
     title: string;
@@ -50,11 +45,11 @@ export function ItemsInCartComponent({
             {items.map((item, index) => {
                 // If the item is a physical or digital card, allow the user to edit or remove it
                 // Otherwise, don't allow the user to edit or remove the item
-                const isAddOn = [
-                    DIGITAL_ADD_ON_TITLE,
-                    PHYSICAL_ADD_ON_TITLE,
-                    BAG_TAG_ADD_ON_TITLE,
-                ].includes(item.title);
+                // const isAddOn = [
+                //     DIGITAL_ADD_ON_TITLE,
+                //     PHYSICAL_ADD_ON_TITLE,
+                //     BAG_TAG_ADD_ON_TITLE,
+                // ].includes(item.title);
 
                 return (
                     <Item

@@ -1,5 +1,5 @@
 import GenericSelect from "@/components/shared/generic-select";
-import { Checkbox, Flex, Select, Text } from "@chakra-ui/react";
+import { Checkbox, Flex, Text } from "@chakra-ui/react";
 
 interface AddOnProps {
     title: string; // Title of the add-on

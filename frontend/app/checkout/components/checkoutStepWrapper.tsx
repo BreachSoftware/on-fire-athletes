@@ -20,7 +20,7 @@ import TradingCardInfo from "@/hooks/TradingCardInfo";
 import { useAuth } from "@/hooks/useAuth";
 import { totalPriceInCart } from "@/utils/utils";
 import React from "react";
-import CheckoutInfo, { DatabasePackageNames } from "@/hooks/CheckoutInfo";
+import CheckoutInfo from "@/hooks/CheckoutInfo";
 import { ShippingAndHandlingItem } from "./checkoutItemsInCart";
 
 interface CheckoutStepWrapperProps {

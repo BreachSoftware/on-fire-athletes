@@ -19,7 +19,7 @@ export default function CompleteOrderSection({
     redirectToStepNumber,
     mobileView,
 }: CompleteOrderSectionProps) {
-    const { checkout, updateCheckout } = useCurrentCheckout();
+    const { updateCheckout } = useCurrentCheckout();
     return (
         <>
             <Flex

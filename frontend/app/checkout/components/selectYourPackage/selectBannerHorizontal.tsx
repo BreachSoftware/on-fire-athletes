@@ -1,4 +1,4 @@
-import { Box, Center, Circle, Flex, Text } from "@chakra-ui/react";
+import { Center, Circle, Flex, Text } from "@chakra-ui/react";
 
 export default function SelectBanner({
     isSelected,
