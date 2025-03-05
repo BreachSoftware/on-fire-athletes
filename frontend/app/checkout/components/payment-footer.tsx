@@ -7,7 +7,7 @@ import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
 
 export default function PaymentFooter() {
     const [couponCode, setCouponCode] = useState("");
-    const { checkout, setCheckout } = useCurrentCheckout();
+    const { updateCheckout } = useCurrentCheckout();
 
     async function applyCoupon() {
         const couponResponse = await fetch(apiEndpoints.applyCouponCode(), {
@@ -24,8 +24,7 @@ export default function PaymentFooter() {
             const couponData = await couponResponse.json();
             const { coupon } = couponData;
 
-            setCheckout({
-                ...checkout,
+            updateCheckout({
                 couponCode: coupon.code,
                 couponCentsOff: coupon.amount_off,
                 couponPercentOff: coupon.percent_off,

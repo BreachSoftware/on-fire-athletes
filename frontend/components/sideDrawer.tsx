@@ -92,6 +92,10 @@ const navItems: Array<MobileNavSection> = [
                 href: "/our-story",
             },
             {
+                title: "Pricing",
+                href: "/pricing",
+            },
+            {
                 title: "AR Card",
                 href: "newsroom/what-are-ar-cards",
             },
@@ -109,6 +113,15 @@ const navItems: Array<MobileNavSection> = [
             },
         ],
     },
+    // {
+    //     header: "Gift",
+    //     children: [
+    //         {
+    //             title: "Gift a card",
+    //             href: "/checkout?gift=true",
+    //         },
+    //     ],
+    // },
 ];
 
 /**

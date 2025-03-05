@@ -25,7 +25,7 @@ export default function CheckoutForm({ buyCard }: CheckoutFormProps) {
     const elements = useElements();
     const curCheckout = useCurrentCheckout();
 
-    const { checkout, setCheckout } = curCheckout;
+    const { checkout, updateCheckout } = curCheckout;
 
     const buyingPhysicalCards = checkout.physicalCardCount > 0;
     const stepNumber = checkout.stepNum;
@@ -138,14 +138,23 @@ export default function CheckoutForm({ buyCard }: CheckoutFormProps) {
                             variant={"back"}
                             width="100px"
                             onClick={() => {
+                                if (curCheckout.isGift) {
+                                    let newStepNum = stepNumber - 1;
+                                    if (stepNumber === 4) {
+                                        newStepNum = 0;
+                                    }
+                                    curCheckout.updateCheckout({
+                                        stepNum: newStepNum,
+                                    });
+                                    return;
+                                }
+
                                 if (!buyingPhysicalCards) {
-                                    curCheckout.setCheckout({
-                                        ...checkout,
+                                    curCheckout.updateCheckout({
                                         stepNum: stepNumber - 2,
                                     });
                                 } else {
-                                    curCheckout.setCheckout({
-                                        ...checkout,
+                                    curCheckout.updateCheckout({
                                         stepNum: stepNumber - 1,
                                     });
                                 }
@@ -172,8 +181,7 @@ export default function CheckoutForm({ buyCard }: CheckoutFormProps) {
                                 ).toFixed(2);
 
                                 if (total === "0.00") {
-                                    setCheckout({
-                                        ...curCheckout.checkout,
+                                    updateCheckout({
                                         paymentInfoEntered: true,
                                         stepNum: checkoutSteps.length - 1,
                                         visitedSteps: checkoutSteps.length - 1,
@@ -234,8 +242,7 @@ export default function CheckoutForm({ buyCard }: CheckoutFormProps) {
                                 const paymentMethodId = result.setupIntent
                                     ?.payment_method as string | undefined;
 
-                                setCheckout({
-                                    ...curCheckout.checkout,
+                                updateCheckout({
                                     clientSecret: clientSecret,
                                     paymentMethodId: paymentMethodId,
                                     paymentInfoEntered: true,
@@ -268,8 +275,7 @@ export default function CheckoutForm({ buyCard }: CheckoutFormProps) {
                                         .toUpperCase() +
                                     paymentMethod.card.brand.slice(1);
 
-                                setCheckout({
-                                    ...curCheckout.checkout,
+                                updateCheckout({
                                     paymentMethodId,
                                     clientSecret,
                                     paymentCardBrand: capitalizedBrand,

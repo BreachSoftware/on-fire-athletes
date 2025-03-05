@@ -15,6 +15,11 @@ import TradingCardInfo from "@/hooks/TradingCardInfo";
 import { useCurrentCheckout } from "@/hooks/useCheckout";
 import { JSX, SVGProps } from "react";
 import SharedStack from "@/components/shared/wrappers/shared-stack";
+import {
+    BAG_TAG_ADD_ON_TITLE,
+    DIGITAL_ADD_ON_TITLE,
+    PHYSICAL_ADD_ON_TITLE,
+} from "./checkout-add-ons/constants";
 
 interface CheckoutItemsAttributes {
     title: string;
@@ -22,6 +27,8 @@ interface CheckoutItemsAttributes {
     numberOfCards: number;
     numberOfOrders: number;
     price: number;
+    itemType?: "card" | "bag tag" | "package";
+    multiplier?: number;
 }
 interface CheckoutItemsInCartProps {
     items: CheckoutItemsAttributes[];
@@ -43,9 +50,11 @@ export function ItemsInCartComponent({
             {items.map((item, index) => {
                 // If the item is a physical or digital card, allow the user to edit or remove it
                 // Otherwise, don't allow the user to edit or remove the item
-                const isPhysicalOrDigitalCardAddOn =
-                    item.title.startsWith("Physical") ||
-                    item.title.startsWith("Digital");
+                const isAddOn = [
+                    DIGITAL_ADD_ON_TITLE,
+                    PHYSICAL_ADD_ON_TITLE,
+                    BAG_TAG_ADD_ON_TITLE,
+                ].includes(item.title);
 
                 return (
                     <Item
@@ -54,9 +63,11 @@ export function ItemsInCartComponent({
                         card={item.card}
                         numberOfCards={item.numberOfCards}
                         numberOfOrders={item.numberOfOrders}
+                        itemType={item.itemType}
                         price={item.price}
-                        canEdit={isPhysicalOrDigitalCardAddOn}
-                        canRemove={isPhysicalOrDigitalCardAddOn}
+                        canEdit={false}
+                        canRemove={false} // isAddOn}
+                        multiplier={item.multiplier}
                     />
                 );
             })}
@@ -133,6 +144,7 @@ export default function CheckoutItemsInCart(props: CheckoutItemsInCartProps) {
                 display={{ base: "none", lg: "flex" }}
             >
                 <ItemsInCartComponent items={props.items} />
+                <ShippingAndHandlingItem />
             </SharedStack>
             {curCheckout.checkout.stepNum !== 5 ? (
                 <Accordion
@@ -218,5 +230,32 @@ export default function CheckoutItemsInCart(props: CheckoutItemsInCartProps) {
                 <></>
             )}
         </>
+    );
+}
+
+export function ShippingAndHandlingItem({
+    isUnderTotal = false,
+}: {
+    isUnderTotal?: boolean;
+}) {
+    const { checkout } = useCurrentCheckout();
+    const { shippingCost } = checkout;
+
+    if (shippingCost <= 0) {
+        return <></>;
+    }
+
+    return (
+        <Text
+            fontFamily={"Barlow Semi Condensed"}
+            fontWeight={"bold"}
+            fontSize={"xs"}
+            color={"#808080"}
+            transform={"skew(-10deg)"}
+        >
+            {isUnderTotal
+                ? `* Includes S&H: $${shippingCost}`
+                : `* Shipping & Handling: $${shippingCost}`}
+        </Text>
     );
 }

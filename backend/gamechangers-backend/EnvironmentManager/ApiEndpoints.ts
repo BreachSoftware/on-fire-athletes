@@ -11,6 +11,7 @@ export const API_ENDPOINTS = [
 	"sharptint",
 	"sharprecolor",
 	"createCard",
+	"addSubscription",
 	"createUser",
 	"deleteCard",
 	"getCard",

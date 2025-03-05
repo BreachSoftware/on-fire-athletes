@@ -29,15 +29,14 @@ interface AddressBodyProps {
  * @returns {JSX.Element} - The rendered JSX element for the shipping address bottom corner checkbox
  */
 export function ShippingAddressBottomCorner() {
-    const { checkout, setCheckout } = useCurrentCheckout();
+    const { checkout, updateCheckout } = useCurrentCheckout();
 
     /**
      * Toggles the shipping address is billing address boolean
      */
     function toggleShippingIsBilling() {
         if (!checkout.shippingIsBilling === true) {
-            setCheckout({
-                ...checkout,
+            updateCheckout({
                 shippingIsBilling: true,
                 shippingAddress: {
                     firstName: checkout.billingAddress.firstName,
@@ -50,8 +49,7 @@ export function ShippingAddressBottomCorner() {
                 },
             });
         } else {
-            setCheckout({
-                ...checkout,
+            updateCheckout({
                 shippingIsBilling: false,
                 shippingAddress: {
                     firstName: "",
@@ -103,8 +101,7 @@ export default function AddressBody({ addressType }: AddressBodyProps) {
      * @param value the value to set for the key
      */
     function addToAddressInfo(key: string, value: string) {
-        curCheckout.setCheckout({
-            ...checkout,
+        curCheckout.updateCheckout({
             [shippingOrBilling]: {
                 ...checkout[shippingOrBilling],
                 [key]: value,

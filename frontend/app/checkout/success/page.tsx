@@ -31,16 +31,23 @@ export default function SuccessfulCardCreationPage() {
         if (typeof window !== "undefined") {
             const queryParams = new URLSearchParams(window.location.search);
             const isNil = queryParams.get("nil") === "true";
+            const isGift = queryParams.get("gift") === "true";
             const paymentBypassed =
                 queryParams.get("paymentBypassed") === "true" || isNil;
             const paymentIntentID = queryParams.get("payment_intent");
             const boughtOtherCard = queryParams.get("boughtOtherCard");
             const boughtWithGMEX = queryParams.get("paymentWithGMEX");
+
             if (paymentIntentID || paymentBypassed) {
                 const status = paymentBypassed
                     ? "succeeded"
                     : await retrievePaymentStatus(paymentIntentID);
                 if (status === "succeeded") {
+                    if (isGift) {
+                        router.push("/gift-success");
+                        return;
+                    }
+
                     // Load the card and update the payment status
                     const { uuid, generatedBy } = TradingCardInfo.loadCard();
                     if (boughtOtherCard) {

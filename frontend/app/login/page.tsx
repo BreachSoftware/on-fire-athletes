@@ -41,6 +41,8 @@ export default function LoginPage() {
     let senderUUID: string | null = "";
     let toNewOwnUUID: string | null = "";
     let requested: string | null = "";
+    let searchParamString: string = "";
+    let giftPackage: string | null = "";
 
     if (typeof window !== "undefined") {
         const queryParams = new URLSearchParams(window.location.search);
@@ -50,6 +52,8 @@ export default function LoginPage() {
         toNewOwnUUID = queryParams.get("toUUID");
         senderUUID = queryParams.get("fromUUID");
         requested = queryParams.get("requested");
+        searchParamString = queryParams.toString();
+        giftPackage = queryParams.get("giftPackage");
     }
 
     /**
@@ -131,6 +135,11 @@ export default function LoginPage() {
             return false;
         }
 
+        if (giftPackage) {
+            window.location.href = "/checkout?gift=true";
+            return true;
+        }
+
         const card = TradingCardInfo.loadCard();
         if (res.success) {
             // If the user has a card in local storage, save it to the database
@@ -203,7 +212,7 @@ export default function LoginPage() {
                 `/signup?generatedByUUID=${generatedByUUID}&cardUUID=${cardSentUUID}`,
             );
         } else {
-            router.push("/signup");
+            router.push(`/signup?${searchParamString}`);
         }
     }
 
