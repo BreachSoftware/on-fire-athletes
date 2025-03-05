@@ -1,18 +1,9 @@
-import { Circle, Flex, Text } from "@chakra-ui/react";
-import { useCurrentCheckout } from "@/hooks/useCheckout";
-import AddOn from "./addOn";
-import { DatabasePackageNames } from "@/hooks/CheckoutInfo";
+import { Flex, Text } from "@chakra-ui/react";
 import { PackageType } from "@/app/checkout/components/selectYourPackage/packages";
-import OnFireInsiderCard from "@/app/checkout/components/selectYourPackage/onFireInsiderCard";
 import SharedStack from "@/components/shared/wrappers/shared-stack";
 import PackageHeader from "./packageHeader";
 
-export default function PackageDetails({ pkg }: { pkg: PackageType }) {
-    const curCheckout = useCurrentCheckout();
-    const checkout = curCheckout.checkout;
-
-    const { details } = pkg;
-
+export default function PackageDetails({}: { pkg: PackageType }) {
     return (
         <Flex
             flexDirection="column"

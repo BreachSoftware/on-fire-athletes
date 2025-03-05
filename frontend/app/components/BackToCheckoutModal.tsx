@@ -21,7 +21,7 @@ export function BackToCheckoutModal() {
 
     // Modal for the card action
     const modal = useDisclosure();
-    const { checkout, updateCheckout } = useCurrentCheckout();
+    const { updateCheckout } = useCurrentCheckout();
 
     // Initialize cardExists state based on local storage
     const [cardExists, setCardExists] = useState(

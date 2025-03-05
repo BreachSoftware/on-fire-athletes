@@ -2,7 +2,7 @@ import SharedStack from "@/components/shared/wrappers/shared-stack";
 import CheckoutInfo, { DatabasePackageNames } from "@/hooks/CheckoutInfo";
 import { useCurrentCheckout } from "@/hooks/useCheckout";
 import React, { useMemo } from "react";
-import AddOnOption, { AddOnOptionType } from "./add-on-option";
+import { AddOnOptionType } from "./add-on-option";
 import { packages } from "../selectYourPackage/packages";
 import { SimpleGrid } from "@chakra-ui/react";
 import { useAuth } from "@/hooks/useAuth";

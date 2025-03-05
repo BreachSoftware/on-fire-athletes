@@ -21,7 +21,7 @@ import DemarioCard from "@/images/mockups/demario-card.png";
 import { useRouter } from "next/navigation";
 import { handlePurchase } from "./completeOrder/stripeHandlePurchase";
 import { useAuth } from "@/hooks/useAuth";
-import CheckoutInfo, { DatabasePackageNames } from "@/hooks/CheckoutInfo";
+import CheckoutInfo from "@/hooks/CheckoutInfo";
 import { packages } from "./selectYourPackage/packages";
 
 /**

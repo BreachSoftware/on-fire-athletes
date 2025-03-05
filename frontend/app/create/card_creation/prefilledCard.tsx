@@ -13,6 +13,7 @@ export const PREFILLED_TRADING_CARD: TradingCardInfo = {
     createdAt: 1736357643,
     price: 0,
     inputDisabled: false, // Added for completeness since it was missing in the provided data
+
     // Step 1: Your Information
     cardType: "b",
     firstName: "Ryan",
@@ -67,4 +68,5 @@ export const PREFILLED_TRADING_CARD: TradingCardInfo = {
     tradeStatus: 1,
     isNil: false,
     isHorizontal: true,
+    cardPrintS3URL: "",
 };
