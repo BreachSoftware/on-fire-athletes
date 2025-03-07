@@ -85,6 +85,23 @@ const navItems: Array<MobileNavSection> = [
         ],
     },
     {
+        header: "Products",
+        children: [
+            {
+                title: "View All",
+                href: "/product",
+            },
+            {
+                title: "Physical AR Cards",
+                href: "/newsroom/what-are-ar-cards",
+            },
+            {
+                title: "Gift Cards",
+                href: "/checkout?gift=true",
+            },
+        ],
+    },
+    {
         header: "About",
         children: [
             {
@@ -95,18 +112,14 @@ const navItems: Array<MobileNavSection> = [
             //     title: "Pricing",
             //     href: "/pricing",
             // },
-            {
-                title: "Product",
-                href: "/product",
-            },
-            {
-                title: "AR Card",
-                href: "newsroom/what-are-ar-cards",
-            },
-            {
-                title: "NIL Partnerships",
-                href: "/nil",
-            },
+            // {
+            //     title: "AR Card",
+            //     href: "newsroom/what-are-ar-cards",
+            // },
+            // {
+            //     title: "NIL Partnerships",
+            //     href: "/nil",
+            // },
             {
                 title: "FAQs",
                 href: "/faq",

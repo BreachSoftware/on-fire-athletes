@@ -20,7 +20,11 @@ export default function Product() {
             alignItems="flex-start"
             bg="#121212"
         >
-            <SharedStack flex={1} w="full">
+            <SharedStack
+                flex={1}
+                w="full"
+                bgImage={{ base: ProductBackground.src, "2xl": "none" }}
+            >
                 <Box position="sticky" top={0} zIndex={5} w="full">
                     <NavBar />
                 </Box>
@@ -28,21 +32,22 @@ export default function Product() {
                 <SharedStack
                     w="full"
                     px={{ base: 2, md: 8 }}
-                    pt={{ base: "48px", "3xl": "184px" }}
-                    pb="100px"
+                    pt={{ base: "48px", "2xl": "184px" }}
+                    pb={{ base: "0px", "2xl": "100px" }}
                 >
                     <SharedStack w="full" alignItems="center">
                         <Text
-                            fontSize={{ base: "36px", "3xl": "72px" }}
+                            fontSize={{ base: "36px", "2xl": "72px" }}
                             letterSpacing="1.44px"
                             color="green.100"
                             fontFamily="Brotherhood, Regular"
                             textAlign="center"
+                            lineHeight={{ base: "36px", "2xl": "initial" }}
                         >
                             Create, Customize, and Capture Your Moment
                         </Text>
                         <Text
-                            fontSize={{ base: "24px", "3xl": "40px" }}
+                            fontSize={{ base: "24px", "2xl": "40px" }}
                             color="white"
                             fontFamily="Barlow Condensed"
                             fontStyle="italic"
@@ -56,12 +61,13 @@ export default function Product() {
 
                 <SharedStack
                     w="full"
-                    px={{ base: 2, md: "48px", "3xl": "255px" }}
+                    pl={{ base: "40px", "2xl": "100px" }}
+                    pr={{ base: "40px", "2xl": "64px" }}
                     justify="center"
                     spacing="72px"
-                    pt="48px"
+                    pt={{ base: "8px", "2xl": "48px" }}
                     pb="128px"
-                    bgImage={ProductBackground.src}
+                    bgImage={{ base: "none", "2xl": ProductBackground.src }}
                     bgSize="cover"
                     bgPosition="center"
                     bgRepeat="no-repeat"
@@ -69,7 +75,7 @@ export default function Product() {
                     {/* Product Section */}
                     <ProductSnapshot
                         imageSrc={DigitalCardProduct.src}
-                        title="DIgITal SporTs Cards"
+                        title="DIGITAL SPORTS CARDS"
                         description="Create your own digital sports card. This allows you to capture your moment online and sell digital cards in the Locker Room Marketplace."
                         pricingComponent={
                             <PricingList
@@ -87,19 +93,19 @@ export default function Product() {
                     <NeonDivider />
                     <ProductSnapshot
                         imageSrc={PhsyicalCardProduct.src}
-                        title="PhysIcal AR Cards"
+                        title="PHSYICAL AR CARDS"
                         description="Bring your moment to life in the palm of your hand with a printed card featuring augmented reality allowing you to showcase a highlight video on the back of the card. Physical cards include digital cards to sell, too!"
                         pricingComponent={
                             <SharedStack
                                 row
-                                spacing={{ base: "18px", "3xl": "84px" }}
+                                spacing={{ base: "18px", "2xl": "84px" }}
                                 alignItems={{
                                     base: "center",
-                                    "3xl": "flex-start",
+                                    "2xl": "flex-start",
                                 }}
                                 justify={{
                                     base: "center",
-                                    "3xl": "flex-start",
+                                    "2xl": "flex-start",
                                 }}
                             >
                                 <PricingList
@@ -115,7 +121,7 @@ export default function Product() {
                     <NeonDivider />
                     <ProductSnapshot
                         imageSrc={BagTagProduct.src}
-                        title="Bag Tags"
+                        title="BAG TAGS"
                         description="Take your moment on the road! Our bag tags allow you to customize a card that is printed on rigid plastic equipped with augmented reality to showcase a video of your choosing on the back."
                         pricingComponent={
                             <PricingList items={BAG_TAG_PRICING_LIST} />
@@ -124,7 +130,7 @@ export default function Product() {
                     <NeonDivider />
                     <ProductSnapshot
                         imageSrc={PhsyicalCardProduct.src}
-                        title="MVP Package"
+                        title="MVP PACKAGE"
                         description="How about all of it? This option gives you every product we offer and then some!"
                         pricingComponent={
                             <PricingList
@@ -168,18 +174,17 @@ function PricingList({
     return (
         <SharedStack
             flex={1}
-            w={{ base: "full", "3xl": "fit-content" }}
-            alignItems={{ base: "center", "3xl": "flex-start" }}
+            w={{ base: "full", "2xl": "fit-content" }}
+            alignItems={{ base: "center", "2xl": "flex-start" }}
         >
             {items.map((item) => (
                 <SharedStack key={item.title} gap={0}>
                     <Text
-                        fontSize={{ base: "24px", "3xl": "36px" }}
+                        fontSize={{ base: "18px", "2xl": "36px" }}
                         color="green.100"
                         fontStyle="italic"
                         fontWeight="semibold"
                         fontFamily="Barlow Condensed"
-                        textAlign={{ base: "center", "3xl": "left" }}
                         w="full"
                     >
                         {item.title}
@@ -188,16 +193,15 @@ function PricingList({
                         <SharedStack>
                             {item.subtitles.map((subtitle) => (
                                 <Text
-                                    textAlign={{
-                                        base: "center",
-                                        "3xl": "left",
-                                    }}
                                     w="full"
                                     key={subtitle}
-                                    fontSize={{ base: "24px", "3xl": "36px" }}
+                                    fontSize={{ base: "18px", "2xl": "36px" }}
                                     color="white"
                                     fontStyle="italic"
-                                    fontWeight="semibold"
+                                    fontWeight={{
+                                        base: "medium",
+                                        "2xl": "semibold",
+                                    }}
                                     fontFamily="Barlow Condensed"
                                 >
                                     • {subtitle}
@@ -215,7 +219,7 @@ function NeonDivider() {
     return (
         <Box
             alignSelf="center"
-            w={{ base: "80%", "3xl": "full" }}
+            w="full"
             h="3px"
             border="3px solid"
             borderColor="green.100"

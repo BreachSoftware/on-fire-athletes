@@ -92,9 +92,15 @@ export default function CheckoutButtonFooter() {
                             stepNum: checkout.stepNum + 1,
                         });
                     } else {
-                        curCheckout.updateCheckout({
-                            stepNum: checkout.stepNum + 1,
-                        });
+                        if (curCheckout.isGift) {
+                            curCheckout.updateCheckout({
+                                stepNum: checkout.stepNum + 4,
+                            });
+                        } else {
+                            curCheckout.updateCheckout({
+                                stepNum: checkout.stepNum + 1,
+                            });
+                        }
                     }
                 }}
             >

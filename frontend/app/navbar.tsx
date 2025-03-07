@@ -54,6 +54,24 @@ const NAV_ITEMS: Array<NavItem> = [
         href: "/lockerroom",
     },
     {
+        label: "Products",
+        href: "#",
+        children: [
+            {
+                label: "View All",
+                href: "/product",
+            },
+            {
+                label: "Physical AR Cards",
+                href: "/newsroom/what-are-ar-cards",
+            },
+            {
+                label: "Gift Cards",
+                href: "/checkout?gift=true",
+            },
+        ],
+    },
+    {
         label: "About",
         href: "#",
         children: [
@@ -65,14 +83,14 @@ const NAV_ITEMS: Array<NavItem> = [
             //     label: "Pricing",
             //     href: "/pricing",
             // },
-            {
-                label: "AR Cards",
-                href: "/newsroom/what-are-ar-cards",
-            },
-            {
-                label: "NIL Partnerships",
-                href: "/nil",
-            },
+            // {
+            //     label: "AR Cards",
+            //     href: "/newsroom/what-are-ar-cards",
+            // },
+            // {
+            //     label: "NIL Partnerships",
+            //     href: "/nil",
+            // },
             {
                 label: "FAQs",
                 href: "/faq",

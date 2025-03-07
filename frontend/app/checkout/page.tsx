@@ -157,6 +157,9 @@ export default function CheckoutPage() {
             co.updateCheckout({
                 ...checkout,
                 cart: [],
+                physicalCardCount: 0,
+                digitalCardCount: 0,
+                bagTagCount: 0,
                 cardPrice: "",
             });
         }
@@ -171,6 +174,7 @@ export default function CheckoutPage() {
             checkoutStep,
             "isGift",
             co.isGift,
+            co.checkout.physicalCardCount,
         );
 
         if (checkoutStep === (co.isGift ? 4 : 3) && !buyingOtherCard) {
@@ -231,6 +235,8 @@ export default function CheckoutPage() {
             }
 
             if (onFireCard || co.isGift) {
+                console.log("GOT HERE CHECKOUT", formalPackageName);
+
                 if (formalPackageName === "MVP") {
                     // Set the main package item
                     const mainPackage = {

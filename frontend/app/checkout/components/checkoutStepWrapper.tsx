@@ -319,6 +319,13 @@ export default function CheckoutStepWrapper({
                                             curCheckout.updateCheckout({
                                                 stepNum: stepNumber - 2,
                                             });
+                                        } else if (
+                                            stepNumber == 4 &&
+                                            curCheckout.isGift
+                                        ) {
+                                            curCheckout.updateCheckout({
+                                                stepNum: stepNumber - 4,
+                                            });
                                         } else {
                                             curCheckout.updateCheckout({
                                                 stepNum: stepNumber - 1,

@@ -111,7 +111,7 @@ export default function SelectYourPackage() {
             // 25 to 500 in increments of 25
             pricingOptions: BAG_TAG_PRICES,
         }),
-        [checkout.cart],
+        [checkout.cart, checkout.stepNum],
     );
 
     // NOTE: we don't need to adjust for defaults because the default is saved on packageCardCount
@@ -138,7 +138,7 @@ export default function SelectYourPackage() {
             // 25 to 500 in increments of 25
             pricingOptions: DIGITAL_CARD_PRICES,
         }),
-        [checkout.cart],
+        [checkout.cart, checkout.stepNum],
     );
 
     const phsyicalCardDisplayPrice = isSubscribed
@@ -167,7 +167,7 @@ export default function SelectYourPackage() {
             hidePriceStyling: true,
             pricingOptions: PHYSICAL_CARD_PRICES,
         }),
-        [checkout.cart],
+        [checkout.cart, checkout.stepNum],
     );
 
     return (
@@ -279,7 +279,15 @@ function PackageItemSelect({
             {/* Select Banner (Large Screens Only) */}
             <SelectBannerVertical
                 isSelected={isSelected}
-                onClick={() => pkg.onChange(isSelected ? 0 : 1)}
+                onClick={() =>
+                    pkg.onChange(
+                        isSelected
+                            ? 0
+                            : parseInt(
+                                  Object.keys(pkg.pricingOptions).at(0) ?? "0",
+                              ),
+                    )
+                }
             />
 
             <SharedStack>
@@ -298,7 +306,15 @@ function PackageItemSelect({
             {/* Select Banner (Mobile Only) */}
             <SelectBannerHorizontal
                 isSelected={isSelected}
-                onClick={() => pkg.onChange(isSelected ? 0 : 1)}
+                onClick={() =>
+                    pkg.onChange(
+                        isSelected
+                            ? 0
+                            : parseInt(
+                                  Object.keys(pkg.pricingOptions).at(0) ?? "0",
+                              ),
+                    )
+                }
             />
         </Flex>
     );

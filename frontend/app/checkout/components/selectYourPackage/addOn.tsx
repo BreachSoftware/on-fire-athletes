@@ -55,7 +55,7 @@ export default function AddOn(props: AddOnProps) {
                         parseInt(key),
                     )}
                     displayTransformer={(o) =>
-                        `${o} - $${props.pricingOptions[o].toFixed(2)}`
+                        `${o} - $${props.pricingOptions[o]?.toFixed(2)}`
                     }
                     selectedValue={props.value}
                     setSelectedValue={props.onChange}
