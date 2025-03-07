@@ -1,0 +1,243 @@
+import SharedStack from "@/components/shared/wrappers/shared-stack";
+import React from "react";
+import { Box, Text } from "@chakra-ui/react";
+import ProductBackground from "@/images/backgrounds/product-bg.png";
+import NavBar from "../navbar";
+import Sidebar from "@/components/sidebar";
+import PhsyicalCardProduct from "@/images/product/physical-card-product.png";
+import DigitalCardProduct from "@/images/product/digital-card-product.png";
+import BagTagProduct from "@/images/product/bag-tag-product.png";
+import ProductSnapshot from "./product-snapshot";
+import Footer from "../components/footer";
+
+export default function Product() {
+    return (
+        <SharedStack
+            row
+            h="fit-content"
+            w="full"
+            spacing={0}
+            alignItems="flex-start"
+            bg="#121212"
+        >
+            <SharedStack flex={1} w="full">
+                <Box position="sticky" top={0} zIndex={5} w="full">
+                    <NavBar />
+                </Box>
+                {/* Header Section */}
+                <SharedStack
+                    w="full"
+                    px={{ base: 2, md: 8 }}
+                    pt={{ base: "48px", "3xl": "184px" }}
+                    pb="100px"
+                >
+                    <SharedStack w="full" alignItems="center">
+                        <Text
+                            fontSize={{ base: "36px", "3xl": "72px" }}
+                            letterSpacing="1.44px"
+                            color="green.100"
+                            fontFamily="Brotherhood, Regular"
+                            textAlign="center"
+                        >
+                            Create, Customize, and Capture Your Moment
+                        </Text>
+                        <Text
+                            fontSize={{ base: "24px", "3xl": "40px" }}
+                            color="white"
+                            fontFamily="Barlow Condensed"
+                            fontStyle="italic"
+                            fontWeight="semibold"
+                            textAlign="center"
+                        >
+                            WITH ANY OF THE FOLLOWING PRODUCTS!
+                        </Text>
+                    </SharedStack>
+                </SharedStack>
+
+                <SharedStack
+                    w="full"
+                    px={{ base: 2, md: "48px", "3xl": "255px" }}
+                    justify="center"
+                    spacing="72px"
+                    pt="48px"
+                    pb="128px"
+                    bgImage={ProductBackground.src}
+                    bgSize="cover"
+                    bgPosition="center"
+                    bgRepeat="no-repeat"
+                >
+                    {/* Product Section */}
+                    <ProductSnapshot
+                        imageSrc={DigitalCardProduct.src}
+                        title="DIgITal SporTs Cards"
+                        description="Create your own digital sports card. This allows you to capture your moment online and sell digital cards in the Locker Room Marketplace."
+                        pricingComponent={
+                            <PricingList
+                                items={[
+                                    {
+                                        title: "Create a Digital Card: $9.99",
+                                        subtitles: [
+                                            "Includes 25 digital cards to sell",
+                                        ],
+                                    },
+                                ]}
+                            />
+                        }
+                    />
+                    <NeonDivider />
+                    <ProductSnapshot
+                        imageSrc={PhsyicalCardProduct.src}
+                        title="PhysIcal AR Cards"
+                        description="Bring your moment to life in the palm of your hand with a printed card featuring augmented reality allowing you to showcase a highlight video on the back of the card. Physical cards include digital cards to sell, too!"
+                        pricingComponent={
+                            <SharedStack
+                                row
+                                spacing={{ base: "18px", "3xl": "84px" }}
+                                alignItems={{
+                                    base: "center",
+                                    "3xl": "flex-start",
+                                }}
+                                justify={{
+                                    base: "center",
+                                    "3xl": "flex-start",
+                                }}
+                            >
+                                <PricingList
+                                    items={PHSYICAL_PRICING_LIST.slice(0, 3)}
+                                />
+                                <PricingList
+                                    items={PHSYICAL_PRICING_LIST.slice(3)}
+                                />
+                            </SharedStack>
+                        }
+                        reverse
+                    />
+                    <NeonDivider />
+                    <ProductSnapshot
+                        imageSrc={BagTagProduct.src}
+                        title="Bag Tags"
+                        description="Take your moment on the road! Our bag tags allow you to customize a card that is printed on rigid plastic equipped with augmented reality to showcase a video of your choosing on the back."
+                        pricingComponent={
+                            <PricingList items={BAG_TAG_PRICING_LIST} />
+                        }
+                    />
+                    <NeonDivider />
+                    <ProductSnapshot
+                        imageSrc={PhsyicalCardProduct.src}
+                        title="MVP Package"
+                        description="How about all of it? This option gives you every product we offer and then some!"
+                        pricingComponent={
+                            <PricingList
+                                items={[
+                                    {
+                                        title: "MVP Package Includes",
+                                        subtitles: [
+                                            "10 Physical AR Cards",
+                                            "50 Digital Cards to Sell",
+                                            "1 Bag Tag",
+                                        ],
+                                    },
+                                    {
+                                        title: "for only $59.99!",
+                                    },
+                                ]}
+                            />
+                        }
+                        reverse
+                    />
+                </SharedStack>
+                <Footer />
+            </SharedStack>
+            <Box
+                h="100vh"
+                position="sticky"
+                top={0}
+                display={{ base: "none", md: "inline" }}
+            >
+                <Sidebar height="full" />
+            </Box>
+        </SharedStack>
+    );
+}
+
+function PricingList({
+    items,
+}: {
+    items: { title: string; subtitles?: string[] }[];
+}) {
+    return (
+        <SharedStack
+            flex={1}
+            w={{ base: "full", "3xl": "fit-content" }}
+            alignItems={{ base: "center", "3xl": "flex-start" }}
+        >
+            {items.map((item) => (
+                <SharedStack key={item.title} gap={0}>
+                    <Text
+                        fontSize={{ base: "24px", "3xl": "36px" }}
+                        color="green.100"
+                        fontStyle="italic"
+                        fontWeight="semibold"
+                        fontFamily="Barlow Condensed"
+                        textAlign={{ base: "center", "3xl": "left" }}
+                        w="full"
+                    >
+                        {item.title}
+                    </Text>
+                    {item.subtitles && (
+                        <SharedStack>
+                            {item.subtitles.map((subtitle) => (
+                                <Text
+                                    textAlign={{
+                                        base: "center",
+                                        "3xl": "left",
+                                    }}
+                                    w="full"
+                                    key={subtitle}
+                                    fontSize={{ base: "24px", "3xl": "36px" }}
+                                    color="white"
+                                    fontStyle="italic"
+                                    fontWeight="semibold"
+                                    fontFamily="Barlow Condensed"
+                                >
+                                    • {subtitle}
+                                </Text>
+                            ))}
+                        </SharedStack>
+                    )}
+                </SharedStack>
+            ))}
+        </SharedStack>
+    );
+}
+
+function NeonDivider() {
+    return (
+        <Box
+            alignSelf="center"
+            w={{ base: "80%", "3xl": "full" }}
+            h="3px"
+            border="3px solid"
+            borderColor="green.100"
+            boxShadow="0px 0px 15px #44FF19"
+            rounded="full"
+        />
+    );
+}
+
+const PHSYICAL_PRICING_LIST: { title: string; subtitles?: string[] }[] = [
+    { title: "1 AR Card: $24.99" },
+    { title: "5 AR Cards: $39.99" },
+    { title: "10 AR Cards: $54.99" },
+    { title: "15 AR Cards: $69.99" },
+    { title: "20 AR Cards: $84.99" },
+    { title: "25 AR Cards: $99.99" },
+];
+
+const BAG_TAG_PRICING_LIST: { title: string; subtitles?: string[] }[] = [
+    { title: "1 Bag Tag: $19.99" },
+    { title: "2 Bag Tags: $29.99" },
+    { title: "3 Bag Tags: $37.99" },
+    { title: "4 Bag Tags: $44.99" },
+    { title: "5 Bag Tags: $49.99" },
+];
