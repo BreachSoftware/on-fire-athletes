@@ -27,7 +27,7 @@ export default function ProductSnapshot({
                 spacing={{ base: "36px", "2xl": isMVP ? "36px" : "74px" }}
                 alignItems="center"
                 pl={{ base: 0, "2xl": "96px" }}
-                pr={{ base: 0, "2xl": "150px" }}
+                pr={{ base: 0, "2xl": isMVP ? "36px" : "150px" }}
             >
                 <SharedStack display={{ base: "flex", "2xl": "none" }}>
                     <StartCreatingButton />
