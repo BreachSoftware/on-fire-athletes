@@ -18,11 +18,13 @@ export default function ProductSnapshot({
     reverse = false,
     pricingComponent,
 }: Props) {
+    const isMVP = title === "MVP PACKAGE";
+
     if (reverse) {
         return (
             <SharedStack
                 direction={{ base: "column-reverse", "2xl": "row" }}
-                spacing={{ base: "36px", "2xl": "74px" }}
+                spacing={{ base: "36px", "2xl": isMVP ? "36px" : "74px" }}
                 alignItems="center"
                 pl={{ base: 0, "2xl": "96px" }}
                 pr={{ base: 0, "2xl": "150px" }}
@@ -38,7 +40,11 @@ export default function ProductSnapshot({
                     <Image
                         src={imageSrc}
                         alt={title}
-                        w={{ base: "250px", md: "280px", "2xl": "424px" }}
+                        w={{
+                            base: isMVP ? "350px" : "250px",
+                            md: isMVP ? "400px" : "280px",
+                            "2xl": isMVP ? "600px" : "424px",
+                        }}
                     />
                     <SharedStack
                         display={{ base: "none", "2xl": "flex" }}

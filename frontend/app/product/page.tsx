@@ -7,6 +7,7 @@ import Sidebar from "@/components/sidebar";
 import PhsyicalCardProduct from "@/images/product/physical-card-product.png";
 import DigitalCardProduct from "@/images/product/digital-card-product.png";
 import BagTagProduct from "@/images/product/bag-tag-product.png";
+import MVPProduct from "@/images/product/mvp-product.png";
 import ProductSnapshot from "./product-snapshot";
 import Footer from "../components/footer";
 
@@ -129,7 +130,7 @@ export default function Product() {
                     />
                     <NeonDivider />
                     <ProductSnapshot
-                        imageSrc={PhsyicalCardProduct.src}
+                        imageSrc={MVPProduct.src}
                         title="MVP PACKAGE"
                         description="How about all of it? This option gives you every product we offer and then some!"
                         pricingComponent={
