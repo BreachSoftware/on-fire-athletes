@@ -79,23 +79,32 @@ export default function Product() {
                         title="DIGITAL SPORTS CARDS"
                         description="Create your own digital sports card. This allows you to capture your moment online and sell digital cards in the Locker Room Marketplace."
                         pricingComponent={
-                            <PricingList
-                                items={[
-                                    {
-                                        title: "Create a Digital Card: $9.99",
-                                        subtitles: [
-                                            "Includes 25 digital cards to sell",
-                                        ],
-                                    },
-                                ]}
-                            />
+                            <SharedStack
+                                row
+                                spacing={{ base: "18px", "2xl": "84px" }}
+                                alignItems={{
+                                    base: "center",
+                                    "2xl": "flex-start",
+                                }}
+                                justify={{
+                                    base: "center",
+                                    "2xl": "flex-start",
+                                }}
+                            >
+                                <PricingList
+                                    items={DIGITAL_PRICING_LIST.slice(0, 3)}
+                                />
+                                <PricingList
+                                    items={DIGITAL_PRICING_LIST.slice(3)}
+                                />
+                            </SharedStack>
                         }
                     />
                     <NeonDivider />
                     <ProductSnapshot
                         imageSrc={PhsyicalCardProduct.src}
                         title="PHSYICAL AR CARDS"
-                        description="Bring your moment to life in the palm of your hand with a printed card featuring augmented reality allowing you to showcase a highlight video on the back of the card. Physical cards include digital cards to sell, too!"
+                        description="Bring your moment to life in the palm of your hand with a printed card featuring augmented reality allowing you to showcase a highlight video on the back of the card."
                         pricingComponent={
                             <SharedStack
                                 row
@@ -245,4 +254,13 @@ const BAG_TAG_PRICING_LIST: { title: string; subtitles?: string[] }[] = [
     { title: "3 Bag Tags: $37.99" },
     { title: "4 Bag Tags: $44.99" },
     { title: "5 Bag Tags: $49.99" },
+];
+
+const DIGITAL_PRICING_LIST: { title: string; subtitles?: string[] }[] = [
+    { title: "25 Digital Card: $9.99" },
+    { title: "50 Digital Cards: $11.99" },
+    { title: "75 Digital Cards: $13.99" },
+    { title: "100 Digital Cards: $15.99" },
+    { title: "125 Digital Cards: $17.99" },
+    { title: "Up to 250 Cards: $22.99" },
 ];
