@@ -10,6 +10,7 @@ import BagTagProduct from "@/images/product/bag-tag-product.png";
 import MVPProduct from "@/images/product/mvp-product.png";
 import ProductSnapshot from "./product-snapshot";
 import Footer from "../components/footer";
+// Trigger build
 
 export default function Product() {
     return (
