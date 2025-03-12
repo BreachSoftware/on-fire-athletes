@@ -263,5 +263,5 @@ const DIGITAL_PRICING_LIST: { title: string; subtitles?: string[] }[] = [
     { title: "75 Digital Cards: $13.99" },
     { title: "100 Digital Cards: $15.99" },
     { title: "125 Digital Cards: $17.99" },
-    { title: "Up to 250 Cards: $22.99" },
+    { title: "Up to 500 Cards: $32.49" },
 ];
