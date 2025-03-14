@@ -526,6 +526,7 @@ export default function Filter(props: FilterProps) {
     );
 
     // Radio Picker Component
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const radioPickerComponent = (
         <Flex
             direction={"row"}
@@ -629,7 +630,7 @@ export default function Filter(props: FilterProps) {
                                                 {searchComponent}
 
                                                 {/* Radio Picker */}
-                                                {radioPickerComponent}
+                                                {/* {radioPickerComponent} */}
                                             </Flex>
                                         </Flex>
                                         {/* Main Component */}
@@ -660,7 +661,7 @@ export default function Filter(props: FilterProps) {
                     {searchComponent}
 
                     {/* Radio Picker */}
-                    {radioPickerComponent}
+                    {/* {radioPickerComponent} */}
 
                     {/* Main Component */}
                     {filterMainContent}
