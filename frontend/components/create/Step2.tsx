@@ -59,12 +59,21 @@ export default function Step2() {
                     >
                         {/* Fake username and password fields, to make sure that
 						Google Autocomplete stuff doesnt randomly pop up when typing things */}
-                        <Input type="username" display="none" />
-                        <Input type="password" display="none" />
+                        <Input
+                            type="username"
+                            display="none"
+                            autoComplete="off"
+                        />
+                        <Input
+                            type="password"
+                            display="none"
+                            autoComplete="off"
+                        />
 
                         {/* User Inputs */}
                         <Input
                             variant={"basicInput"}
+                            autoComplete="off"
                             isDisabled={card.curCard.inputDisabled}
                             backgroundColor={"gray.200"}
                             placeholder={"First Name*"}
@@ -85,6 +94,7 @@ export default function Step2() {
 
                         <Input
                             variant={"basicInput"}
+                            autoComplete="off"
                             isDisabled={card.curCard.inputDisabled}
                             backgroundColor={"gray.200"}
                             placeholder={"Last Name*"}
@@ -105,6 +115,7 @@ export default function Step2() {
 
                         <Input
                             variant={"basicInput"}
+                            autoComplete="off"
                             isDisabled={card.curCard.inputDisabled}
                             backgroundColor={"gray.200"}
                             placeholder={"Jersey Number"}
@@ -156,6 +167,7 @@ export default function Step2() {
                         <GridItem as={GridItem} colSpan={{ base: 1, md: 2 }}>
                             <Input
                                 variant={"basicInput"}
+                                autoComplete="off"
                                 isDisabled={card.curCard.inputDisabled}
                                 w={"100%"}
                                 backgroundColor={"#303C3A"}
