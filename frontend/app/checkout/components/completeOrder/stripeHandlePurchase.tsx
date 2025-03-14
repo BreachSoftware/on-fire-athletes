@@ -113,6 +113,8 @@ export async function handlePurchase(
         const totalDigitalCards =
             checkout.packageCardCount + checkout.digitalCardCount;
 
+        const totalPhysicalCards = checkout.physicalCardCount;
+
         // Create an order
         const orderOptions = {
             method: "POST",
@@ -191,7 +193,7 @@ export async function handlePurchase(
                 body: JSON.stringify({
                     uuid: onFireCard!.uuid,
                     generatedBy: onFireCard!.generatedBy,
-                    totalCreated: totalDigitalCards,
+                    totalCreated: totalDigitalCards || totalPhysicalCards || 1,
                     currentlyAvailable: totalDigitalCards,
                 }),
             };

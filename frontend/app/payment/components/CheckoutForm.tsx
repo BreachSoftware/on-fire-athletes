@@ -4,7 +4,7 @@ import { useStripe, useElements } from "@stripe/react-stripe-js";
 import { Text, Button, Flex, useToast } from "@chakra-ui/react";
 import { useCurrentCheckout } from "@/hooks/useCheckout";
 import { checkoutSteps } from "@/app/checkout/components/checkoutSteps";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
 import CouponInput from "./coupon-input";
@@ -27,10 +27,24 @@ export default function CheckoutForm({ buyCard }: CheckoutFormProps) {
 
     const { checkout, updateCheckout } = curCheckout;
 
+    const [buyingOtherCard, setBuyingOtherCard] = useState(false);
     const buyingPhysicalCards = checkout.physicalCardCount > 0;
     const stepNumber = checkout.stepNum;
 
     const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        if (window !== undefined) {
+            const queryParams = new URLSearchParams(window.location.search);
+            const buyingOtherCard = queryParams.get("buyingOtherCard");
+
+            if (buyingOtherCard) {
+                setBuyingOtherCard(true);
+            }
+        }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [window?.location.search]);
 
     // dispatch the Event on an interval to ensure that the button is never stuck perpetually loading
     setInterval(() => {
@@ -99,7 +113,7 @@ export default function CheckoutForm({ buyCard }: CheckoutFormProps) {
     return (
         <form id="payment-form" onSubmit={handleSubmit}>
             <PaymentElement id="payment-element" />
-            <CouponInput />
+            {!buyingOtherCard && <CouponInput />}
             {/* Invisible button that gets clicked by the checkoutStepWrapper */}
             <Flex
                 justifyContent={{

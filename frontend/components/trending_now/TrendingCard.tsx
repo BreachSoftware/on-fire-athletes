@@ -45,6 +45,7 @@ interface TrendingCardProps {
     onSendCardModalOpen?: () => void;
     loginModalOpen?: () => void;
     onAddToCollectionModalOpen?: () => void;
+    hideButton?: boolean;
 }
 
 /**
@@ -79,6 +80,7 @@ export default function TrendingCard({
     onSendCardModalOpen,
     loginModalOpen,
     onAddToCollectionModalOpen,
+    hideButton,
 }: TrendingCardProps) {
     const router = useRouter();
 
@@ -346,7 +348,7 @@ export default function TrendingCard({
                                 >{`${card.currentlyAvailable} of ${card.totalCreated} Available`}</Text>
                             )}
                         </VStack>
-                        {buttonText && (
+                        {!hideButton && buttonText && (
                             <Button
                                 alignSelf={"center"}
                                 w={"100%"}

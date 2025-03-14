@@ -97,9 +97,24 @@ export default function CheckoutButtonFooter() {
                                 stepNum: checkout.stepNum + 4,
                             });
                         } else {
-                            curCheckout.updateCheckout({
-                                stepNum: checkout.stepNum + 1,
-                            });
+                            if (!checkout.digitalCardCount) {
+                                // Set price to 25 if only physical
+                                if (checkout.physicalCardCount) {
+                                    // Set Price to $25 and skip step
+                                    curCheckout.updateCheckout({
+                                        cardPrice: "25",
+                                        stepNum: checkout.stepNum + 3,
+                                    });
+                                } else {
+                                    curCheckout.updateCheckout({
+                                        stepNum: checkout.stepNum + 3,
+                                    });
+                                }
+                            } else {
+                                curCheckout.updateCheckout({
+                                    stepNum: checkout.stepNum + 1,
+                                });
+                            }
                         }
                     }
                 }}

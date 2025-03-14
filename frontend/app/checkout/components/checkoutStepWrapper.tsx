@@ -316,9 +316,15 @@ export default function CheckoutStepWrapper({
                                             });
                                             // Always skip Add-ons
                                         } else if (stepNumber == 3) {
-                                            curCheckout.updateCheckout({
-                                                stepNum: stepNumber - 2,
-                                            });
+                                            if (checkout.digitalCardCount) {
+                                                curCheckout.updateCheckout({
+                                                    stepNum: stepNumber - 2,
+                                                });
+                                            } else {
+                                                curCheckout.updateCheckout({
+                                                    stepNum: stepNumber - 3,
+                                                });
+                                            }
                                         } else if (
                                             stepNumber == 4 &&
                                             curCheckout.isGift
