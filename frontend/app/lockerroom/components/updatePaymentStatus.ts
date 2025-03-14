@@ -71,7 +71,7 @@ export async function updatePaymentStatus(
                 uuid: cardData.uuid,
                 generatedBy: cardData.generatedBy,
                 totalCreated: cardData.totalCreated,
-                currentlyAvailable: cardData.totalCreated,
+                currentlyAvailable: cardData.currentlyAvailable,
             }),
         };
         await fetch(

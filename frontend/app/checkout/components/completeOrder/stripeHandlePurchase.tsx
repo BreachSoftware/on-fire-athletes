@@ -224,8 +224,8 @@ export async function handlePurchase(
 
             // Update card price for sellable packages
             if (
-                checkout.packageName !== "rookie" &&
-                checkout.packageName !== "prospect"
+                checkout.digitalCardCount > 0 ||
+                checkout.physicalCardCount > 0
             ) {
                 // THIS IS WHERE WE WOULD ADD SHIPPING IF WE WANT TO ADD IT BACK
                 const newCardPrice = parseFloat(checkout.cardPrice);
