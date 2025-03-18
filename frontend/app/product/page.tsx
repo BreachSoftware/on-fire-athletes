@@ -191,7 +191,7 @@ function PricingList({
             {items.map((item) => (
                 <SharedStack key={item.title} gap={0}>
                     <Text
-                        fontSize={{ base: "18px", "2xl": "36px" }}
+                        fontSize={{ base: "16px", "2xl": "36px" }}
                         color="green.100"
                         fontStyle="italic"
                         fontWeight="semibold"
@@ -206,7 +206,7 @@ function PricingList({
                                 <Text
                                     w="full"
                                     key={subtitle}
-                                    fontSize={{ base: "18px", "2xl": "36px" }}
+                                    fontSize={{ base: "16px", "2xl": "36px" }}
                                     color="white"
                                     fontStyle="italic"
                                     fontWeight={{

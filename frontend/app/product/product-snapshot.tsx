@@ -98,7 +98,7 @@ function TitleDescription({
         <SharedStack gap={1} fit>
             <Text
                 fontFamily="Brotherhood, Regular"
-                fontSize={{ base: "42px", "2xl": "90px" }}
+                fontSize={{ base: "30px", "2xl": "90px" }}
                 color="green.100"
                 letterSpacing="0.9px"
                 w="full"
