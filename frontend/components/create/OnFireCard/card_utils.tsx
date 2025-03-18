@@ -102,7 +102,6 @@ export function getColorAsHex(color: string) {
         const h = parseFloat(hsl[0]) / 360;
         const s = parseFloat(hsl[1]) / 100;
         const l = parseFloat(hsl[2]) / 100;
-        console.log({ h, s, l });
         const rgb = hslToRgb(h, s, l);
         return rgbToHex(rgb[0], rgb[1], rgb[2]);
     }
