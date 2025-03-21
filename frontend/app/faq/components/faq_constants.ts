@@ -24,17 +24,17 @@ export default class FAQConstants {
             {
                 title: "What are the costs?",
                 content:
-                    "OnFire Athletes offers three packages. Packages start at $29.99. Detailed pricing information can be found after you create your OnFire Athletes card.",
+                    "OnFire Athletes offers 3 separate products.  Digital Cards, Physical Augmented Reality (AR) Cards and Bag Tag's  Prices can be found at https://onfireathletes.com/product",
             },
             {
-                title: "How can I sell my digital card?",
+                title: "How can I sell my card?",
                 content:
-                    "To sell your digital card, select the All-Star or MVP package during the card creation process. These packages grant access to sell your cards in the Locker Room. Additionally, every digitl card purchase in the Locker Room includes a physical 3D (AR) card. To maximize your sales, leverage your social media presence, network, and community.",
+                    "Digital Cards must be purchased for you to sell your cards in the Locker Room.  Additionally, any digital card purchased in the Locker Room includes a physical 3D (AR) card.  To maximize your sales, leverage your social media presence, network and community.",
             },
             {
                 title: "How can I earn money with my card?",
                 content:
-                    "Athletes who choose the All-Star or MVP package can sell their cards in the Locker Room marketplace with a minimum selling price of $25. Athletes receive 75%* of the profits on each sale.",
+                    "Athletes who purchase a digital card pack can sell their cards in the Locker Room marketplace with a minimum selling price of $25. Athletes receive 75%* of the profits on each sale.",
             },
             {
                 title: "How can people purchase my card?",
@@ -52,9 +52,9 @@ export default class FAQConstants {
                     "Visit the Locker Room marketplace or an athlete’s profile, select the card you want, and click “Buy Now” to complete your purchase. Payments can be made using any major credit card or Game Coin (GMEX) tokens. Purchases made with GMEX tokens receive a 20% discount. The purchased card will appear in your profile under the “Bought” album. Additionally, every digital card purchase in the Locker Room marketplace includes a physical 3D (AR) card.",
             },
             {
-                title: "How do I send/trade cards on the platform?",
+                title: "How do I send someone my card on the patform?",
                 content:
-                    'Visit the Locker Room marketplace or an athlete’s profile, select the card you want to send or request, and click “Request Trade” to initiate the process. "Send My Card" will allow you to send your card to friends, family, and fansvia text or email. The user recieving your card will have to login and/or sign up to accept your card. "Request Trade" will allow you to requesta crd from an athlete. The athlete will receive an email for your request. Once the trade request is confirmed, the card will appear in your profile under the “Traded” album.',
+                    'While you are on your profile page, select the "Created" tab.  You will then see all of the cards you have created and have the ability to send this card to anyone by tapping the "Send Card" button.  Be aware that if you send someone one of your cards, that it will reduce your total quantity of cards available for sale in the Locker Room.',
             },
         ],
         GMEX: [
