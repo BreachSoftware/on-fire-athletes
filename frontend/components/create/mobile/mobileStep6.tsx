@@ -12,8 +12,8 @@ export default function MobileStep6() {
     const [borderColor, setBorderColor] = useState(card.curCard.borderColor);
     const [nameColor, setNameColor] = useState(card.curCard.nameColor);
     const [numberColor, setNumberColor] = useState(card.curCard.numberColor);
-    const [signatureColor, setSignatureColor] = useState(
-        card.curCard.signatureColor,
+    const [topCardTextColor, setTopCardTextColor] = useState(
+        card.curCard.topCardTextColor || "#FFFFFF",
     );
 
     useEffect(() => {
@@ -22,7 +22,7 @@ export default function MobileStep6() {
             borderColor,
             nameColor,
             numberColor,
-            signatureColor,
+            "",
         ];
 
         const thingsInState = [
@@ -30,7 +30,7 @@ export default function MobileStep6() {
             card.curCard.borderColor,
             card.curCard.nameColor,
             card.curCard.numberColor,
-            card.curCard.signatureColor,
+            "",
         ];
 
         const toChange = [];
@@ -46,10 +46,10 @@ export default function MobileStep6() {
             borderColor: borderColor,
             nameColor: nameColor,
             numberColor: numberColor,
-            signatureColor: signatureColor,
+            topCardTextColor: topCardTextColor,
             partsToRecolor: toChange,
         });
-    }, [borderColor, nameColor, numberColor, signatureColor]);
+    }, [borderColor, nameColor, numberColor, topCardTextColor]);
 
     return (
         <SimpleGrid
@@ -99,15 +99,13 @@ export default function MobileStep6() {
                 <FullColorPicker type="nameColor" setColor={setNameColor} />
                 <Text>Name</Text>
             </SharedStack>
-            {card.curCard.signature && (
-                <SharedStack row>
-                    <FullColorPicker
-                        type="signatureColor"
-                        setColor={setSignatureColor}
-                    />
-                    <Text>Signature</Text>
-                </SharedStack>
-            )}
+            <SharedStack row>
+                <FullColorPicker
+                    type="topCardTextColor"
+                    setColor={setTopCardTextColor}
+                />
+                <Text>Position</Text>
+            </SharedStack>
         </SimpleGrid>
     );
 }

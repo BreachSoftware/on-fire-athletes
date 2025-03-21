@@ -411,7 +411,7 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                     fontSize={"12px"}
                     fontWeight="500"
                     style={{
-                        color: "white",
+                        color: curCard.topCardTextColor || "white",
                         pointerEvents: "none",
                     }}
                     transition={"color 0.5s ease-in-out"}
@@ -439,7 +439,7 @@ const OnFireCard = forwardRef<OnFireCardRef, OnFireCardProps>(
                     fontSize={"12px"}
                     fontWeight="500"
                     style={{
-                        color: "white",
+                        color: curCard.topCardTextColor || "white",
                         pointerEvents: "none",
                     }}
                     transition={"color 0.5s ease-in-out"}
