@@ -107,25 +107,14 @@ export default function Product() {
                         title="PHSYICAL AR CARDS"
                         description="Bring your moment to life in the palm of your hand with a printed card featuring augmented reality allowing you to showcase a highlight video on the back of the card."
                         pricingComponent={
-                            <SharedStack
-                                row
-                                spacing={{ base: "18px", "2xl": "84px" }}
-                                alignItems={{
-                                    base: "center",
-                                    "2xl": "flex-start",
-                                }}
-                                justify={{
-                                    base: "center",
-                                    "2xl": "flex-start",
-                                }}
-                            >
+                            <Columns>
                                 <PricingList
                                     items={PHSYICAL_PRICING_LIST.slice(0, 3)}
                                 />
                                 <PricingList
                                     items={PHSYICAL_PRICING_LIST.slice(3)}
                                 />
-                            </SharedStack>
+                            </Columns>
                         }
                         reverse
                     />
@@ -135,7 +124,14 @@ export default function Product() {
                         title="BAG TAGS"
                         description="Take your moment on the road! Our bag tags allow you to customize a card that is printed on rigid plastic equipped with augmented reality to showcase a video of your choosing on the back."
                         pricingComponent={
-                            <PricingList items={BAG_TAG_PRICING_LIST} />
+                            <Columns>
+                                <PricingList
+                                    items={BAG_TAG_PRICING_LIST.slice(0, 3)}
+                                />
+                                <PricingList
+                                    items={BAG_TAG_PRICING_LIST.slice(3)}
+                                />
+                            </Columns>
                         }
                     />
                     <NeonDivider />
@@ -240,6 +236,25 @@ function NeonDivider() {
     );
 }
 
+function Columns({ children }: { children: React.ReactNode }) {
+    return (
+        <SharedStack
+            row
+            spacing={{ base: "18px", "2xl": "84px" }}
+            alignItems={{
+                base: "center",
+                "2xl": "flex-start",
+            }}
+            justify={{
+                base: "center",
+                "2xl": "flex-start",
+            }}
+        >
+            {children}
+        </SharedStack>
+    );
+}
+
 const PHSYICAL_PRICING_LIST: { title: string; subtitles?: string[] }[] = [
     { title: "1 AR Card: $24.99" },
     { title: "5 AR Cards: $39.99" },
@@ -255,6 +270,7 @@ const BAG_TAG_PRICING_LIST: { title: string; subtitles?: string[] }[] = [
     { title: "3 Bag Tags: $37.99" },
     { title: "4 Bag Tags: $44.99" },
     { title: "5 Bag Tags: $49.99" },
+    { title: "6 Bag Tags: $54.99" },
 ];
 
 const DIGITAL_PRICING_LIST: { title: string; subtitles?: string[] }[] = [

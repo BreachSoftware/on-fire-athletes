@@ -18,6 +18,33 @@ export default function ProductSnapshot({
     reverse = false,
     pricingComponent,
 }: Props) {
+    return (
+        <SharedStack>
+            <ProductSnapshotContent
+                imageSrc={imageSrc}
+                title={title}
+                description={description}
+                pricingComponent={pricingComponent}
+                reverse={reverse}
+            />
+            <SharedStack
+                align={{ base: "center", md: "flex-end" }}
+                pt="24px"
+                pr={{ base: 0, md: "96px", "2xl": "192px" }}
+            >
+                <StartCreatingButton />
+            </SharedStack>
+        </SharedStack>
+    );
+}
+
+function ProductSnapshotContent({
+    imageSrc,
+    title,
+    description,
+    pricingComponent,
+    reverse,
+}: Props) {
     const isMVP = title === "MVP PACKAGE";
 
     if (reverse) {
@@ -29,9 +56,6 @@ export default function ProductSnapshot({
                 pl={{ base: 0, "2xl": "96px" }}
                 pr={{ base: 0, "2xl": isMVP ? "36px" : "150px" }}
             >
-                <SharedStack display={{ base: "flex", "2xl": "none" }}>
-                    <StartCreatingButton />
-                </SharedStack>
                 <SharedStack flex={1} fit gap={8}>
                     <TitleDescription title={title} description={description} />
                     {pricingComponent}
@@ -49,9 +73,7 @@ export default function ProductSnapshot({
                     <SharedStack
                         display={{ base: "none", "2xl": "flex" }}
                         alignItems={{ "2xl": "center" }}
-                    >
-                        <StartCreatingButton />
-                    </SharedStack>
+                    ></SharedStack>
                 </SharedStack>
             </SharedStack>
         );
@@ -80,7 +102,6 @@ export default function ProductSnapshot({
                     alignItems={{ base: "flex-start", "2xl": "center" }}
                 >
                     {pricingComponent}
-                    <StartCreatingButton />
                 </SharedStack>
             </SharedStack>
         </SharedStack>
