@@ -1,4 +1,4 @@
-import { Tr } from "@chakra-ui/react";
+import { Link, Tr } from "@chakra-ui/react";
 import React from "react";
 import { OFAOrder } from "./constants";
 import { Td } from "@chakra-ui/react";
@@ -11,7 +11,11 @@ export default function OrderRow({ order }: OrderRowProps) {
     return (
         <Tr key={order.orderId}>
             <Td>{order.orderId}</Td>
-            <Td>{order.cardImage}</Td>
+            <Td>
+                <Link href={order.cardImage} isExternal>
+                    {order.cardImage}
+                </Link>
+            </Td>
             <Td>{order.cardGeneratedBy}</Td>
             <Td>{order.costPaid}</Td>
             <Td>{order.bagtagQuantity}</Td>
@@ -36,6 +40,14 @@ export default function OrderRow({ order }: OrderRowProps) {
             <Td>{order.editCard}</Td>
             <Td>{order.downloadCardPrintFile}</Td>
             <Td>{order.downloadBagTagPrintFile}</Td>
+            <Td>
+                <Link
+                    href={`https://onfireathletes.com/print?user=${order.cardGeneratedBy}&card=${order.orderId}`}
+                    isExternal
+                >
+                    {order.viewPrintFile}
+                </Link>
+            </Td>
             <Td>{order.printShippingLabel}</Td>
         </Tr>
     );

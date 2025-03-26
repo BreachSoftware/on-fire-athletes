@@ -27,6 +27,7 @@ export type OFAOrder = {
     editCard: string;
     downloadCardPrintFile: string;
     downloadBagTagPrintFile: string;
+    viewPrintFile: string;
     printShippingLabel: string;
 };
 

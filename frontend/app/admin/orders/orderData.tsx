@@ -28,6 +28,7 @@ export const orderData: OFAOrder[] = [
         editCard: "Edit",
         downloadCardPrintFile: "Download",
         downloadBagTagPrintFile: "Download",
+        viewPrintFile: "View",
         printShippingLabel: "Print",
     },
     {
@@ -57,6 +58,7 @@ export const orderData: OFAOrder[] = [
         editCard: "Edit",
         downloadCardPrintFile: "Download",
         downloadBagTagPrintFile: "Download",
+        viewPrintFile: "View",
         printShippingLabel: "Print",
     },
     {
@@ -86,6 +88,7 @@ export const orderData: OFAOrder[] = [
         editCard: "Edit",
         downloadCardPrintFile: "Download",
         downloadBagTagPrintFile: "Download",
+        viewPrintFile: "View",
         printShippingLabel: "Print",
     },
     {
@@ -115,6 +118,7 @@ export const orderData: OFAOrder[] = [
         editCard: "Edit",
         downloadCardPrintFile: "Download",
         downloadBagTagPrintFile: "Download",
+        viewPrintFile: "View",
         printShippingLabel: "Print",
     },
     {
@@ -144,6 +148,7 @@ export const orderData: OFAOrder[] = [
         editCard: "Edit",
         downloadCardPrintFile: "Download",
         downloadBagTagPrintFile: "Download",
+        viewPrintFile: "View",
         printShippingLabel: "Print",
     },
     {
@@ -173,6 +178,7 @@ export const orderData: OFAOrder[] = [
         editCard: "Edit",
         downloadCardPrintFile: "Download",
         downloadBagTagPrintFile: "Download",
+        viewPrintFile: "View",
         printShippingLabel: "Print",
     },
     {
@@ -202,6 +208,7 @@ export const orderData: OFAOrder[] = [
         editCard: "Edit",
         downloadCardPrintFile: "Download",
         downloadBagTagPrintFile: "Download",
+        viewPrintFile: "View",
         printShippingLabel: "Print",
     },
     {
@@ -231,6 +238,7 @@ export const orderData: OFAOrder[] = [
         editCard: "Edit",
         downloadCardPrintFile: "Download",
         downloadBagTagPrintFile: "Download",
+        viewPrintFile: "View",
         printShippingLabel: "Print",
     },
     {
@@ -260,6 +268,7 @@ export const orderData: OFAOrder[] = [
         editCard: "Edit",
         downloadCardPrintFile: "Download",
         downloadBagTagPrintFile: "Download",
+        viewPrintFile: "View",
         printShippingLabel: "Print",
     },
     {
@@ -289,6 +298,7 @@ export const orderData: OFAOrder[] = [
         editCard: "Edit",
         downloadCardPrintFile: "Download",
         downloadBagTagPrintFile: "Download",
+        viewPrintFile: "View",
         printShippingLabel: "Print",
     },
     {
@@ -318,6 +328,7 @@ export const orderData: OFAOrder[] = [
         editCard: "Edit",
         downloadCardPrintFile: "Download",
         downloadBagTagPrintFile: "Download",
+        viewPrintFile: "View",
         printShippingLabel: "Print",
     },
 ];
