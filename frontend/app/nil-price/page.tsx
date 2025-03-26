@@ -1,8 +1,6 @@
 "use client";
-import Sidebar from "@/components/sidebar";
 import { Box, Flex, Spinner } from "@chakra-ui/react";
 import AllStarPrice from "../checkout/components/allStarPrice";
-import NavBar from "../navbar";
 import { useEffect, useState } from "react";
 import { getCard } from "../generate_card_asset/cardFunctions";
 import { getWithExpiry } from "@/components/localStorageFunctions";
@@ -10,7 +8,7 @@ import { useCurrentCheckout } from "@/hooks/useCheckout";
 
 export default function NilPricePage() {
     const [cardObtained, setCardObtained] = useState(false);
-    const { checkout, setCheckout } = useCurrentCheckout();
+    const { checkout, updateCheckout } = useCurrentCheckout();
 
     // Copied from checkout because I couldn't get it to work otherwise
     useEffect(() => {
@@ -34,8 +32,7 @@ export default function NilPricePage() {
                     getCardInfo(uuid, generatedBy).then((card) => {
                         setCardObtained(true);
                         // Set the card in the checkout context to assist with the checkout process
-                        setCheckout({
-                            ...checkout,
+                        updateCheckout({
                             onFireCard: card,
                         });
                     });
@@ -54,13 +51,6 @@ export default function NilPricePage() {
             }
         >
             <Flex flexDir="column" flex={1}>
-                <Flex
-                    w="100%"
-                    direction={"column"}
-                    mb={{ base: "32px", md: "48px" }}
-                >
-                    <NavBar />
-                </Flex>
                 <Box w="full" flex={1}>
                     {!checkout.onFireCard ? (
                         <Box
@@ -77,15 +67,6 @@ export default function NilPricePage() {
                     )}
                 </Box>
             </Flex>
-            <Box
-                position="sticky"
-                top={0}
-                w="140px"
-                h="100dvh"
-                display={{ base: "none", md: "inline" }}
-            >
-                <Sidebar height="100dvh" backgroundPresent />
-            </Box>
         </Flex>
     );
 }

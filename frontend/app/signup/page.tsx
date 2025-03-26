@@ -56,6 +56,8 @@ export default function SignUp() {
     let generatedByUUID: string | null = "";
     let cardSentUUID: string | null = "";
     let senderUUID: string | null = "";
+    let giftPackage: string | null = "";
+    let searchParamString: string = "";
 
     // Extract UUID query parameters if on client-side
     if (typeof window !== "undefined") {
@@ -64,6 +66,8 @@ export default function SignUp() {
         generatedByUUID = queryParams.get("generatedByUUID");
         cardSentUUID = queryParams.get("cardUUID");
         senderUUID = queryParams.get("fromUUID");
+        giftPackage = queryParams.get("giftPackage");
+        searchParamString = queryParams.toString();
     }
 
     const [checkedAuth, setCheckedAuth] = useState(false);
@@ -129,7 +133,12 @@ export default function SignUp() {
             const confirmed = await auth.confirm(email.trim(), code.trim());
             if (confirmed) {
                 // Sign the user in
-                const res = await auth.signIn(email, password, info);
+                const res = await auth.signIn(email, password, {
+                    ...info,
+                    firstName: firstName || info.firstName,
+                    lastName: lastName || info.lastName,
+                });
+
                 if (res.success) {
                     const user = await auth.currentAuthenticatedUser();
                     const userID = user.userId;
@@ -178,6 +187,11 @@ export default function SignUp() {
                                 position: "bottom-left",
                             });
                         }
+                    }
+
+                    if (giftPackage) {
+                        window.location.href = "/checkout?gift=true";
+                        return true;
                     }
 
                     // Handle card saving and trading
@@ -244,7 +258,7 @@ export default function SignUp() {
                 `/login?generatedByUUID=${generatedByUUID}&cardUUID=${cardSentUUID}&fromUUID=${senderUUID}`,
             );
         } else {
-            router.push("/login");
+            router.push(`/login?${searchParamString}`);
         }
     }
 

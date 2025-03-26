@@ -1,6 +1,6 @@
 import emailjs from "@emailjs/browser";
 import { tradeBoughtCard } from "@/hooks/buyCardFunc";
-import CheckoutInfo from "@/hooks/CheckoutInfo";
+import CheckoutInfo, { DatabasePackageNames } from "@/hooks/CheckoutInfo";
 import TradingCardInfo from "@/hooks/TradingCardInfo";
 import { useAuthProps } from "@/hooks/useAuth";
 import { PaymentIntent, Stripe } from "@stripe/stripe-js";
@@ -8,6 +8,7 @@ import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.share
 import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
 import { totalPriceInCart } from "@/utils/utils";
 import { PaymentMethod } from "@/utils/constants";
+import { UserFields } from "@/types/user.types";
 
 /**
  * Handles the purchase process for trading cards, supporting both Stripe and non-Stripe payment methods.
@@ -30,6 +31,7 @@ export async function handlePurchase(
     auth: useAuthProps,
     hash?: string,
     isNil?: boolean,
+    isGift?: boolean,
 ): Promise<boolean> {
     try {
         // Get the current user's ID
@@ -111,24 +113,27 @@ export async function handlePurchase(
         const totalDigitalCards =
             checkout.packageCardCount + checkout.digitalCardCount;
 
+        const totalPhysicalCards = checkout.physicalCardCount;
+
         // Create an order
         const orderOptions = {
             method: "POST",
             headers: myHeaders,
             body: JSON.stringify({
-                card_uuid: onFireCard!.uuid,
-                card_generatedBy: onFireCard!.generatedBy,
+                card_uuid: onFireCard?.uuid,
+                card_generatedBy: onFireCard?.generatedBy,
                 cost_paid: checkout.total,
                 sender_uuid: checkout.packageName
                     ? "GamechangersAdmin"
-                    : onFireCard!.generatedBy,
+                    : onFireCard?.generatedBy,
                 receiver_uuid: currentUserId,
                 physicalCardQuantity: checkout.physicalCardCount,
                 digitalCardQuantity: totalDigitalCards,
+                bagTagQuantity: checkout.bagTagCount,
                 first_name: dbUser?.first_name,
                 last_name: dbUser?.last_name,
                 email: dbUser?.email,
-                phone_number: checkout.contactInfo.phone,
+                phone_number: checkout.contactInfo.phone, // Always empty right now
                 shipping_firstName: dbUser?.first_name,
                 shipping_lastName: dbUser?.last_name,
                 address: checkout.shippingAddress.streetAddress,
@@ -141,6 +146,14 @@ export async function handlePurchase(
                     : hash
                       ? PaymentMethod.GMEX
                       : PaymentMethod.Card,
+                package_name: isGift
+                    ? `GIFT - ${checkout.packageName?.toUpperCase()}`
+                    : auth.isSubscribed
+                      ? "SUBSCRIPTION"
+                      : isNil
+                        ? "NIL"
+                        : checkout.packageName?.toUpperCase(),
+                is_gift: isGift,
             }),
         };
 
@@ -173,14 +186,14 @@ export async function handlePurchase(
                 );
                 return false;
             }
-        } else {
+        } else if (!isGift) {
             const updateAvailableCardsOptions = {
                 method: "POST",
                 headers: myHeaders,
                 body: JSON.stringify({
                     uuid: onFireCard!.uuid,
                     generatedBy: onFireCard!.generatedBy,
-                    totalCreated: totalDigitalCards,
+                    totalCreated: totalDigitalCards || totalPhysicalCards || 1,
                     currentlyAvailable: totalDigitalCards,
                 }),
             };
@@ -196,9 +209,26 @@ export async function handlePurchase(
                 return false;
             }
 
+            if (checkout.packageName === "mvp") {
+                await fetch(apiEndpoints.addSubscription(), {
+                    method: "POST",
+                    headers: myHeaders,
+                    body: JSON.stringify({
+                        userId: currentUserId,
+                        packageName: checkout.packageName,
+                        isGmex: hash ? true : false,
+                    }),
+                });
+                await auth.refreshUser();
+            }
+
             // Update card price for sellable packages
-            if (checkout.packageName !== "rookie") {
-                const newCardPrice = parseFloat(checkout.cardPrice) + 5.0;
+            if (
+                checkout.digitalCardCount > 0 ||
+                checkout.physicalCardCount > 0
+            ) {
+                // THIS IS WHERE WE WOULD ADD SHIPPING IF WE WANT TO ADD IT BACK
+                const newCardPrice = parseFloat(checkout.cardPrice);
 
                 const updatePriceOptions = {
                     method: "POST",
@@ -243,23 +273,35 @@ export async function handlePurchase(
             // Add flag if the order is for NIL
             successUrl = `${successUrl}${successUrl.includes("?") ? "&" : ""}nil=true`;
         }
+        if (isGift) {
+            // Add flag if the order is for a gift
+            successUrl = `${successUrl}${successUrl.includes("?") ? "&" : ""}gift=true`;
+        }
 
-        if (!buyingOtherCard) {
-            try {
-                await handlePostCheckoutEmail(checkout);
-            } catch (e) {
-                console.error("Error sending post-checkout email: ", e);
-            }
-        } else {
-            try {
-                await handleBoughtLockerRoomCardEmail(checkout, currentUserId);
-            } catch (e) {
-                console.error(
-                    "Error sending bought locker room card email: ",
-                    e,
-                );
+        if (!isGift) {
+            if (!buyingOtherCard) {
+                try {
+                    await handlePostCheckoutEmail(checkout, dbUser);
+                } catch (e) {
+                    console.error("Error sending post-checkout email: ", e);
+                }
+            } else {
+                try {
+                    await handleBoughtLockerRoomCardEmail(
+                        checkout,
+                        currentUserId,
+                        dbUser,
+                    );
+                } catch (e) {
+                    console.error(
+                        "Error sending bought locker room card email: ",
+                        e,
+                    );
+                }
             }
         }
+
+        console.log("Success URL: ", successUrl);
 
         // Navigate to the success page
         router.push(successUrl);
@@ -270,23 +312,29 @@ export async function handlePurchase(
     }
 }
 
-enum EmailTemplates {
-    ROOKIE = "template_71hzb7j",
-    ALL_STAR = "template_46qvoa9",
-}
+const EmailTemplates: Record<DatabasePackageNames, string> = {
+    [DatabasePackageNames.PROSPECT]: "template_z2uq3ok",
+    [DatabasePackageNames.ROOKIE]: "template_71hzb7j",
+    [DatabasePackageNames.ALL_STAR]: "template_46qvoa9",
+    [DatabasePackageNames.MVP]: "template_830qvoo",
+};
 
-async function handlePostCheckoutEmail(checkout: CheckoutInfo) {
-    const isRookie = checkout.packageName === "rookie";
+async function handlePostCheckoutEmail(
+    checkout: CheckoutInfo,
+    dbUser: UserFields | null | undefined,
+) {
+    if (!checkout.packageName || !dbUser) {
+        return;
+    }
 
-    const templateToUse = isRookie
-        ? EmailTemplates.ROOKIE
-        : EmailTemplates.ALL_STAR;
+    const templateToUse = EmailTemplates[checkout.packageName];
 
     await emailjs.send(
         "service_8rtflzq",
         templateToUse,
         {
-            toEmail: checkout.contactInfo.email,
+            toName: `${dbUser.first_name} ${dbUser.last_name}`,
+            toEmail: dbUser.email,
             cardImage: checkout.onFireCard!.cardImage,
             profileUrl: `https://onfireathletes.com/profile?user=${checkout.onFireCard!.generatedBy}`,
         },
@@ -297,16 +345,21 @@ async function handlePostCheckoutEmail(checkout: CheckoutInfo) {
 async function handleBoughtLockerRoomCardEmail(
     checkout: CheckoutInfo,
     userId: string,
+    dbUser: UserFields | null | undefined,
 ) {
+    if (!dbUser) {
+        return;
+    }
+
     await emailjs.send(
         "service_8rtflzq",
         "template_rsncin1",
         {
-            toEmail: checkout.contactInfo.email,
+            toEmail: dbUser.email,
             cardImage: checkout.onFireCard!.cardImage,
             cardFirstName: checkout.onFireCard!.firstName,
             cardLastName: checkout.onFireCard!.lastName,
-            toName: `${checkout.contactInfo.firstName} ${checkout.contactInfo.lastName}`,
+            toName: `${dbUser.first_name} ${dbUser.last_name}`,
             cardPrice: `${totalPriceInCart(checkout, false).toFixed(2)}`,
             profileUrl: `https://onfireathletes.com/profile?user=${userId}`,
         },

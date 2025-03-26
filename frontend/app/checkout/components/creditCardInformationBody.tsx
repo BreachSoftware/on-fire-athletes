@@ -8,25 +8,22 @@ import { useEffect, useState } from "react";
  * @returns {JSX.Element} - The rendered JSX element for the credit card information body.
  */
 export default function CreditCardInformationBody() {
+    const [firstVisit, setFirstVisit] = useState(true);
+    const co = useCurrentCheckout();
 
-	const [ firstVisit, setFirstVisit ] = useState(true);
-	const co = useCurrentCheckout();
+    // Reset the payment info entered flag when the component mounts
+    useEffect(() => {
+        if (firstVisit) {
+            co.updateCheckout({
+                paymentInfoEntered: false,
+            });
+            setFirstVisit(false);
+        }
+    }, [firstVisit, co]);
 
-
-	// Reset the payment info entered flag when the component mounts
-	useEffect(() => {
-		if (firstVisit) {
-			co.setCheckout({
-				...co.checkout,
-				paymentInfoEntered: false
-			});
-			setFirstVisit(false);
-		}
-	}, [ firstVisit, co ]);
-
-	return (
-		<Box borderRadius={"8px"}>
-			<Payment checkoutScreen />
-		</Box>
-	);
+    return (
+        <Box borderRadius={"8px"}>
+            <Payment checkoutScreen />
+        </Box>
+    );
 }

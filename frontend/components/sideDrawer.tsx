@@ -85,20 +85,41 @@ const navItems: Array<MobileNavSection> = [
         ],
     },
     {
+        header: "Products",
+        children: [
+            {
+                title: "View All",
+                href: "/product",
+            },
+            {
+                title: "Physical AR Cards",
+                href: "/newsroom/what-are-ar-cards",
+            },
+            {
+                title: "Gift Cards",
+                href: "/checkout?gift=true",
+            },
+        ],
+    },
+    {
         header: "About",
         children: [
             {
                 title: "Our Story",
                 href: "/our-story",
             },
-            {
-                title: "AR Card",
-                href: "newsroom/what-are-ar-cards",
-            },
-            {
-                title: "NIL Partnerships",
-                href: "/nil",
-            },
+            // {
+            //     title: "Pricing",
+            //     href: "/pricing",
+            // },
+            // {
+            //     title: "AR Card",
+            //     href: "newsroom/what-are-ar-cards",
+            // },
+            // {
+            //     title: "NIL Partnerships",
+            //     href: "/nil",
+            // },
             {
                 title: "FAQs",
                 href: "/faq",
@@ -109,6 +130,15 @@ const navItems: Array<MobileNavSection> = [
             },
         ],
     },
+    // {
+    //     header: "Gift",
+    //     children: [
+    //         {
+    //             title: "Gift a card",
+    //             href: "/checkout?gift=true",
+    //         },
+    //     ],
+    // },
 ];
 
 /**

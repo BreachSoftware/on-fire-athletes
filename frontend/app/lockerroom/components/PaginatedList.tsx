@@ -193,6 +193,7 @@ export default function PaginatedList({
                                     profilePageProps?.onAddToCollectionModalOpen
                                 }
                                 privateView={profilePageProps?.privateView}
+                                hideButton={false}
                             />
                         </GridItem>
                     );

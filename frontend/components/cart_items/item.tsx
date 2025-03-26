@@ -3,7 +3,6 @@
 import {
     Flex,
     Text,
-    useBreakpointValue,
     Box,
     Circle,
     HStack,
@@ -24,6 +23,15 @@ import { useCurrentCheckout } from "@/hooks/useCheckout";
 import { useState } from "react";
 import TradingCardInfo from "@/hooks/TradingCardInfo";
 import OnFireCard from "../create/OnFireCard/OnFireCard";
+import {
+    BAG_TAG_ADD_ON_TITLE,
+    DIGITAL_ADD_ON_TITLE,
+    PHYSICAL_ADD_ON_TITLE,
+} from "@/app/checkout/components/checkout-add-ons/constants";
+import CheckoutInfo from "@/hooks/CheckoutInfo";
+import { packages } from "@/app/checkout/components/selectYourPackage/packages";
+import DemarioCardSrc from "@/images/mockups/demario-card.png";
+import { useAuth } from "@/hooks/useAuth";
 
 // props
 interface CheckItemProps {
@@ -34,6 +42,8 @@ interface CheckItemProps {
     price: number;
     canEdit: boolean;
     canRemove: boolean;
+    itemType?: "card" | "bag tag" | "package";
+    multiplier?: number;
 }
 
 /**
@@ -48,7 +58,11 @@ export default function Item({
     price,
     canEdit = true,
     canRemove = true,
+    itemType = "card",
+    multiplier = 1,
 }: CheckItemProps) {
+    const { isSubscribed } = useAuth();
+
     // leaving this commented might use in the future
     // const [ isHovered, setIsHovered ] = useState(false);
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -84,45 +98,58 @@ export default function Item({
                         display="flex"
                         justifyContent="center"
                         alignItems="center"
-                        width={useBreakpointValue({ base: "80px", md: 100 })}
-                        height={useBreakpointValue({ base: "80px", md: 100 })}
+                        width={{ base: "80px", md: 100 }}
+                        height={{ base: "80px", md: 100 }}
                     >
                         {cardType === "Digital" ? (
                             // Digital Card has just the OnFire Card
-                            <Box
-                                transform={{
-                                    base: "scale(0.10)",
-                                    md: "scale(0.12)",
-                                }}
-                                // disable draggable images on cards in the checkout flow
-                                pointerEvents="none"
-                            >
-                                <OnFireCard
-                                    key={card!.uuid}
-                                    card={card!}
-                                    slim
-                                    showButton={false}
-                                />
-                            </Box>
-                        ) : (
-                            // Physical Card has the OnFire Card and AR Card Back
-                            <>
+                            card ? (
                                 <Box
                                     transform={{
-                                        base: "scale(0.07) rotate(348deg) translate(-150px)",
-                                        md: "scale(0.1) rotate(348deg) translate(-150px)",
+                                        base: "scale(0.10)",
+                                        md: "scale(0.12)",
                                     }}
-                                    zIndex={1}
                                     // disable draggable images on cards in the checkout flow
                                     pointerEvents="none"
                                 >
                                     <OnFireCard
                                         key={card!.uuid}
                                         card={card!}
-                                        showButton={false}
                                         slim
+                                        showButton={false}
                                     />
                                 </Box>
+                            ) : (
+                                <DemarioCard />
+                            )
+                        ) : (
+                            // Physical Card has the OnFire Card and AR Card Back
+                            <>
+                                {card ? (
+                                    <Box
+                                        transform={{
+                                            base: "scale(0.07) rotate(348deg) translate(-150px)",
+                                            md: "scale(0.1) rotate(348deg) translate(-150px)",
+                                        }}
+                                        zIndex={1}
+                                        // disable draggable images on cards in the checkout flow
+                                        pointerEvents="none"
+                                    >
+                                        <OnFireCard
+                                            key={card!.uuid}
+                                            card={card!}
+                                            showButton={false}
+                                            slim
+                                        />
+                                    </Box>
+                                ) : (
+                                    <Box
+                                        transform={"translate(-8px)"}
+                                        zIndex={1}
+                                    >
+                                        <DemarioCard />
+                                    </Box>
+                                )}
                                 <Image
                                     // Temporary Asset for AR Card Back
                                     src={arCardBack.src}
@@ -144,10 +171,10 @@ export default function Item({
                         py="1px"
                         bg="green.100"
                         color="white"
-                        fontSize={useBreakpointValue({
+                        fontSize={{
                             base: "8px",
                             md: "10px",
-                        })}
+                        }}
                         fontWeight="bold"
                         position="absolute"
                         top="-9px"
@@ -167,29 +194,54 @@ export default function Item({
                         fontWeight={"600"}
                         transform={"skew(-6deg)"}
                         // scale text size based on screen size
-                        fontSize={useBreakpointValue({
+                        fontSize={{
                             base: "20px",
                             sm: "md",
                             lg: "xl",
-                        })}
+                        }}
                     >
                         {title}
                     </Text>
-                    <Text
-                        zIndex={2}
-                        fontFamily={"Roboto"}
-                        fontWeight={"regular"}
-                        transform={"skew(-6deg)"}
-                        // scale text size based on screen size
-                        fontSize={useBreakpointValue({
-                            base: "12px",
-                            md: "12px",
-                        })}
-                    >
-                        {cardType} Card: ${(price * numberOfOrders).toFixed(2)}{" "}
-                        ({numberOfOrders * numberOfCards} card
-                        {numberOfOrders * numberOfCards > 1 ? "s" : ""})
-                    </Text>
+                    {numberOfCards > 0 ? (
+                        <Text
+                            zIndex={2}
+                            fontFamily={"Roboto"}
+                            fontWeight={"regular"}
+                            transform={"skew(-6deg)"}
+                            // scale text size based on screen size
+                            fontSize={{
+                                base: "12px",
+                                md: "12px",
+                            }}
+                        >
+                            {itemType === "card" ? `${cardType} Card: ` : ""}$
+                            {(price * numberOfOrders).toFixed(2)}{" "}
+                            {itemType === "package"
+                                ? ""
+                                : `(${numberOfOrders * numberOfCards * multiplier} ${itemType}${
+                                      numberOfOrders *
+                                          numberOfCards *
+                                          multiplier >
+                                      1
+                                          ? "s"
+                                          : ""
+                                  })`}
+                        </Text>
+                    ) : (
+                        <Text
+                            zIndex={2}
+                            fontFamily={"Roboto"}
+                            fontWeight={"regular"}
+                            transform={"skew(-6deg)"}
+                            // scale text size based on screen size
+                            fontSize={{
+                                base: "12px",
+                                md: "12px",
+                            }}
+                        >
+                            ${(price * numberOfOrders).toFixed(2)}
+                        </Text>
+                    )}
                     <HStack paddingTop="10px">
                         {/* Remove Button */}
                         {canRemove && (
@@ -207,36 +259,45 @@ export default function Item({
                                 lineHeight="normal"
                                 textDecoration={"underline"}
                                 onClick={() => {
-                                    let physicalCardRemoved = false;
-                                    let amountOfPhysicalCards = 0;
                                     // remove item from cart
                                     const newCart = itemsInCart.filter(
-                                        (item) => {
-                                            if (
-                                                item.title === title &&
-                                                item.title.includes("Physical")
-                                            ) {
-                                                physicalCardRemoved = true;
-                                                amountOfPhysicalCards =
-                                                    item.numberOfOrders;
-                                            }
-                                            return item.title !== title;
-                                        },
+                                        (item) => item.title !== title,
                                     );
-                                    if (physicalCardRemoved) {
-                                        co.setCheckout({
-                                            ...checkout,
-                                            cart: newCart,
-                                            physicalCardCount:
-                                                checkout.physicalCardCount -
-                                                amountOfPhysicalCards,
-                                        });
-                                    } else {
-                                        co.setCheckout({
-                                            ...checkout,
-                                            cart: newCart,
-                                        });
+
+                                    const updatedCheckout: CheckoutInfo = {
+                                        ...checkout,
+                                        cart: newCart,
+                                    };
+
+                                    const defaults = checkout.packageName
+                                        ? packages[checkout.packageName]
+                                        : null;
+
+                                    if (title === DIGITAL_ADD_ON_TITLE) {
+                                        updatedCheckout.digitalCardCount = 0;
+                                    } else if (
+                                        title === PHYSICAL_ADD_ON_TITLE
+                                    ) {
+                                        updatedCheckout.physicalCardCount =
+                                            isSubscribed
+                                                ? 0
+                                                : defaults?.defaultPhysicalCardCount ||
+                                                  0;
+                                    } else if (title === BAG_TAG_ADD_ON_TITLE) {
+                                        updatedCheckout.bagTagCount =
+                                            isSubscribed
+                                                ? 0
+                                                : defaults?.defaultBagTagCount ||
+                                                  0;
                                     }
+
+                                    console.log(
+                                        "updatedCheckout",
+                                        updatedCheckout.physicalCardCount,
+                                        updatedCheckout.digitalCardCount,
+                                    );
+
+                                    co.setCheckout(updatedCheckout);
                                 }}
                             >
                                 Remove
@@ -335,5 +396,17 @@ export default function Item({
                 <Spacer />
             </Flex>
         </>
+    );
+}
+
+function DemarioCard() {
+    return (
+        <Image
+            src={DemarioCardSrc.src}
+            alt="Your Card"
+            mt={"1%"}
+            transform={`rotate(348deg) scale(0.5)`}
+            zIndex={1}
+        />
     );
 }

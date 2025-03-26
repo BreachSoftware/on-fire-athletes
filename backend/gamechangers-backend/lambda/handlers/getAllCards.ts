@@ -66,8 +66,21 @@ export const getAllCards: Handler = async (
 			return sendResponse(404, { error: "No card items found" });
 		}
 
+		const retArray = data.Items;
+
+		if (data.LastEvaluatedKey) {
+			const params: DynamoDB.DocumentClient.ScanInput = {
+				TableName: dbTables.GamechangersCards(),
+				Limit: paginationParams.limit,
+				ExclusiveStartKey: data.LastEvaluatedKey,
+			};
+
+			const moreData = await dynamoDb.scan(params).promise();
+			retArray.push(...(moreData.Items || []));
+		}
+
 		// Sort the card items by createdAt attribute, assuming 0 if missing
-		const sortedItems = data.Items.sort((a, b) => {
+		const sortedItems = retArray.sort((a, b) => {
 			const createdAtA = a.createdAt || 0;
 			const createdAtB = b.createdAt || 0;
 			return createdAtB - createdAtA;

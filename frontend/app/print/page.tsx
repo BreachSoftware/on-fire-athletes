@@ -24,6 +24,7 @@ import OnFireCard, {
 } from "@/components/create/OnFireCard/OnFireCard";
 import { generateCardImage } from "@/components/create/StepWrapper";
 import CardMask from "@/public/card_assets/card-mask.png";
+import MindFileCompiler from "@/components/mind-file/MindFileCompiler";
 
 /**
  * Returns the Profile page.
@@ -85,6 +86,12 @@ export default function Profile() {
             alignItems="center"
         >
             <Flex flexDir="column" w="full" minH="100dvh" maxW="1200px">
+                <Box mt={8} p={6} bg="gray.800" borderRadius="md" w="full">
+                    <Heading size="lg" color="white" mb={4}>
+                        AR Integration
+                    </Heading>
+                    <MindFileCompiler card={card} />
+                </Box>
                 <SharedStack>
                     <ModdablePrintCard card={card} isBagTag={false} />
                     <Box>

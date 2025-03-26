@@ -94,6 +94,26 @@ export const getCard: Handler = async (
 
 		// Check if any items were returned
 		if (!data.Items || data.Items.length === 0) {
+			if (data.LastEvaluatedKey) {
+				const params: DynamoDB.DocumentClient.ScanInput = {
+					TableName: dbTables.GamechangersCards(),
+					ExclusiveStartKey: data.LastEvaluatedKey,
+					FilterExpression: "#uuidKey = :uuidVal",
+					ExpressionAttributeNames: {
+						"#uuidKey": "uuid",
+					},
+					ExpressionAttributeValues: {
+						":uuidVal": uuid,
+					},
+				};
+
+				const secondScan = await dynamoDb.scan(params).promise();
+
+				if (secondScan.Items && secondScan.Items.length > 0) {
+					return sendResponse(200, secondScan.Items[0] as object);
+				}
+			}
+
 			return sendResponse(404, { error: "The card does not exist" });
 		}
 

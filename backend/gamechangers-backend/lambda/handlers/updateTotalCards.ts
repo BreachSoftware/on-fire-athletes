@@ -1,5 +1,9 @@
 /* eslint-disable func-style */
-import { Handler, APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
+import {
+	Handler,
+	APIGatewayProxyEvent,
+	APIGatewayProxyResult,
+} from "aws-lambda";
 import { DynamoDB } from "aws-sdk";
 import { dbTables } from "../../EnvironmentManager/EnvironmentManager";
 
@@ -11,40 +15,59 @@ const dynamoDb = new DynamoDB.DocumentClient();
  * @param event - The API Gateway event object.
  * @returns A promise that resolves to the API Gateway proxy result.
  */
-export const updateTotalCards: Handler = async(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-
+export const updateTotalCards: Handler = async (
+	event: APIGatewayProxyEvent,
+): Promise<APIGatewayProxyResult> => {
 	try {
 		if (event.body) {
 			// Parse the request body from the event
 			const data = JSON.parse(event.body as string);
 
-			if (data.uuid === undefined || data.generatedBy === undefined || data.totalCreated === undefined) {
+			if (
+				data.uuid === undefined ||
+				data.generatedBy === undefined ||
+				data.totalCreated === undefined
+			) {
 				return {
 					statusCode: 400,
 					headers: {
 						"Content-Type": "application/json",
 					},
-					body: JSON.stringify({ error: "The request body must contain uuid, generatedBy, and totalCreated properties" }),
+					body: JSON.stringify({
+						error: "The request body must contain uuid, generatedBy, and totalCreated properties",
+					}),
 				};
-			} else if (data.uuid === "" || data.generatedBy === "" || data.totalCreated < 0) {
+			} else if (
+				data.uuid === "" ||
+				data.generatedBy === "" ||
+				data.totalCreated < 0
+			) {
 				return {
 					statusCode: 400,
 					headers: {
 						"Content-Type": "application/json",
 					},
-					body: JSON.stringify({ error: "The uuid and generatedBy properties cannot be empty." +
-						" The totalCreated property cannot be less than 0" }),
+					body: JSON.stringify({
+						error:
+							"The uuid and generatedBy properties cannot be empty." +
+							" The totalCreated property cannot be less than 0",
+					}),
 				};
-			} else if (typeof data.uuid !== "string" || typeof data.generatedBy !== "string" || typeof data.totalCreated !== "number") {
+			} else if (
+				typeof data.uuid !== "string" ||
+				typeof data.generatedBy !== "string" ||
+				typeof data.totalCreated !== "number"
+			) {
 				return {
 					statusCode: 400,
 					headers: {
 						"Content-Type": "application/json",
 					},
-					body: JSON.stringify({ error: "The uuid, generatedBy properties must be of type string. Total created property must be a number" }),
+					body: JSON.stringify({
+						error: "The uuid, generatedBy properties must be of type string. Total created property must be a number",
+					}),
 				};
 			}
-
 
 			// Define the parameters for the DynamoDB update operation
 			const params = {
@@ -53,9 +76,12 @@ export const updateTotalCards: Handler = async(event: APIGatewayProxyEvent): Pro
 					generatedBy: data.generatedBy,
 					uuid: data.uuid,
 				},
-				UpdateExpression: "set totalCreated = :totalCreated, currentlyAvailable = :totalCreated",
+				UpdateExpression:
+					"set totalCreated = :totalCreated, currentlyAvailable = :currentlyAvailable",
 				ExpressionAttributeValues: {
 					":totalCreated": data.totalCreated,
+					":currentlyAvailable":
+						data.currentlyAvailable ?? data.totalCreated,
 				},
 			};
 

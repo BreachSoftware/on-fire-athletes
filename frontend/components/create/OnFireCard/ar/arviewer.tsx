@@ -36,6 +36,7 @@ import "mind-ar/dist/mindar-image-aframe.prod.js";
 import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
 import OnFireLogo from "@/images/logos/small-logo-white.png";
 import SharedStack from "@/components/shared/wrappers/shared-stack";
+import Head from "next/head";
 
 /**
  * The MindAR ARViewer component that renders the video on the OnFire card.
@@ -74,6 +75,8 @@ function ARViewer() {
     let isDefaultBack = false;
 
     useEffect(() => {
+        clearCache();
+
         const currentUrl = window?.location?.href;
 
         const queryParams = new URLSearchParams(currentUrl?.split("?")[1]);
@@ -333,6 +336,14 @@ function ARViewer() {
 
     return (
         <>
+            <Head>
+                <meta
+                    httpEquiv="Cache-Control"
+                    content="no-cache, no-store, must-revalidate"
+                />
+                <meta httpEquiv="Pragma" content="no-cache" />
+                <meta httpEquiv="Expires" content="0" />
+            </Head>
             {/* Apply global styles */}
             <style>{`
                 * {
@@ -454,7 +465,7 @@ function ARViewer() {
                         style={{
                             objectFit: "cover",
                         }}
-                        muted
+                        // muted
                         playsInline
                         loop
                         crossOrigin="anonymous"
@@ -660,3 +671,36 @@ function getVideoDimensions(
 }
 
 export default ARViewer;
+
+function clearCache() {
+    if (typeof caches !== "undefined") {
+        caches
+            .keys()
+            .then((cacheNames) => {
+                const deletionPromises = cacheNames.map((cacheName) => {
+                    return caches
+                        .delete(cacheName)
+                        .then(() => console.log(`Cache ${cacheName} deleted`));
+                });
+
+                return Promise.all(deletionPromises);
+            })
+            .then(() => console.log("All caches cleared successfully"))
+            .catch((err) => console.error("Failed to clear caches:", err));
+    }
+
+    // For browsers that don't support Cache API or as additional measure
+    if (window.navigator && navigator.serviceWorker) {
+        navigator.serviceWorker
+            .getRegistrations()
+            .then((registrations) => {
+                registrations.forEach((registration) => {
+                    registration.unregister();
+                });
+                console.log("Service workers unregistered");
+            })
+            .catch((err) =>
+                console.error("Error unregistering service workers:", err),
+            );
+    }
+}

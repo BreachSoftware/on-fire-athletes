@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useMemo } from "react";
 
 import { Box, Flex, Grid, GridItem, Spinner, VStack } from "@chakra-ui/react";
 import NavBar from "../navbar";
@@ -12,13 +12,22 @@ import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import { useEffect, useState } from "react";
 import { getWithExpiry } from "@/components/localStorageFunctions";
-import SelectYourPackage from "./components/selectYourPackage";
+import SelectYourPackage from "./components/selectYourPackage/selectYourPackageOld";
 import AllStarPrice from "./components/allStarPrice";
 import { getCard } from "../generate_card_asset/cardFunctions";
 import TradingCardInfo from "@/hooks/TradingCardInfo";
 import { useTransferContext } from "@/hooks/useTransfer";
 import "../../node_modules/@rainbow-me/rainbowkit/dist/index.css";
 import { darkTheme, RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import { useAuth } from "@/hooks/useAuth";
+import { DatabasePackageNames, Item } from "@/hooks/CheckoutInfo";
+import { BAG_TAG_PRICES } from "@/utils/constants";
+import { DIGITAL_CARD_PRICES, PHYSICAL_CARD_PRICES } from "@/utils/constants";
+import {
+    DIGITAL_ADD_ON_TITLE,
+    BAG_TAG_ADD_ON_TITLE,
+    PHYSICAL_ADD_ON_TITLE,
+} from "./components/checkout-add-ons/constants";
 
 // OnFire keys
 const STRIPE_PUBLIC_KEY =
@@ -29,9 +38,11 @@ const STRIPE_PUBLIC_KEY =
  * @returns JSX.Element
  */
 export default function CheckoutPage() {
+    const { isSubscribed } = useAuth();
     const [onFireCard, setOnFireCard] = useState<TradingCardInfo | null>(null);
     const [cardObtained, setCardObtained] = useState(false);
     const [showSpinner, setShowSpinner] = useState(false);
+    const [isCardLoading, setIsCardLoading] = useState(true);
     const [buyingOtherCard, setBuyingOtherCard] = useState(false);
 
     // Game Coin integration
@@ -46,9 +57,10 @@ export default function CheckoutPage() {
     const checkout = co.checkout;
     const checkoutStep = checkout.stepNum;
 
-    const itemsInCart = checkout.cart;
+    const itemsInCart = useMemo(() => checkout.cart, [checkout.cart]);
 
-    const stripePromise = loadStripe(STRIPE_PUBLIC_KEY);
+    const stripePromise = useMemo(() => loadStripe(STRIPE_PUBLIC_KEY), []);
+
     useEffect(() => {
         /**
          * Get the card information from the API
@@ -63,23 +75,33 @@ export default function CheckoutPage() {
 
         if (!cardObtained) {
             if (typeof window !== "undefined") {
+                setIsCardLoading(true);
                 const currentCard = getWithExpiry("cardInfo");
+
                 if (currentCard) {
                     // Parse the current card object
                     const { uuid, generatedBy } = JSON.parse(currentCard);
                     getCardInfo(uuid, generatedBy).then((card) => {
                         setOnFireCard(card);
-                        setCardObtained(true);
-                        // Set the card in the checkout context to assist with the checkout process
-                        co.setCheckout({
-                            ...checkout,
+                        co.updateCheckout({
                             onFireCard: card,
                         });
+                        setCardObtained(true);
+                        // Set the card in the checkout context to assist with the checkout process
                     });
                 }
+                setIsCardLoading(false);
             }
         }
-    });
+    }, []);
+
+    useEffect(() => {
+        if (checkoutStep === 0 && cardObtained && isSubscribed) {
+            co.updateCheckout({
+                stepNum: 1,
+            });
+        }
+    }, [checkoutStep, cardObtained, isSubscribed]);
 
     // This useEffect is used to check if the user is buying a card from another user
     useEffect(() => {
@@ -108,17 +130,19 @@ export default function CheckoutPage() {
                         price: 0,
                     };
 
-                    co.setCheckout({
+                    co.updateCheckout({
                         ...checkout,
-                        stepNum: 2,
+                        stepNum: 3,
                         packageName: null,
                         digitalCardPrice: onFireCard.price,
                         digitalCardCount: 1,
                         physicalCardPrice: 0,
                         physicalCardCount: 1,
-                        cart: [digitalAddOn, physicalAddOn].filter((item) => {
-                            return item !== null;
-                        }),
+                        cart: [
+                            ...[digitalAddOn, physicalAddOn].filter((item) => {
+                                return item !== null;
+                            }),
+                        ],
                     });
                     setShowSpinner(false);
                 }
@@ -130,11 +154,12 @@ export default function CheckoutPage() {
 
     useEffect(() => {
         if (checkoutStep === 0 && !buyingOtherCard) {
-            co.setCheckout({
+            co.updateCheckout({
                 ...checkout,
                 cart: [],
                 physicalCardCount: 0,
                 digitalCardCount: 0,
+                bagTagCount: 0,
                 cardPrice: "",
             });
         }
@@ -144,10 +169,21 @@ export default function CheckoutPage() {
 
     // This useEffect is used to set the cart items when the user is not buying a card from another user
     useEffect(() => {
-        if (checkoutStep === 2 && !buyingOtherCard) {
+        console.log(
+            "IN CHECKOUT USE EFFECT",
+            checkoutStep,
+            "isGift",
+            co.isGift,
+            co.checkout.physicalCardCount,
+        );
+
+        if (checkoutStep === (co.isGift ? 4 : 3) && !buyingOtherCard) {
             let formalPackageName = "";
             if (co.checkout.packageName) {
                 switch (co.checkout.packageName) {
+                    case "prospect":
+                        formalPackageName = "Prospect";
+                        break;
                     case "rookie":
                         formalPackageName = "Rookie";
                         break;
@@ -162,62 +198,130 @@ export default function CheckoutPage() {
                         break;
                 }
             }
-            if (onFireCard && formalPackageName) {
-                // Set the main package item
-                const mainPackage = {
-                    title: `${formalPackageName} Package`,
-                    card: onFireCard,
-                    numberOfCards: co.checkout.packageCardCount,
-                    numberOfOrders: 1,
-                    price: co.checkout.packagePrice,
-                };
 
-                // If the user has selected to add a digital or physical card, set the add-on items
-                let digitalAddOn = null;
-                if (co.checkout.digitalCardCount > 0) {
-                    digitalAddOn = {
-                        title: "Digital Card Add-On",
-                        card: onFireCard,
-                        numberOfCards: 1,
-                        numberOfOrders: co.checkout.digitalCardCount,
-                        price: co.checkout.digitalCardPrice,
-                    };
+            if (isSubscribed) {
+                if (
+                    co.checkout.cart.some(
+                        (item) =>
+                            item.title ===
+                            "Free Digital Cards - MVP Subscription",
+                    )
+                ) {
+                    return;
                 }
 
-                let includedPhysicalAddOn = null;
-
-                includedPhysicalAddOn = {
-                    title:
-                        co.checkout.packageName === "rookie"
-                            ? "Included Physical Card"
-                            : "Included Physical Cards",
+                const subscribedPackage = {
+                    title: `Free Digital Cards - MVP Subscription`,
                     card: onFireCard,
-                    numberOfCards: 1,
-                    numberOfOrders:
-                        co.checkout.packageName === "rookie"
-                            ? 1
-                            : co.checkout.packageName === "allStar"
-                              ? 5
-                              : 10,
-                    price: 0.0,
+                    numberOfCards: 25,
+                    numberOfOrders: 1,
+                    price: 0,
                 };
-
-                // Add all items to the cart
-                co.setCheckout({
-                    ...checkout,
-                    cart: [
-                        mainPackage,
-                        includedPhysicalAddOn,
-                        digitalAddOn,
-                    ].filter((item) => {
-                        return item !== null;
-                    }),
+                co.updateCheckout({
+                    packageName: DatabasePackageNames.MVP,
+                    cart: [subscribedPackage],
                 });
+                return;
+            }
+
+            if (
+                formalPackageName &&
+                co.checkout.cart.some(
+                    (item) => item.title === `${formalPackageName} Package`,
+                )
+            ) {
+                console.log("EARLY RETURN FOR CART SET");
+                return;
+            }
+
+            if (onFireCard || co.isGift) {
+                console.log("GOT HERE CHECKOUT", formalPackageName);
+
+                if (formalPackageName === "MVP") {
+                    // Set the main package item
+                    const mainPackage = {
+                        title: `${formalPackageName} Package`,
+                        card: onFireCard,
+                        numberOfCards: co.checkout.packageCardCount,
+                        numberOfOrders: 1,
+                        price: co.checkout.packagePrice,
+                    };
+
+                    const includedPhysicalAddOn = {
+                        title: "Included Physical Cards",
+                        card: onFireCard,
+                        numberOfCards: 1,
+                        numberOfOrders: 3,
+                        price: 0.0,
+                    };
+
+                    const includedBagTagItems = {
+                        title: "Included Bag Tag",
+                        card: onFireCard,
+                        itemType: "bag tag",
+                        numberOfCards: 1,
+                        numberOfOrders: 1,
+                        price: 0.0,
+                    };
+
+                    // Add all items to the cart
+                    co.updateCheckout({
+                        cart: [
+                            mainPackage,
+                            includedPhysicalAddOn,
+                            includedBagTagItems,
+                        ].filter((item) => {
+                            return item !== null;
+                        }),
+                    });
+                } else {
+                    const checkoutCart: Item[] = [];
+
+                    if (checkout.physicalCardCount > 0) {
+                        checkoutCart.push({
+                            title: PHYSICAL_ADD_ON_TITLE,
+                            card: onFireCard,
+                            numberOfCards: checkout.physicalCardCount,
+                            numberOfOrders: 1,
+                            price: PHYSICAL_CARD_PRICES[
+                                checkout.physicalCardCount
+                            ],
+                        });
+                    }
+
+                    if (checkout.digitalCardCount > 0) {
+                        checkoutCart.push({
+                            title: DIGITAL_ADD_ON_TITLE,
+                            card: onFireCard,
+                            numberOfCards: checkout.digitalCardCount,
+                            numberOfOrders: 1,
+                            price: DIGITAL_CARD_PRICES[
+                                checkout.digitalCardCount
+                            ],
+                        });
+                    }
+
+                    if (checkout.bagTagCount > 0) {
+                        checkoutCart.push({
+                            title: BAG_TAG_ADD_ON_TITLE,
+                            card: onFireCard,
+                            itemType: "bag tag",
+                            numberOfCards: checkout.bagTagCount,
+                            numberOfOrders: 1,
+                            price: BAG_TAG_PRICES[checkout.bagTagCount],
+                        });
+                    }
+
+                    console.log("CHECKOUT CART", checkoutCart);
+                    co.updateCheckout({
+                        cart: checkoutCart,
+                    });
+                }
             }
         }
         // I disabled this because it was causing an infinite loop
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [checkoutStep]);
+    }, [isSubscribed, checkoutStep, co.isGift]);
 
     // This useEffect is used to show the crypto wallet account balance in the NavBar
     useEffect(() => {
@@ -239,15 +343,11 @@ export default function CheckoutPage() {
                 }
             >
                 <Flex flexDir="column" flex={1}>
-                    <Flex
-                        w="100%"
-                        direction={"column"}
-                        mb={{ base: "32px", md: "48px" }}
-                    >
+                    <Flex w="100%" direction={"column"}>
                         <NavBar cryptoWalletConnected={cryptoWalletConnected} />
                     </Flex>
                     <Box w="full" flex={1}>
-                        {showSpinner ? (
+                        {showSpinner || isCardLoading ? (
                             <Box
                                 w="100%"
                                 h="100%"
@@ -274,7 +374,9 @@ export default function CheckoutPage() {
                                     px="24px"
                                     pb="32px"
                                 >
-                                    <CheckoutHeader />
+                                    <CheckoutHeader
+                                        buyingOtherCard={buyingOtherCard}
+                                    />
                                     <CheckoutItemsInCart
                                         items={itemsInCart}
                                         buyingOtherCard={buyingOtherCard}
@@ -298,7 +400,9 @@ export default function CheckoutPage() {
                                     width={"100%"}
                                 >
                                     <GridItem area={"header"}>
-                                        <CheckoutHeader />
+                                        <CheckoutHeader
+                                            buyingOtherCard={buyingOtherCard}
+                                        />
                                     </GridItem>
                                     <GridItem area={"itemsInCart"}>
                                         <CheckoutItemsInCart

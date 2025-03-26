@@ -54,6 +54,24 @@ const NAV_ITEMS: Array<NavItem> = [
         href: "/lockerroom",
     },
     {
+        label: "Products",
+        href: "#",
+        children: [
+            {
+                label: "View All",
+                href: "/product",
+            },
+            {
+                label: "Physical AR Cards",
+                href: "/newsroom/what-are-ar-cards",
+            },
+            {
+                label: "Gift Cards",
+                href: "/checkout?gift=true",
+            },
+        ],
+    },
+    {
         label: "About",
         href: "#",
         children: [
@@ -61,14 +79,18 @@ const NAV_ITEMS: Array<NavItem> = [
                 label: "Our Story",
                 href: "/our-story",
             },
-            {
-                label: "AR Cards",
-                href: "/newsroom/what-are-ar-cards",
-            },
-            {
-                label: "NIL Partnerships",
-                href: "/nil",
-            },
+            // {
+            //     label: "Pricing",
+            //     href: "/pricing",
+            // },
+            // {
+            //     label: "AR Cards",
+            //     href: "/newsroom/what-are-ar-cards",
+            // },
+            // {
+            //     label: "NIL Partnerships",
+            //     href: "/nil",
+            // },
             {
                 label: "FAQs",
                 href: "/faq",
@@ -79,6 +101,10 @@ const NAV_ITEMS: Array<NavItem> = [
             },
         ],
     },
+    // {
+    //     label: "Gift a card",
+    //     href: "/checkout?gift=true",
+    // },
     {
         label: "Profile",
         href: "/profile",
@@ -187,11 +213,13 @@ function DesktopNav(props: NavBarProps) {
     return (
         <Flex height={"min-content"} width={"100%"}>
             <Stack direction={"row"} width="100%">
-                {NAV_ITEMS.slice(0, 3).map((navItem) => {
+                {NAV_ITEMS.slice(0, 4).map((navItem) => {
                     const displayValue = displayTabs(
                         navItem.label,
                         auth.isAuthenticated,
                     );
+
+                    const isGift = navItem.label === "Gift a card";
 
                     return (
                         <Box
@@ -205,14 +233,18 @@ function DesktopNav(props: NavBarProps) {
                                       }
                                     : () => {}
                             }
-                            _hover={{
-                                backgroundColor: NAV_COLORS.green,
-                                textDecoration: "none",
-                                color: linkHoverColor,
-                                "& svg": {
-                                    transform: "rotate(-180deg)",
-                                },
-                            }}
+                            _hover={
+                                isGift
+                                    ? {}
+                                    : {
+                                          backgroundColor: NAV_COLORS.green,
+                                          textDecoration: "none",
+                                          color: linkHoverColor,
+                                          "& svg": {
+                                              transform: "rotate(-180deg)",
+                                          },
+                                      }
+                            }
                             _focus={{ outline: "none", boxShadow: "none" }}
                         >
                             <Popover placement={"bottom"} trigger={"hover"}>
@@ -252,6 +284,11 @@ function DesktopNav(props: NavBarProps) {
                                                 py={2}
                                                 userSelect={"none"}
                                                 transition={"all .3s ease"}
+                                                color={
+                                                    isGift
+                                                        ? NAV_COLORS.green
+                                                        : linkColor
+                                                }
                                             >
                                                 {navItem.label}
                                             </Heading>
@@ -302,7 +339,7 @@ function DesktopNav(props: NavBarProps) {
 
             <Flex justifyContent="flex-end" width="100%" direction="row">
                 {props.cryptoWalletConnected && <CustomConnectButton />}
-                {NAV_ITEMS.slice(3).map((navItem) => {
+                {NAV_ITEMS.slice(4).map((navItem) => {
                     return (
                         <Box
                             key={navItem.label}

@@ -17,6 +17,7 @@ import { WagmiProvider } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ProvideTransfer } from "@/hooks/useTransfer";
 import { usePathname } from "next/navigation";
+// BUILD
 
 export const rainbowKitConfig = getDefaultConfig({
     appName: "onfire-athletes",

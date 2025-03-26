@@ -75,6 +75,10 @@ export default function LockerRoom() {
         const searchValue = searchboxValue.toLowerCase();
         const matchesSearchValue = fullName.includes(searchValue);
 
+        if (card.totalCreated === 0) {
+            return false;
+        }
+
         if (searchValue && !matchesSearchValue) {
             return false;
         }

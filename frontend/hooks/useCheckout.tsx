@@ -1,12 +1,21 @@
 "use client";
 
-import { FC, ReactNode, createContext, useContext, useState } from "react";
+import {
+    FC,
+    ReactNode,
+    createContext,
+    useContext,
+    useMemo,
+    useState,
+} from "react";
 import CheckoutInfo from "@/hooks/CheckoutInfo";
 
 // The properties of the useCurrentCheckout hook
 export interface useCheckoutProperties {
     checkout: CheckoutInfo;
     setCheckout: (newCheckout: CheckoutInfo) => void;
+    updateCheckout: (fieldsToUpdate: Partial<CheckoutInfo>) => void;
+    isGift: boolean;
 }
 
 type Props = {
@@ -31,9 +40,27 @@ export function useCurrentCheckout() {
 function useCheckout(): useCheckoutProperties {
     const [checkout, setCheckout] = useState<CheckoutInfo>(new CheckoutInfo());
 
+    let isGift: boolean = false;
+
+    if (typeof window !== "undefined") {
+        const queryParams = new URLSearchParams(window.location.search);
+        isGift = queryParams.get("gift") === "true";
+    }
+
+    function updateCheckout(fieldsToUpdate: Partial<CheckoutInfo>) {
+        console.log("UPDATE CHECKOUT", fieldsToUpdate);
+
+        setCheckout({
+            ...checkout,
+            ...fieldsToUpdate,
+        });
+    }
+
     return {
         checkout: checkout,
         setCheckout: setCheckout,
+        updateCheckout: updateCheckout,
+        isGift: isGift,
     };
 }
 

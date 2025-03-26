@@ -50,13 +50,11 @@ export default function GameCoinButton() {
     // This is used to let the NavBar know that the wallet is connected and to show their balance
     useEffect(() => {
         if (transferContext.address) {
-            curCheckout.setCheckout({
-                ...curCheckout.checkout,
+            curCheckout.updateCheckout({
                 cryptoWalletConnected: true,
             });
         } else {
-            curCheckout.setCheckout({
-                ...curCheckout.checkout,
+            curCheckout.updateCheckout({
                 cryptoWalletConnected: false,
             });
         }
@@ -75,6 +73,8 @@ export default function GameCoinButton() {
                 curCheckout.checkout.packageName === null,
                 auth,
                 transferContext.hash,
+                undefined,
+                curCheckout.isGift,
             );
         }
         // We only want to run this effect when the isComplete variable changes

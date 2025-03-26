@@ -2,7 +2,8 @@ import React from "react";
 import { Button, Divider, Flex, Text } from "@chakra-ui/react";
 import { CheckIcon } from "@chakra-ui/icons";
 import { useCurrentCheckout } from "@/hooks/useCheckout";
-import AddOn from "./addOn";
+import AddOn from "./selectYourPackage/addOn";
+import { DatabasePackageNames } from "@/hooks/CheckoutInfo";
 
 /**
  * This component is responsible for rendering the select your package section of the checkout page.
@@ -135,12 +136,9 @@ export default function SelectYourPackage() {
                                     return;
                                 }
                                 // Otherwise, set the package name in the checkout object
-                                curCheckout.setCheckout({
-                                    ...checkout,
-                                    packageName: pkg.databaseName as
-                                        | "rookie"
-                                        | "allStar"
-                                        | "mvp",
+                                curCheckout.updateCheckout({
+                                    packageName:
+                                        pkg.databaseName as DatabasePackageNames,
                                     digitalCardCount: 0,
                                 });
                             }}
@@ -292,10 +290,6 @@ export default function SelectYourPackage() {
                                                 title={
                                                     "Additional 5 Digital Cards"
                                                 }
-                                                price={(
-                                                    checkout.digitalCardPrice *
-                                                    5
-                                                ).toFixed(2)}
                                                 value={
                                                     checkout.packageName ===
                                                     "allStar"
@@ -304,12 +298,12 @@ export default function SelectYourPackage() {
                                                         : 0
                                                 }
                                                 onChange={(value) => {
-                                                    curCheckout.setCheckout({
-                                                        ...checkout,
+                                                    curCheckout.updateCheckout({
                                                         digitalCardCount:
                                                             value * 5,
                                                     });
                                                 }}
+                                                pricingOptions={[]}
                                             />
                                         </Flex>
                                     </>
@@ -336,10 +330,6 @@ export default function SelectYourPackage() {
                                                 title={
                                                     "Additional 5 Digital Cards"
                                                 }
-                                                price={(
-                                                    checkout.digitalCardPrice *
-                                                    5
-                                                ).toFixed(2)}
                                                 value={
                                                     checkout.packageName ===
                                                     "mvp"
@@ -348,12 +338,12 @@ export default function SelectYourPackage() {
                                                         : 0
                                                 }
                                                 onChange={(value) => {
-                                                    curCheckout.setCheckout({
-                                                        ...checkout,
+                                                    curCheckout.updateCheckout({
                                                         digitalCardCount:
                                                             value * 5,
                                                     });
                                                 }}
+                                                pricingOptions={[]}
                                             />
                                         </Flex>
                                     </>
@@ -405,8 +395,7 @@ export default function SelectYourPackage() {
                                     width={"40%"}
                                     onClick={() => {
                                         if (checkout.packageName === "rookie") {
-                                            curCheckout.setCheckout({
-                                                ...checkout,
+                                            curCheckout.updateCheckout({
                                                 packagePrice: RookieInfo.price,
                                                 packageCardCount: 15,
                                                 physicalCardCount: 1,
@@ -415,8 +404,7 @@ export default function SelectYourPackage() {
                                         } else if (
                                             checkout.packageName === "allStar"
                                         ) {
-                                            curCheckout.setCheckout({
-                                                ...checkout,
+                                            curCheckout.updateCheckout({
                                                 packagePrice: AllStarInfo.price,
                                                 packageCardCount: 25,
                                                 physicalCardCount: 5,
@@ -425,8 +413,7 @@ export default function SelectYourPackage() {
                                                     checkout.digitalCardCount,
                                             });
                                         } else {
-                                            curCheckout.setCheckout({
-                                                ...checkout,
+                                            curCheckout.updateCheckout({
                                                 packagePrice: MVPInfo.price,
                                                 packageCardCount: 50,
                                                 digitalCardCount:

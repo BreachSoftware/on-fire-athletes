@@ -18,6 +18,7 @@ import RadioPicker from "./RadioPicker";
 import StatusIcon from "./StatusIcon";
 import { CARD_BACKGROUNDS } from "./card-backgrounds";
 import IOSColorPicker from "../shared/ios-color-picker";
+import SharedStack from "../shared/wrappers/shared-stack";
 
 /**
  * This component contains the content of Step 4 in the card creation process
@@ -43,6 +44,11 @@ export default function Step4() {
         card.curCard.selectedBackground,
     );
     const [nameColor, setNameColor] = useState(card.curCard.nameColor);
+
+    // This is really "position and city color"
+    const [topCardTextColor, setTopCardTextColor] = useState(
+        card.curCard.topCardTextColor || "#FFFFFF",
+    );
 
     // this need to be set to a hardcoded hex value because the color picker is not Chakra
     const [firstNameSolid, setFirstNameSolid] = useState(
@@ -109,7 +115,7 @@ export default function Step4() {
             lastNameSolid: lastNameSolid,
             nameFont: cardNameFont,
             nameColor: nameColor,
-            topCardTextColor: nameColor,
+            topCardTextColor: topCardTextColor,
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
@@ -124,6 +130,7 @@ export default function Step4() {
         lastNameSolid,
         cardNameFont,
         nameColor,
+        topCardTextColor,
     ]);
 
     /**
@@ -232,29 +239,19 @@ export default function Step4() {
                                 h={{ base: "100%", xl: "108px" }}
                             >
                                 <GridItem rowStart={1}>
-                                    <Flex
-                                        w={"100%"}
-                                        alignItems={"center"}
-                                        justifyContent={"flex-start"}
-                                        flexDir={"row"}
-                                    >
+                                    <SharedStack row>
                                         <IOSColorPicker
                                             color={borderColor}
                                             setColor={setBorderColor}
                                         />
                                         <Text>Border</Text>
-                                    </Flex>
+                                    </SharedStack>
                                 </GridItem>
                                 <GridItem
                                     colStart={{ base: 1, lg: 4 }}
                                     rowStart={{ base: 3, lg: 1 }}
                                 >
-                                    <Flex
-                                        w={"100%"}
-                                        alignItems={"center"}
-                                        justifyContent={"flex-start"}
-                                        flexDir={"row"}
-                                    >
+                                    <SharedStack row>
                                         {card.curCard.number ? (
                                             <>
                                                 <IOSColorPicker
@@ -269,12 +266,12 @@ export default function Step4() {
                                                 fontSize={"md"}
                                                 placement={"right"}
                                             >
-                                                <Flex
+                                                <SharedStack
+                                                    row
                                                     style={{
                                                         filter: "opacity(50%) grayscale(100%) brightness(0.4)",
                                                         cursor: "not-allowed",
                                                     }}
-                                                    alignItems={"center"}
                                                 >
                                                     <IOSColorPicker
                                                         color={numberColor}
@@ -284,10 +281,10 @@ export default function Step4() {
                                                         isDisabled={true}
                                                     />
                                                     <Text>Number</Text>
-                                                </Flex>
+                                                </SharedStack>
                                             </Tooltip>
                                         )}
-                                    </Flex>
+                                    </SharedStack>
                                 </GridItem>
                                 <GridItem
                                     rowStart={{
@@ -298,45 +295,13 @@ export default function Step4() {
                                         xl: 3,
                                     }}
                                 >
-                                    <Flex
-                                        w={"100%"}
-                                        alignItems={"center"}
-                                        justifyContent={"flex-start"}
-                                        flexDir={"row"}
-                                    >
-                                        {card.curCard.signature ? (
-                                            <>
-                                                <IOSColorPicker
-                                                    color={signatureColor}
-                                                    setColor={setSignatureColor}
-                                                />
-                                                <Text>Signature</Text>
-                                            </>
-                                        ) : (
-                                            <Tooltip
-                                                label="No signature found. Sign your masterpiece on step 3!"
-                                                fontSize={"md"}
-                                                placement={"right"}
-                                            >
-                                                <Flex
-                                                    style={{
-                                                        filter: "opacity(50%) grayscale(100%) brightness(0.4)",
-                                                        cursor: "not-allowed",
-                                                    }}
-                                                    alignItems={"center"}
-                                                >
-                                                    <IOSColorPicker
-                                                        color={signatureColor}
-                                                        setColor={
-                                                            setSignatureColor
-                                                        }
-                                                        isDisabled={true}
-                                                    />
-                                                    <Text>Signature</Text>
-                                                </Flex>
-                                            </Tooltip>
-                                        )}
-                                    </Flex>
+                                    <SharedStack row>
+                                        <IOSColorPicker
+                                            color={topCardTextColor}
+                                            setColor={setTopCardTextColor}
+                                        />
+                                        <Text>Position</Text>
+                                    </SharedStack>
                                 </GridItem>
                                 <GridItem
                                     colStart={{ base: 1, sm: 1, md: 1, lg: 4 }}
@@ -348,18 +313,13 @@ export default function Step4() {
                                         xl: 3,
                                     }}
                                 >
-                                    <Flex
-                                        w={"100%"}
-                                        alignItems={"center"}
-                                        justifyContent={"flex-start"}
-                                        flexDir={"row"}
-                                    >
+                                    <SharedStack row>
                                         <IOSColorPicker
                                             color={nameColor}
                                             setColor={setNameColor}
                                         />
                                         <Text>Name</Text>
-                                    </Flex>
+                                    </SharedStack>
                                 </GridItem>
                             </Grid>
                         </HStack>
@@ -536,26 +496,30 @@ export default function Step4() {
                                 lg: "row",
                             }}
                         >
-                            <IOSColorPicker
-                                color={backgroundMainColor}
-                                setColor={setBackgroundMainColor}
-                            />
-                            <Text>Primary</Text>
+                            <SharedStack row>
+                                <IOSColorPicker
+                                    color={backgroundMainColor}
+                                    setColor={setBackgroundMainColor}
+                                />
+                                <Text>Primary</Text>
+                            </SharedStack>
                             <Spacer />
-                            <IOSColorPicker
-                                color={backgroundAccentColor}
-                                setColor={setBackgroundAccentColor}
-                            />
-                            <Text>Secondary</Text>
+                            <SharedStack row>
+                                <IOSColorPicker
+                                    color={backgroundAccentColor}
+                                    setColor={setBackgroundAccentColor}
+                                />
+                                <Text>Secondary</Text>
+                            </SharedStack>
                             <Spacer />
                             {card.curCard.cardType === "a" ? (
-                                <>
+                                <SharedStack row>
                                     <IOSColorPicker
                                         color={backgroundTextColor}
                                         setColor={setBackgroundTextColor}
                                     />
-                                    <Text>Last Name</Text>
-                                </>
+                                    <Text whiteSpace="nowrap">Last Name</Text>
+                                </SharedStack>
                             ) : (
                                 <Tooltip
                                     label="This customization only available in Card Design A."
@@ -578,6 +542,40 @@ export default function Step4() {
                                     </Flex>
                                 </Tooltip>
                             )}
+                            <Spacer />
+
+                            <SharedStack row>
+                                {card.curCard.signature ? (
+                                    <>
+                                        <IOSColorPicker
+                                            color={signatureColor}
+                                            setColor={setSignatureColor}
+                                        />
+                                        <Text>Signature</Text>
+                                    </>
+                                ) : (
+                                    <Tooltip
+                                        label="No signature found. Sign your masterpiece on step 3!"
+                                        fontSize={"md"}
+                                        placement={"right"}
+                                    >
+                                        <SharedStack
+                                            row
+                                            style={{
+                                                filter: "opacity(50%) grayscale(100%) brightness(0.4)",
+                                                cursor: "not-allowed",
+                                            }}
+                                        >
+                                            <IOSColorPicker
+                                                color={signatureColor}
+                                                setColor={setSignatureColor}
+                                                isDisabled={true}
+                                            />
+                                            <Text>Signature</Text>
+                                        </SharedStack>
+                                    </Tooltip>
+                                )}
+                            </SharedStack>
                         </Flex>
                     </HStack>
                 </VStack>

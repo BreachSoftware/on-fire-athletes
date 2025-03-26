@@ -23,6 +23,15 @@ export interface Item {
     numberOfCards: number;
     numberOfOrders: number;
     price: number;
+    itemType?: "card" | "bag tag" | "package";
+    multiplier?: number;
+}
+
+export enum DatabasePackageNames {
+    PROSPECT = "prospect",
+    ROOKIE = "rookie",
+    ALL_STAR = "allStar",
+    MVP = "mvp",
 }
 
 export default class CheckoutInfo {
@@ -34,7 +43,7 @@ export default class CheckoutInfo {
     tax: number;
     total: number;
 
-    packageName: "rookie" | "allStar" | "mvp" | null;
+    packageName: DatabasePackageNames | null;
     onFireCard: TradingCardInfo | null;
     packageCardCount: number;
     packagePrice: number;
@@ -42,6 +51,8 @@ export default class CheckoutInfo {
     digitalCardPrice: number;
     physicalCardCount: number;
     physicalCardPrice: number;
+    bagTagCount: number;
+    bagTagPrice: number;
 
     contactInfo: ContactInfo;
 
@@ -85,14 +96,16 @@ export default class CheckoutInfo {
         this.tax = 0;
         this.total = 0;
 
-        this.packageName = "allStar";
+        this.packageName = DatabasePackageNames.ALL_STAR;
         this.onFireCard = null;
         this.packageCardCount = 0;
         this.packagePrice = 0;
         this.digitalCardCount = 0;
-        this.digitalCardPrice = 0.5;
+        this.digitalCardPrice = 1.0;
         this.physicalCardCount = 0;
-        this.physicalCardPrice = 9.99;
+        this.physicalCardPrice = 24.99;
+        this.bagTagCount = 0;
+        this.bagTagPrice = 19.99;
 
         this.contactInfo = {
             firstName: "",

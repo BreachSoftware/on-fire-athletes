@@ -8,6 +8,7 @@ import {
     useBreakpointValue,
     VStack,
 } from "@chakra-ui/react";
+import { useEffect, useRef, useState } from "react";
 import StepWrapper from "@/components/create/StepWrapper";
 import Step1 from "@/components/create/Step1";
 import Step2 from "@/components/create/Step2";
@@ -19,11 +20,11 @@ import NavBar from "@/app/navbar";
 import OnfireCard from "@/components/create/OnFireCard/OnFireCard";
 import { useCurrentCardInfo } from "@/hooks/useCurrentCardInfo";
 import TradingCardInfo from "@/hooks/TradingCardInfo";
-import { useEffect, useRef, useState } from "react";
 import MobileStepWrapper from "@/components/create/mobile/MobileStepWrapper";
 import { useSearchParams } from "next/navigation";
 import { getCard } from "@/app/generate_card_asset/cardFunctions";
 
+import { PREFILLED_TRADING_CARD } from "./prefilledCard";
 interface CardCreationProps {
     isNil?: boolean;
 }
@@ -55,8 +56,21 @@ export default function CreationOverview({ isNil = false }: CardCreationProps) {
             }
             setIsLoading(false);
         })();
+    }, [searchParams]);
+
+    const usePrefilledCard =
+        process.env.NEXT_PUBLIC_USE_PREFILLED_CARD === "true";
+    useEffect(() => {
+        console.log("usePrefilledCard", usePrefilledCard);
+
+        if (usePrefilledCard) {
+            console.log("setting prefilled card", PREFILLED_TRADING_CARD);
+            currentInfo.setCurCard(PREFILLED_TRADING_CARD);
+        } else {
+            currentInfo.setCurCard(new TradingCardInfo());
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [usePrefilledCard]);
 
     const isMobile = useBreakpointValue({ base: true, lg: false });
 
@@ -151,14 +165,18 @@ export default function CreationOverview({ isNil = false }: CardCreationProps) {
         >
             <HStack w="100%" h="100%" align="top" spacing={0}>
                 <VStack w="100%" flexGrow={1} height="100%">
-                    <Flex
-                        w="100%"
-                        direction={"column"}
-                        h={"100px"}
-                        mb={{ base: 0, md: "48px" }}
-                    >
-                        <NavBar />
-                    </Flex>
+                    {isNil ? (
+                        <Box w="100%" mb={{ base: "24px", md: "96px" }} />
+                    ) : (
+                        <Flex
+                            w="100%"
+                            direction={"column"}
+                            h={"100px"}
+                            mb={{ base: 0, md: "48px" }}
+                        >
+                            <NavBar />
+                        </Flex>
+                    )}
                     <HStack
                         w="100%"
                         alignItems="flex-start"
@@ -219,12 +237,14 @@ export default function CreationOverview({ isNil = false }: CardCreationProps) {
                         )}
                     </HStack>
                 </VStack>
-                <Box
-                    h={{ base: "0vh", md: "100vh" }}
-                    display={{ base: "none", sm: "none", md: "inherit" }}
-                >
-                    <Sidebar height={"auto"} />
-                </Box>
+                {!isNil && (
+                    <Box
+                        h={{ base: "0vh", md: "100vh" }}
+                        display={{ base: "none", sm: "none", md: "inherit" }}
+                    >
+                        <Sidebar height={"auto"} />
+                    </Box>
+                )}
             </HStack>
             <Box visibility="hidden" pos="absolute" left="-9999px" top={0}>
                 <OnfireCard

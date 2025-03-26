@@ -5,7 +5,7 @@ import { Button, Input, Text } from "@chakra-ui/react";
 import { useState } from "react";
 
 export default function CouponInput() {
-    const { checkout, setCheckout } = useCurrentCheckout();
+    const { checkout, updateCheckout } = useCurrentCheckout();
     const [couponCode, setCouponCode] = useState("");
 
     async function applyCoupon() {
@@ -23,8 +23,7 @@ export default function CouponInput() {
             const couponData = await couponResponse.json();
             const { coupon, code } = couponData;
 
-            setCheckout({
-                ...checkout,
+            updateCheckout({
                 couponCode: code,
                 couponCentsOff: coupon.amount_off,
                 couponPercentOff: coupon.percent_off,

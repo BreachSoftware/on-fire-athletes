@@ -17,6 +17,9 @@ export default function MobileStep9() {
     const [backgroundTextColor, setBackgroundTextColor] = useState(
         card.curCard.backgroundTextColor,
     );
+    const [signatureColor, setSignatureColor] = useState(
+        card.curCard.signatureColor,
+    );
 
     useEffect(() => {
         const thingsToCheck = [
@@ -24,7 +27,7 @@ export default function MobileStep9() {
             "",
             backgroundAccentColor,
             backgroundMainColor,
-            "",
+            signatureColor,
         ];
 
         const thingsInState = [
@@ -32,7 +35,7 @@ export default function MobileStep9() {
             "",
             card.curCard.backgroundAccentColor,
             card.curCard.backgroundMainColor,
-            "",
+            card.curCard.signatureColor,
         ];
 
         const toChange = [];
@@ -48,9 +51,15 @@ export default function MobileStep9() {
             backgroundMainColor: backgroundMainColor,
             backgroundAccentColor: backgroundAccentColor,
             backgroundTextColor: backgroundTextColor,
+            signatureColor: signatureColor,
             partsToRecolor: toChange,
         });
-    }, [backgroundMainColor, backgroundAccentColor, backgroundTextColor]);
+    }, [
+        backgroundMainColor,
+        backgroundAccentColor,
+        backgroundTextColor,
+        signatureColor,
+    ]);
 
     return (
         <SimpleGrid
@@ -83,6 +92,15 @@ export default function MobileStep9() {
                         isDisabled={false}
                     />
                     <Text>Last Name</Text>
+                </SharedStack>
+            )}
+            {card.curCard.signature && (
+                <SharedStack row>
+                    <FullColorPicker
+                        type="signatureColor"
+                        setColor={setSignatureColor}
+                    />
+                    <Text>Signature</Text>
                 </SharedStack>
             )}
         </SimpleGrid>
