@@ -1,4 +1,6 @@
-export const orderData = [
+import { OFAOrder } from "./constants";
+
+export const orderData: OFAOrder[] = [
     {
         orderId: "12345",
         cardImage: "image_url",
