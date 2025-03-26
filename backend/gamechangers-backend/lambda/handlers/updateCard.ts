@@ -23,34 +23,37 @@ export const updateCard: Handler = async (
 			// Parse the request body from the event
 			const data = JSON.parse(event.body as string);
 
-			if (data.cardId === undefined) {
+			if (data.generatedBy === undefined || data.uuid === undefined) {
 				return {
 					statusCode: 400,
 					headers: {
 						"Content-Type": "application/json",
 					},
 					body: JSON.stringify({
-						error: "The request body must contain a cardId property",
+						error: "The request body must contain a generatedBy and uuid property",
 					}),
 				};
-			} else if (data.cardId === "") {
+			} else if (data.generatedBy === "" || data.uuid === "") {
 				return {
 					statusCode: 400,
 					headers: {
 						"Content-Type": "application/json",
 					},
 					body: JSON.stringify({
-						error: "The cardId property cannot be empty",
+						error: "The generatedBy and uuid property cannot be empty",
 					}),
 				};
-			} else if (typeof data.cardId !== "string") {
+			} else if (
+				typeof data.generatedBy !== "string" ||
+				typeof data.uuid !== "string"
+			) {
 				return {
 					statusCode: 400,
 					headers: {
 						"Content-Type": "application/json",
 					},
 					body: JSON.stringify({
-						error: "The cardId property must be of type string",
+						error: "The generatedBy and uuid property must be of type string",
 					}),
 				};
 			}
@@ -59,21 +62,13 @@ export const updateCard: Handler = async (
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const ExpressionAttributeValues: any = {};
 			const updateExpressionParts: string[] = [];
-			const ExpressionAttributeNames = {
-				"#pos": "position",
-			};
 
 			Object.entries(data).forEach(([key, value]) => {
-				if (key !== "cardId") {
+				if (key !== "generatedBy" && key !== "uuid") {
 					// If the key is "position", add it to the ExpressionAttributeNames object
-					if (key === "position") {
-						ExpressionAttributeValues[":pos"] = value;
-						updateExpressionParts.push("#pos = :pos");
-					} else {
-						ExpressionAttributeValues[`:${key}`] =
-							value !== undefined ? value : "";
-						updateExpressionParts.push(`${key} = :${key}`);
-					}
+					ExpressionAttributeValues[`:${key}`] =
+						value !== undefined ? value : "";
+					updateExpressionParts.push(`${key} = :${key}`);
 				}
 			});
 
@@ -84,20 +79,27 @@ export const updateCard: Handler = async (
 			const params = {
 				TableName: dbTables.GamechangersCards(), // Update to the cards table
 				Key: {
-					cardId: data.cardId, // Specify the primary key value
+					generatedBy: data.generatedBy, // Specify the primary key value
+					uuid: data.uuid, // Specify the primary key value
 				},
 				UpdateExpression: updateExpression,
-				ExpressionAttributeNames: ExpressionAttributeNames,
 				ExpressionAttributeValues: ExpressionAttributeValues,
 			};
 
 			// Update the item in the DynamoDB table
 			await dynamoDb.update(params).promise();
 
+			const updatedCard = await dynamoDb
+				.get({
+					TableName: dbTables.GamechangersCards(),
+					Key: { generatedBy: data.generatedBy, uuid: data.uuid },
+				})
+				.promise();
+
 			// Return a success response with the updated card item
 			return {
 				statusCode: 200,
-				body: JSON.stringify(params.ExpressionAttributeValues),
+				body: JSON.stringify(updatedCard.Item),
 				headers: {
 					"Content-Type": "application/json",
 				},
