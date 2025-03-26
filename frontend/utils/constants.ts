@@ -42,4 +42,5 @@ export const BAG_TAG_PRICES: Record<number, number> = {
     3: 37.99,
     4: 44.99,
     5: 49.99,
+    6: 54.99,
 };
