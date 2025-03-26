@@ -41,6 +41,7 @@ export const API_ENDPOINTS = [
 	"createSerializedCard",
 	"updateTotalCards",
 	"updateCardPrice",
+	"updateCard",
 	"createCustomer",
 	"requestNILVerification",
 	"authenticate",

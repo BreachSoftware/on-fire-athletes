@@ -261,6 +261,12 @@ functions:
             - httpApi:
                   path: /updateCardPrice
                   method: post
+    updateCard:
+        handler: lambda/handlers/updateCard.updateCard
+        events:
+            - httpApi:
+                  path: /updateCard
+                  method: post
     createCustomer:
         handler: lambda/handlers/createCustomer.createCustomer
         events:
