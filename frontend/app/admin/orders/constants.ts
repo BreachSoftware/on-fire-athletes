@@ -30,7 +30,7 @@ export type OFAOrder = {
     printShippingLabel: string;
 };
 
-export const orderTableHeaders: {
+export const ORDER_TABLE_HEADERS: {
     label: string;
     style?: TableColumnHeaderProps;
 }[] = [
