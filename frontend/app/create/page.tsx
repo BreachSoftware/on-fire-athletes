@@ -28,11 +28,11 @@ export default function CreationOverview() {
         },
         {
             number: 2,
-            description: "Pick a tradable and/or sellable package!",
+            description: "Pick your product!",
         },
         {
             number: 3,
-            description: "Showcase, Trade, & Sell your sports cards!",
+            description: "Showcase, Share, & Sell your sports cards!",
         },
     ];
 

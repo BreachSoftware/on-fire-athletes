@@ -134,7 +134,7 @@ export default function LockerRoom() {
                 }),
             );
         } else if (filter.curFilter.type === "3") {
-            // Filter the cards that are trade only
+            // Filter the cards that are share only
             setFilterableCards(
                 cards.filter((card: TradingCardInfo) => {
                     return filterCards(card) && card.price === 0;

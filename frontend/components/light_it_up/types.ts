@@ -8,7 +8,7 @@ export type LightItUpSection = {
     imageOverlaySubtitle: string; // "FOR",
     imageOverlayTitle: string; // "ATHLETES",
     title: string; // "Create a Custom Card",
-    description: string; // "Create your custom Digital & Physical AR sports cards to Capture, Showcase, Trade & Sell your favorite sports moments.",
+    description: string; // "Create your custom Digital & Physical AR sports cards to Capture, Showcase, Share & Sell your favorite sports moments.",
     buttonTitle: string; // "START CREATING",
     buttonLink: string; // "/create",
 };

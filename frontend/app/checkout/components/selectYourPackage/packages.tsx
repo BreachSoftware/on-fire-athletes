@@ -92,7 +92,7 @@ const AllStarInfo: PackageType = {
             text: "1 Physical Augmented Reality (AR) Card in Magnetic Case",
         },
         {
-            text: "15 Digital Cards to Sell / Trade (You receive 75% of profit of cards sold)",
+            text: "15 Digital Cards to Sell / Share (You receive 75% of profit of cards sold)",
         },
         { text: "Build Your Own Athlete Profile" },
         {
@@ -143,7 +143,7 @@ const MVPInfo: PackageType = {
             indent: true,
         },
         {
-            text: "25 Digital Cards to Sell / Trade (You received 75% of profit of cards sold)",
+            text: "25 Digital Cards to Sell / Share (You received 75% of profit of cards sold)",
         },
         { text: "1 Bag Tag of Your Card Design" },
         { text: "Build Your Own Athlete Profile" },

@@ -25,7 +25,7 @@ export default function SelectYourPackage() {
                 indent: false,
             },
             { text: "Receive 15 Digital Cards", indent: false },
-            { text: "Ability to Trade Cards", indent: false },
+            { text: "Ability to Share Cards", indent: false },
             { text: "Ability to Collect Cards", indent: false },
             { text: "Build Your Own Athlete Profile", indent: false },
         ],

@@ -539,7 +539,7 @@ export default function Filter(props: FilterProps) {
             <RadioPicker
                 option1text={"All"}
                 option2text={"For Sale"}
-                option3text={"Trade Only"}
+                option3text={"Bag Tags"}
                 value={currentFilter.curFilter.type}
                 onChange={(value) => {
                     currentFilter.setCurFilter({
@@ -630,7 +630,7 @@ export default function Filter(props: FilterProps) {
                                                 {searchComponent}
 
                                                 {/* Radio Picker */}
-                                                {/* {radioPickerComponent} */}
+                                                {radioPickerComponent}
                                             </Flex>
                                         </Flex>
                                         {/* Main Component */}

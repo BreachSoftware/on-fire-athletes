@@ -17,7 +17,7 @@ export default function OnFireInsiderCard() {
             </Text>
             <Text>
                 <Dot />
-                Create an Unlimited Amount of Digital Cards to Sell & Trade
+                Create an Unlimited Amount of Digital Cards to Sell & Share
             </Text>
             <Text>
                 <Dot />

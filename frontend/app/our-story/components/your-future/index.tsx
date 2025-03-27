@@ -58,7 +58,7 @@ export default function YourFutureSection() {
                     Our first-of-its-kind platform combines the nostalgia of
                     sports cards with today's technology, offering the best of
                     both worlds. Our creator allows you to customize your card
-                    and trade and sell to other athletes and fans in our Locker
+                    and share and sell to other athletes and fans in our Locker
                     Room Marketplace. Digital cards, meets physical cards, meets
                     personal branding…and our most unique feature, our physical
                     cards feature augmented reality to bring your physical card

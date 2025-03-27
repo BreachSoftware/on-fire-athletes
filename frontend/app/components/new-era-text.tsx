@@ -8,13 +8,13 @@ interface NewEraTextProps {
 
 const DescriptionText = [
 	[
-		"Create custom digital and physical sports cards to sell, trade, and play",
+		"Create custom digital and physical sports cards to sell, share, and play",
 		"Grow your brand and build your hype",
 		"Earn income to help fund your dreams"
 	],
 	[
 		"Discover rising stars and superstars worldwide",
-		"Collect digital sports cards to buy, sell, and trade",
+		"Collect digital sports cards to buy, sell, and share",
 		"Support athletes at any level to help fund their future"
 	]
 ];

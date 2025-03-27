@@ -35,7 +35,7 @@ export default function Article() {
                 
                 <ArticleParagraph>             
                         Years in the making, the ONFIRE ATHLETES
-                        platform empowers athletes to create, showcase, trade,
+                        platform empowers athletes to create, showcase, share,
                         and print personalized sports cards that come to life
                         through Augmented Reality (AR).     
                 </ArticleParagraph>
@@ -45,7 +45,7 @@ export default function Article() {
                     athletes of all levels—from Heisman hopefuls and World
                     Series MVPs to little leaguers and dance teams and every
                     athlete in between —to create and print their own custom
-                    cards which can be traded or sold. Each physical card is
+                    cards which can be shared or sold. Each physical card is
                     crafted using high-end materials, including holographic
                     finishes, and comes with AR capabilities, giving fans an
                     interactive experience like never before. By making this
