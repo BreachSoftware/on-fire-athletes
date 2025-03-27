@@ -465,7 +465,7 @@ function ARViewer() {
                         style={{
                             objectFit: "cover",
                         }}
-                        // muted
+                        muted
                         playsInline
                         loop
                         crossOrigin="anonymous"
