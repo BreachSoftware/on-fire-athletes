@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useState, useEffect } from "react";
 import {
     Table,
     Thead,
@@ -7,13 +8,27 @@ import {
     Th,
     TableColumnHeaderProps,
 } from "@chakra-ui/react";
-import { orderData } from "./orderData";
 import OrderRow from "./order-row";
 import { ORDER_TABLE_HEADERS } from "./constants";
+import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
+import { OFAOrder } from "@/types/order.types";
 
 interface OrderTableProps {}
 
-export default function OrdersPage({}: OrderTableProps) {
+export default function OrderTable({}: OrderTableProps) {
+    const [orders, setOrders] = useState<OFAOrder[]>([]);
+
+    const apiUrl = new URL(apiEndpoints.getAllOrders());
+
+    useEffect(() => {
+        fetch(apiUrl.toString())
+            .then((res) => res.json())
+            .then((data) => {
+                console.log("orders length: ", data.length);
+                setOrders(data as OFAOrder[]);
+            });
+    }, []);
+
     return (
         <Table variant="simple" background="gray.800">
             <Thead>
@@ -26,8 +41,11 @@ export default function OrdersPage({}: OrderTableProps) {
                 </Tr>
             </Thead>
             <Tbody>
-                {orderData.map((order) => (
-                    <OrderRow key={order.orderId} order={order} />
+                {/* {orders.map((order) => (
+                    <Text key={order.orderId}>{order.orderId}</Text>
+                ))} */}
+                {orders.map((order) => (
+                    <OrderRow key={order.uuid} order={order} />
                 ))}
             </Tbody>
         </Table>
@@ -46,6 +64,7 @@ function OrderTableTh({ children, ...rest }: TableColumnHeaderProps) {
         top: 0,
         zIndex: 1,
         background: "gray.800",
+        whiteSpace: "nowrap",
         ...rest,
     };
 

@@ -16,6 +16,8 @@ export const API_ENDPOINTS = [
 	"deleteCard",
 	"getCard",
 	"getAllCards",
+	"getAllOrders",
+	"updateOrder",
 	"media_generatePresignedURL",
 	"getUser",
 	"getUUID",

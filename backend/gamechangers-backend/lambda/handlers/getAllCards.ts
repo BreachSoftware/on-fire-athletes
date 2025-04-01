@@ -59,7 +59,7 @@ export const getAllCards: Handler = async (
 		};
 
 		// Retrieve card items from the DynamoDB table
-		const data = await dynamoDb.scan(params).promise();
+		let data = await dynamoDb.scan(params).promise();
 
 		// Check if any card items exist
 		if (!data.Items || data.Items.length === 0) {
@@ -68,15 +68,15 @@ export const getAllCards: Handler = async (
 
 		const retArray = data.Items;
 
-		if (data.LastEvaluatedKey) {
+		while (data.LastEvaluatedKey) {
 			const params: DynamoDB.DocumentClient.ScanInput = {
 				TableName: dbTables.GamechangersCards(),
 				Limit: paginationParams.limit,
 				ExclusiveStartKey: data.LastEvaluatedKey,
 			};
 
-			const moreData = await dynamoDb.scan(params).promise();
-			retArray.push(...(moreData.Items || []));
+			data = await dynamoDb.scan(params).promise();
+			retArray.push(...(data.Items || []));
 		}
 
 		// Sort the card items by createdAt attribute, assuming 0 if missing

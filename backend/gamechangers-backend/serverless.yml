@@ -111,6 +111,18 @@ functions:
             - httpApi:
                   path: /getAllCards
                   method: get
+    getAllOrders:
+        handler: lambda/handlers/getAllOrders.getAllOrders
+        events:
+            - httpApi:
+                  path: /getAllOrders
+                  method: get
+    updateOrder:
+        handler: lambda/handlers/updateOrder.updateOrder
+        events:
+            - httpApi:
+                  path: /updateOrder
+                  method: post
     generatePresignedURL:
         handler: lambda/handlers/generatePresignedURL.generatePresignedURL
         events:

@@ -1,36 +1,5 @@
 import { TableColumnHeaderProps } from "@chakra-ui/react";
 
-export type OFAOrder = {
-    orderId: string;
-    cardImage: string;
-    cardGeneratedBy: string;
-    costPaid: string;
-    bagtagQuantity: number;
-    physicalCardQuantity: number;
-    digitalCardQuantity: number;
-    email: string;
-    phoneNumber: string;
-    receiverUuid: string;
-    senderUuid: string;
-    shippingFirstName: string;
-    shippingLastName: string;
-    address: string;
-    city: string;
-    state: string;
-    zipCode: string;
-    serialNumber: string;
-    transactionType: string;
-    payoutAmt: string;
-    sentForPrint: string;
-    poNumber: string;
-    packaged: string;
-    editCard: string;
-    downloadCardPrintFile: string;
-    downloadBagTagPrintFile: string;
-    viewPrintFile: string;
-    printShippingLabel: string;
-};
-
 export const ORDER_TABLE_HEADERS: {
     label: string;
     style?: TableColumnHeaderProps;

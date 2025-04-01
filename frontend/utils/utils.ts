@@ -38,3 +38,14 @@ export function totalPriceInCart(
 
     return applyDiscount(total, couponCentsOff / 100, couponPercentOff);
 }
+
+export const formatMoney = (amount: number) => {
+    return amount.toLocaleString("en-US", {
+        style: "currency",
+        currency: "USD",
+    });
+};
+
+export function formatCents(amountInCents: number) {
+    return formatMoney(amountInCents / 100);
+}
