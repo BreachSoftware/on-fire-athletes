@@ -23,9 +23,13 @@ export default function OrderTable({}: OrderTableProps) {
     useEffect(() => {
         fetch(apiUrl.toString())
             .then((res) => res.json())
-            .then((data) => {
-                console.log("orders length: ", data.length);
-                setOrders(data as OFAOrder[]);
+            .then((data: OFAOrder[]) => {
+                const filteredOrders = data.filter(
+                    (order: OFAOrder) =>
+                        order.bagTagQuantity || order.physicalCardQuantity,
+                );
+
+                setOrders(filteredOrders as OFAOrder[]);
             });
     }, []);
 

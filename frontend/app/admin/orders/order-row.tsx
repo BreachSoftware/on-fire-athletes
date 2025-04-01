@@ -40,8 +40,6 @@ export default function OrderRow({ order }: OrderRowProps) {
         } else {
             const newOrder = (await response.json()).Item;
 
-            console.log(newOrder);
-
             setSentForPrint(newOrder.is_sent_for_print ?? false);
             setIsPackaged(newOrder.is_packaged ?? false);
             onCompleted();
