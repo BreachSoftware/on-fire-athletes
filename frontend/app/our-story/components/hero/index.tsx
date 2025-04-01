@@ -75,7 +75,7 @@ export default function OurStoryHero() {
                         sports cards paired with the most modern technology,
                         offering the best of both worlds. Our first-of-its-kind
                         platform gives you the ability to create, showcase,
-                        trade, sell, and print your own physical sports card
+                        share, sell, and print your own physical sports card
                         with augmented reality.
                     </Text>
                     <Text

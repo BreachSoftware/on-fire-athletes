@@ -31,7 +31,7 @@ export default function LightItUp() {
             imageOverlayTitle: "ATHLETES",
             title: "Create a Custom Card",
             description:
-                "Create your custom Digital & Physical AR sports cards to Capture, Showcase, Share & Sell your favorite sports moments.",
+                "Create your custom Bag Tags, Digital cards, and Physical AR cards to Capture, Showcase, Share & Sell your favorite sports moments.",
             buttonTitle: "START CREATING",
             buttonLink: "/create",
         },

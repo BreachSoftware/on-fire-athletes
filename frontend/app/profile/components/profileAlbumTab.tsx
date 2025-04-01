@@ -557,17 +557,17 @@ export default function ProfileAlbumTab(props: ProfileAlbumProps) {
                                                 fontFamily="Barlow"
                                                 fontWeight={500}
                                             >
-                                                Year Created / Package Type
+                                                Year Created {/* Package Type */}
                                             </Text>
                                             <Text
                                                 color={"gray.400"}
                                                 fontFamily="Barlow"
                                                 fontWeight={400}
                                             >
-                                                {currentCardYearCreated} /{" "}
+                                                {currentCardYearCreated} {/* /{" "}
                                                 {currentCard.price == 0
                                                     ? "Rookie Package"
-                                                    : "All-Star Package"}
+                                                    : "All-Star Package"} */}
                                             </Text>
                                         </Grid>
                                         {/* Button code */}
