@@ -30,6 +30,8 @@ import { maskImageToCard, resize } from "../image_filters";
 import CardMask from "../../public/card_assets/card-mask.png";
 import CardMaskReverse from "../../public/card_assets/card-mask-reverse.png";
 import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
+// import { useSearchParams } from "next/navigation";
+// import { getCard } from "@/app/generate_card_asset/cardFunctions";
 
 interface StepWrapperProps {
     numSteps: number;
@@ -391,6 +393,7 @@ export default function StepWrapper({
     const currentInfo = useCurrentCardInfo();
 
     const auth = useAuth();
+    // const searchParams = useSearchParams();
 
     const [stepNumber, setStepNumber] = useState(
         currentInfo.curCard.stepNumber,
@@ -427,6 +430,70 @@ export default function StepWrapper({
             return true;
         }
         return false;
+    }
+
+    function handleNextClick() {
+        {
+            (async () => {
+                if (stepNumber !== 5) {
+                    currentInfo.setCurCard({
+                        ...currentInfo.curCard,
+                        stepNumber: stepNumber + 1,
+                    });
+                    setStepNumber(stepNumber + 1);
+                } else {
+                    /*
+
+                IF USER IS SIGNED IN, REDIRECT TO THE PRICING PAGE
+
+                IF USER IS NOT SIGNED IN, REDIRECT TO THE SIGN IN PAGE
+
+            */
+                    // if (searchParams.get("card")) {
+                    //     await fetch(apiEndpoints.updateCard(), {
+                    //         method: "POST",
+                    //         body: JSON.stringify({
+                    //             ...currentInfo.curCard,
+                    //         }),
+                    //     });
+
+                    //     window.history.back();
+                    // } else {
+                    // Set the submit button to loading
+                    setSubmitButtonLoading(true);
+
+                    // Get the current authenticated user
+                    const user = await auth.currentAuthenticatedUser();
+
+                    // Get the user's ID
+                    const userID = user.userId;
+                    const { result } = await submitCardWithAuth({
+                        entireCardRef: entireCardRef,
+                        foregroundRef: foregroundRef,
+                        backgroundRef: backgroundRef,
+                        cardBackRef: cardBackRef,
+                        cardPrintRef: cardPrintRef,
+                        currentInfo: currentInfo,
+                        userID: userID,
+                        isNil,
+                    });
+
+                    if (result === SubmitResult.GoToCheckout) {
+                        if (isNil) {
+                            router.push("/nil-price");
+                        } else {
+                            router.push("/checkout");
+                        }
+                    } else if (result === SubmitResult.GoToSignup) {
+                        router.push("/signup");
+                    } else {
+                        console.error("Error submitting card!");
+                        setSubmitButtonLoading(false);
+                    }
+                }
+                // }
+            })();
+        }
     }
 
     const [submitButtonLoading, setSubmitButtonLoading] = useState(false);
@@ -512,63 +579,7 @@ export default function StepWrapper({
                             />
                             <NextButton
                                 text={stepNumber === 5 ? "submit" : "next"}
-                                onClick={async () => {
-                                    if (stepNumber !== 5) {
-                                        currentInfo.setCurCard({
-                                            ...currentInfo.curCard,
-                                            stepNumber: stepNumber + 1,
-                                        });
-                                        setStepNumber(stepNumber + 1);
-                                    } else {
-                                        /*
-
-										IF USER IS SIGNED IN, REDIRECT TO THE PRICING PAGE
-
-										IF USER IS NOT SIGNED IN, REDIRECT TO THE SIGN IN PAGE
-
-									*/
-
-                                        // Set the submit button to loading
-                                        setSubmitButtonLoading(true);
-
-                                        // Get the current authenticated user
-                                        const user =
-                                            await auth.currentAuthenticatedUser();
-
-                                        // Get the user's ID
-                                        const userID = user.userId;
-                                        const { result } =
-                                            await submitCardWithAuth({
-                                                entireCardRef: entireCardRef,
-                                                foregroundRef: foregroundRef,
-                                                backgroundRef: backgroundRef,
-                                                cardBackRef: cardBackRef,
-                                                cardPrintRef: cardPrintRef,
-                                                currentInfo: currentInfo,
-                                                userID: userID,
-                                                isNil,
-                                            });
-
-                                        if (
-                                            result === SubmitResult.GoToCheckout
-                                        ) {
-                                            if (isNil) {
-                                                router.push("/nil-price");
-                                            } else {
-                                                router.push("/checkout");
-                                            }
-                                        } else if (
-                                            result === SubmitResult.GoToSignup
-                                        ) {
-                                            router.push("/signup");
-                                        } else {
-                                            console.error(
-                                                "Error submitting card!",
-                                            );
-                                            setSubmitButtonLoading(false);
-                                        }
-                                    }
-                                }}
+                                onClick={handleNextClick}
                                 isDisabled={stepIsIncomplete()}
                                 isLoading={submitButtonLoading}
                             />

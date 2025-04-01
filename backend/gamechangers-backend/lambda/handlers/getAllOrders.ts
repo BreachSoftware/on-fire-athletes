@@ -17,14 +17,14 @@ interface PaginationParams {
 }
 
 /**
- * Gets all cards from the DynamoDB table, ordered by createdAt attribute.
+ * Gets all orders from the DynamoDB table, ordered by createdAt attribute.
  * @param event - The API Gateway event object.
  * @returns A promise that resolves to the API Gateway proxy result.
  */
-export const getAllCards: Handler = async (
+export const getAllOrders: Handler = async (
 	event: APIGatewayProxyEvent,
 ): Promise<APIGatewayProxyResult> => {
-	console.log("getAllCards event: ", event);
+	console.log("getAllOrders event: ", event);
 
 	try {
 		const queryParams = event.queryStringParameters || {};
@@ -54,23 +54,23 @@ export const getAllCards: Handler = async (
 
 		// Define the parameters for the DynamoDB scan operation
 		const params: DynamoDB.DocumentClient.ScanInput = {
-			TableName: dbTables.GamechangersCards(),
+			TableName: dbTables.GamechangersOrders(),
 			Limit: paginationParams.limit,
 		};
 
-		// Retrieve card items from the DynamoDB table
+		// Retrieve order items from the DynamoDB table
 		let data = await dynamoDb.scan(params).promise();
 
-		// Check if any card items exist
+		// Check if any order items exist
 		if (!data.Items || data.Items.length === 0) {
-			return sendResponse(404, { error: "No card items found" });
+			return sendResponse(404, { error: "No order items found" });
 		}
 
 		const retArray = data.Items;
 
 		while (data.LastEvaluatedKey) {
 			const params: DynamoDB.DocumentClient.ScanInput = {
-				TableName: dbTables.GamechangersCards(),
+				TableName: dbTables.GamechangersOrders(),
 				Limit: paginationParams.limit,
 				ExclusiveStartKey: data.LastEvaluatedKey,
 			};
@@ -79,35 +79,24 @@ export const getAllCards: Handler = async (
 			retArray.push(...(data.Items || []));
 		}
 
-		// Sort the card items by createdAt attribute, assuming 0 if missing
+		// Sort the order items by createdAt attribute, assuming 0 if missing
 		const sortedItems = retArray.sort((a, b) => {
 			const createdAtA = a.createdAt || 0;
 			const createdAtB = b.createdAt || 0;
 			return createdAtB - createdAtA;
 		});
 
-		// Apply pagination if parameters are provided
-		if (paginationParams.page && paginationParams.limit) {
-			const startIndex =
-				(paginationParams.page - 1) * paginationParams.limit;
-			const paginatedItems = sortedItems.slice(
-				startIndex,
-				startIndex + paginationParams.limit,
-			);
-			return sendResponse(200, paginatedItems as object[]);
-		}
-
 		return sendResponse(200, sortedItems as object[]);
 	} catch (error) {
 		// Log the error if an exception occurs
 		console.error(
-			"The following error occurred when retrieving all cards: ",
+			"The following error occurred when retrieving all orders: ",
 			error,
 		);
 
 		// Return an error response with a 500 status code
 		return sendResponse(500, {
-			error: "An error occurred when retrieving all cards",
+			error: "An error occurred when retrieving all orders",
 		});
 	}
 };

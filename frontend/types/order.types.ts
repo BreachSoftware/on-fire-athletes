@@ -1,0 +1,27 @@
+export type OFAOrder = {
+    uuid: string;
+    card_uuid: string;
+    address?: string;
+    bagTagQuantity?: number;
+    card_generatedBy?: string;
+    city?: string;
+    cost_paid?: number;
+    coupon_used?: string;
+    digitalCardQuantity?: number;
+    email?: string;
+    first_name?: string;
+    last_name?: string;
+    package_name?: string;
+    payment_method?: string;
+    phone_number?: string;
+    physicalCardQuantity?: number;
+    receiver_uuid?: string;
+    sender_uuid?: string;
+    shipping_firstName?: string;
+    shipping_lastName?: string;
+    state?: string;
+    transaction_time?: string;
+    zip_code?: string;
+    is_sent_for_print?: boolean;
+    is_packaged?: boolean;
+};
