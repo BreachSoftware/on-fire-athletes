@@ -20,7 +20,7 @@ export type OFAOrder = {
     shipping_firstName?: string;
     shipping_lastName?: string;
     state?: string;
-    transaction_time?: string;
+    transaction_time?: number;
     zip_code?: string;
     is_sent_for_print?: boolean;
     is_packaged?: boolean;

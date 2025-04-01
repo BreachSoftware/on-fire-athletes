@@ -6,7 +6,7 @@ import { Td } from "@chakra-ui/react";
 import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
 import { useToastFeedback } from "@/hooks/use-toast-feedback";
 import CheckboxButton from "./checkbox-button";
-import { formatCents } from "@/utils/utils";
+import { formatCents, formatDate } from "@/utils/utils";
 
 interface OrderRowProps {
     order: OFAOrder;
@@ -50,6 +50,11 @@ export default function OrderRow({ order }: OrderRowProps) {
 
     return (
         <Tr key={order.uuid} color="white">
+            <Td>
+                {formatDate(order.transaction_time, "M/d/yyyy")}
+                <br />
+                {formatDate(order.transaction_time, "h:mm a")}
+            </Td>
             <Td whiteSpace="nowrap">{order.uuid}</Td>
             <Td whiteSpace="nowrap">
                 <Link href={order.card_uuid} isExternal>
@@ -81,7 +86,6 @@ export default function OrderRow({ order }: OrderRowProps) {
             <Td>{order.zip_code}</Td>
             {/* Serial number */}
             <Td>{"N/A"}</Td>
-            <Td>{order.transaction_time}</Td>
             {/* Payout amount */}
             <Td>{"N/A"}</Td>
             {/* Sent for print */}

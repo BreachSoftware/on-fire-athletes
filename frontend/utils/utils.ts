@@ -1,4 +1,5 @@
 import CheckoutInfo from "@/hooks/CheckoutInfo";
+import { format } from "date-fns";
 
 export function applyDiscount(
     price: number,
@@ -48,4 +49,17 @@ export const formatMoney = (amount: number) => {
 
 export function formatCents(amountInCents: number) {
     return formatMoney(amountInCents / 100);
+}
+
+export function formatDate(
+    date: Date | number | null | undefined,
+    dateFormat: string = "M/d/yyyy",
+) {
+    if (!date) {
+        return "N/A";
+    }
+
+    const dateToUse = typeof date === "number" ? new Date(date * 1000) : date;
+
+    return format(dateToUse, dateFormat);
 }

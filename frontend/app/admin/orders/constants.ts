@@ -4,6 +4,7 @@ export const ORDER_TABLE_HEADERS: {
     label: string;
     style?: TableColumnHeaderProps;
 }[] = [
+    { label: "Transaction Time" },
     { label: "Order ID" },
     { label: "Card UUID" },
     { label: "Card Image" },
@@ -23,7 +24,6 @@ export const ORDER_TABLE_HEADERS: {
     { label: "State" },
     { label: "Zip Code" },
     { label: "Serial Number" },
-    { label: "Transaction Type" },
     { label: "Payout Amt" },
     { label: "Sent for Print" },
     { label: "PO Number" },

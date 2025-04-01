@@ -79,10 +79,10 @@ export const getAllOrders: Handler = async (
 			retArray.push(...(data.Items || []));
 		}
 
-		// Sort the order items by createdAt attribute, assuming 0 if missing
+		// Sort the order items by transaction_time attribute, assuming 0 if missing
 		const sortedItems = retArray.sort((a, b) => {
-			const createdAtA = a.createdAt || 0;
-			const createdAtB = b.createdAt || 0;
+			const createdAtA = a.transaction_time || 0;
+			const createdAtB = b.transaction_time || 0;
 			return createdAtB - createdAtA;
 		});
 
