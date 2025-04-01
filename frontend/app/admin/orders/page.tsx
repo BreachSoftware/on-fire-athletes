@@ -11,9 +11,10 @@ export default function OrdersPage({}: OrdersPageProps) {
             justifyContent="center"
             alignItems="center"
             background="gray.800"
-            px="48px"
+            px="124px"
+            py="124px"
         >
-            <Box maxW="100vw" maxH="100vh">
+            <Box maxW="calc(100vw - 248px)" maxH="100vh">
                 <Text
                     fontSize="42px"
                     fontWeight="bold"
@@ -32,6 +33,7 @@ export default function OrdersPage({}: OrdersPageProps) {
                     borderWidth="1px"
                     borderRadius="lg"
                     boxShadow="md"
+                    maxH="calc(100vh - 248px)"
                 >
                     <OrderTable />
                 </Box>

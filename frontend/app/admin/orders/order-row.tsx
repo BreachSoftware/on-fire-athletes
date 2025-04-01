@@ -1,3 +1,4 @@
+"use client";
 import { Link, Tr } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { OFAOrder } from "@/types/order.types";
@@ -5,7 +6,7 @@ import { Td } from "@chakra-ui/react";
 import { apiEndpoints } from "@backend/EnvironmentManager/EnvironmentManager";
 import { useToastFeedback } from "@/hooks/use-toast-feedback";
 import CheckboxButton from "./checkbox-button";
-import { formatCents, formatMoney } from "@/utils/utils";
+import { formatCents } from "@/utils/utils";
 
 interface OrderRowProps {
     order: OFAOrder;
@@ -53,6 +54,14 @@ export default function OrderRow({ order }: OrderRowProps) {
             <Td whiteSpace="nowrap">
                 <Link href={order.card_uuid} isExternal>
                     {order.card_uuid}
+                </Link>
+            </Td>
+            <Td whiteSpace="nowrap" textDecor="underline">
+                <Link
+                    href={`https://onfireathletes.com/print?user=${order.card_generatedBy}&card=${order.card_uuid}`}
+                    isExternal
+                >
+                    View Card
                 </Link>
             </Td>
             <Td whiteSpace="nowrap">{order.card_generatedBy}</Td>

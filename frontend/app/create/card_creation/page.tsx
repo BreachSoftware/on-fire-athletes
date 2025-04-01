@@ -1,10 +1,10 @@
 "use client";
 import {
     Box,
-    Center,
+    // Center,
     Flex,
     HStack,
-    Spinner,
+    // Spinner,
     useBreakpointValue,
     VStack,
 } from "@chakra-ui/react";
@@ -21,8 +21,8 @@ import OnfireCard from "@/components/create/OnFireCard/OnFireCard";
 import { useCurrentCardInfo } from "@/hooks/useCurrentCardInfo";
 import TradingCardInfo from "@/hooks/TradingCardInfo";
 import MobileStepWrapper from "@/components/create/mobile/MobileStepWrapper";
-import { useSearchParams } from "next/navigation";
-import { getCard } from "@/app/generate_card_asset/cardFunctions";
+// import { useSearchParams } from "next/navigation";
+// import { getCard } from "@/app/generate_card_asset/cardFunctions";
 
 import { PREFILLED_TRADING_CARD } from "./prefilledCard";
 interface CardCreationProps {
@@ -41,22 +41,22 @@ export default function CreationOverview({ isNil = false }: CardCreationProps) {
     const cardBackRef = useRef(null);
     const cardPrintRef = useRef(null);
 
-    const [isLoading, setIsLoading] = useState(false);
+    // const [isLoading, setIsLoading] = useState(false);
 
-    const searchParams = useSearchParams();
+    // const searchParams = useSearchParams();
 
-    useEffect(() => {
-        (async () => {
-            if (searchParams.get("card")) {
-                setIsLoading(true);
-                const card = await getCard(searchParams.get("card") as string);
-                currentInfo.setCurCard({ ...card, stepNumber: 2 });
-            } else {
-                currentInfo.setCurCard(new TradingCardInfo());
-            }
-            setIsLoading(false);
-        })();
-    }, [searchParams]);
+    // useEffect(() => {
+    //     (async () => {
+    //         if (searchParams.get("card")) {
+    //             setIsLoading(true);
+    //             const card = await getCard(searchParams.get("card") as string);
+    //             currentInfo.setCurCard({ ...card, stepNumber: 2 });
+    //         } else {
+    //             currentInfo.setCurCard(new TradingCardInfo());
+    //         }
+    //         setIsLoading(false);
+    //     })();
+    // }, [searchParams]);
 
     const usePrefilledCard =
         process.env.NEXT_PUBLIC_USE_PREFILLED_CARD === "true";
@@ -139,12 +139,12 @@ export default function CreationOverview({ isNil = false }: CardCreationProps) {
         },
     ];
 
-    if (isLoading)
-        return (
-            <Center h="100vh">
-                <Spinner size="xl" />
-            </Center>
-        );
+    // if (isLoading)
+    //     return (
+    //         <Center h="100vh">
+    //             <Spinner size="xl" />
+    //         </Center>
+    //     );
 
     return (
         <Box
