@@ -16,7 +16,7 @@ export default function OrdersPage({}: OrdersPageProps) {
         >
             <Box maxW="calc(100vw - 248px)" maxH="100vh">
                 <Text
-                    fontSize="42px"
+                    fontSize="24px"
                     fontWeight="bold"
                     fontFamily="Barlow Condensed"
                     mb={4}

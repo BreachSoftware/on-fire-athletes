@@ -53,12 +53,7 @@ export default function OrderRow({ order }: OrderRowProps) {
                 <br />
                 {formatDate(order.transaction_time, "h:mm a")}
             </Td>
-            <Td whiteSpace="nowrap">{order.uuid}</Td>
-            <Td whiteSpace="nowrap">
-                <Link href={order.card_uuid} isExternal>
-                    {order.card_uuid}
-                </Link>
-            </Td>
+            
             <Td whiteSpace="nowrap" textDecor="underline">
                 <Link
                     href={`https://onfireathletes.com/print?user=${order.card_generatedBy}&card=${order.card_uuid}`}
@@ -67,24 +62,7 @@ export default function OrderRow({ order }: OrderRowProps) {
                     View Card
                 </Link>
             </Td>
-            <Td whiteSpace="nowrap">{order.card_generatedBy}</Td>
-            <Td>{formatCents(order.cost_paid ?? 0)}</Td>
-            <Td>{order.bagTagQuantity ?? 0}</Td>
-            <Td>{order.physicalCardQuantity ?? 0}</Td>
-            <Td>{order.digitalCardQuantity ?? 0}</Td>
-            <Td>{order.email}</Td>
-            <Td>{order.phone_number}</Td>
-            <Td whiteSpace="nowrap">{order.receiver_uuid}</Td>
-            <Td whiteSpace="nowrap">{order.sender_uuid}</Td>
-            <Td>{order.shipping_firstName}</Td>
-            <Td>{order.shipping_lastName}</Td>
-            <Td>{order.address}</Td>
-            <Td>{order.city}</Td>
-            <Td>{order.state}</Td>
-            <Td>{order.zip_code}</Td>
             {/* Serial number */}
-            <Td>{"N/A"}</Td>
-            {/* Payout amount */}
             <Td>{"N/A"}</Td>
             {/* Sent for print */}
             <Td>
@@ -110,7 +88,6 @@ export default function OrderRow({ order }: OrderRowProps) {
                     Packaged?
                 </CheckboxButton>
             </Td>
-            <Td>N/A</Td>
             <Td>Download Print File</Td>
             <Td>Download Bag Tag Print File</Td>
             <Td>
@@ -121,6 +98,31 @@ export default function OrderRow({ order }: OrderRowProps) {
                     View Print File
                 </Link>
             </Td>
+            <Td>{formatCents(order.cost_paid ?? 0)}</Td>
+            <Td>{order.bagTagQuantity ?? 0}</Td>
+            <Td>{order.physicalCardQuantity ?? 0}</Td>
+            <Td>{order.digitalCardQuantity ?? 0}</Td>
+            <Td>{order.email}</Td>
+            <Td>{order.phone_number}</Td>
+           
+            <Td>{order.shipping_firstName}</Td>
+            <Td>{order.shipping_lastName}</Td>
+            <Td>{order.address}</Td>
+            <Td>{order.city}</Td>
+            <Td>{order.state}</Td>
+            <Td>{order.zip_code}</Td>
+            <Td>N/A</Td>
+            <Td whiteSpace="nowrap">{order.uuid}</Td>
+            <Td whiteSpace="nowrap">
+                <Link href={order.card_uuid} isExternal>
+                    {order.card_uuid}
+                </Link>
+            </Td>
+            <Td whiteSpace="nowrap">{order.card_generatedBy}</Td>
+            <Td whiteSpace="nowrap">{order.receiver_uuid}</Td>
+            <Td whiteSpace="nowrap">{order.sender_uuid}</Td>
+            {/* Payout amount */}
+            <Td>{"N/A"}</Td>
             <Td>N/A</Td>
         </Tr>
     );
