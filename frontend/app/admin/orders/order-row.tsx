@@ -53,7 +53,7 @@ export default function OrderRow({ order }: OrderRowProps) {
                 <br />
                 {formatDate(order.transaction_time, "h:mm a")}
             </Td>
-            
+
             <Td whiteSpace="nowrap" textDecor="underline">
                 <Link
                     href={`https://onfireathletes.com/print?user=${order.card_generatedBy}&card=${order.card_uuid}`}
@@ -71,6 +71,11 @@ export default function OrderRow({ order }: OrderRowProps) {
                     onChange={(e) => {
                         updateOrder({ is_sent_for_print: e.target.checked });
                     }}
+                    colorScheme="green"
+                    _checked={{
+                        color: "green.100",
+                        bg: "green.900",
+                    }}
                 >
                     Sent for print?
                 </CheckboxButton>
@@ -83,6 +88,11 @@ export default function OrderRow({ order }: OrderRowProps) {
                     isChecked={isPackaged}
                     onChange={(e) => {
                         updateOrder({ is_packaged: e.target.checked });
+                    }}
+                    colorScheme="green"
+                    _checked={{
+                        color: "green.100",
+                        bg: "green.900",
                     }}
                 >
                     Packaged?
@@ -104,7 +114,7 @@ export default function OrderRow({ order }: OrderRowProps) {
             <Td>{order.digitalCardQuantity ?? 0}</Td>
             <Td>{order.email}</Td>
             <Td>{order.phone_number}</Td>
-           
+
             <Td>{order.shipping_firstName}</Td>
             <Td>{order.shipping_lastName}</Td>
             <Td>{order.address}</Td>
