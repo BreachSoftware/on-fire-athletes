@@ -292,7 +292,7 @@ export default function TrendingCard({
                                 {card?.price
                                     ? `$${card?.price?.toFixed(2)}`
                                     : card.totalCreated > 0
-                                      ? "TRADE ONLY"
+                                      ? "BAG TAG"
                                       : "UNAVAILABLE"}
                             </Text>
                             {shouldShowButton && (
