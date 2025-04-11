@@ -12,7 +12,6 @@ import {
     HStack,
     Icon,
     useToast,
-    color,
 } from "@chakra-ui/react";
 import { Link } from "react-scroll";
 import { BeatLoader } from "react-spinners";
@@ -27,7 +26,7 @@ import { useAuth } from "@/hooks/useAuth";
 import SerializedTradingCard from "@/hooks/SerializedTradingCard";
 import { TabName } from "@/app/profile/components/profileAlbumTab";
 import TradingCardInBackground from "./TradingCardInBackground";
-import { useClipboard } from "@/hooks/useClipBoard";
+import { useClipboard } from "@/hooks/useClipboard";
 
 interface TrendingCardProps {
     passedInCard: TradingCardInfo | SerializedTradingCard;
