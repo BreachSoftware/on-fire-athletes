@@ -11,10 +11,13 @@ import {
     Button,
     HStack,
     Icon,
+    useToast,
+    color,
 } from "@chakra-ui/react";
 import { Link } from "react-scroll";
 import { BeatLoader } from "react-spinners";
-import { FaRotate } from "react-icons/fa6";
+import { FaRotate, FaCheck } from "react-icons/fa6";
+import { GoShare } from "react-icons/go";
 
 import TradingCardInfo from "@/hooks/TradingCardInfo";
 import { OnFireCardRef } from "../create/OnFireCard/OnFireCard";
@@ -24,6 +27,7 @@ import { useAuth } from "@/hooks/useAuth";
 import SerializedTradingCard from "@/hooks/SerializedTradingCard";
 import { TabName } from "@/app/profile/components/profileAlbumTab";
 import TradingCardInBackground from "./TradingCardInBackground";
+import { useClipboard } from "@/hooks/useClipBoard";
 
 interface TrendingCardProps {
     passedInCard: TradingCardInfo | SerializedTradingCard;
@@ -103,6 +107,22 @@ export default function TrendingCard({
         if (onFireCardRef.current) {
             onFireCardRef.current.handleClick();
         }
+    }
+    const { onCopy, isCopied } = useClipboard();
+    const toast = useToast();
+
+    function handleCopyLink() {
+        const userId = card.generatedBy;
+        const cardId = card.uuid;
+
+        const url = `https://onfireathletes.com/profile?user=${userId}&card=${cardId}`;
+        onCopy(url);
+        toast({
+            title: "Card link copied!",
+            status: "success",
+            duration: 3000,
+            position: "top",
+        });
     }
 
     // This is the trading card to display
@@ -295,19 +315,40 @@ export default function TrendingCard({
                                       ? "BAG TAG"
                                       : "UNAVAILABLE"}
                             </Text>
-                            {shouldShowButton && (
+                            <HStack justifyContent={"flex-end"} spacing={4}>
+                                {shouldShowButton && (
+                                    <IconButton
+                                        onClick={handleFlipFromOutside}
+                                        aria-label="Flip Card"
+                                        minW="26px"
+                                        maxW="26px"
+                                        minH="26px"
+                                        maxH="26px"
+                                        background="#D5D5D5"
+                                        icon={
+                                            <Icon
+                                                as={FaRotate}
+                                                color="#121212"
+                                                style={{
+                                                    width: "16px",
+                                                    height: "16px",
+                                                }}
+                                            />
+                                        }
+                                    />
+                                )}
+
                                 <IconButton
-                                    onClick={handleFlipFromOutside}
-                                    aria-label="Flip Card"
+                                    onClick={handleCopyLink}
+                                    aria-label="Share Card"
                                     minW="26px"
                                     maxW="26px"
                                     minH="26px"
                                     maxH="26px"
                                     background="#D5D5D5"
-                                    marginLeft={5}
                                     icon={
                                         <Icon
-                                            as={FaRotate}
+                                            as={isCopied ? FaCheck : GoShare}
                                             color="#121212"
                                             style={{
                                                 width: "16px",
@@ -316,7 +357,7 @@ export default function TrendingCard({
                                         />
                                     }
                                 />
-                            )}
+                            </HStack>
                         </HStack>
                         <Divider borderColor="#707070" />
                         <VStack align={"left"} gap={0} lineHeight={"20px"}>
