@@ -52,7 +52,7 @@ export const getCard: Handler = async (
 	const queryStringParameters = event.queryStringParameters;
 
 	const uuid = queryStringParameters.uuid;
-	const _generatedBy = queryStringParameters.generatedBy;
+	const _generatedBy = queryStringParameters.generatedBy; // Re-added, though unused in scan
 
 	if (!uuid) {
 		return Promise.resolve({
@@ -61,7 +61,7 @@ export const getCard: Handler = async (
 			body: JSON.stringify({
 				success: false,
 				message:
-					"Error! Missing one or more required query parameters. uuid or generatedBy is null.",
+					"Error! Missing one or more required query parameters. uuid or generatedBy is null.", // Reverted message
 			}),
 		});
 	} else if (typeof uuid !== "string") {
@@ -71,56 +71,41 @@ export const getCard: Handler = async (
 			body: JSON.stringify({
 				success: false,
 				message:
-					"Error! Incorrect type for one or more query parameters. uuid and generatedBy should be strings.",
+					"Error! Incorrect type for one or more query parameters. uuid and generatedBy should be strings.", // Reverted message
 			}),
 		});
 	}
 
 	try {
-		// Define the parameters for the DynamoDB scan operation
-		const params = {
-			TableName: dbTables.GamechangersCards(),
-			FilterExpression: "#uuidKey = :uuidVal",
-			ExpressionAttributeNames: {
-				"#uuidKey": "uuid",
-			},
-			ExpressionAttributeValues: {
-				":uuidVal": uuid,
-			},
-		};
+		// Loop through scans until the card is found or no more items
+		let lastEvaluatedKey: DynamoDB.DocumentClient.Key | undefined;
+		do {
+			const scanParams: DynamoDB.DocumentClient.ScanInput = {
+				TableName: dbTables.GamechangersCards(),
+				FilterExpression: "#uuidKey = :uuidVal",
+				ExpressionAttributeNames: { "#uuidKey": "uuid" },
+				ExpressionAttributeValues: { ":uuidVal": uuid },
+				...(lastEvaluatedKey
+					? { ExclusiveStartKey: lastEvaluatedKey }
+					: {}),
+			};
+			const { Items, LastEvaluatedKey } = await dynamoDb
+				.scan(scanParams)
+				.promise();
 
-		// Retrieve the card items from DynamoDB using scan
-		const data = await dynamoDb.scan(params).promise();
-
-		// Check if any items were returned
-		if (!data.Items || data.Items.length === 0) {
-			if (data.LastEvaluatedKey) {
-				const params: DynamoDB.DocumentClient.ScanInput = {
-					TableName: dbTables.GamechangersCards(),
-					ExclusiveStartKey: data.LastEvaluatedKey,
-					FilterExpression: "#uuidKey = :uuidVal",
-					ExpressionAttributeNames: {
-						"#uuidKey": "uuid",
-					},
-					ExpressionAttributeValues: {
-						":uuidVal": uuid,
-					},
-				};
-
-				const secondScan = await dynamoDb.scan(params).promise();
-
-				if (secondScan.Items && secondScan.Items.length > 0) {
-					return sendResponse(200, secondScan.Items[0] as object);
-				}
+			// If we found the item, return it immediately
+			if (Items && Items.length > 0) {
+				return sendResponse(200, Items[0] as object);
 			}
 
-			return sendResponse(404, { error: "The card does not exist" });
-		}
+			// The loop should continue as long as there are more pages (LastEvaluatedKey exists)
+			lastEvaluatedKey = LastEvaluatedKey;
+		} while (lastEvaluatedKey);
 
-		// If items exist, send the first item back
-		return sendResponse(200, data.Items[0] as object);
+		// If the loop completes without finding the item, it means the item wasn't found after scanning the entire table.
+		return sendResponse(404, { error: "The card does not exist" });
 	} catch (error) {
-		console.error("Error:", error);
+		console.error("Error scanning DynamoDB:", error); // Updated log message
 
 		// Return an error response with a 500 status code
 		return sendResponse(500, {
