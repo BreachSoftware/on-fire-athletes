@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Providers } from "./Providers";
 import { GoogleAnalytics, GoogleTagManager } from "@next/third-parties/google";
+// Trigger build
 
 export const metadata: Metadata = {
     title: "OnFire Athletes",
