@@ -46,10 +46,9 @@ export default function Article() {
                     Series MVPs to little leaguers and dance teams and every
                     athlete in between —to create and print their own custom
                     cards which can be shared or sold. Each physical card is
-                    crafted using high-end materials, including holographic
-                    finishes, and comes with AR capabilities, giving fans an
-                    interactive experience like never before. By making this
-                    advanced technology accessible to every athlete, ONFIRE
+                    crafted using high-end materials, and comes with AR capabilities, 
+                    giving fans an interactive experience like never before. By 
+                    making this advanced technology accessible to every athlete, ONFIRE
                     ATHLETES empowers anyone to build their brand, engage fans,
                     fund raise and create memorable collectibles.
                 </ArticleParagraph>
@@ -108,7 +107,7 @@ export default function Article() {
                     unique “full circle” experience, where athletes can create
                     not only highly customizable digital sports cards, but also
                     physical cards embedded with digital technology and
-                    holographic print details.
+                    custom print details.
                 </ArticleParagraph>
                 <ArticleParagraph>
                     “We've given users not just a unique digital asset but also
