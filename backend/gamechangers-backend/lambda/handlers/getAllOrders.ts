@@ -79,8 +79,24 @@ export const getAllOrders: Handler = async (
 			retArray.push(...(data.Items || []));
 		}
 
+		const users = await getAllUsers();
+		const usersMap = arrayToMap(users, "uuid");
+
+		const ordersWithSerialNumbers: any[] = retArray.map((order) => {
+			const user = usersMap[order.receiver_uuid];
+
+			const cardForSerialNumber = user?.bought_cards?.find(
+				(b: [string, string, string, number]) => b.at(0) === order.uuid,
+			);
+
+			return {
+				...order,
+				serial_number: cardForSerialNumber?.at(3),
+			};
+		});
+
 		// Sort the order items by transaction_time attribute, assuming 0 if missing
-		const sortedItems = retArray.sort((a, b) => {
+		const sortedItems = ordersWithSerialNumbers.sort((a, b) => {
 			const createdAtA = a.transaction_time || 0;
 			const createdAtB = b.transaction_time || 0;
 			return createdAtB - createdAtA;
@@ -100,3 +116,46 @@ export const getAllOrders: Handler = async (
 		});
 	}
 };
+
+async function getAllUsers(): Promise<any[]> {
+	const params: DynamoDB.DocumentClient.ScanInput = {
+		TableName: dbTables.GamechangersUsers(),
+	};
+
+	// Retrieve order items from the DynamoDB table
+	let data = await dynamoDb.scan(params).promise();
+
+	// Check if any order items exist
+	if (!data.Items || data.Items.length === 0) {
+		return []; // sendResponse(404, { error: "No order items found" });
+	}
+
+	const retArray = data.Items;
+
+	while (data.LastEvaluatedKey) {
+		const params: DynamoDB.DocumentClient.ScanInput = {
+			TableName: dbTables.GamechangersUsers(),
+			ExclusiveStartKey: data.LastEvaluatedKey,
+		};
+
+		data = await dynamoDb.scan(params).promise();
+		retArray.push(...(data.Items || []));
+	}
+
+	return retArray;
+}
+
+export const arrayToMap = <T extends object, K extends keyof T>(
+	array: T[],
+	key: K | ((item: T) => string),
+): Record<string, T> =>
+	array.reduce(
+		(acc, item) => {
+			const keyValue = typeof key === "function" ? key(item) : item[key];
+			if (keyValue && typeof keyValue === "string") {
+				acc[keyValue] = item;
+			}
+			return acc;
+		},
+		{} as Record<string, T>,
+	);

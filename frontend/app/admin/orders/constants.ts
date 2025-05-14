@@ -14,6 +14,7 @@ export const ORDER_TABLE_HEADERS: {
     { label: "Download Bag Tag Print File" },
     { label: "View Print File" },
     { label: "Cost Paid" },
+    { label: "Coupon Used" },
     { label: "Bagtag Quantity" },
     { label: "Physical Card Quantity" },
     { label: "Digital Card Quantity" },

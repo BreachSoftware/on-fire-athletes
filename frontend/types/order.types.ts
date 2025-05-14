@@ -24,4 +24,5 @@ export type OFAOrder = {
     zip_code?: string;
     is_sent_for_print?: boolean;
     is_packaged?: boolean;
+    serial_number?: number;
 };

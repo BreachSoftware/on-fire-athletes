@@ -63,7 +63,7 @@ export default function OrderRow({ order }: OrderRowProps) {
                 </Link>
             </Td>
             {/* Serial number */}
-            <Td>{"N/A"}</Td>
+            <MaybeMissingTd>{order.serial_number || "--"}</MaybeMissingTd>
             {/* Sent for print */}
             <Td>
                 <CheckboxButton
@@ -109,6 +109,7 @@ export default function OrderRow({ order }: OrderRowProps) {
                 </Link>
             </Td>
             <Td>{formatCents(order.cost_paid ?? 0)}</Td>
+            <MaybeMissingTd>{order.coupon_used || "--"}</MaybeMissingTd>
             <Td>{order.bagTagQuantity ?? 0}</Td>
             <Td>{order.physicalCardQuantity ?? 0}</Td>
             <Td>{order.digitalCardQuantity ?? 0}</Td>
@@ -136,4 +137,11 @@ export default function OrderRow({ order }: OrderRowProps) {
             <Td>N/A</Td>
         </Tr>
     );
+}
+
+function MaybeMissingTd({ children }: { children: React.ReactNode }) {
+    const isMissing =
+        children === "N/A" || children === "--" || children === null;
+
+    return <Td color={isMissing ? "gray.300" : "white"}>{children}</Td>;
 }
