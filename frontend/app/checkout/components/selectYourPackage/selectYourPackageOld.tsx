@@ -27,6 +27,7 @@ import {
     DIGITAL_CARD_PRICES,
     PHYSICAL_CARD_PRICES,
 } from "@/utils/constants";
+// FORCE COMMIT
 
 /**
  * This component is responsible for rendering the select your package section of the checkout page.
@@ -226,9 +227,9 @@ export default function SelectYourPackage() {
                     <Flex flexDir="column" gap="20px">
                         {/* Package Box Component */}
                         {[
-                         // physicalCardOption,
-                         // digitalCardOption,
-                             bagTagOption,
+                            // physicalCardOption,
+                            // digitalCardOption,
+                            bagTagOption,
                         ].map((pkg, index) => {
                             return (
                                 <PackageItemSelect
