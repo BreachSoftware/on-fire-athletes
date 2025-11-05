@@ -3,10 +3,10 @@ import { Flex, Grid, Text } from "@chakra-ui/react";
 
 import { useCurrentCheckout } from "@/hooks/useCheckout";
 import PackageHeader from "@/app/checkout/components/selectYourPackage/packageHeader";
-import {
-    packages,
-    PackageType,
-} from "@/app/checkout/components/selectYourPackage/packages";
+// import {
+//     packages,
+//     PackageType,
+// } from "@/app/checkout/components/selectYourPackage/packages";
 import CheckoutButtonFooter from "@/app/checkout/components/selectYourPackage/checkoutButtonFooter";
 import SelectBannerVertical from "@/app/checkout/components/selectYourPackage/selectBannerVertical";
 import SelectBannerHorizontal from "@/app/checkout/components/selectYourPackage/selectBannerHorizontal";
@@ -15,17 +15,17 @@ import CheckoutInfo, { DatabasePackageNames } from "@/hooks/CheckoutInfo";
 import AddOnOption, {
     AddOnOptionType,
 } from "../checkout-add-ons/add-on-option";
-import { useAuth } from "@/hooks/useAuth";
+// import { useAuth } from "@/hooks/useAuth";
 import {
     BAG_TAG_ADD_ON_TITLE,
-    DIGITAL_ADD_ON_TITLE,
-    PHYSICAL_ADD_ON_TITLE,
+    // DIGITAL_ADD_ON_TITLE,
+    // PHYSICAL_ADD_ON_TITLE,
 } from "../checkout-add-ons/constants";
-import PackageDetails from "./packageDetails";
+// import PackageDetails from "./packageDetails";
 import {
     BAG_TAG_PRICES,
-    DIGITAL_CARD_PRICES,
-    PHYSICAL_CARD_PRICES,
+    // DIGITAL_CARD_PRICES,
+    // PHYSICAL_CARD_PRICES,
 } from "@/utils/constants";
 // FORCE COMMIT
 
@@ -35,9 +35,9 @@ import {
 export default function SelectYourPackage() {
     const { isGift } = useCurrentCheckout();
 
-    const { isSubscribed } = useAuth();
+    // const { isSubscribed } = useAuth();
     const { checkout, updateCheckout } = useCurrentCheckout();
-    const { bagTagCount, digitalCardCount, physicalCardCount } = checkout;
+    const { bagTagCount } = checkout;
 
     function getCartUpdate(
         title: string,
@@ -116,60 +116,60 @@ export default function SelectYourPackage() {
     );
 
     // NOTE: we don't need to adjust for defaults because the default is saved on packageCardCount
-    const digitalCardOption: AddOnOptionType = useMemo(
-        () => ({
-            title: "Digital Cards",
-            price: "$1.00 / 5 cards",
-            value: digitalCardCount,
-            onChange: (value) => {
-                const price = DIGITAL_CARD_PRICES[value];
+    // const digitalCardOption: AddOnOptionType = useMemo(
+    //     () => ({
+    //         title: "Digital Cards",
+    //         price: "$1.00 / 5 cards",
+    //         value: digitalCardCount,
+    //         onChange: (value) => {
+    //             const price = DIGITAL_CARD_PRICES[value];
 
-                updateCheckout({
-                    digitalCardCount: value,
-                    packageName: DatabasePackageNames.ALL_STAR,
-                    ...getCartUpdate(
-                        DIGITAL_ADD_ON_TITLE,
-                        value,
-                        "card",
-                        price,
-                    ),
-                });
-            },
-            hidePriceStyling: true,
-            // 25 to 500 in increments of 25
-            pricingOptions: DIGITAL_CARD_PRICES,
-        }),
-        [checkout.cart, checkout.stepNum],
-    );
+    //             updateCheckout({
+    //                 digitalCardCount: value,
+    //                 packageName: DatabasePackageNames.ALL_STAR,
+    //                 ...getCartUpdate(
+    //                     DIGITAL_ADD_ON_TITLE,
+    //                     value,
+    //                     "card",
+    //                     price,
+    //                 ),
+    //             });
+    //         },
+    //         hidePriceStyling: true,
+    //         // 25 to 500 in increments of 25
+    //         pricingOptions: DIGITAL_CARD_PRICES,
+    //     }),
+    //     [checkout.cart, checkout.stepNum],
+    // );
 
-    const phsyicalCardDisplayPrice = isSubscribed
-        ? `$14.99/ea ($9.99/ea after 6)`
-        : `$24.99/ea`;
+    // const phsyicalCardDisplayPrice = isSubscribed
+    //     ? `$14.99/ea ($9.99/ea after 6)`
+    //     : `$24.99/ea`;
 
-    const physicalCardOption: AddOnOptionType = useMemo(
-        () => ({
-            title: "Physical AR Cards",
-            price: phsyicalCardDisplayPrice,
-            value: physicalCardCount,
-            onChange: (value) => {
-                const price = PHYSICAL_CARD_PRICES[value];
+    // const physicalCardOption: AddOnOptionType = useMemo(
+    //     () => ({
+    //         title: "Physical AR Cards",
+    //         price: phsyicalCardDisplayPrice,
+    //         value: physicalCardCount,
+    //         onChange: (value) => {
+    //             const price = PHYSICAL_CARD_PRICES[value];
 
-                updateCheckout({
-                    physicalCardCount: value,
-                    packageName: DatabasePackageNames.ALL_STAR,
-                    ...getCartUpdate(
-                        PHYSICAL_ADD_ON_TITLE,
-                        value,
-                        "card",
-                        price,
-                    ),
-                });
-            },
-            hidePriceStyling: true,
-            pricingOptions: PHYSICAL_CARD_PRICES,
-        }),
-        [checkout.cart, checkout.stepNum],
-    );
+    //             updateCheckout({
+    //                 physicalCardCount: value,
+    //                 packageName: DatabasePackageNames.ALL_STAR,
+    //                 ...getCartUpdate(
+    //                     PHYSICAL_ADD_ON_TITLE,
+    //                     value,
+    //                     "card",
+    //                     price,
+    //                 ),
+    //             });
+    //         },
+    //         hidePriceStyling: true,
+    //         pricingOptions: PHYSICAL_CARD_PRICES,
+    //     }),
+    //     [checkout.cart, checkout.stepNum],
+    // );
 
     return (
         <Flex
@@ -322,78 +322,78 @@ function PackageItemSelect({
     );
 }
 
-function PackageBoxComponent({ pkg }: { pkg: PackageType }) {
-    // Our checkout info
-    const curCheckout = useCurrentCheckout();
-    const checkout = curCheckout.checkout;
+// function PackageBoxComponent({ pkg }: { pkg: PackageType }) {
+//     // Our checkout info
+//     const curCheckout = useCurrentCheckout();
+//     const checkout = curCheckout.checkout;
 
-    // Glow effect for the selected package
-    const glowEffect = "0 0 16px #27CE00";
+//     // Glow effect for the selected package
+//     const glowEffect = "0 0 16px #27CE00";
 
-    return (
-        <Flex
-            flex={1}
-            minH="fit-content"
-            overflow="hidden"
-            // flexBasis={{ base: "100%", md: "30%" }}
-            backgroundColor={"#1B2120"}
-            // padding={"20px"}
-            // borderWidth={"2px"}
-            // borderColor={
-            //     checkout.packageName === pkg.databaseName
-            //         ? "green.100"
-            //         : "transparent"
-            // }
-            boxShadow={
-                checkout.packageName === pkg.databaseName ? glowEffect : "none"
-            }
-            zIndex={checkout.packageName === pkg.databaseName ? 0 : 1}
-            borderRadius={"10px"}
-            onClick={() => {
-                // If the package is already selected, do nothing
-                if (checkout.packageName === pkg.databaseName) {
-                    return;
-                }
-                // Otherwise, set the package name in the checkout object
-                curCheckout.updateCheckout({
-                    packageName: pkg.databaseName,
-                    digitalCardCount: 0,
-                });
-            }}
-            cursor={"pointer"}
-            transition={
-                "border-color 0.2s, box-shadow 0.2s, background-color 0.2s"
-            }
-            _hover={{
-                md: {
-                    backgroundColor:
-                        checkout.packageName !== pkg.databaseName
-                            ? "#1C2421"
-                            : "#171C1B",
-                    borderColor:
-                        checkout.packageName !== pkg.databaseName
-                            ? "green.300"
-                            : "green.100",
-                },
-            }}
-            flexDirection={{ base: "column", xl: "row" }}
-            pos="relative"
-        >
-            {/* Select Banner (Large Screens Only) */}
-            <SelectBannerVertical
-                isSelected={checkout.packageName === pkg.databaseName}
-            />
+//     return (
+//         <Flex
+//             flex={1}
+//             minH="fit-content"
+//             overflow="hidden"
+//             // flexBasis={{ base: "100%", md: "30%" }}
+//             backgroundColor={"#1B2120"}
+//             // padding={"20px"}
+//             // borderWidth={"2px"}
+//             // borderColor={
+//             //     checkout.packageName === pkg.databaseName
+//             //         ? "green.100"
+//             //         : "transparent"
+//             // }
+//             boxShadow={
+//                 checkout.packageName === pkg.databaseName ? glowEffect : "none"
+//             }
+//             zIndex={checkout.packageName === pkg.databaseName ? 0 : 1}
+//             borderRadius={"10px"}
+//             onClick={() => {
+//                 // If the package is already selected, do nothing
+//                 if (checkout.packageName === pkg.databaseName) {
+//                     return;
+//                 }
+//                 // Otherwise, set the package name in the checkout object
+//                 curCheckout.updateCheckout({
+//                     packageName: pkg.databaseName,
+//                     digitalCardCount: 0,
+//                 });
+//             }}
+//             cursor={"pointer"}
+//             transition={
+//                 "border-color 0.2s, box-shadow 0.2s, background-color 0.2s"
+//             }
+//             _hover={{
+//                 md: {
+//                     backgroundColor:
+//                         checkout.packageName !== pkg.databaseName
+//                             ? "#1C2421"
+//                             : "#171C1B",
+//                     borderColor:
+//                         checkout.packageName !== pkg.databaseName
+//                             ? "green.300"
+//                             : "green.100",
+//                 },
+//             }}
+//             flexDirection={{ base: "column", xl: "row" }}
+//             pos="relative"
+//         >
+//             {/* Select Banner (Large Screens Only) */}
+//             <SelectBannerVertical
+//                 isSelected={checkout.packageName === pkg.databaseName}
+//             />
 
-            {/* Header and Price */}
-            <PackageHeader title={pkg.title} price={pkg.price.toString()} />
+//             {/* Header and Price */}
+//             <PackageHeader title={pkg.title} price={pkg.price.toString()} />
 
-            {/* Bullet Points */}
-            <PackageDetails pkg={pkg} />
+//             {/* Bullet Points */}
+//             <PackageDetails pkg={pkg} />
 
-            {/* Select Banner (Mobile Only) */}
-            <SelectBannerHorizontal
-                isSelected={checkout.packageName === pkg.databaseName}
-            />
-        </Flex>
-    );
-}
+//             {/* Select Banner (Mobile Only) */}
+//             <SelectBannerHorizontal
+//                 isSelected={checkout.packageName === pkg.databaseName}
+//             />
+//         </Flex>
+//     );
+// }
