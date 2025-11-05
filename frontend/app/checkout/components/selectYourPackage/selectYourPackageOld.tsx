@@ -226,9 +226,9 @@ export default function SelectYourPackage() {
                     <Flex flexDir="column" gap="20px">
                         {/* Package Box Component */}
                         {[
-                            physicalCardOption,
-                            digitalCardOption,
-                            bagTagOption,
+                         // physicalCardOption,
+                         // digitalCardOption,
+                             bagTagOption,
                         ].map((pkg, index) => {
                             return (
                                 <PackageItemSelect
@@ -238,7 +238,8 @@ export default function SelectYourPackage() {
                             );
                         })}
                     </Flex>
-                    <PackageBoxComponent pkg={packages.mvp} />
+                    {/* Hide MVP Package */}
+                    {/* <PackageBoxComponent pkg={packages.mvp} /> */}
                 </Grid>
                 <CheckoutButtonFooter />
             </SharedStack>
