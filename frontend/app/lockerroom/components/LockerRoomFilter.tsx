@@ -3,33 +3,30 @@
 import {
     Accordion,
     AccordionButton,
-    AccordionIcon,
     AccordionItem,
     AccordionPanel,
     Box,
     Divider,
     Flex,
-    Input,
-    InputGroup,
-    InputRightElement,
     Text,
     Spacer,
     useBreakpointValue,
     Center,
 } from "@chakra-ui/react";
 import { useEffect } from "react";
-import { ChevronRightIcon } from "@chakra-ui/icons";
 import RadioPicker from "../../../components/create/RadioPicker";
 import FilterTag from "../../lockerroom/components/FilterTag";
 import { useCurrentFilterInfo } from "@/hooks/useCurrentFilter";
 import TradingCardInfo from "@/hooks/TradingCardInfo";
 import FilterInfo from "@/hooks/FilterInfo";
 import { isEqual } from "lodash";
-import { Search2Icon } from "@chakra-ui/icons";
 import { FaXmark } from "react-icons/fa6";
 import { BsFilter } from "react-icons/bs";
 import StatusIcon from "@/components/create/StatusIcon";
 import FilterBubble from "./FilterBubble";
+import SearchBarInput from "./SearchBarInput";
+import ClearAllButton from "./ClearAllButton";
+import FilterAccordion from "./FilterAccordion";
 
 interface FilterProps {
     cards: TradingCardInfo[];
@@ -235,13 +232,7 @@ export default function Filter(props: FilterProps) {
                         }
                         return false;
                     }) && (
-                    <Text
-                        fontSize={"16"}
-                        letterSpacing={"0.44px"}
-                        fontFamily={"Barlow Semi Condensed"}
-                        textDecoration={"underline"}
-                        color={"green.100"}
-                        cursor={"pointer"}
+                    <ClearAllButton
                         onClick={() => {
                             const updatedFilter = {
                                 ...currentFilter.curFilter,
@@ -265,9 +256,23 @@ export default function Filter(props: FilterProps) {
                             }
                             currentFilter.setCurFilter(updatedFilter);
                         }}
-                    >
-                        Clear All
-                    </Text>
+                        tagsActive={Object.keys(currentFilter.curFilter)
+                            .slice(1)
+                            .some((key) => {
+                                const filter =
+                                    currentFilter.curFilter[
+                                        key as keyof typeof currentFilter.curFilter
+                                    ];
+                                if (
+                                    typeof filter === "object" &&
+                                    filter !== null &&
+                                    "tags" in filter
+                                ) {
+                                    return filter.tags.some((tag) => tag.value);
+                                }
+                                return false;
+                            })}
+                    />
                 )}
             </Flex>
 
@@ -301,59 +306,21 @@ export default function Filter(props: FilterProps) {
                         // Only render the Accordion if there are tags present
                         if (tags.length > 0) {
                             return (
-                                <Accordion
-                                    allowToggle
-                                    width={"100%"}
-                                    variant={"filter"}
-                                    key={index}
-                                >
-                                    <AccordionItem
-                                        border={"none"}
-                                        px="17px"
-                                        py="12px"
-                                    >
-                                        <Flex
-                                            direction={"column"}
-                                            gap={1}
-                                            alignItems={"flex-start"}
-                                        >
-                                            {/* Our accordion button to open the filter */}
-                                            <AccordionButton pl={0}>
-                                                <Box flex="1" textAlign="left">
-                                                    <Text
-                                                        fontSize={"22"}
-                                                        letterSpacing={"0.44px"}
-                                                        fontFamily={
-                                                            "Barlow Semi Condensed"
-                                                        }
-                                                        textTransform={
-                                                            "uppercase"
-                                                        }
-                                                        color="white"
-                                                    >
-                                                        {filter.title}
-                                                    </Text>
-                                                </Box>
-                                                <AccordionIcon
-                                                    as={ChevronRightIcon}
-                                                    fontSize={40}
-                                                />
-                                            </AccordionButton>
-
-                                            {/* Our "active tags" in the filter */}
+                                <FilterAccordion
+                                    title={filter.title}
+                                    filterMainContent={
+                                        <>
                                             <Flex
-                                                // Only show bottom padding if there are tags present
                                                 paddingBottom={
-                                                    tags.filter(({ value }) => {
-                                                        return Boolean(value);
-                                                    }).length > 0
+                                                    tags.filter(({ value }) =>
+                                                        Boolean(value),
+                                                    ).length > 0
                                                         ? 2
                                                         : 0
                                                 }
                                                 wrap={"wrap"}
                                                 gap={1}
                                             >
-                                                {/* Only show active tags */}
                                                 {tags.map((tag, index) => {
                                                     if (tag.value) {
                                                         return (
@@ -371,44 +338,22 @@ export default function Filter(props: FilterProps) {
                                                     }
                                                     return null;
                                                 })}
-
-                                                {/* Clear All Button */}
-                                                {tags.filter((tag) => {
-                                                    return tag.value;
-                                                }).length > 0 ? (
-                                                    <Text
-                                                        fontSize={"16"}
-                                                        letterSpacing={"0.44px"}
-                                                        paddingLeft={"8px"}
-                                                        fontFamily={
-                                                            "Barlow Semi Condensed"
-                                                        }
-                                                        textDecoration={
-                                                            "underline"
-                                                        }
-                                                        color={"green.100"}
-                                                        cursor={"pointer"}
-                                                        onClick={() => {
-                                                            tags.forEach(
-                                                                (tag) => {
-                                                                    if (
-                                                                        tag.value
-                                                                    ) {
-                                                                        toggleTag(
-                                                                            tag.title,
-                                                                            tag.value,
-                                                                        );
-                                                                    }
-                                                                },
-                                                            );
-                                                        }}
-                                                    >
-                                                        Clear All
-                                                    </Text>
-                                                ) : null}
+                                                <ClearAllButton
+                                                    onClick={() => {
+                                                        tags.forEach((tag) => {
+                                                            if (tag.value) {
+                                                                toggleTag(
+                                                                    tag.title,
+                                                                    tag.value,
+                                                                );
+                                                            }
+                                                        });
+                                                    }}
+                                                    tagsActive={tags.some(
+                                                        (tag) => tag.value,
+                                                    )}
+                                                />
                                             </Flex>
-                                        </Flex>
-                                        <AccordionPanel p={"5px"}>
                                             <Flex
                                                 mt="23px"
                                                 direction={"column"}
@@ -446,58 +391,50 @@ export default function Filter(props: FilterProps) {
                                                         },
                                                 }}
                                             >
-                                                {tags.map((tag, index) => {
-                                                    return (
-                                                        <Flex
-                                                            key={index}
-                                                            align="center"
+                                                {tags.map((tag, index) => (
+                                                    <Flex
+                                                        key={index}
+                                                        align="center"
+                                                    >
+                                                        <Box
+                                                            onClick={() => {
+                                                                toggleTag(
+                                                                    tag.title,
+                                                                    tag.value,
+                                                                );
+                                                            }}
                                                         >
-                                                            <Box
-                                                                onClick={() => {
-                                                                    toggleTag(
-                                                                        tag.title,
-                                                                        tag.value,
-                                                                    );
-                                                                }}
-                                                            >
-                                                                <StatusIcon
-                                                                    iconSize={
-                                                                        11
-                                                                    }
-                                                                    padding={
-                                                                        "1px"
-                                                                    }
-                                                                    isCheck={
-                                                                        true
-                                                                    }
-                                                                    isGlowing={
-                                                                        false
-                                                                    }
-                                                                    isActive={
-                                                                        tag.value
-                                                                    }
-                                                                />
-                                                            </Box>
-                                                            <FilterTag
-                                                                text={tag.title}
-                                                                onClick={() => {
-                                                                    toggleTag(
-                                                                        tag.title,
-                                                                        tag.value,
-                                                                    );
-                                                                }}
-                                                                order={index}
-                                                                filterType={
-                                                                    filter.title
+                                                            <StatusIcon
+                                                                iconSize={11}
+                                                                padding={"1px"}
+                                                                isCheck={true}
+                                                                isGlowing={
+                                                                    false
+                                                                }
+                                                                isActive={
+                                                                    tag.value
                                                                 }
                                                             />
-                                                        </Flex>
-                                                    );
-                                                })}
+                                                        </Box>
+                                                        <FilterTag
+                                                            text={tag.title}
+                                                            onClick={() => {
+                                                                toggleTag(
+                                                                    tag.title,
+                                                                    tag.value,
+                                                                );
+                                                            }}
+                                                            order={index}
+                                                            filterType={
+                                                                filter.title
+                                                            }
+                                                        />
+                                                    </Flex>
+                                                ))}
                                             </Flex>
-                                        </AccordionPanel>
-                                    </AccordionItem>
-                                </Accordion>
+                                        </>
+                                    }
+                                />
                             );
                         }
                     }
@@ -508,23 +445,14 @@ export default function Filter(props: FilterProps) {
 
     // Search component
     const searchComponent = (
-        <InputGroup>
-            <Input
-                variant={"search"}
-                placeholder={"Search"}
-                value={props.searchValue}
-                onChange={(e) => {
-                    props.setSearchValue(e.target.value);
-                    props.setCurrentPage(1);
-                }}
-                py={0}
-            />
-            <InputRightElement mr="6px" mt="-1px">
-                <Search2Icon color={"white"} fontSize="17px" />
-            </InputRightElement>
-        </InputGroup>
+        <SearchBarInput
+            searchValue={props.searchValue}
+            onSearch={(value) => {
+                props.setSearchValue(value);
+                props.setCurrentPage(1);
+            }}
+        />
     );
-
     // Radio Picker Component
     const radioPickerComponent = (
         <Flex
@@ -536,9 +464,7 @@ export default function Filter(props: FilterProps) {
             paddingBottom={3}
         >
             <RadioPicker
-                option1text={"All"}
-                option2text={"For Sale"}
-                option3text={"Trade Only"}
+                options={["All", "For Sale", "Trade Only"]}
                 value={currentFilter.curFilter.type}
                 onChange={(value) => {
                     currentFilter.setCurFilter({
